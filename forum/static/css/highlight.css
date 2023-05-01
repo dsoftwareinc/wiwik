@@ -1,0 +1,116 @@
+pre code {
+    display: block;
+    overflow-x: auto;
+    background: var(--code-bg-color);
+    color: var(--code-fg-color);
+    font-size: 0.9em;
+    padding: 0.6em;
+}
+
+.hljs-comment {
+    color: var(--bs-gray-500);
+}
+
+.hljs-punctuation, .hljs-tag {
+    color: var(--bs-gray-800);
+}
+
+.hljs-tag .hljs-attr, .hljs-tag .hljs-name {
+    color: var(--bs-gray-700);
+}
+
+.hljs-attribute, .hljs-doctag, .hljs-keyword, .hljs-meta .hljs-keyword, .hljs-name, .hljs-selector-tag {
+    font-weight: 700
+}
+
+.hljs-deletion, .hljs-number, .hljs-quote, .hljs-selector-class, .hljs-selector-id, .hljs-string, .hljs-template-tag, .hljs-type {
+    color: var(--bs-red);
+}
+
+.hljs-section, .hljs-title {
+    color: var(--bs-red);
+    font-weight: 700
+}
+
+.hljs-link, .hljs-operator, .hljs-regexp, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-symbol, .hljs-template-variable, .hljs-variable {
+    color: #bc6060
+}
+
+.hljs-literal {
+    color: #78a960
+}
+
+.hljs-addition, .hljs-built_in, .hljs-bullet, .hljs-code {
+    color: #397300
+}
+
+.hljs-meta {
+    color: #1f7199
+}
+
+.hljs-meta .hljs-string {
+    color: #4d99bf
+}
+
+.hljs-emphasis {
+    font-style: italic
+}
+
+.hljs-strong {
+    font-weight: 700
+}
+
+/* Code badge */
+@media print {
+    .code-badge {
+        display: none;
+    }
+}
+
+.code-badge-pre {
+    position: relative;
+}
+
+.code-badge {
+    display: flex;
+    flex-direction: row;
+    white-space: normal;
+    background-color: var(--bs-gray-300) !important;
+    color: var(--bs-dark) !important;
+    font-size: 0.8em;
+    opacity: 0.5;
+    border-radius: 0 0 0 7px;
+    padding: 5px 8px 5px 8px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.code-badge.active {
+    opacity: 0.8;
+}
+
+.code-badge:hover {
+    opacity: .95;
+}
+
+.code-badge a,
+.code-badge a:hover {
+    text-decoration: none;
+}
+
+.code-badge-language {
+    display: none;
+}
+
+.code-badge-copy-icon {
+    font-size: 1.3em !important;
+    cursor: pointer;
+    padding: 0 7px;
+    margin-top: 2px;
+}
+
+.fa.text-success {
+    color: limegreen !important
+}
+

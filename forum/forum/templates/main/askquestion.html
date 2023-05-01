@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load wiwik_template_tags compress static %}
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% tool_url 'easymde-css' %}">
+{% endblock %}
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% tool_url 'easymde-js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <link href="{% static 'css/tagify-customization.css' %}" rel="stylesheet" type="text/css"/>
+
+    <div class="container">
+        <div class="row">
+            <div class="p-2">
+                <h2><strong>Ask a public question</strong></h2>
+            </div>
+            <div class="col-12 col-md-8">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Title</h5>
+                            <p class="card-text">Be specific and imagine you’re asking a question to another person.</p>
+                            <textarea
+                                    name="title"
+                                    style="width:100%"
+                                    hx-get="{% url 'forum:similar' %}?"
+                                    hx-trigger="keyup changed delay:300ms"
+                                    hx-target="#similar-questions">{{ title }}</textarea>
+                            <div id="similar-questions"></div>
+
+                            <hr class="invis">
+                            <h5 class="card-title">Body</h5>
+                            <p class="card-text">
+                                Include all the information someone would need to answer your
+                                question.
+                            </p>
+                            <textarea id="queseditor" name="queseditor">{{ content }}</textarea>
+                            {% include 'main/includes/easymde.template.html' with msg="Type your question in markdown..." %}
+                            <hr class="invis">
+                            <h5 class="card-title">Tags</h5>
+                            <p class="card-text">Pick maximum 5 tags, prefer existing tags from suggestions</p>
+                            {% include 'main/includes/tags.input.html' %}
+                            <hr/>
+                            <div class="form-check form-switch">
+                                <label for="with_answer">Answer your own question (share from your knowledge,
+                                    Q&A-style)</label>
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       name="with_answer"
+                                       id="with_answer">
+                            </div>
+                            <div id="answer_section" style="display: none;">
+                                <textarea id="answereditor" name="answereditor"></textarea>
+                                {% include 'main/includes/easymde.template.html' with msg="Type your answer in markdown..." el='answereditor' %}
+                            </div>
+                            <div id="without_answer">
+                                <hr class="invis"/>
+                                <h5 class="card-title">Ask team members</h5>
+                                <p class="card-text">Select team members who you think might know the answer</p>
+                                <input id="usersList" class="users-list" name="invites" style="width:100%">
+                                {% compress js %}
+                                    <script src="{% static 'js/invite-to-question.js' %}"></script>
+                                {% endcompress %}
+                                {% if allow_anonymous_question %}
+                                    <hr class="invis"/>
+                                    <div class="form-check form-switch d-flex flex-row-reverse ">
+                                        <label for="anonymous">Post question anonymously</label>
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               name="anonymous"
+                                               id="anonymous">
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <button style="width:100%" class="btn btn-primary mt-2 mb-2" type="submit">
+                        Submit your Question
+                    </button>
+                </form>
+            </div>
+            <div class="col-12 col-md-4">
+                {% include "main/includes/editquestion.instructions.template.html" %}
+            </div>
+        </div>
+    </div>
+    {% compress js %}
+        <script>
+            $('#with_answer').change(function () {
+                if ($(this).is(':checked')) {
+                    $("#without_answer").hide();
+                    $("#answer_section").show();
+                } else {
+                    $("#answer_section").hide();
+                    $("#without_answer").show();
+                }
+            });
+
+        </script>
+    {% endcompress %}
+{% endblock %}
+{% block code_formatting %}
+    {% include 'main/includes/code-formatting.template.html' %}
+{% endblock %}

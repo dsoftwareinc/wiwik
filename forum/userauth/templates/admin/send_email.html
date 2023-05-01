@@ -1,0 +1,56 @@
+{% extends "admin/base_site.html" %}
+{% load wiwik_template_tags i18n admin_urls static compress %}
+{% block extrahead %}
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% tool_url 'easymde-js' %}"></script>
+    {% include 'includes/base.google-analytics.html' %}
+    {% compress js %}
+        <script src="{% static 'js/main.js' %}"></script>
+    {% endcompress %}
+    <link rel="stylesheet" href="{% tool_url 'bootstrap-css' %}">
+    <link rel="stylesheet" href="{% tool_url 'easymde-css' %}">
+    <link rel="stylesheet" href="{% tool_url 'font-awesome-css' %}">
+    {% compress css %}
+        <link rel="stylesheet" href="{% static 'css/light.css' %}" media="(prefers-color-scheme: light)">
+        <link rel="stylesheet" href="{% static 'css/dark.css' %}" media="(prefers-color-scheme: dark)">
+        <link rel="stylesheet" href="{% static 'css/highlight.css' %}">
+        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% endcompress %}
+
+{% endblock %}
+
+{% block content %}
+    <p>{% blocktrans %}Write your message here{% endblocktrans %}</p>
+    <form method="POST" action="{% url 'userauth:admin_email' %}">{% csrf_token %}
+        <div>
+            <div>
+                <p>{{ form.users.errors }}</p>
+                <p>{{ form.users.label_tag }}</p>
+                <p>
+                    {% for user in form.users.initial %}
+                        {{ user.email }}{% if not forloop.last %},&nbsp;{% endif %}
+                    {% endfor %}
+                </p>
+                <select name="users" multiple style="display: none">
+                    {% for user in form.users.initial %}
+                        <option value="{{ user.id }}" selected>{{ user }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <p>{{ form.subject.errors }}</p>
+                <p>{{ form.subject.label_tag }}</p>
+                <p>{{ form.subject }}</p>
+            </div>
+            <div>
+                <p>{{ form.message.errors }}</p>
+                <p>{{ form.message.label_tag }}</p>
+                <textarea id="message" name="message">{{ content }}</textarea>
+                {% include 'main/includes/easymde.template.html' with msg='Your message here' el="message" %}
+            </div>
+            <input type="submit" value="{% trans 'Send message' %}"/>
+            <a href="{% url 'admin:userauth_forumuser_changelist' %}"
+               class="button button-danger">{% trans "No, take me back" %}</a>
+        </div>
+    </form>
+{% endblock %}

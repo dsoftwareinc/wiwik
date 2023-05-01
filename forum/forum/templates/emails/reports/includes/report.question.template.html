@@ -1,0 +1,71 @@
+{% load wiwik_template_tags %}
+
+<!-- Question : START -->
+<tr>
+    <td style="padding-top: 10px; border-top: 1px solid #D6D8DB;" class="sm-pt">
+        <table cellspacing="0" cellpadding="0" border="0" width="100%" role="presentation">
+            <tr>
+                <td style="vertical-align: top; width: 20px;">
+                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" align="left">
+                        <tr>
+                            <td valign="middle" height="19" width="19"
+                                style="font-size: 13px; line-height: 13px; color: #ffffff; background-color: #EB5757; font-weight: bold; text-align: center; border-radius: 3px;">
+                                Q
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="vertical-align: top; padding-left: 5px;">
+                    <table cellspacing="0" cellpadding="0" border="0" width="100%" role="presentation">
+                        <tr>
+                            <td style="padding-bottom: 5px;">
+                                <a href="{{ basesite }}{% url 'forum:thread' q.pk %}"
+                                   style="font-size: 17px; line-height: 21px; color: #0077CC; text-decoration: none;">
+                                    {{ q.title |markdownify }}
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-bottom: 10px;">
+                                <table cellpadding="0" cellspacing="0" border="0" align="left">
+                                    <tr>
+                                        <td style="padding-right: 5px; vertical-align: top;">
+                                            <img src="{{ basesite }}{{ q.author.profile_pic.url }}"
+                                                 alt="" height="16" width="16" align="left"
+                                                 border="0" style="display: block">
+                                        </td>
+                                        <td style="vertical-align: top; padding-top: 3px; font-size: 12px; line-height: 12px; color: #828282">
+                                            {{ q.author.display_name }}
+                                            asked {{ q.created_at| date:"Y-m-d" }}
+                                            {% if q.answers_count %}
+                                                ({{ q.answers_count }} answers)
+                                            {% else %}
+                                                <b>(No answers)</b>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="hide-on-mobile">
+                            <td style="font-size: 13px; color: #54595f;max-width: 500px;max-height: 200px;display: block;overflow: auto;">
+                                {{ q.content | markdownify }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top"
+                                style="padding-top: 5px; padding-bottom: 10px; line-height: 100%;">
+                                {% for tag in q.tags.all %}
+                                    <a href="{{ basesite }}{% url 'forum:tag' tag.tag_word %}"
+                                       style="display: inline-block; border: 5px solid #E1ECF4; margin: 0 1px 4px 0; background: #E1ECF4; border-radius: 3px; color: #39739D; font-size: 12px; line-height: 100%; text-decoration: none; white-space: nowrap;"
+                                       class="s-tag">{{ tag.tag_word }}</a>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+<!-- Question : END -->

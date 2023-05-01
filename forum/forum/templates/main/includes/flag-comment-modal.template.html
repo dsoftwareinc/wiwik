@@ -1,0 +1,64 @@
+{% load compress %}
+<div class="modal fade" id="flag-comment-modal-{{ model_name }}" tabindex="-1"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Why are you flagging this comment?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{% url 'general:flag_create' model_pk %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <fieldset>
+                        <div class="form-check m-2">
+                            <input class="form-check-input" type="radio" value="spam" id="spam" name="flag_type">
+                            <label class="form-check-label" for="spam">
+                                It is no longer needed
+                            </label>
+                            <small class="text-muted">This comment is outdated, conversational or not relevant to this
+                                post</small>
+                        </div>
+                        <div class="form-check m-2">
+                            <input class="form-check-input" type="radio" value="rude" id="rude" name="flag_type">
+                            <label class="form-check-label" for="rude">
+                                It is unfriendly or unkind
+                            </label>
+                            <small class="text-muted">This comment is rude or condescending.</small>
+                        </div>
+                        <div class="form-check m-2">
+                            <input class="form-check-input" type="radio" value="moderator" id="moderator"
+                                   name="flag_type">
+                            <label class="form-check-label" for="moderator">
+                                Something else
+                            </label>
+                            <small class="text-muted">A problem not listed above</small>
+                            <textarea name="extra" id="extra"
+                                      class="comment-text-area"
+                                      rows="3" cols="68"
+                            ></textarea>
+                        </div>
+                        <input id="model-name" name="model-name" type="hidden" value="{{ model_name }}">
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Flag {{ model_name_for_user }}</button>
+                </div>
+                {% compress js %}
+                    <script>
+                        $("#extra").hide();
+                        $('input[type=radio][name=flag_type]').click(function () {
+                            if (this.value === 'moderator') {
+                                $("#extra").show();
+                            } else {
+                                $("#extra").hide();
+                            }
+                        });
+                    </script>
+                {% endcompress %}
+            </form>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,97 @@
+{% load wiwik_template_tags %}
+<!-- Question body -->
+<div style="display: flex;flex-direction: row;">
+    <div style="display: flex; flex-direction:column;" class="pt-2">
+        <div>
+            <a href="{% url 'forum:upvote' q.pk 'question' q.pk %}">
+                <i style="color:{% if q.user_upvoted %}coral{% else %}#555{% endif %};"
+                   class="material-icons vote-button-icon">arrow_drop_up</i>
+            </a>
+            <div class="text-center single-question-votes">{{ q.votes | humanize_number }}</div>
+            <a href="{% url 'forum:downvote' q.pk 'question' q.pk %}">
+                <i style="color:{% if q.user_downvoted %}coral{% else %}#555{% endif %};"
+                   class="material-icons vote-button-icon">arrow_drop_down</i>
+            </a>
+        </div>
+        <div style="text-align: center;" class="pt-1 pb-1">
+            {% if bookmarked %}
+                <a href="{% url 'forum:unbookmark' q.pk %}">
+                    <span style="color:coral;" class="bookmark-button material-icons">bookmark</span>
+                </a>
+            {% else %}
+                <a href="{% url 'forum:bookmark' q.pk %}">
+                     <span style="color:#babfc3;"
+                           class="bookmark-button material-icons">bookmark_border</span>
+                </a>
+            {% endif %}
+            {% if  num_bookmarks > 0 %}
+                <div class="text-center">
+                    {{ num_bookmarks }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <!-- right (question content) -->
+    <div style="width:calc(100% - 20px);overflow-x: unset;padding-left: 10px;padding-right: 10px;">
+        {% if not q.is_accepting_answers %}
+            {% include 'main/includes/thread.question-status.template.html' %}
+        {% endif %}
+        <div class="user-content">
+            {{ q.content | markdownify }}
+        </div>
+        {% include 'main/includes/thread.user_card.template.html' with item=q %}
+
+        {% if display_comments_and_buttons %}
+            <!-- Questions buttons: Share link, follow/unfollow, Edit, Delete -->
+            <div style="display: flex;justify-content: flex-start;">
+                <a class="btn btn-sm text-secondary"
+                   data-bs-container="body"
+                   data-bs-placement="bottom"
+                   data-bs-toggle="popover"
+                   title="Share a link to this question"
+                   data-bs-content="{% share_link q %}">
+                    Share
+                </a>
+                {% if show_follow %}
+                    <a class="btn btn-sm text-secondary" href="{% url 'forum:follow' q.pk %}">
+                        Follow
+                    </a>
+                {% else %}
+                    <a class="btn btn-sm text-secondary" href="{% url 'forum:unfollow' q.pk %}">
+                        Unfollow
+                    </a>
+                {% endif %}
+                {% if show_edit_button %}
+                    <a class="btn btn-sm text-secondary" href="{% url 'forum:question_edit' q.pk %}">
+                        Edit
+                    </a>
+                {% endif %}
+                {% if show_delete_q_button %}
+                    <a class="btn btn-sm text-secondary"
+                       href="{% url 'forum:question_delete' q.pk %}">
+                        Delete
+                    </a>
+                {% endif %}
+                <a class="btn btn-sm text-secondary"
+                   href="{% url 'forum:markdown' q.pk %}">
+                    Markdown
+                </a>
+                <a class="btn btn-sm text-secondary"
+                   data-bs-toggle="modal"
+                   data-bs-target="#flag-model-modal-question-{{ q.pk }}"
+                   style="cursor: pointer">
+                    {% if user.is_moderator and q.flags.count > 0 %}
+                        <span class="badge bg-danger">{{ q.flags.count }}</span>
+                    {% endif %}
+                    Flag
+                </a>
+            </div>
+            <div hx-get="{% url 'forum:post_comments' 'question' q.id %}"
+                 hx-trigger="load" hx-swap="outerHTML">
+            </div>
+            {% include 'main/includes/thread.invite-to-question.template.html' with q_pk=q.pk %}
+            {% include 'main/includes/flag-model-modal.template.html' with q_pk=q.pk model_pk=q.pk model_name='question' model_name_for_user='question' %}
+        {% endif %}
+    </div>
+</div>
+<hr/>

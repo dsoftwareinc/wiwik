@@ -1,0 +1,62 @@
+{% load wiwik_template_tags %}
+<div class="row summary">
+    <div class="col-12 col-lg-2">
+        <div class="votes-container">
+            <div class="votes">
+                {{ q.votes | humanize_number }} votes
+            </div>
+            {% if q.post_accepts_answers %}
+                <div class="votes {% if q.has_accepted_answer %}has-accepted-answer{% elif q.num_answers > 0 %}votes-frame{% endif %}">
+                    {{ q.answers_count }} answers
+                </div>
+            {% endif %}
+            <div class="votes">
+                {{ q.views | humanize_number }} views
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-10">
+        <div style="max-height: 70px;overflow: hidden;" class="mb-2">
+            <a href="{% url 'forum:thread' q.pk %}">{{ q.title | markdownify }}</a>
+        </div>
+        <div style="max-height: 40px;overflow: hidden;" class="mb-2">
+            {% for t in q.tags.all %}
+                {% include 'main/includes/tag-popover.template.html' with q_id=q.id t=t %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-12 p-1">
+        <div class="question-details px-1">
+            <span>
+                {% if q.space %}
+                    <a class="mx-4" href="{% url 'spaces:questions' q.space.id %}">
+                        {% if q.space.logo %}
+                            <img src="{{ q.space.logo.url }}" alt="" height="25"/>
+                        {% endif %}
+                        {{ q.space.short_name }}
+                    </a>
+
+                {% endif %}
+                {% if q.is_old and not q.has_accepted_answer %}
+                    <span class="badge bg-black text-white"
+                          title="An accepted answer on this question will get you 100pts">
+                            +100 pts
+                    </span>
+                {% endif %}
+                {% if q.is_anonymous %}
+                    Asked anonymously {{ q.created_at | timesince }}
+                {% else %}
+                    Asked {{ q.created_at | timesince }} ago by
+                    <a href="{% url 'userauth:profile' q.author.username 'questions' %}">
+                    {{ q.author.display_name }}
+                </a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</div>
+    {% if not last %}
+        <hr/>
+    {% endif %}
+
+

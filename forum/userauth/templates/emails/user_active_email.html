@@ -1,0 +1,7 @@
+{% autoescape off %}
+    Hi {{ username }},
+    Please click on the link to confirm your registration,
+
+    {{ domain }}{% url 'userauth:activate' uidb64=uid token=token %}
+
+{% endautoescape %}

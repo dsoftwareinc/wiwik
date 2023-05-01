@@ -1,0 +1,116 @@
+{% load static %}
+{% load userauth_tags compress humanize %}
+<a class="nav-item nav-link"
+   href="{% url 'userauth:profile' user.username 'questions' %}">
+    <img style="height: 25px;border-radius: 50%;" src="{{ user.profile_pic.url }}"
+         onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"/>
+    <span>
+    <b><span class="material-icons">emoji_events</span>{{ user.reputation_score | intcomma }}</b>
+    {% include 'includes/user-badges.html' with user=user %}
+    </span>
+</a>
+<div class="nav-item nav-link dropdown">
+    <a class="menu-icon-link" href="#"
+       hx-get="{% url 'forum:mark_all_seen' %}"
+       hx-trigger="click"
+       hx-target="#reputation-badge"
+       id="navbarDropdownReputation"
+       role="button" data-bs-toggle="dropdown"
+       aria-expanded="false">
+       <span class="material-icons">trending_up</span>
+       <span id="reputation-badge">
+           {% if user|unseen_reputation_sum > 0 %}
+               <span class="menutoggle-badge">{{ user|unseen_reputation_sum }}</span>
+           {% endif %}
+       </span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end"
+        style="width: 363px;max-height: 390px;overflow-y: auto;"
+        aria-labelledby="navbarDropdownReputation">
+        {% if not user.reputation_votes %}
+            <li class="dropdown-item disabled">No reputation earned, start asking and answering</li>
+        {% else %}
+            <li class="dropdown-item disabled ">
+                Achievements
+                <a class="pull-right pointer-event" href="{% url 'badges:list' %}">badges</a>
+            </li>
+            {% regroup user|latest_reputation by time_section as time_sections %}
+            {% for time_section in time_sections %}
+                <li class="dropdown-item disabled mt-2">
+                    {{ time_section.grouper }}
+                </li>
+                {% for item in time_section.list %}
+                    {% if item.badge_id %}
+                        <a class="text-wrap list-group-item dropdown-item {% if not item.seen %}bg-unseen{% endif %}"
+                           href="{% url 'userauth:profile' item.target.username 'badges' %}">
+                            <div class="row m-1">
+                                <div class="col-1">
+                                    <span class="material-icons text-{{ item.badge.type }}">verified</span>
+                                </div>
+                                <div class="col-11">
+                                    You've earned the "{{ item.badge.name }}" badge ({{ item.badge.description }})
+                                </div>
+                            </div>
+                        </a>
+                    {% else %}
+                        <a class="text-wrap list-group-item dropdown-item {% if not item.seen %}list-group-item-unseen{% endif %}"
+                           href="{% url 'forum:thread' item.question_id %}">
+                            <div class="row m-1">
+                                <div class="col-1"
+                                     style="color: {% if item.reputation_change > 0 %}forestgreen{% else %}darkred{% endif %};">
+                                    {% if item.reputation_change > 0 %}+{% endif %}{{ item.reputation_change }}
+                                </div>
+                                <div class="col-11">
+                                    {{ item.question.title }}
+                                </div>
+                            </div>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            {% if user.reputation_votes.count > MAX_REPUTATION_ITEMS %}
+                {# TODO performance improvement - move count to user_additionaldata #}
+                <a class="list-group-item dropdown-item"
+                   href="{% url 'userauth:profile' user.username 'reputation' %}">
+                    Show more...
+                </a>
+            {% endif %}
+        {% endif %}
+    </ul>
+</div>
+<div class="nav-item nav-link dropdown">
+    <a class="menu-icon-link" href="#" id="navbarDropdownBookmarks"
+       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="material-icons">bookmarks</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end"
+        style="width: 363px;"
+        aria-labelledby="navbarDropdownBookmarks">
+        {% if not user.bookmarks %}
+            <li class="dropdown-item disabled">No bookmarks</li>
+        {% else %}
+            <li class="dropdown-item disabled">Bookmarks</li>
+            {% for bookmark in user|latest_bookmarks %}
+                <a class="text-wrap list-group-item dropdown-item"
+                   href="{% url 'forum:thread' bookmark.question.pk %}">
+                    <div class="row m-1">
+                        <div class="col-1">
+                            <span class="badge {% class_for_votes bookmark.question.votes %}">
+                                {{ bookmark.question.votes }}
+                            </span>
+                        </div>
+                        <div class="col-11">
+                            {{ bookmark.question.title }}
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+            {% if user.additional_data.bookmarks_count > MAX_BOOKMARK_ITEMS %}
+                <a class="list-group-item dropdown-item"
+                   href="{% url 'userauth:profile' user.username 'bookmarks' %}">
+                    Show more...
+                </a>
+            {% endif %}
+        {% endif %}
+    </ul>
+</div>

@@ -1,0 +1,25 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>What I wish I knew</title>
+    <link rel="stylesheet" href="{% tool_url 'bootstrap-css' %}">
+</head>
+<body>
+<div class="container mt-4">
+    <div class="jumbotron">
+        <h1 class="display-4">You have been logged out.</h1>
+        <hr class="my-4">
+        <p class="lead">
+            <a class="btn btn-primary btn-lg" href="{% url 'userauth:login' %}" role="button">
+                Login again
+            </a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

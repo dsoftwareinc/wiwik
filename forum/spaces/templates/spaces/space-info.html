@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load userauth_tags %}
+{% load wiwik_template_tags %}
+{% load static %}
+
+{% block extrahead %}
+    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+    <script src="{% tool_url 'easymde-js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-8">
+            <div class="border-bottom pb-2">
+                <h2>
+                    <strong>{{ space.name }}</strong> space page
+                    <div class="pull-right">
+                        {% if is_member %}
+                            <a href="{% url 'spaces:edit' space.id %}"
+                               class="btn btn-sm btn-outline-primary">
+                                <span class="material-icons">edit_note</span>
+                                Edit space info
+                            </a>
+                        {% endif %}
+                    </div>
+                </h2>
+                <div class="pb-2">
+                    {% if space.end_date %}
+                        Active between {{ space.start_date | absolute_date }} -
+                        {{ space.end_date | absolute_date }}
+                    {% else %}
+                        Started at {{ space.start_date | absolute_date }}
+                    {% endif %}
+                </div>
+                <!-- space properties -->
+                <div>
+                    Properties
+                    {% for property in properties %}
+                        <a class="btn btn-space-property"
+                           href="{% url 'spaces:property-info' property.name %}">
+                            {{ property.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="pb-2">
+                <h5>Latest posts</h5>
+                ({{ posts_count }} posts overall.
+                <a href="{% url 'spaces:questions' space.id %}">View all posts</a>)
+                {% if latest_posts %}
+                    {% for item in latest_posts %}
+                        <div class="row p-1">
+                            <div class="col-2">
+                                {{ item.created_at | date:"M d" }}
+                            </div>
+                            <div class="col-10">
+                                <a href="{% url 'forum:thread' item.pk %}">
+                                    <span class="badge {% class_for_votes item.votes %}"> {{ item.votes }} </span>
+                                    {{ item.title }}
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <hr/>
+            <div class="pb-2">
+                {% if members %}
+                    <h5>
+                        Members
+                        <div class="pull-right">
+                            {% if is_member %}
+                                <a href="{% url 'spaces:leave' space.id %}"
+                                   class="btn btn-sm btn-outline-danger">
+                                    <span class="material-icons">visibility_off</span>
+                                    Leave space
+                                </a>
+                            {% else %}
+                                <a href="{% url 'spaces:join' space.id %}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <span class="material-icons">visibility</span>
+                                    Join space
+                                </a>
+                            {% endif %}
+                        </div>
+                    </h5>
+
+                    <div class="row">
+                        {% for member in members %}
+                            <div class="col-6 mb-2">
+                                {% include 'spaces/includes/user_card.template.html' with item=member %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    Space has no active members.
+                {% endif %}
+            </div>
+            <hr/>
+            <h5>Space info</h5>
+            <div class="mb-2">
+                {% if space.page %}
+                    {{ space.page | markdownify }}
+                {% else %}
+                    Page for space is empty, edit it...
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

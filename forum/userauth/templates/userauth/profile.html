@@ -1,0 +1,137 @@
+{% extends 'userauth-base.html' %}
+{% load static %}
+{% load humanize %}
+{% load userauth_tags %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="row mt-2">
+            <div class="col col-md-2">
+                <div class="pt-1 ml-5">
+                    <img class="user-profile-img"
+                         onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"
+                         src="{{ seeuser.profile_pic.url }}"
+                         alt="{{ seeuser.display_name }}">
+                </div>
+            </div>
+            <div class="col col-md-7">
+                <div class="card pt-1" style="min-height: 150px;">
+                    <div style="position: relative;" class="card-body">
+                        {% if is_self_profile %}
+                            <div class="btn-group pull-right">
+                                <a class="btn text-dark" href="{% url 'userauth:edit' %}">
+                                    <span class="material-icons">edit_note</span>
+                                    Edit profile
+                                </a>
+                                <a class="btn text-dark" href="{% url 'userauth:logout' %}">
+                                    <i class="material-icons">logout</i>
+                                    Sign out
+                                </a>
+                            </div>
+                        {% elif user.is_staff %}
+                            {% if seeuser.is_active %}
+                                <div class="btn-group pull-right">
+                                    <a class="btn text-dark"
+                                       href="{% url 'userauth:deactivate_user' seeuser.username %}">
+                                        <i class="material-icons">person_off</i>
+                                        Deactivate user
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div class="btn-group pull-right">
+                                    <a class="btn text-dark"
+                                       href="{% url 'userauth:activate_user' seeuser.username %}">
+                                        <i class="material-icons">person_add_alt</i>
+                                        Activate user
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        <h3 class="card-title">
+                            {{ seeuser.display_name | default_if_none:seeuser.username }}
+                            {% if seeuser.github_handle %}
+                                <a href="https://github.com/{{ seeuser.github_handle }}">
+                                    {% if seeuser.ui_mode == 'dark' %}
+                                        <img src="{% static 'logos/GitHub-Mark-Light-64px.png' %}"
+                                             style="height: 32px;"/>
+                                    {% else %}
+                                        <img src="{% static 'logos/GitHub-Mark-64px.png' %}"
+                                             style="height: 32px;"/>
+                                    {% endif %}
+                                </a>
+                            {% endif %}
+                            {% if seeuser.keybase_user %}
+                                <a href="https://keybase.io/{{ seeuser.keybase_user }}">
+                                    <img src="{% static 'logos/Keybase_logo_official.png' %}" style="height: 32px;"/>
+                                </a>
+                            {% endif %}
+                        </h3>
+                        <div class="card-subtitle">{{ seeuser.title | default:"User did not set a title" }}</div>
+                        <div>
+                            <div>
+                                {% if seeuser.is_active %}
+                                    <i class="material-icons">cake</i>
+                                    Member for {{ date_joined | timesince }}
+                                {% else %}
+                                    Member inactive
+                                {% endif %}
+                            </div>
+                            <div>
+                                <i class="material-icons">calendar_month</i>
+                                Visited {{ last_visit.total_days }} days,
+                                {{ last_visit.max_consecutive_days }} consecutive.
+                            </div>
+                            {% if last_visit %}
+                                <div>
+                                    <i class="material-icons">place</i>
+                                    Last visited {{ last_visit.visit_date | dayssince }}
+                                    {% if last_visit.city %}
+                                        from {{ last_visit.city }}, {{ last_visit.country }}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            {{ seeuser.about_me |default:"Apparently, this user prefers to keep an air of mystery about them." }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'userauth/includes/profile.cards.template.html' %}
+        <div class="container pt-2">
+            <ul class="nav nav-tabs">
+                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='questions' title='Questions' %}
+                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='answers' title='Answers' %}
+                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='following' title='Following' %}
+                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='votes' title='Votes' %}
+                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='reputation' title='Reputation' %}
+                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='badges' title='Badges' %}
+                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='bookmarks' title='Bookmarks' %}
+            </ul>
+
+            <div>
+                {% if tab == 'questions' %}
+                    {% include 'userauth/includes/profile.questions.template.html' with user_questions=items %}
+                {% elif tab == 'answers' %}
+                    {% include 'userauth/includes/profile.answers.template.html' with user_answers=items %}
+                {% elif tab == 'following' %}
+                    {% include 'userauth/includes/profile.following.template.html' with tagfollows=user_tagfollows questions=items %}
+                {% elif tab == 'votes' %}
+                    {% include 'userauth/includes/profile.votes.template.html' with user_votes=items %}
+                {% elif tab == 'reputation' %}
+                    {% include 'userauth/includes/profile.reputation.template.html' with items=items %}
+                {% elif tab == 'badges' %}
+                    {% include 'userauth/includes/profile.badges.template.html' with items=items %}
+                {% elif tab == 'bookmarks' %}
+                    {% include 'userauth/includes/profile.bookmarks.template.html' with bookmarks=items %}
+                {% endif %}
+                <div class="pull-right">
+                    {% include 'userauth/includes/pagination.template.html' with items_list=items %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

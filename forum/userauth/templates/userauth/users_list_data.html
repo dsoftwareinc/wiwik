@@ -1,0 +1,13 @@
+<div id="usersList">
+    <div class="form-control-plaintext">{{ count }} users found</div>
+    <div class="row g-0" id="usersList">
+        {% for user in users %}
+            <div class="col-sm-4 pe-2 py-1">
+                {% include 'userauth/includes/users-list.usercard.template.html' with u=user %}
+            </div>
+        {% empty %}
+            <div>No results found for "{{ query }}"</div>
+        {% endfor %}
+    </div>
+    {% include 'userauth/includes/pagination.template.html' with items_list=users %}
+</div>

@@ -1,0 +1,28 @@
+{% load wiwik_template_tags %}
+<!-- User cards -->
+
+<div class="user-card" style="font-size: 13px;">
+    <small>
+        Awarded {{ item.created_at | timesince }} ago
+    </small>
+    <a href="{% url 'userauth:profile' item.target.username 'badges' %}">
+        <div style="display: flex;flex-direction: row;width: 220px;">
+            <div style="flex: 0.2;" class="p-1">
+                <img src="{{ item.target.profile_pic.url }}"
+                     onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"
+                     class="user-card-img" alt="{{ item.target.display_name }}">
+            </div>
+            <div style="flex: 0.8;" class="p-1">
+                <p><strong>
+                    {{ item.target.display_name }}
+                </strong>
+                    <br/>
+                    <span style="color:gray;">
+                        {{ item.target.reputation_score }}
+                        {% include 'includes/user-badges.html' with user=item.target %}
+                    </span>
+                </p>
+            </div>
+        </div>
+    </a>
+</div>

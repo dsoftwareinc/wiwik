@@ -1,0 +1,94 @@
+{% load wiwik_template_tags %}
+<!-- User cards -->
+<div style="display: flex;justify-content:flex-end;font-size: 13px;">
+    {% if item.editor and item.editor.is_active %}
+        <div class="user-card me-3">
+            <small>edited {{ item.created_at | absolute_datetime }} </small>
+
+            <a href="{% url 'userauth:profile' item.editor.username 'questions' %}">
+                <div style="display: flex;flex-direction: row;width: 200px;">
+                    <div style="flex: 0.3;" class="p-1">
+                        <img src="{{ item.editor.profile_pic.url }}"
+                             onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"
+                             class="user-card-img" alt="{{ item.editor.display_name }}">
+                    </div>
+                    <div style="flex: 0.7;" class="p-1">
+                        <p><strong>
+                            {{ item.editor.display_name }}
+                        </strong>
+                            <br/>
+                            <span style="color:gray;">
+                            {{ item.editor.reputation_score }}
+                            {% include 'includes/user-badges.html' with user=item.editor %}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endif %}
+    {% if not item.author.is_active %}
+        {# Inactive author #}
+        <div class="text-muted" style="display: flex;flex-direction: column;width: 200px;">
+            <small>
+                {% if item.is_answer %}answered{% else %}asked{% endif %}
+                {{ item.created_at | absolute_datetime }}
+            </small>
+            <div style="display: flex;flex-direction: row;width: 150px;">
+                <div style="flex: 0.2;" class="p-1">
+                    <img src="/media/default_pics/anonymous.png"
+                         class="user-card-img" alt="Anonymous">
+                </div>
+                <div style="flex: 0.8;" class="p-1">
+                    <p>
+                        Inactive User
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% elif item.is_anonymous %}
+        {# Anonymous question #}
+        <div style="display: flex;flex-direction: column;width: 200px;">
+            <small>asked {{ item.created_at | absolute_datetime }} </small>
+            <div style="display: flex;flex-direction: row;width: 150px;">
+                <div style="flex: 0.2;" class="p-1">
+                    <img src="/media/default_pics/anonymous.png"
+                         class="user-card-img" alt="Anonymous">
+                </div>
+                <div style="flex: 0.8;" class="p-1">
+                    <p>
+                        Anonymous User
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="user-card">
+            <small>
+                {% if item.is_answer %}answered{% elif item.is_article %}posted{% else %}asked{% endif %}
+                {{ item.created_at | absolute_datetime }}
+            </small>
+
+            <a href="{% url 'userauth:profile' item.author.username 'questions' %}">
+                <div style="display: flex;flex-direction: row;width: 200px;">
+                    <div style="flex: 0.2;" class="p-1">
+                        <img src="{{ item.author.profile_pic.url }}"
+                             onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"
+                             class="user-card-img" alt="{{ item.author.display_name }}">
+                    </div>
+                    <div style="flex: 0.8;" class="p-1">
+                        <p><strong>
+                            {{ item.author.display_name }}
+                        </strong>
+                            <br/>
+                            <span style="color:gray;">
+                                 {{ item.author.reputation_score }}
+                                {% include 'includes/user-badges.html' with user=item.author %}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endif %}
+</div>

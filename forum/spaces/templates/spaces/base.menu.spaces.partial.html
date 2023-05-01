@@ -1,0 +1,16 @@
+{% load spaces_tags %}
+<hr/>
+<li>
+    Spaces
+</li>
+{% for space in spaces %}
+    <li class="nav-item">
+        <a class="nav-link {% if calling_url == space.url %}active{% endif %}"
+           href="{% url 'spaces:questions' space.id %}">
+            {% if space.logo %}
+                <img src="{{ space.logo.url }}" alt="" height="25"/>
+            {% endif %}
+            {{ space.short_name }}
+        </a>
+    </li>
+{% endfor %}

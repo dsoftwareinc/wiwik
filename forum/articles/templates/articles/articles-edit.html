@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% tool_url 'easymde-css' %}">
+{% endblock %}
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% tool_url 'easymde-js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div hx-get="{% url 'general:update_edit_ping' 'question' article_pk %}"
+         hx-trigger="every 10s">
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="p-2">
+                <h2><strong>Edit article</strong></h2>
+            </div>
+            <div class="col-12 col-md-9">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div>
+                        <div>
+                            <h5>Title</h5>
+                            <small class="text-muted">
+                                Be specific and imagine you’re asking a question to another
+                                person.</small>
+                            <input class="form-control" style="width:100%"
+                                   placeholder="Enter the article title"
+                                   name="title" value="{{ title }}"/>
+                            <hr class="invis"/>
+                            <h5>Tags</h5>
+                            <small class="text-muted">Pick at least one tag</small>
+                            {% include 'main/includes/tags.input.html' %}
+                            <hr class="invis"/>
+                            <div>
+                                <h5>Article content</h5>
+                                <small class="text-muted">
+                                    Outline before you write!
+                                </small>
+                                <textarea id="articleeditor" name="articleeditor">{{ content }}</textarea>
+                                {% include 'main/includes/easymde.template.html' with el='articleeditor' msg="Type your article in markdown..." skipautosave=true %}
+                            </div>
+                        </div>
+                    </div>
+                    <button style="width:100%" class="btn btn-primary mt-2 mb-2" type="submit">
+                        Submit your changes
+                    </button>
+                </form>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Guidelines</h5>
+                        <p>
+                            Before you write a full draft, submit an outline summarizing your key ideas for approval.
+                        </p>
+                        <hr class="invis"/>
+                        <p>
+                            Await feedback from a Recognized Member or Employee.
+                        </p>
+                        <hr class="invis"/>
+                        <p>
+                            Incorporate the feedback you receive and resubmit for approval.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block code_formatting %}
+    {% include 'main/includes/code-formatting.template.html' %}
+{% endblock %}

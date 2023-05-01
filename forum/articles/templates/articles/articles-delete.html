@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load wiwik_template_tags %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+
+            <div class="p-2">
+                <h2><strong>Delete article</strong></h2>
+            </div>
+
+            <div class="col-12 col-md-1"></div>
+            <div class="col-12 col-md-8">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div>
+                        <h5><b><i>Are you sure you want to permanently delete this article?</i></b></h5>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ title }}</h5>
+                            <p class="card-text">{{ content | markdownify }}</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary mt-2 mb-2" type="submit">
+                        Delete article
+                    </button>
+                    <a class="btn btn-danger my-2"
+                       href="{% url 'articles:detail' pk %}">
+                        Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block code_formatting %}
+    {% include 'main/includes/code-formatting.template.html' %}
+{% endblock %}

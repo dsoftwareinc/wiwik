@@ -1,0 +1,20 @@
+{% load wiwik_template_tags %}
+{% if related %}
+    <h3>Related posts</h3>
+    <div style="font-size: 0.8em;">
+        {% for item in related %}
+            <a href="{% url 'forum:thread' item.pk %}">
+                <div class="row mb-1">
+                    <div class="col col-2">
+                        <div class="related-votes {% if item.has_accepted_answer %}has-accepted-answer{% elif item.num_answers > 0 %}votes-frame{% endif %}">
+                            {{ item.votes }}
+                        </div>
+                    </div>
+                    <div class="col col-10">
+                        {{ item.title | markdownify }}
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}

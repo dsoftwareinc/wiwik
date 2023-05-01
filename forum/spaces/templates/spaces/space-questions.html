@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load spaces_tags %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12 col-lg-9">
+            <div style="display: flex;justify-content: space-between;" class="p-2">
+                <h2>Posts in space <b>{{ space.name }}</b></h2>
+                 <div>
+                    <button onclick="location.href='{% url 'articles:create' %}'"
+                            class="btn btn-primary btn-sm"
+                            type="submit">
+                        Propose article
+                    </button>
+                    <button onclick="location.href='{% url 'forum:ask' %}'"
+                            class="btn btn-primary btn-sm"
+                            type="submit">
+                        Ask Question
+                    </button>
+                </div>
+            </div>
+            <div id="space-info" class="p-2">
+                <div class="pull-right">
+                    {% if space|ismember:user %}
+                        <a href="{% url 'spaces:leave' space.id %}"
+                           class="btn btn-sm btn-outline-danger">
+                            <span class="material-icons">visibility_off</span>
+                            Leave space
+                        </a>
+                    {% else %}
+                        <a href="{% url 'spaces:join' space.id %}"
+                           class="btn btn-sm btn-outline-primary">
+                            <span class="material-icons">visibility</span>
+                            Join space
+                        </a>
+                    {% endif %}
+                    {% if can_edit_space %}
+                        <a href="{% url 'spaces:detail' space.id %}"
+                           class="btn btn-sm btn-outline-primary">
+                            <span class="material-icons">edit_note</span>
+                            View/Edit space info
+                        </a>
+                    {% endif %}
+                </div>
+                <div>
+                    {% for property in space.properties %}
+                        <a class="btn btn-space-property"
+                           href="{% url 'spaces:property-info' property.name %}">
+                            {{ property.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+                <div>
+                    Has <b>{{ space.spacemember_set.count }}</b> members
+                    and <b>{{ space|questions_count }}</b> questions.
+                </div>
+            </div>
+
+
+            <!-- Filter -->
+            {% if tab %}
+                <div class="row">
+                    <nav>
+                        <ul class="pagination pagination-md">
+                            <li class="page-item {% if tab == 'latest' %}active{% endif %}">
+                                <a class="page-link" href="?tab=latest">Latest</a>
+                            </li>
+                            <li class="page-item {% if tab == 'mostviewed' %}active{% endif %}">
+                                <a class="page-link" href="?tab=mostviewed">Most viewed</a>
+                            </li>
+                            <li class="page-item {% if tab == 'unanswered' %}active{% endif %}">
+                                <a class="page-link" href="?tab=unanswered">Unanswered</a>
+                            </li>
+                            <li class="page-item {% if tab == 'unresolved' %}active{% endif %}">
+                                <a class="page-link" href="?tab=unresolved">Not resolved</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            {% endif %}
+
+            <div>
+                <h3>Posts</h3>
+                <div>
+                    {% for q in questions_list %}
+                        {% include "main/includes/questions.single-question.template.html" with q=q last=forloop.last %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="pull-right">
+                {% include 'main/includes/questions.pagination.template.html' with items_list=questions_list %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load spaces_tags %}
+{% load wiwik_template_tags %}
+{% load humanize %}
+{% block content %}
+    <div class="row">
+        <div class="col-xl-8 col-lg-9">
+            <h1>{{ property.name }}</h1>
+            <hr/>
+            <p>
+                Created
+                {% if property.author %}
+                    by {{ property.author.display_name }}
+                {% endif %}
+                at {{ property.created_at | absolute_date }}
+            </p>
+            <p>Exist in {{ spaces_count | intcomma }} spaces </p>
+            <hr/>
+            <div class="row">
+                {% for item in spaces %}
+                    <div class="col-6 mb-2">
+                        <a href="{% url 'spaces:detail' item.id %}">
+                            <h5>{{ item.name }}</h5>
+                        </a>
+                        <p>
+                            {% if item.start_date and item.end_date %}
+                                Active between <b>{{ item.start_date | absolute_date }}-
+                                {{ item.end_date | absolute_date }}</b>.
+                            {% elif item.start_date %}
+                                Started <b>{{ item.start_date | timesince }}</b> ago.
+                            {% else %}
+                                Ongoing space.
+                            {% endif %}
+                            <br/>
+                            Has <b>{{ item.spacemember_set.count }}</b> members
+                            and <b>{{ item|questions_count }}</b> questions.
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

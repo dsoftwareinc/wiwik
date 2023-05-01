@@ -1,0 +1,80 @@
+{% load wiwik_template_tags %}
+{% load humanize %}
+<div class="container mt-3 mb-3">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card profile-card">
+                <div class="profile-card-title">REPUTATION</div>
+                <div class="card-body">
+                    <h2>{{ seeuser.reputation_score |intcomma }}</h2>
+
+                    {% for follow in user_top_tags %}
+                        <div class="mb-1">
+                            <a class="btn btn-question-tag"
+                               href="{% url 'forum:tag' follow.tag.tag_word %}">
+                                {{ follow.tag.tag_word }}
+                            </a>
+                            <span class="text-muted text-small">
+                                    {{ follow.reputation }} pts,
+                                    {{ follow.questions_by_user }} questions,
+                                    {{ follow.answers_by_user }} answers
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card profile-card">
+                <div class="profile-card-title">BADGES</div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col col-3 mx-1 badge-gold">
+                            <span class="material-icons text-gold">verified</span>
+                            {{ seeuser.gold_badges | intcomma }}
+                        </div>
+                        <div class="col col-3 mx-2 badge-silver">
+                            <span class="material-icons text-silver">verified</span>
+                            {{ seeuser.silver_badges | intcomma }}
+                        </div>
+                        <div class="col col-3 mx-1 badge-bronze">
+                            <span class="material-icons text-bronze">verified</span>
+                            {{ seeuser.bronze_badges | intcomma }}
+                        </div>
+                    </div>
+                    {% if last_badge %}
+                        <div class="mt-3">
+                            <small>Newest</small>
+                            <br/>
+                            <a class="badge-btn"
+                               href="{% url 'badges:detail' last_badge.badge.pk %}"
+                               title="{{ last_badge.badge.description }}">
+                                <i class="material-icons text-{{ last_badge.badge.type }} icon-small">verified</i>
+                                {{ last_badge.badge.name }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card profile-card">
+                <div class="profile-card-title">IMPACT</div>
+                <div class="p-2">
+                    <h4 class="m-0">{{ seeuser.people_reached | humanize_number }} </h4>
+                    <small>people reached</small>
+                </div>
+                <div class="row p-2">
+                    <div class="col-6">
+                        <h4 class="m-0">{{ seeuser.posts_edited | humanize_number }} </h4>
+                        <small>posts edited</small>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="m-0">{{ seeuser.votes | humanize_number }} </h4>
+                        <small>votes casted</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

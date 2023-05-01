@@ -1,0 +1,33 @@
+{% load wiwik_template_tags %}
+<div id="votes" aria-labelledby="votes-tab">
+    <h4>Votes</h4>
+    <hr/>
+    {% regroup user_votes by created_at.year as votes %}
+    {% for year in votes %}
+        <div>
+            <h5>{{ year.grouper }} </h5>
+            {% for item in year.list %}
+                <div class="row p-1">
+                    <div class="col-sm-1">
+                        {{ item.created_at | date:"M d" }}
+                    </div>
+
+                    <div class="col-sm-1">
+                        {% if item.reputation_change > 0 %}
+                            <span style="color:green;">upvote</span>
+                        {% else %}
+                            <span style="color:red;">downvote</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <a href="{% url 'forum:thread' item.question_id %}">
+                            {{ item.question.title }}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% empty %}
+        No votes
+    {% endfor %}
+</div>

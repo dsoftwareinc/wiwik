@@ -1,0 +1,19 @@
+{# Should be used with report.html base #}
+<table width="100%" align="left" border="0" cellpadding="0" cellspacing="0" role="presentation">
+    <tr>
+        <td style="font-size: 15px; line-height: 17px; color: #3C3F44; text-align: left;">
+            <h4>
+                Hi, {{ user.display_name }}, you haven't visited wiwik much since the beginning of the month.
+            </h4>
+            <p>
+                Please visit and moderate content created more often.
+            </p>
+            <p style="padding-top: 10px;">
+                You have visited {{ num_visits }} days since the beginning of the month.
+                <br/>
+                wiwik expect moderators to be active at least {{ min_days_required }} days per month.
+                You can still maintain your moderator status if you visit more until the end of the month.
+            </p>
+        </td>
+    </tr>
+</table>

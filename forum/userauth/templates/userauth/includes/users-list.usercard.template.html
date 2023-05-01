@@ -1,0 +1,34 @@
+{% load wiwik_template_tags %}
+{% load userauth_tags %}
+<div>
+    <div class="user-list-card">
+        <div style="display: flex;flex-direction: row;">
+            <div class="p-1">
+                <img src="{{ u.profile_pic.url }}"
+                     onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"
+                     class="user-card-img" alt="{{ u.display_name }}">
+            </div>
+            <div class="p-1">
+                <p>
+                    <a href="{% url 'userauth:profile' u.username 'questions' %}"
+                       style="font-size:15px;">
+                        {{ u.display_name }}
+                        {% if u.is_moderator %}
+                            <span class="btn btn-moderator-tag">Moderator</span>
+                        {% endif %}
+                    </a>
+                    <br/>
+                    {{ u.reputation }}
+                    {% include 'includes/user-badges.html' with user=u %}
+                    <br/>
+                    <small>
+                        {% for tag_word in u|user_active_tags %}
+                            <a href="{% url 'forum:tag' tag_word %}">
+                                {{ tag_word }}</a>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

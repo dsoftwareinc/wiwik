@@ -1,0 +1,26 @@
+{% if not q.post_accepts_answers %}
+
+{% elif not q.is_accepting_answers %}
+    <div class="m-2">
+        Question not accepting new answers
+    </div>
+{% elif q.user_answered %}
+    <div class="m-2">
+        You already answered the question, please edit previous answer
+    </div>
+{% elif num_answers <  max_answers %}
+    <div class="m-2" style="overflow-x: scroll;">
+        <h3><strong>Your Answer</strong></h3>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create_answer"/>
+            <textarea id="editor1" name="editor1"></textarea>
+            {% include 'main/includes/easymde.template.html' with msg="Type your answer in markdown..." el="editor1" %}
+            <button class="btn btn-primary mt-1" type="submit">Post Answer</button>
+        </form>
+    </div>
+{% else %}
+    <div class="m-2">
+        Too many answers, please edit previous answers
+    </div>
+{% endif %}

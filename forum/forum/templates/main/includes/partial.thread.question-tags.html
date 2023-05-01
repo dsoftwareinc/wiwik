@@ -1,0 +1,5 @@
+{% load static %}
+<h3>Tags</h3>
+{% for t in q.tags.all %}
+    {% include 'main/includes/tag-popover.template.html' with q_id=q.id t=t %}
+{% endfor %}

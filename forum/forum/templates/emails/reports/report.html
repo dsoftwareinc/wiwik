@@ -1,0 +1,28 @@
+{% extends 'emails/base.html' %}
+<!-- Visually Hidden Preview Text : BEGIN -->
+<div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
+    {{ title }}
+</div>
+<!-- Visually Hidden Preview Text : END -->
+{% block content %}
+    {% if title %}
+        <h1 style="font-weight: bold; font-size: 20px; line-height: 20px; color: #0C0D0E; margin: 0 0 15px 0;">
+            {{ title }}
+        </h1>
+    {% endif %}
+    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="max-width: 680px; width:100%">
+        {% for report in reports %}
+            {% if report %}
+                <tr>
+                    <td style="padding: 30px 30px 10px; background-color: #ffffff; text-align: left;"
+                        class="sm-px sm-pt bar">
+                        {{ report }}
+                    </td>
+                </tr>
+                <tr>
+                    <td aria-hidden="true" height="30" style="font-size: 0; line-height: 0;">&nbsp;</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% load wiwik_template_tags compress static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="color-scheme" content="light dark">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ favicon_link_light }}" media="(prefers-color-scheme: light)">
+    <link rel="icon" type="image/png" href="{{ favicon_link_dark }}" media="(prefers-color-scheme: dark)">
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% tool_url 'easymde-js' %}"></script>
+    <title>{{ title|default:'What I wish I knew' }}</title>
+    <link rel="stylesheet" href="{% tool_url 'easymde-css' %}">
+    <link rel="stylesheet" href="{% tool_url 'bootstrap-css' %}">
+    {% compress css %}
+        <link rel="stylesheet" href="{% static 'css/light.css' %}" media="(prefers-color-scheme: light)">
+        <link rel="stylesheet" href="{% static 'css/dark.css' %}" media="(prefers-color-scheme: dark)">
+        <link rel="stylesheet" href="{% static 'css/highlight.css' %}">
+        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% endcompress %}
+    {% compress js %}
+        <script src="{% static 'js/main.js' %}"></script>
+    {% endcompress %}
+    <link rel="stylesheet" href="{% tool_url 'font-awesome-css' %}">
+    {% block extrastyle %}{% endblock %}
+    {% block extrahead %}{% endblock %}
+</head>
+
+<body>
+<!-- navbar -->
+<nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light pt-0 pb-1">
+    <div class="container-xxl">
+        <a class="navbar-brand" href="{% url 'forum:list' %}">wiwik</a>
+        <div class="navbar-nav">
+            <form method="get" class="d-flex" autocomplete="off"
+                  action="{% url 'forum:list' %}">
+                <input class="form-control" type="search"
+                       data-bs-toggle="popover"
+                       data-bs-trigger="focus"
+                       data-bs-placement="bottom"
+                       data-hide=0
+                       data-content-id="search-helper"
+                       placeholder="What I wish I knew"
+                       aria-label="What I wish I knew" name="q">
+                <button class="btn btn-sm text-muted" type="submit">
+                    <i class="material-icons">search</i>
+                </button>
+            </form>
+        </div>
+        <div class="navbar-expand">
+            <div class="navbar-nav">
+                {% include 'includes/user.navbar.html' %}
+                <div class="nav-item nav-link dropdown">
+                    <a class="menu-icon-link" href="#"
+                       role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        <span id="darkModeOn" class="material-icons">light_mode</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<div id="search-helper" style="display: none;">
+    <div class="search-hints" role="tooltip">
+        <div class="d-flex">
+            <div class="flex-item">
+                <div class="mb-1">
+                    <span class="text-black">[tag]</span>
+                    <span class="text-muted">search within a tag</span>
+                </div>
+                <div class="mb-1">
+                    <span class="text-black">user:1234</span>
+                    <span class="text-muted">search by author</span>
+                </div>
+                <div class="mb-1">
+                    <span class="text-black">"words here"</span>
+                    <span class="text-muted">exact phrase</span>
+                </div>
+            </div>
+            <div class="flex-item">
+                <div class="mb-1">
+                    <span class="text-black">answers:0</span>
+                    <span class="text-muted">unanswered questions</span>
+                </div>
+                <div class="mb-1">
+                    <span class="text-black">score:3</span>
+                    <span class="text-muted">posts with a 3+ score</span>
+                </div>
+                <div class="mb-1">
+                    <span class="text-black">resolved:yes</span>
+                    <span class="text-muted">search within status</span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <a class="btn btn-sm btn-outline-dark" href="{% url 'forum:ask' %}">
+                Ask a question
+            </a>
+        </div>
+    </div>
+</div>
+
+
+{% include 'userauth/includes/messages.html' %}
+<div class="container-xxl">
+    <div class="row">
+        {% if request.user.is_authenticated %}
+            <div class="d-none d-md-block col left-sidebar">
+                {% include 'includes/base.menu.html' %}
+            </div>
+        {% endif %}
+        <div class="col" style="min-height: 90%;">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <span class="text-muted">
+        Copyright (c) 2021 D Software Inc.
+        <small>
+            To report issues,
+            <a class="text-muted" target="_blank" href="https://github.com/dsoftwareinc/wiwik/issues/new">
+                click here
+            </a>
+        </small>
+    </span>
+</footer>
+<script src="{% tool_url 'bootstrap-bundle-js' %}"></script>
+{% compress js %}
+    <script src="{% static 'js/end.js' %}"></script>
+{% endcompress %}
+{% block code_formatting %}
+{% endblock %}
+{% include 'includes/base.google-analytics.html' %}
+<script src="{% static 'js/htmx.min.js' %}" defer></script>
+</body>
+</html>

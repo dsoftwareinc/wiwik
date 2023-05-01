@@ -1,0 +1,313 @@
+{% load compress %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="color-scheme" content="light dark">
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self' https://www.google-analytics.com;script-src https://www.googletagmanager.com/gtag/js 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ favicon_link_light }}" media="(prefers-color-scheme: light)">
+    <link rel="icon" type="image/png" href="{{ favicon_link_dark }}" media="(prefers-color-scheme: dark)">
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <title>wiwik (What I wish I knew)</title>
+    {% compress js %}
+        <script src="{% static 'js/main.js' %}"></script>
+    {% endcompress %}
+    <link rel="stylesheet" href="{% tool_url 'bootstrap-css' %}">
+    <link rel="stylesheet" href="{% tool_url 'font-awesome-css' %}">
+    {% compress css %}
+        <link rel="stylesheet" href="{% static 'css/landing-page.css' %}">
+    {% endcompress %}
+</head>
+
+<body>
+<!-- Navigation-->
+<nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+        <a class="navbar-brand" href="#!">
+            <img src="{% static 'logos/logo-wide-light.png' %}" style="height: 50px;"/>
+        </a>
+        <a class="btn btn-primary" href="/">Demo instance</a>
+    </div>
+</nav>
+
+<header class="masthead" id="signup">
+    <div class="container position-relative">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="text-center text-white">
+                    <blockquote class="blockquote">
+                        There is no such thing as a "quick question".
+                    </blockquote>
+                    <blockquote class="blockquote">
+                        It is the third time I answered this week.
+                    </blockquote>
+                    <blockquote class="blockquote">
+                        The documentation is out-of-date.
+                    </blockquote>
+                    <blockquote class="blockquote">
+                        The context-switch is driving me crazy.
+                    </blockquote>
+                    <p class="blockquote-footer">Developers everywhere</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center text-white">
+                    <h1>wiwik</h1>
+                    <p class="text-muted">
+                        The knowledge management system technical people want
+                    </p>
+                    <h5>
+                        Fill this form to learn more about wiwik.
+                    </h5>
+                    <form class="form-subscribe" id="contactForm" method="POST">
+                        {% csrf_token %}
+                        <input class="form-control  mb-3"
+                               id="emailAddress"
+                               name="email"
+                               type="email"
+                               placeholder="Email Address" data-sb-validations="required,email"/>
+                        <textarea
+                                class="form-control form-control-sm mb-3"
+                                id="message"
+                                name="message"
+                                type="text"
+                                placeholder="Tell us about your company and what would you like to see"
+                                data-sb-validations="required"></textarea>
+
+                        <div class="invalid-feedback text-white"
+                             data-sb-feedback="emailAddress:required">
+                            Email Address is required.
+                        </div>
+                        <div class="invalid-feedback text-white"
+                             data-sb-feedback="emailAddress:email">
+                            Email Address Email is not valid.
+                        </div>
+                        <div class="invalid-feedback text-white"
+                             data-sb-feedback="message:required">
+                            Tell us a bit why you want to connect
+                        </div>
+                        <button class="btn btn-primary btn-lg" id="submitButton" type="submit">
+                            Submit
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Icons Grid-->
+<section class="features-icons bg-light text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                    <div class="features-icons-icon d-flex">
+                        <i class="fa fa-code m-auto text-primary"></i>
+                    </div>
+                    <h3>For technical staff</h3>
+                    <p class="lead mb-2">
+                        Prevent the interruptions that prevent focused work.
+                    </p>
+                    <p class="lead mb-2">
+                        Easy to search and find concise answers without going through long
+                        out-of-date documentation.
+                    </p>
+                    <p class="lead mb-2">
+                        Recognition for sharing knowledge.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                    <div class="features-icons-icon d-flex">
+                        <i class="fa fa-briefcase m-auto text-primary"></i>
+                    </div>
+                    <h3>For managers</h3>
+                    <p class="lead mb-2">
+                        Easily identify gaps in documentation and areas with significant tech-debt.
+                    </p>
+                    <p class="lead mb-2">
+                        Make the onboarding process smooth for new employees.
+                    </p>
+                    <p class="lead mb-2">
+                        Know who are the experts in different areas.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="features-icons-item mx-auto mb-0 mb-lg-3">
+                    <div class="features-icons-icon d-flex">
+                        <i class="fa fa-building m-auto text-primary"></i></div>
+                    <h3>More</h3>
+                    <p class="lead mb-2">
+                        Deployed on your secure company servers.
+                    </p>
+                    <p class="lead mb-2">
+                        Integrate with various 3rd parties (slack, google auth, okta, etc.)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Image Showcases-->
+<section class="showcase">
+    <div class="container-xl p-0">
+        <div class="row g-0">
+            <div class="col-lg-6 order-lg-1 text-white showcase-img"
+                 style="background-image: url({% static 'snapshots/wiwik-ask-question.jpg' %})"></div>
+            <div class="col-lg-6 order-lg-2 my-auto showcase-text">
+                <h2>Create/edit a post using markdown</h2>
+                <p class="lead mb-2">
+                    Support for markdown, KaTeX, mermaidjs.
+                </p>
+                <p class="lead mb-2">
+                    Invite team members to answer your question.
+                </p>
+                <p class="lead mb-2">
+                    Or create a question and answer, instead of answering the same
+                    question many times to multiple users.
+                </p>
+            </div>
+        </div>
+        <div class="row g-0">
+            <div class="col-lg-6 order-lg-2 text-white showcase-img"
+                 style="background-image: url({% static 'snapshots/wiwik-home-short.jpg' %})"></div>
+            <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+                <h2>Home view</h2>
+                <p class="lead mb-2">
+                    View list of the latest posts for tags you are following.
+                </p>
+                <p class="lead mb-2">
+                    Search that works!
+                </p>
+                <p class="lead mb-2">
+                    Pre-set filters, view by specific tags questions
+                </p>
+            </div>
+        </div>
+        <div class="row g-0">
+            <div class="col-lg-6 text-white showcase-img"
+                 style="background-image: url({% static 'snapshots/wiwik-thread.jpg' %})"></div>
+            <div class="col-lg-6 my-auto showcase-text">
+                <h2>Thread view</h2>
+                <p class="lead mb-2">
+                    Write your posts in markdown and view them formatted in a clean,
+                    minimalistic design.
+                </p>
+                <p class="lead mb-2">
+                    See engagement of post, how many votes, views, last interaction, etc.
+                </p>
+                <p class="lead mb-2">
+                    View related posts.
+                </p>
+                <p class="lead mb-2">
+                    Support for moderation, download entire thread as markdown, and more.
+                </p>
+            </div>
+        </div>
+        <div class="row g-0">
+            <div class="col-lg-6 order-lg-2 text-white showcase-img"
+                 style="background-image: url({% static 'snapshots/wiwik-tags.jpg' %})"></div>
+            <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+                <h2>Tags view</h2>
+                <p class="lead mb-2">
+                    What tags have the most engagement in the platform?
+                </p>
+                <p class="lead mb-2">
+                    Identify experts on each areas.
+                </p>
+            </div>
+        </div>
+        <div class="row g-0">
+            <div class="col-lg-6 order-lg-1 text-white showcase-img"
+                 style="background-image: url({% static 'snapshots/wiwik-tag-info.jpg' %})"></div>
+            <div class="col-lg-6 order-lg-2 my-auto showcase-text">
+                <h2>Single tag view</h2>
+                <p class="lead mb-2">
+                    View/edit tag info.
+                </p>
+                <p class="lead mb-2">
+                    See related tags.
+                </p>
+            </div>
+        </div>
+        <div class="row g-0">
+            <div class="col-lg-6 order-lg-2 text-white showcase-img"
+                 style="background-image: url({% static 'snapshots/wiwik-users.jpg' %})"></div>
+            <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+                <h2>Users view</h2>
+                <p class="lead mb-2">
+                    View list of active users with their areas of expertise.
+                </p>
+            </div>
+        </div>
+        <div class="row g-0">
+            <div class="col-lg-6 order-lg-1 text-white showcase-img"
+                 style="background-image: url({% static 'snapshots/wiwik-profile.jpg' %})"></div>
+            <div class="col-lg-6 order-lg-2 my-auto showcase-text">
+                <h2>Profile view</h2>
+                <p class="lead mb-2">
+                    View all user engagement in the platform.
+                </p>
+                <p>
+                    Edit your own profile.
+                </p>
+            </div>
+        </div>
+        <div class="row g-0">
+            <div class="col-lg-6 order-lg-2 text-white showcase-img"
+                 style="background-image: url({% static 'snapshots/wiwik-badges.jpg' %})"></div>
+            <div class="col-lg-6 order-lg-1 my-auto showcase-text">
+                <h2>Gamification</h2>
+                <p class="lead mb-2">
+                    Encourage people to use the platform through different badges.
+                </p>
+                <p>
+                    Create new badges based on criteria.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Footer-->
+<footer class="footer bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 h-100 text-center text-lg-start my-auto">
+                <ul class="list-inline mb-2">
+                    <li class="list-inline-item"><a
+                            href="https://www.linkedin.com/in/daniel-moran-8a096a15/">LinkedIn</a></li>
+                    <li class="list-inline-item">⋅</li>
+                    <li class="list-inline-item"><a href="#contactForm">Contact</a></li>
+                </ul>
+                <span class="text-muted">
+                    Copyright (c) 2021-2023 D Software Inc.
+                    <small>
+                        To report issues,
+                        <a class="text-muted" target="_blank" href="https://github.com/dsoftwareinc/wiwik/issues/new">
+                            click here
+                        </a>
+                    </small>
+                </span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<script src="{% tool_url 'bootstrap-bundle-js' %}"></script>
+{% include 'includes/base.google-analytics.html' %}
+{% compress js %}
+    <script src="{% static 'js/end.js' %}"></script>
+{% endcompress %}
+</body>
+</html>

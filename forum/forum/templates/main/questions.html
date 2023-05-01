@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12 col-lg-9">
+            <div style="display: flex;justify-content: space-between;" class="p-2">
+                <h2><b>{{ header }}</b></h2>
+                <div>
+                    <button onclick="location.href='{% url 'articles:create' %}'"
+                            class="btn btn-primary btn-sm"
+                            type="submit">
+                        Propose article
+                    </button>
+                    <button onclick="location.href='{% url 'forum:ask' %}'"
+                            class="btn btn-primary btn-sm"
+                            type="submit">
+                        Ask Question
+                    </button>
+                </div>
+            </div>
+            {% if tag %}
+                {% include 'main/includes/questions.tag.template.html' with tags_watched=tags_watched can_edit_tag=can_edit_tag %}
+            {% endif %}
+
+            <!-- Filter -->
+            {% if tab %}
+                <div class="row">
+                    <nav>
+                        <ul class="pagination pagination-md">
+                            <li class="page-item {% if tab == 'latest' %}active{% endif %}">
+                                <a class="page-link" href="?tab=latest">Latest</a>
+                            </li>
+                            <li class="page-item {% if tab == 'mostviewed' %}active{% endif %}">
+                                <a class="page-link" href="?tab=mostviewed">Most viewed</a>
+                            </li>
+                            <li class="page-item {% if tab == 'unanswered' %}active{% endif %}">
+                                <a class="page-link" href="?tab=unanswered">Unanswered</a>
+                            </li>
+                            <li class="page-item {% if tab == 'unresolved' %}active{% endif %}">
+                                <a class="page-link" href="?tab=unresolved">Not resolved</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            {% endif %}
+            <div hx-get="{% url 'spaces:user-spaces-questions' %}?q={{ query }}&tag={{ tag.tag_word }}"
+                 hx-trigger="load" hx-swap="outerHTML"></div>
+            <div>
+                {% if query %}
+                    <h3>General search results for <b>"{{ query }}"</b></h3>
+                {% endif %}
+                <div>
+                    {% for q in all_questions %}
+                        {% if q.is_article %}
+                            {% include "articles/article-summary.partial.html" with q=q last=forloop.last %}
+                        {% elif q.type == 'q' %}
+                            {% include "main/includes/questions.single-question.template.html" with q=q last=forloop.last %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="pull-right">
+                {% include 'main/includes/questions.pagination.template.html' with items_list=all_questions %}
+            </div>
+        </div>
+        <!-- todo right side content -->
+        <div class="col-lg-3 col-sm-0 p-3">
+            {% include 'main/includes/questions.watched-tags.template.html' %}
+        </div>
+    </div>
+{% endblock %}
+

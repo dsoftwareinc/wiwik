@@ -1,0 +1,29 @@
+{% load userauth_tags %}
+<div>
+    <h4>Bagdes</h4>
+    <hr/>
+    <div>
+        <div class="row p-1">
+            {% for item in items %}
+                <div class="col col-md-3 mb-2">
+                    <a class="badge-btn"
+                       href="{% url 'badges:detail' item.pk %}"
+                       title="{{ item.description }}">
+                        <i class="material-icons text-{{ item.type }} icon-small">verified</i>
+                        {{ item.name }}
+                    </a>
+                    {% if item.count > 1 %}
+                        <small class="text-muted">
+                            x {{ item.count }}
+                        </small>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <div class="col">
+                    No badges, check out the <a href="{% url 'badges:list' %}">list</a>
+                    of available badges and how to get them
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

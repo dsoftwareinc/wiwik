@@ -1,0 +1,8 @@
+{% load userauth_tags %}
+<a class="profile-tab-link nav-item nav-link {% if selected == tab %}active{% endif %}"
+   id="{{ tab }}-tab"
+   href="{% url 'userauth:profile' seeuser.username tab %}"
+   aria-controls="{{ tab }}"
+   aria-selected="{% if selected == tab %}true{% else %}false{% endif %}">
+    {{ title }} <small>({{ counters|get_val:tab }})</small>
+</a>

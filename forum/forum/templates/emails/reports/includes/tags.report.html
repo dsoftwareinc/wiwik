@@ -1,0 +1,64 @@
+{% load wiwik_template_tags %}
+
+{% if tags %}
+    <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0" role="presentation">
+        <tr>
+            <td style="font-size: 15px; line-height: 140%; color: #3C3F44; text-align: left;">
+                <h4 style="margin: 0 0 15px;">{{ tags | length }} tags active</h4>
+            </td>
+        </tr>
+        {% for tag in tags %}
+            <tr>
+                <td style="padding-bottom: 10px; padding-top: 5px; border-top: 1px solid #D6D8DB;" class="sm-pt">
+                    <table cellspacing="0" cellpadding="0" border="0" width="100%" role="presentation">
+                        <tr>
+                            <td style="font-size: 12px;">
+                                <a href="{{ basesite }}{% url 'forum:tag' tag.tag_word %}"
+                                   style="display: inline-block; border: 5px solid #E1ECF4; margin: 0 1px 4px 0; background: #E1ECF4; border-radius: 3px; color: #39739D; font-size: 12px; line-height: 100%; text-decoration: none; white-space: nowrap;"
+                                   class="s-tag">{{ tag.tag_word }}</a>
+                                {{ tag.num_questions }} questions, {{ tag.number_followers }} followers
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-top: 5px; padding-bottom:5px;" class="sm-pt">
+                                <table cellpadding="0" cellspacing="0" border="0" align="left">
+                                    {% for follow in tag|tag_experts %}
+                                        <tr style="padding-bottom: 3px;">
+                                            <td style="padding-right: 5px; vertical-align: top;">
+                                                <img src="{{ basesite }}{{ follow.user.profile_pic.url }}"
+                                                     alt="" height="16" width="16" align="left"
+                                                     border="0" style="display: block;">
+                                            </td>
+                                            <td style="vertical-align: top; padding-top: 3px; font-size: 12px; line-height: 16px; color: #828282">
+                                                {{ follow.user.display_name }}
+                                                ({{ follow.reputation }} pts)
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td style="vertical-align: top; padding-top: 3px; font-size: 12px; line-height: 12px; color: #828282">
+                                                No experts for tag
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </td>
+                        </tr>
+                        {% if tag.description %}
+                            <tr>
+                                <td style="padding-top: 5px; font-size: 13px; color: #54595f;max-width: 500px;max-height: 200px;">
+                                    {{ tag.description }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                </td>
+            </tr>
+
+        {% endfor %}
+    </table>
+
+{% else %}
+    <p>No new tags were used from {{ fromdate | date:'Y-m-d' }}</p>
+{% endif %}
+

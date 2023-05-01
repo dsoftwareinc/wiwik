@@ -1,0 +1,28 @@
+<table width="100%" align="left" border="0" cellpadding="0" cellspacing="0" role="presentation">
+    {% if questions %}
+        <tr>
+            <td style="font-size: 15px; line-height: 140%; color: #3C3F44; text-align: left;">
+                <h4 style="margin: 0 0 10px;">
+                    {{ questions | length }} old questions are still not answered.
+                </h4>
+                <h5 style="margin: 0 0 15px;">
+                    An answer that gets accepted for an old question that was not
+                    previously answered gets 100 reputation points (instead of usual 15).
+                </h5>
+            </td>
+        </tr>
+        {% for q in questions %}
+            {% include 'emails/reports/includes/report.question.template.html' with q=q %}
+        {% endfor %}
+    {% else %}
+        <!-- No questions to view-->
+        <tr>
+            <td>
+                <h4 style="margin: 0 0 15px;">
+                    No old question left unanswered.
+                </h4>
+            </td>
+        </tr>
+    {% endif %}
+</table>
+

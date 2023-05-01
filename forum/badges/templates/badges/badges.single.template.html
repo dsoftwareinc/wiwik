@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+    <div class="row">
+        <div class="col-xl-8 col-lg-9">
+            <h1>{{ badge.name }}</h1>
+            <hr/>
+            <p>
+                <a class="badge-btn"
+                   href="{% url 'badges:detail' badge.pk %}"
+                   title="{{ badge.description }}">
+                    <span class="material-icons text-{{ badge.type }} icon-small">verified</span>
+                    {{ badge.name }}
+                </a>
+                {{ badge.description }}
+            </p>
+            <p>Awarded {{ badge.count | intcomma }} times </p>
+            <hr/>
+            <div class="row">
+                {% for item in items %}
+                    <div class="col-6 mb-2">
+                        {% include 'badges/includes/user_card.template.html' with item=item %}
+                    </div>
+                {% endfor %}
+            </div>
+            {% include 'main/includes/questions.pagination.template.html' with items_list=items %}
+        </div>
+    </div>
+{% endblock %}

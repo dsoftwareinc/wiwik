@@ -1,0 +1,26 @@
+{% load wiwik_template_tags %}
+<!-- question title -->
+<div class="row mt-3" id="question_{{ q.pk }}">
+    {% if q.is_article %}
+        <div class="text-small">
+            <span class="material-icons">article</span>
+            Knowledge article
+        </div>
+    {% endif %}
+    <div class="col-9">
+        <h2>{{ q.title | markdownify }}</h2>
+    </div>
+    <div class="col-3 p-2">
+        <button onclick="location.href='{% url 'articles:create' %}'"
+                class="btn btn-primary btn-sm m-1"
+                type="submit">
+            Propose article
+        </button>
+        <button onclick="location.href='{% url 'forum:ask' %}'"
+                class="btn btn-primary btn-sm m-1"
+                type="submit">
+            Ask Question
+        </button>
+    </div>
+</div>
+<hr/>

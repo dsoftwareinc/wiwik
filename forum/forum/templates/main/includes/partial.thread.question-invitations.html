@@ -1,0 +1,17 @@
+<div style="height: 30px;">
+    <h3>
+        People asked
+        <a class="btn btn-sm btn-outline-info mb-1 pull-right"
+           id="invite-to-question"
+           data-bs-toggle="modal"
+           data-bs-target="#invite-to-question-modal">
+            Invite
+        </a>
+    </h3>
+</div>
+{% for invitation in latest_invitations %}
+    <a class="btn btn-question-invitee"
+       href="{% url 'userauth:profile' invitation.invitee.username 'questions' %}">
+        {{ invitation.invitee.display_name }}
+    </a>
+{% endfor %}

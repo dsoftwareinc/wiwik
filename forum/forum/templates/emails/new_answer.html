@@ -1,0 +1,77 @@
+{% extends 'emails/base.html' %}
+{% load wiwik_template_tags %}
+<!-- Visually Hidden Preview Text : BEGIN -->
+<div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
+    New answer by {{ a.author.display_name }} to question
+</div>
+<!-- Visually Hidden Preview Text : END -->
+{% block content %}
+    <h1 style="font-weight: bold; font-size: 20px; line-height: 20px; color: #0C0D0E; margin: 0 0 15px 0;">
+        New answer by
+        <a href="{{ basesite }}{% url 'userauth:profile' a.author.username 'questions' %}">
+            {{ a.author.display_name }}
+        </a>
+        to question
+
+    </h1>
+    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="max-width: 680px; width:100%">
+        <tr>
+            <td style="padding: 30px 30px 10px; background-color: #ffffff; text-align: left;"
+                class="sm-px sm-pt bar">
+                <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                    <tr>
+                        <td style="font-size: 15px; line-height: 140%; color: #3C3F44; text-align: left;">
+                            <h4 style="margin: 0 0 15px;">
+                                Question
+                            </h4>
+                        </td>
+                    </tr>
+                    {% include 'emails/reports/includes/report.question.template.html' with q=a.question %}
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td aria-hidden="true" height="30" style="font-size: 0; line-height: 0;">&nbsp;</td>
+        </tr>
+
+        <tr>
+            <td style="padding: 30px 30px 10px; background-color: #ffffff; text-align: left;"
+                class="sm-px sm-pt bar">
+                <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                    <tr>
+                        <td style="font-size: 15px; line-height: 140%; color: #3C3F44; text-align: left;">
+                            <h4 style="margin: 0 0 15px;">
+                                <a href="{{ link }}">Answer</a> by
+                                <a href="{{ basesite }}{% url 'userauth:profile' a.author.username 'questions' %}">
+                                    {{ a.author.display_name }}
+                                </a>
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top; width: 20px;">
+                            <table border="0" cellpadding="0" cellspacing="0" role="presentation" align="left">
+                                <tr>
+                                    <td valign="middle" height="19" width="19"
+                                        style="font-size: 13px; line-height: 13px; color: #ffffff; background-color: #EB5757; font-weight: bold; text-align: center; border-radius: 3px;">
+                                        A
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 13px; color: #54595f;max-width: 500px;max-height: 200px;display: block;overflow: auto;">
+                            {{ a.content | markdownify }}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td aria-hidden="true" height="30" style="font-size: 0; line-height: 0;">&nbsp;</td>
+        </tr>
+
+    </table>
+{% endblock %}

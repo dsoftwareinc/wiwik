@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col col-8">
+            <div class="card m-5">
+                <div class="card-header">
+                    <h2>Page not found</h2>
+                </div>
+                <div class="card-body">
+                    <p>We’re sorry, but the requested page could not be found.</p>
+
+                    <p>Browse <a href="{% url 'forum:list' %}">recent questions</a></p>
+
+                    <p>Browse popular <a href="{% url 'tags:list' %}">tags</a></p>
+
+                    <p>If you feel something is missing that should be here, please reach out
+                        <a target="_blank" href="https://github.com/dsoftwareinc/wiwik/issues/new">
+                            here
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+{% endblock %}

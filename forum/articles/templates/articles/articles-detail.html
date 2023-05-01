@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load compress humanize static wiwik_template_tags %}
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% tool_url 'easymde-css' %}">
+{% endblock %}
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% tool_url 'easymde-js' %}"></script>
+    {% compress js %}
+        <script src="{% static 'js/autocomplete.js' %}"></script>
+    {% endcompress %}
+{% endblock %}
+{% block content %}
+    {% include 'main/includes/thread.question-header.template.html' with q=q %}
+    <div class="row">
+        <div class="col-lg-9">
+            <!-- Article body -->
+            <div style="display: flex;flex-direction: row;">
+                <div style="display: flex; flex-direction:column;" class="pt-2">
+                    <div>
+                        <a href="{% url 'forum:upvote' q.pk 'question' q.pk %}">
+                            <span class="material-icons vote-button-icon"
+                                  style="color:{% if q.user_upvoted %}coral{% else %}#555{% endif %};">arrow_drop_up</span>
+                        </a>
+                        <div class="text-center single-question-votes">{{ q.votes | humanize_number }}</div>
+                        <a href="{% url 'forum:downvote' q.pk 'question' q.pk %}">
+                            <span class="material-icons vote-button-icon"
+                                  style="color:{% if q.user_downvoted %}coral{% else %}#555{% endif %};">arrow_drop_down</span>
+                        </a>
+                    </div>
+                    <div style="text-align: center;" class="pt-1 pb-1">
+                        {% if bookmarked %}
+                            <a href="{% url 'forum:unbookmark' q.pk %}">
+                                <span style="color:coral;" class="bookmark-button material-icons">bookmark</span>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'forum:bookmark' q.pk %}">
+                                <span style="color:#babfc3;"
+                                      class="bookmark-button material-icons">bookmark_border</span>
+                            </a>
+                        {% endif %}
+                        {% if  num_bookmarks > 0 %}
+                            <div class="text-center">
+                                {{ num_bookmarks }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- right (question content) -->
+                <div style="width:calc(100% - 20px);overflow-x: unset;padding-left: 10px;padding-right: 10px;">
+
+                    <div class="user-content">
+                        {{ q.content | markdownify }}
+                    </div>
+                    {% include 'main/includes/thread.user_card.template.html' with item=q %}
+
+                    <!-- Questions buttons: Share link, follow/unfollow, Edit, Delete -->
+                    <div style="display: flex;justify-content: flex-start;">
+                        <a class="btn btn-sm text-secondary"
+                           data-bs-container="body"
+                           data-bs-placement="bottom"
+                           data-bs-toggle="popover"
+                           title="Share a link to this question"
+                           data-bs-content="{% share_link q %}">
+                            Share
+                        </a>
+                        {% if show_follow %}
+                            <a class="btn btn-sm text-secondary" href="{% url 'forum:follow' q.pk %}">
+                                Follow
+                            </a>
+                        {% else %}
+                            <a class="btn btn-sm text-secondary" href="{% url 'forum:unfollow' q.pk %}">
+                                Unfollow
+                            </a>
+                        {% endif %}
+                        {% if show_edit_button %}
+                            <a class="btn btn-sm text-secondary" href="{% url 'articles:edit' q.pk %}">
+                                Edit
+                            </a>
+                        {% endif %}
+                        {% if show_delete_q_button %}
+                            <a class="btn btn-sm text-secondary"
+                               href="{% url 'articles:delete' q.pk %}">
+                                Delete
+                            </a>
+                        {% endif %}
+                        <a class="btn btn-sm text-secondary"
+                           href="{% url 'forum:markdown' q.pk %}">
+                            Markdown
+                        </a>
+                        <a class="btn btn-sm text-secondary"
+                           data-bs-toggle="modal"
+                           data-bs-target="#flag-model-modal-question-{{ q.pk }}"
+                           style="cursor: pointer">
+                            {% if user.is_moderator and q.flags.count > 0 %}
+                                <span class="badge bg-danger">{{ q.flags.count }}</span>
+                            {% endif %}
+                            Flag
+                        </a>
+                    </div>
+                    <div hx-get="{% url 'forum:post_comments' 'question' q.id %}"
+                         hx-trigger="load" hx-swap="outerHTML">
+                    </div>
+                    {% include 'main/includes/flag-model-modal.template.html' with q_pk=q.pk model_pk=q.pk model_name='question' model_name_for_user='question' %}
+                </div>
+            </div>
+            <hr/>
+        </div>
+        <div class="col-lg-3"> <!-- Thread sidebar -->
+            <div class="row">
+                <div class="col text-small text-secondary">
+                    <div>
+                        Posted: <span class="text-dark">{{ q.created_at  | timesince }} ago.</span>
+                    </div>
+                    <div>
+                        Viewed: <span class="text-dark">{{ q.views }} times.</span>
+                    </div>
+                    <div>
+                        Last activity: <span class="text-dark">{{ q.last_activity | timesince }} ago.</span>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-2" style="color:#bbbbbb;"/>
+            <div class="row">
+                <div class="col"
+                     hx-get="{% url 'forum:question_tags' q.id %}"
+                     hx-trigger="load delay:50ms" hx-swap="innerHTML">
+                </div>
+            </div>
+            <hr class="my-2" style="color:#bbbbbb;"/>
+            <div hx-get="{% url 'similarity:related' q.id %}"
+                 hx-trigger="load delay:50ms" hx-swap="innerHTML"></div>
+        </div>
+    </div>
+{% endblock %}
+{% block code_formatting %}
+    {% include 'main/includes/code-formatting.template.html' %}
+{% endblock %}

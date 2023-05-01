@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load wiwik_template_tags static %}
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% tool_url 'easymde-css' %}">
+{% endblock %}
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% tool_url 'easymde-js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div hx-get="{% url 'general:update_edit_ping' 'question' question_pk %}"
+         hx-trigger="every 10s">
+    </div>
+    <div class="container">
+        <div class="row">
+
+            <div class="p-2">
+                <h2><strong> Edit question</strong></h2>
+            </div>
+
+            <div class="col-12 col-md-1"></div>
+            <div class="col-12 col-md-8">
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Title</h5>
+                            <p class="card-text">Be specific and imagine you’re asking a question to another person.</p>
+                            <textarea name="title" style="width:100%">{{ title }}</textarea>
+                            <hr class="invis">
+                            <h5 class="card-title">Body</h5>
+                            <p class="card-text">
+                                Include all the information someone would need to answer your
+                                question.
+                            </p>
+                            <textarea id="queseditor" name="queseditor">{{ content }}</textarea>
+                            {% include 'main/includes/easymde.template.html' with msg="Type your question in markdown..." skipautosave=true %}
+
+                            <hr class="invis">
+                            <h5 class="card-title">Tags</h5>
+                            <p class="card-text">Pick maximum 5 tags, prefer existing tags from suggestions</p>
+                            {% include 'main/includes/tags.input.html' %}
+
+                        </div>
+                    </div>
+
+                    <button style="width:100%" class="btn btn-primary mt-2 mb-2" type="submit">
+                        Submit your changes
+                    </button>
+                </form>
+            </div>
+            <div class="col-12 col-md-3">
+                {% include 'main/includes/editquestion.instructions.template.html' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block code_formatting %}
+    {% include 'main/includes/code-formatting.template.html' %}
+{% endblock %}

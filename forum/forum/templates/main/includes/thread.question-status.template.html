@@ -1,0 +1,21 @@
+{% load wiwik_template_tags %}
+<div class="card mb-2">
+    {% if q.status == 'c' %}
+        <div class="card-header">
+            <strong>Closed question</strong>
+        </div>
+        <div class="card-body">
+            This question was closed on {{ q.status_updated_at | absolute_datetime }} and
+            is not accepting new answers.
+        </div>
+    {% elif q.status == 'd' %}
+        <div class="card-header">
+            <strong>Duplicate question</strong>
+        </div>
+        <div class="card-body">
+            This question was marked as duplicate {{ q.status_updated_at | absolute_datetime }}.
+            You can answer the originals at
+            <a href="{{ q.duplicate_question_link }}">{{ q.duplicate_question_link }}</a>
+        </div>
+    {% endif %}
+</div>

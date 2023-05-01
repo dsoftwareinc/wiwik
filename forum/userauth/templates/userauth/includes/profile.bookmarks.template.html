@@ -1,0 +1,31 @@
+{% load userauth_tags %}
+<div>
+    <h4>Bookmarks</h4>
+    <hr>
+    {% regroup bookmarks by created_at.year as rep %}
+    {% for year in rep %}
+        <div>
+            <h5>{{ year.grouper }}</h5>
+            {% for item in year.list %}
+                <div class="row p-1">
+                    <div class="col-md-1">
+                        {{ item.created_at | date:"M d" }}
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'forum:thread' item.question_id %}">
+                                <span class="badge {% class_for_votes item.question.votes %}">
+                                    {{ item.question.votes }}
+                                </span>
+                            {{ item.question.title }}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% empty %}
+        <h4>Bookmarks</h4>
+        <div>
+            No bookmarks. Bookmark some items to view them here.
+        </div>
+    {% endfor %}
+</div>

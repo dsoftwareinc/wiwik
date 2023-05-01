@@ -1,0 +1,49 @@
+# pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U
+# Settings
+Django==4.2
+Pillow==9.5.0 # for ImageField
+django-allauth==0.54.0
+psycopg2-binary==2.9.6
+python-dotenv==1.0.0
+
+# packaging==22.0
+pymdown-extensions==9.11
+pyparsing==3.0.9
+python-dateutil==2.8.2
+sqlparse==0.4.4
+###
+gunicorn==20.1.0
+### Similarity
+nltk==3.8.1
+scikit-learn==1.2.2
+# Tests
+coverage==7.2.4
+django_coverage_plugin==3.0.0
+fakeredis==2.11.2
+beautifulsoup4==4.12.2
+# Local dev
+# db-to-sqlite==1.4
+django-debug-toolbar==4.0.0
+Deprecated==1.2.13
+# Async tasks
+django-rq-scheduler==2023.5.0
+redis==4.5.4
+rq==1.13.0
+# Frontend
+django-compressor==4.3.1 # Frontend Compress CSS+JS
+django-crispy-forms==2.0 # Frontend
+crispy-bootstrap5==0.7
+Markdown==3.4.3
+bleach==6.0.0
+# Integrations
+slack-sdk==3.21.3
+# Django Admin
+django-admin-numeric-filter==0.1.9
+django-admin-rangefilter==0.10.0
+django-model-utils==4.3.1
+# Identify IPs
+django-ipware==5.0.0
+geoip2==4.6.0
+
+# Search
+meilisearch==0.26.0

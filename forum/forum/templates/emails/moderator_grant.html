@@ -1,0 +1,42 @@
+{% extends 'emails/base.html' %}
+<!-- Visually Hidden Preview Text : BEGIN -->
+<div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
+    Congratulations, {{ user.display_name }}, wiwik is granting you moderator rights
+</div>
+<!-- Visually Hidden Preview Text : END -->
+{% block content %}
+    <h2 style="font-weight: bold; font-size: 27px; line-height: 27px; color: #0C0D0E; margin: 0 0 15px 0;">
+        Congratulations, {{ user.display_name }}, wiwik is granting you moderator rights
+    </h2>
+    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="max-width: 680px; width:100%">
+        {% if num_visits > 0 %}
+            <tr>
+                <td style="padding: 30px 30px 10px; background-color: #ffffff; text-align: left;"
+                    class="sm-px sm-pt bar">
+                    In the last month (since {{ last_month| date:"Y-m-d" }}) you have visited {{ num_visits }} days.
+                    Users who use the system more often should have more control over quality of its content.
+                    Therefore, wiwik is granting you moderator rights.
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td style="padding: 30px 30px 10px; background-color: #ffffff; text-align: left;"
+                    class="sm-px sm-pt bar">
+                    wiwik staff granted you moderator privileges.
+                    Use them wisely.
+                </td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td style="padding: 30px 30px 10px; background-color: #ffffff; text-align: left;"
+                class="sm-px sm-pt bar">
+                <h3>What does it mean?</h3>
+                You can now edit other users questions and answers
+                (and also delete, please use with caution).
+                <br/>
+                For every successful edit, you will be given 2 reputation points.
+            </td>
+        </tr>
+
+    </table>
+{% endblock %}

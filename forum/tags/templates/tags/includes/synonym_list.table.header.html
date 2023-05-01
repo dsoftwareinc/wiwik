@@ -1,0 +1,16 @@
+{% load tags_tags %}
+{% if order_by == field_number %}
+    <a href="{% url 'tags:synonyms_list' %}?q={{ query }}&order_by={{ field_number|negative }}">
+        <span class="material-icons">arrow_drop_up</span>
+        {{ field_name }}
+    </a>
+{% elif order_by == field_number|negative %}
+    <a href="{% url 'tags:synonyms_list' %}?q={{ query }}&order_by={{ field_number }}">
+        <span class="material-icons">arrow_drop_down</span>
+        {{ field_name }}
+    </a>
+{% else %}
+    <a href="{% url 'tags:synonyms_list' %}?q={{ query }}&order_by={{ field_number }}">
+        {{ field_name }}
+    </a>
+{% endif %}

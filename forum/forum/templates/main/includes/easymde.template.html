@@ -1,0 +1,76 @@
+{% load compress %}
+{% csrf_token %}
+<style>
+    .CodeMirror-lines {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 13px;
+    }
+</style>
+{% compress js %}
+    <script type="text/javascript">
+        (function () {
+            {% if el %}
+                const elemName = "{{ el }}";
+            {% else %}
+                const elemName = "queseditor";
+            {% endif %}
+            const skipautosave = ("{{ skipautosave }}" == "true");
+            const elem = document.getElementById(elemName);
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            new EasyMDE({
+                autoDownloadFontAwesome: false,
+                element: elem,
+                toolbar: ["bold", "italic", "heading", "|",
+                    "quote", "unordered-list", "ordered-list", "code", "|",
+                    "link", "image", "|", "preview"],
+                //hideIcons: ['side-by-side', 'fullscreen', 'guide'],
+                placeholder: "{{ msg }}",
+                tabSize: 4,
+                maxHeight: "400px",
+                uploadImage: true,
+                imageAccept: "image/png, image/jpeg",
+                imageCSRFToken: csrftoken,
+                imageUploadEndpoint: "/image-upload/",
+                imagePathAbsolute: true,
+                renderingConfig: {
+                    codeSyntaxHighlighting: true,
+                },
+                autosave: {
+                    enabled: !skipautosave,
+                    uniqueId: window.location.pathname + 'AutoSavedValue',
+                    delay: 1000,
+                    submit_delay: 5000,
+                    timeFormat: {
+                        locale: 'en-US',
+                        format: {
+                            year: 'numeric',
+                            month: 'long',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                        },
+                    },
+                },
+                spellChecker: false,
+                status: false,
+            });
+        })();
+    </script>
+{% endcompress %}
+<div class="d-flex">
+    <div class="flex-item">
+        Editor supports markdown:
+    </div>
+    <div class="flex-item">
+        <code>```code```</code>
+    </div>
+    <div class="flex-item">
+        <b>**bold**</b>
+    </div>
+    <div class="flex-item">
+        <i>*italic*</i>
+    </div>
+    <div class="flex-item">
+        <blockquote>&gt;quote</blockquote>
+    </div>
+</div>

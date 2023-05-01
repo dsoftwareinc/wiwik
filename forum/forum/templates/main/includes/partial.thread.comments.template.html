@@ -1,0 +1,122 @@
+{% load static %}
+{% load wiwik_template_tags %}
+{% load compress %}
+{% if num_comments > 0 %}
+    <hr/>
+    {% for comment in item.comments.all %}
+        {% include 'main/includes/flag-comment-modal.template.html' with model_name="comment_"|add:model model_pk=comment.pk model_name_for_user="comment" %}
+        <div class="row comment-content">
+            <div class="col-1">
+                <div class="row">
+                    <div class="col-5">
+                        {% if comment.votes > 0 %}
+                            <div class="comment-votes {% if comment.votes > 10 %} orange-color {% endif %}">
+                                {{ comment.votes | humanize_number }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-5">
+                        {% if comment.author_id != user.id %}
+                            <a href="{% url 'forum:comment_upvote'  item.pk model comment.pk %}">
+                                <i class="upvote-comment fa fa-caret-up"></i>
+                            </a>
+
+                            <i data-comment-pk="{{ comment.pk }}"
+                               class="flag-model-icon flag-comment fa fa-flag"
+                               data-bs-toggle="modal"
+                               data-bs-target="#flag-comment-modal-comment_{{ model }}"
+                               style="cursor: pointer">
+                            </i>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-10 ">
+                <span class="comment-text">{{ comment.content | markdownify }}</span>
+                <span class="comment-user">
+                    <a href="{% url 'userauth:profile' comment.author.username 'questions' %}">
+                        {{ comment.author.display_name }}
+                    </a>
+                </span>
+                <span class="comment-timestamp">{{ comment.created_at | absolute_datetime }}</span>
+                {% if comment.author == user %}
+                    <a href="{% url 'forum:comment_delete' item.pk model comment.pk %}"
+                       class="comment-delete">
+                        Delete
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <hr/>
+    {% endfor %}
+
+{% endif %}
+{% if num_comments < max_comments %}
+    <!-- add comment section -->
+    <div class="comment-form">
+        <form class="form-add-comment" model="{{ model }}" pk="{{ item.pk }}" style="display: none;" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create_comment"/>
+            <input type="hidden" name="model" value="{{ model }}"/>
+            <input type="hidden" name="model_pk" value="{{ item.pk }}"/>
+            <div>
+                <textarea
+                        placeholder="Use comments to ask for more information or suggest improvements. Avoid answering questions in comments."
+                        class="comment-text-area" model="{{ model }}" pk="{{ item.pk }}"
+                        id="{{ model }}-{{ item.pk }}-new-comment"
+                        name="comment" rows="3" cols="68"></textarea>
+                <div id="{{ model }}-{{ item.pk }}-new-comment-menu" class="autocomplete-menu" role="listbox"></div>
+                <button class="btn btn-sm btn-primary add-comment-button"
+                        model="{{ model }}" pk="{{ item.pk }}"
+                        disabled
+                        type="submit">
+                    Add comment
+                </button>
+            </div>
+            <span class="comment-info" id="comment-info-{{ model }}-{{ item.pk }}">Enter at least 15 characters</span>
+        </form>
+    </div>
+    <div class="add-comment-button" model="{{ model }}" pk="{{ item.pk }}">
+        <a href="javascript:;" role="button">
+            Add a comment
+        </a>
+    </div>
+    {% compress js %}
+        <script>
+            (function () {
+                $('.add-comment-button').click(function () {
+                    const model = $(this).attr("model");
+                    const pk = $(this).attr("pk");
+                    $(this).hide();
+                    $(`.form-add-comment[model=${model}][pk=${pk}]`).show();
+                });
+                $('.comment-text-area').on('input propertychange', function () {
+                    const missing = 15 - this.value.length;
+                    const model = $(this).attr("model");
+                    const pk = $(this).attr("pk");
+                    const el = $(`#comment-info-${model}-${pk}`);
+                    if (missing <= 0) {
+                        el.hide();
+                        $(`.add-comment-button[model=${model}][pk=${pk}]`).removeAttr('disabled');
+                    } else {
+                        el.show();
+                        el.text(`Enter at least ${missing} more characters`);
+                        $(`.add-comment-button[model=${model}][pk=${pk}]`).prop('disabled', 'true');
+                    }
+                });
+                new autocomplete.init(
+                    document.getElementById('{{ model }}-{{ item.pk }}-new-comment'),
+                    document.getElementById('{{ model }}-{{ item.pk }}-new-comment-menu'),
+                    autocomplete.replaceFn,
+                    autocomplete.menuItemFn
+                );
+            })();
+        </script>
+    {% endcompress %}
+{% else %}
+    <div>
+        Maximum number of comments reached
+    </div>
+{% endif %}
+
