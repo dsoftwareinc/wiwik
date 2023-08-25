@@ -1,0 +1,36 @@
+{% load wiwik_template_tags %}
+{% if similar_questions %}
+    <h3>Similar questions</h3>
+    {% for q in similar_questions %}
+        <div class="row summary mx-2">
+            <div class="col-12 col-lg-2">
+                <div class="votes-container">
+                    <div class="votes {% if q.has_accepted_answer %}has-accepted-answer{% elif q.is_answered %}votes-frame{% endif %}">
+                        {{ q.answers_count }} answer
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-10">
+                <a href="{% url 'forum:thread' q.pk %}">{{ q.title | markdownify }}</a>
+                <small>
+                    {{ q.content | truncatechars:150 | markdownify }}
+                </small>
+            </div>
+        </div>
+
+        <div class="question-details">
+                    <span>
+                        {% if q.is_anonymous %}
+                            Asked anonymously {{ q.created_at | timesince }}
+                        {% else %}
+                            Asked {{ q.created_at | timesince }} ago by
+                            <a href="{% url 'userauth:profile' q.author.username 'questions' %}">
+                            {{ q.author.display_name }}
+                        </a>
+                        {% endif %}
+                    </span>
+        </div>
+        <hr/>
+    {% endfor %}
+{% else %}
+{% endif %}

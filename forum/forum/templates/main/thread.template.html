@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load compress humanize static wiwik_template_tags %}
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% tool_url 'easymde-css' %}">
+{% endblock %}
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% tool_url 'easymde-js' %}"></script>
+    {% compress js %}
+        <script src="{% static 'js/autocomplete.js' %}"></script>
+    {% endcompress %}
+{% endblock %}
+{% block content %}
+    {% include 'main/includes/thread.question-header.template.html' with q=q %}
+    <div class="row">
+        <div class="col-lg-9">
+            {% include 'main/includes/thread.question.template.html' with q=q display_comments_and_buttons=True show_follow=show_follow %}
+            {% if q.post_accepts_answers %}
+                {% if q.answers_count > 0 %}
+                    <!-- Answer list -->
+                    <div class="d-flex">
+                        <h3 class="flex-item">{{ q.answers_count }} Answers</h3>
+                        <nav class="flex-item">
+                            <ul class="pagination pagination-md">
+                                <li class="page-item {% if order_by == 'latest' %}active{% endif %}"
+                                    title="Show most recent answer first">
+                                    <a class="page-link" href="?order_by=latest">Latest</a>
+                                </li>
+                                <li class="page-item {% if order_by == 'oldest' %}active{% endif %}"
+                                    title="Show oldest answer first">
+                                    <a class="page-link" href="?order_by=oldest">Oldest</a>
+                                </li>
+                                <li class="page-item {% if order_by == 'votes' %}active{% endif %}"
+                                    title="Show answer with most votes first">
+                                    <a class="page-link" href="?order_by=votes">Votes</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                {% endif %}
+                {% for a in all_answers %}
+                    {% include 'main/includes/thread.answer.template.html' with a=a %}
+                {% endfor %}
+
+                {% include 'main/includes/thread.add-answer.template.html' with num_answers=q.answers_count max_answers=max_answers q=q %}
+            {% endif %}
+        </div>
+        <div class="col-lg-3"> <!-- Thread sidebar -->
+            <div class="row">
+                <div class="col text-small text-secondary">
+                    <div>
+                        Asked: <span class="text-dark">{{ q.created_at  | timesince }} ago.</span>
+                    </div>
+                    <div>
+                        Viewed: <span class="text-dark">{{ q.views }} times.</span>
+                    </div>
+                    <div>
+                        Last activity: <span class="text-dark">{{ q.last_activity | timesince }} ago.</span>
+                    </div>
+                    {% if q.source %}
+                        <div>
+                            This question was originally asked on
+                            <a href="{{ q.link }}">{{ q.source }}</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <hr class="my-2" style="color:#bbbbbb;"/>
+            {% if q.post_accepts_answers and not q.has_accepted_answer %}
+                <div class="row">
+                    <div class="col">
+                        <div hx-get="{% url 'forum:questions_invites' q.id %}"
+                             hx-trigger="load"></div>
+                    </div>
+                </div>
+                <hr class="my-2" style="color:#bbbbbb;"/>
+            {% endif %}
+            <div class="row">
+                <div class="col"
+                     hx-get="{% url 'forum:question_tags' q.id %}"
+                     hx-trigger="load delay:50ms" hx-swap="innerHTML">
+                </div>
+            </div>
+            <hr class="my-2" style="color:#bbbbbb;"/>
+            <div hx-get="{% url 'similarity:related' q.id %}"
+                 hx-trigger="load delay:50ms" hx-swap="innerHTML"></div>
+        </div>
+    </div>
+{% endblock %}
+{% block code_formatting %}
+    {% include 'main/includes/code-formatting.template.html' %}
+{% endblock %}

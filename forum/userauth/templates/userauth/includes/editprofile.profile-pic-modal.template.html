@@ -1,0 +1,60 @@
+<div class="modal fade" id="profile-pic-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Profile picture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+
+            <form id="profile-pic-form" method="POST" enctype="multipart/form-data"
+                  action="{% url 'userauth:profile_pic' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <img id="profile-pic-croppie" src="{{ user.profile_pic.url }}"/>
+                </div>
+                <div class="modal-footer">
+                    <div class="my-2">
+                        <i class="material-icons">photo_camera</i>
+                        <input type="file" id="fileInput" name="fileInput"/>
+                        <input type="hidden" id="cropped-profile-pic" name="cropped-profile-pic"/>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="submit-button" type="button" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    const profilePicElement = document.getElementById("profile-pic-croppie")
+    const crop = new Croppie(profilePicElement, {
+        enableExif: true,
+        viewport: {
+            width: 200,
+            height: 200,
+            type: 'square'
+        },
+        boundary: {
+            width: 300,
+            height: 300
+        },
+    });
+    $('.cr-slider').attr({'min': 0.4, 'max': 1.5});
+
+    document.getElementById("fileInput").addEventListener("change", (event) => previewImage(event));
+    const previewImage = (event) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            crop.bind({url: reader.result});
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+    document.getElementById('submit-button').addEventListener("click", () => {
+            crop.result({type: 'base64', size: {width: 500, height: 500}}).then(function (croppedImage) {
+                document.getElementById("cropped-profile-pic").value = croppedImage;
+                document.getElementById("profile-pic-form").submit();
+            });
+        }
+    )
+</script>

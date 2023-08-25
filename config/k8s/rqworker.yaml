@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqworker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      service: rqworker
+  template:
+    metadata:
+      labels:
+        service: rqworker
+    spec:
+      initContainers:
+        - name: check-db-ready
+          image: postgres:13-alpine
+          command:
+            - sh
+            - -c
+            - "until pg_isready -h $(POSTGRES_SERVICE) -p 5432; do echo waiting for database; sleep 2; done;"
+      containers:
+        - name: rqworker
+          image: wiwik-image
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - "python manage.py rqworker cron default"
+          envFrom:
+            - configMapRef:
+                name: wiwik-config
+            - secretRef:
+                name: wiwik-secrets
+          env:
+            - name: SQL_HOST
+              value: $(POSTGRES_SERVICE)
+            - name: REDIS_HOST
+              value: $(REDIS_SERVICE)

@@ -1,0 +1,8 @@
+{% if user.is_authenticated %}
+    <div class="navbar-nav"
+         hx-get="{% url 'forum:user_navbar' %}"
+         hx-trigger="load, every 60s"></div>
+{% else %}
+    <a class="nav-item nav-link" href="{% url 'userauth:login' %}"><strong>Login</strong></a>
+    <a class="nav-item nav-link" href="{% url 'userauth:signup' %}"><strong>Register</strong></a>
+{% endif %}

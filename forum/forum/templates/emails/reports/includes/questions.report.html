@@ -1,0 +1,36 @@
+{% load wiwik_template_tags %}
+
+<table width="100%" align="left" border="0" cellpadding="0" cellspacing="0" role="presentation">
+    {% if questions %}
+        <tr>
+            <td style="font-size: 15px; line-height: 140%; color: #3C3F44; text-align: left;">
+                <h4 style="margin: 0 0 15px;">
+                    {{ questions | length }} questions posted
+                    {% if total_questions > 0 %}
+                        that might interest you (out of {{ total_questions }} questions)
+                    {% endif %}
+                </h4>
+            </td>
+        </tr>
+        {% for q in questions %}
+            {% include 'emails/reports/includes/report.question.template.html' with q=q %}
+        {% endfor %}
+    {% else %}
+        <!-- No questions to view-->
+        <tr>
+            <td>
+                <h4 style="margin: 0 0 15px;">
+                    No new questions on tags you are following since {{ fromdate | date:'Y-m-d' }}.
+                    What is the latest question you were asked?
+                </h4>
+                <h4 style="margin: 0 0 15px;">
+                    {% if total_questions > 0 %}
+                        Overall there are {{ total_questions }} questions -
+                        You can start watching tags.
+                    {% endif %}
+                </h4>
+            </td>
+        </tr>
+    {% endif %}
+</table>
+

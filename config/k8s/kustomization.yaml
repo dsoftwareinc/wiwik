@@ -1,0 +1,29 @@
+namePrefix: demo-
+commonLabels:
+  app: wiwik
+
+vars:
+- name: POSTGRES_SERVICE
+  objref:
+    kind: Service
+    name: postgres-service
+    apiVersion: v1
+- name: REDIS_SERVICE
+  objref:
+    kind: Service
+    name: redis-service
+    apiVersion: v1
+images:
+- name: wiwik-image
+  newName: ghcr.io/cunla/wiwik
+  newTag: k8s
+  digest: sha256:456650873968dce6bbb84ab63b545e76a63f938db0732c2a42615e9baf7f2f8b
+resources:
+  - configmap.yaml
+  - secret.yaml
+  - postgres.yaml
+  - redis.yaml
+  - initial-jobs.yaml
+  - gunicorn.yaml
+  - rqworker.yaml
+  - rqscheduler.yaml

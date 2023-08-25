@@ -1,0 +1,37 @@
+{% load wiwik_template_tags %}
+<div>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">
+                <span class="material-icons">home</span> Home
+            </a>
+        </li>
+        <hr/>
+        <li class="nav-item">
+            <a class="nav-link {% if request.path|startswith:'/question' %}active{% endif %}"
+               href="{% url 'forum:list' %}">
+                <span class="material-icons">contact_support</span> Posts
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.path|startswith:'/articles' %}active{% endif %}"
+               href="{% url 'articles:list' %}">
+                <span class="material-icons">article</span> Articles
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.path|startswith:'/tags/' or request.path == '/synonyms/' %}active{% endif %}"
+               href="{% url 'tags:list' %}">
+                <span class="material-icons">style</span> Tags
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if request.path|startswith:'/users' %}active{% endif %}"
+               href="{% url 'userauth:list' %}">
+                <span class="material-icons">people</span> Users
+            </a>
+        </li>
+        <div hx-get="{% url 'spaces:user-spaces' %}?calling_url={{ request.path }}"
+             hx-trigger="load" hx-swap="outerHTML"></div>
+    </ul>
+</div>

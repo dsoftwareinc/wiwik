@@ -1,0 +1,140 @@
+---
+nav:
+  - 'index.md'
+  - 'Features':
+      - 'Features': 'features/index.md'
+      - 'features/search.md'
+      - 'features/invitation.md'
+      - 'features/slack.md'
+      - 'features/similarity.md'
+      - 'features/oauth.md'
+      - 'features/badges.md'
+  - 'Project structure':
+      - 'Architecture': 'arch/index.md'
+      - 'wiwik_lib': 'arch/wiwik_lib.md'
+      - 'userauth': 'arch/userauth.md'
+      - 'badges': 'arch/badges.md'
+      - 'tags': 'arch/tags.md'
+      - 'spaces': 'arch/spaces.md'
+      - 'forum': 'arch/forum.md'
+      - 'articles': 'arch/articles.md'
+      - 'similarity': 'arch/similarity.md'
+  - 'Deployment guide':
+      - 'Deployment guide': 'deployment/index.md'
+      - 'Configuration': 'deployment/configuration.md'
+      - 'Local Development guide': 'deployment/local-dev.md'
+
+  - 'Contributing':
+      - 'Contributing': 'contributing/index.md'
+      - 'Code of conduct': 'contributing/CODE_OF_CONDUCT.md'
+  - 'Frequently asked questions': 'faq.md'
+  - 'Insiders': 'wiwik-insiders.md'
+
+site_name: What I Wish I Knew (wiwik)
+site_author: Daniel Moran
+site_description: >-
+  Documentation for wiwik knowledge management system
+# Repository
+repo_name: cunla/wiwik
+repo_url: https://github.com/dsoftwareinc/wiwik
+
+# Copyright
+copyright: Copyright &copy; 2022 - 2023 Daniel Moran
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  generator: false
+  version:
+    provider: mike
+#  analytics:
+#    provider: google
+#    property: G-GJBJBKXT19
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    # - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - content.tooltips
+    # - header.autohide
+    - navigation.expand
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    # - navigation.prune
+    - navigation.sections
+    # - navigation.tabs.sticky
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    # - toc.integrate
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - django
+
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - minify:
+      minify_html: true
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:materialx.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: dsoftwareinc
+      repo: wiwik
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - toc:
+      permalink: true
+      toc_depth: 3

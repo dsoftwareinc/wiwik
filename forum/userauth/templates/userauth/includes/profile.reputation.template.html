@@ -1,0 +1,31 @@
+{% load userauth_tags %}
+<div>
+    <h4>Reputation</h4>
+    <hr>
+
+    {% regroup items by created_at.year as rep %}
+    {% for year in rep %}
+        <div>
+            <h5>{{ year.grouper }}</h5>
+            {% for item in year.list %}
+                {% if item.question %}
+                    <div class="row p-1 {% if not item.seen and user == seeuser %}bg-unseen{% endif %}">
+                        <div class="col-md-1">
+                            {{ item.created_at | date:"M d" }}
+                        </div>
+                        <div class="col-md-9">
+                            <a href="{% url 'forum:thread' item.question_id %}">
+                            <span class="badge {% class_for_votes item.reputation_change %}">
+                                {% if item.reputation_change > 0 %}+{% endif %}{{ item.reputation_change }}
+                            </span>
+                                {{ item.question.title }}
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% empty %}
+        No reputation changes
+    {% endfor %}
+</div>

@@ -1,0 +1,33 @@
+{% load userauth_tags %}
+<div>
+    <h4>Answers</h4>
+    <hr>
+
+    {% regroup user_answers by created_at.year as votes %}
+    {% for year in votes %}
+        <div>
+            <h5>{{ year.grouper }}</h5>
+            {% for item in year.list|sort_list_created_at %}
+                <div class="row p-1">
+                    <div class="col-md-1">
+                        {{ item.created_at | date:"M d" }}
+                    </div>
+                    <div class="col-md-8">
+                        <a href="{% url 'forum:thread' item.question_id %}">
+                            {% if item.votes > 0 %}
+                                <span class="badge bg-success"> {{ item.votes }} </span>
+                            {% elif item.votes < 0 %}
+                                <span class="badge bg-danger"> {{ item.votes }} </span>
+                            {% else %}
+                                <span class="badge bg-secondary"> {{ item.votes }} </span>
+                            {% endif %}
+                            {{ item.question.title }}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% empty %}
+        No answers
+    {% endfor %}
+</div>

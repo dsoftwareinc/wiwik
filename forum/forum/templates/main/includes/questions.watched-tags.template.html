@@ -1,0 +1,14 @@
+{% if tags_watched %}
+    <div id="watched-tags">
+        <h3>Watched tags</h3>
+
+        <div>
+            {% for tag_word in tags_watched %}
+                <a class="btn btn-question-tag m-1" href="{% url 'forum:tag' tag_word %}">
+                    {{ tag_word }}
+                </a>
+            {% endfor %}
+        </div>
+        <hr class="my-2" style="color:#bbbbbb;"/>
+    </div>
+{% endif %}

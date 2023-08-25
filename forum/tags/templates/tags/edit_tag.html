@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load wiwik_template_tags static crispy_forms_tags %}
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% tool_url 'easymde-css' %}">
+{% endblock %}
+
+{% block extrahead %}
+    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+    <script src="{% tool_url 'easymde-js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div hx-get="{% url 'general:update_edit_ping' 'tag' tag.id %}"
+         hx-trigger="every 10s">
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <form method="post" id="tagForm" class="group">
+                <fieldset>
+                    {% csrf_token %}
+                    <legend class="border-bottom">
+                        <strong>Editing tag info for {{ tag.tag_word }}</strong>
+                    </legend>
+                    <h5>Usage guidance (excerpt)</h5>
+                    <div class="mb-2">
+                        <textarea placeholder="Write a tag description"
+                                  class="form-control comment-text-area" name="description"
+                                  minlength="{{ len_description_min }}"
+                                  maxlength="{{ len_description_max }}"
+                                  required
+                                  rows="3" style="width: 100%;">{{ tag.description|default_if_none:"" }}</textarea>
+                        <div class="d-flex">
+                            <div class="flex-item">
+                                (plain text only, no Markdown formatting)
+                            </div>
+                        </div>
+                    </div>
+                    <h5>Tag wiki</h5>
+                    <textarea id="queseditor"
+                              name="wiki">{{ tag.wiki | default_if_none:"" }}</textarea>
+                    {% include 'main/includes/easymde.template.html' with msg="Tag wiki" %}
+                    <div>
+                        <label for="summary" class="form-label">Changes summary</label>
+                        <input id="summary" name="summary" style="width:100%" class="form-control"
+                               type="text" autocomplete="off"
+                               minlength="{{ len_summary_min }}"
+                               maxlength="{{ len_summary_max }}"
+                               required
+                               placeholder="briefly explain your changes (corrected spelling, fixed grammar, improved formatting)"
+                        />
+                    </div>
+                    <button style="width:100%" class="btn btn-primary mt-2 mb-2" type="submit">
+                        Submit your changes
+                    </button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <script>$("#tagForm").validate();</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rqscheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: rqscheduler
+  template:
+    metadata:
+      labels:
+        service: rqscheduler
+    spec:
+      initContainers:
+        - name: check-db-ready
+          image: postgres:13-alpine
+          command:
+            - sh
+            - -c
+            - "until pg_isready -h $(POSTGRES_SERVICE) -p 5432; do echo waiting for database; sleep 2; done;"
+      containers:
+        - name: rqscheduler
+          image: wiwik-image
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - "python manage.py rqscheduler"
+          envFrom:
+            - configMapRef:
+                name: wiwik-config
+            - secretRef:
+                name: wiwik-secrets
+          env:
+            - name: SQL_HOST
+              value: $(POSTGRES_SERVICE)
+            - name: REDIS_HOST
+              value: $(REDIS_SERVICE)

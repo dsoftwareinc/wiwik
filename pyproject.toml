@@ -1,0 +1,61 @@
+[tool.poetry]
+name = "wiwik"
+version = "0.1.0"
+description = "What I wish I knew knowledge management system"
+authors = ["Daniel Moran <daniel@moransoftware.ca>"]
+license = "GPL3"
+readme = "README.md"
+packages = [
+    { include = "forum" },
+]
+[tool.poetry.dependencies]
+python = "^3.9"
+Django = "^4.2"
+django-allauth = "^0.54"
+python-dotenv = "^1.0"
+pymdown-extensions = "^10.0"
+pyparsing = "^3.0"
+python-dateutil = "^2.8"
+sqlparse = "^0.4"
+gunicorn = "^20.1"
+nltk = "^3.8"
+django-compressor = "^4.3"
+django-crispy-forms = "^2.0"
+crispy-bootstrap5 = "^0.7"
+markdown = "^3.4"
+bleach = "^6.0"
+django-tasks-scheduler = "^1.0" # Async jobs scheduler using redis
+django-admin-numeric-filter = "^0.1"
+django-admin-rangefilter = "^0.10"
+django-model-utils = "^4.3"
+django-ipware = "^5.0" # For identifying IP location
+geoip2 = "^4.7" # For identifying IP location
+pillow = "^9.5" # For image field
+scikit-learn = "^1.2" # For similarity TF-IDF
+
+slack-sdk = "^3.21"
+meilisearch = "^0.26" # meilisearch driver
+psycopg2-binary = "^2.9" # Postgres driver
+redis = "^5.0" # Redis driver, for redis-cache
+
+[tool.poetry.group.dev.dependencies]
+fakeredis = "^2.13"
+coverage = "^7.2"
+django-coverage-plugin = "^3.0"
+beautifulsoup4 = "^4.12"
+django-debug-toolbar = "^4.1"
+db-to-sqlite = "^1.4"
+Flake8-pyproject = "^1.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.flake8]
+max-line-length = 120
+exclude = [
+    '**/migrations/**',
+    '__init__.py',
+    '.venv/**',
+    'private/**'
+]

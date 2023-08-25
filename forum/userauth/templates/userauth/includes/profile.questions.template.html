@@ -1,0 +1,27 @@
+{% load userauth_tags %}
+<div>
+    <h4>Questions</h4>
+    <hr>
+
+    {% regroup user_questions by created_at.year as votes %}
+    {% for year in votes %}
+        <div>
+            <h5>{{ year.grouper }}</h5>
+            {% for item in year.list|sort_list_created_at %}
+                <div class="row p-1">
+                    <div class="col-md-1">
+                        {{ item.created_at | date:"M d" }}
+                    </div>
+                    <div class="col-md-8">
+                        <a href="{% url 'forum:thread' item.pk %}">
+                            <span class="badge {% class_for_votes item.votes %}"> {{ item.votes }} </span>
+                            {{ item.title }}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% empty %}
+        No questions
+    {% endfor %}
+</div>

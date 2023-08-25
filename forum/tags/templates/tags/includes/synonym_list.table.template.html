@@ -1,0 +1,66 @@
+{% load tags_tags %}
+<table>
+    <thead>
+    <tr class="row-cols-5">
+        <td class="col-3">
+            {% include 'tags/includes/synonym_list.table.header.html' with field_number=1 field_name='Synonym' %}
+        </td>
+        <td class="col-3">
+            {% include 'tags/includes/synonym_list.table.header.html' with field_number=2 field_name='Tag' %}
+        </td>
+        <td class="col-3">
+            {% include 'tags/includes/synonym_list.table.header.html' with field_number=3 field_name='Suggested by' %}
+        </td>
+        <td class="col-2">
+            {% include 'tags/includes/synonym_list.table.header.html' with field_number=4 field_name='Created at' %}
+        </td>
+        <td class="col-2">
+            {% include 'tags/includes/synonym_list.table.header.html' with field_number=5 field_name='Status' %}
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+        <tr>
+            <td>
+                <span class="btn btn-question-tag"> {{ item.name }}</span>
+            </td>
+            <td>
+                {% include 'tags/includes/tag-popover-synonym.template.html' with tag=item.tag %}
+            </td>
+            <td>
+                {% if item.author %}
+                    <a href="{% url 'userauth:profile' item.author.username 'questions' %}">
+                        <img style="height: 25px;border-radius: 50%;" src="{{ item.author.profile_pic.url }}"
+                             onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"
+                             alt="{{ item.author.display_name }}"/>
+                        {{ item.author.display_name }}
+                    </a>
+                {% else %}
+                    System
+                {% endif %}
+            </td>
+            <td>
+                {{ item.created_at | absolute_date }}
+            </td>
+            <td>
+                {% if item.active %}
+                    <div class="btn btn-sm text-dark">
+                        Approved
+                    </div>
+                {% elif can_approve %}
+                    <a class="btn btn-sm text-dark"
+                       href="{% url 'tags:synonyms_approve' item.pk %}">
+                        Approve
+                    </a>
+                {% else %}
+                    <div class="btn btn-sm">
+                        Pending
+                    </div>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% include 'tags/includes/home.pagination.template.html' with tags=items %}

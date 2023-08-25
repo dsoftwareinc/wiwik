@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load wiwik_template_tags static %}
+
+{% block extrahead %}
+    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+    <script src="{% tool_url 'easymde-js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-8">
+            <h2 class="border-bottom pb-2">
+                <strong>{{ tag.tag_word }}</strong> tag info
+                <div class="pull-right">
+                    {% if tag.tag_word in tags_watched %}
+                        <a href="{% url 'forum:unwatch_tag' tag.tag_word %}"
+                           class="btn btn-sm btn-outline-secondary">
+                            <span class="material-icons">visibility_off</span>
+                            Unwatch tag
+                        </a>
+                    {% else %}
+                        <a href="{% url 'forum:watch_tag' tag.tag_word %}"
+                           class="btn btn-sm btn-outline-primary">
+                            <span class="material-icons">visibility</span>
+                            Watch tag
+                        </a>
+                    {% endif %}
+                    {% if can_edit_tag %}
+                        <a href="{% url 'tags:edit' tag.tag_word %}"
+                           class="btn btn-sm btn-outline-primary">
+                            <span class="material-icons">edit_note</span>
+                            Edit tag info
+                        </a>
+                    {% endif %}
+                </div>
+            </h2>
+
+            <h5>Usage guidance (excerpt)</h5>
+            <div class="mb-2">
+                {{ tag.description | default_if_none:"" }}
+            </div>
+            <hr/>
+            <div class="text-muted pb-2">
+                {{ tag.number_of_questions }} questions overall.
+                {{ tag.number_asked_this_week }} questions in the past week.
+                <a href="{% url 'forum:tag' tag.tag_word %}">View questions</a>
+            </div>
+            {% if tag.related_tags %}
+                <div class="text-muted pb-2">
+                    Related tags:
+                    {% for tag_word in tag.related_tags %}
+                        <a class="btn btn-question-tag"
+                           href="{% url 'tags:info' tag_word %}">
+                            {{ tag_word }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="text-muted pb-2">
+                {% if synonyms %}
+                    Synonyms:
+                    {% for synonym in synonyms %}
+                        <a class="btn btn-question-tag">
+                            {{ synonym.name }}
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    No synonyms for tag,
+                    <a href="{% url 'tags:synonyms_list' %}">create some</a>
+                {% endif %}
+            </div>
+            {% if tag.experts_list %}
+                <div class="text-muted pb-2">
+                    Leaders:
+                    {% for u in tag.experts_list %}
+                        <a href="{% url 'userauth:profile' u.username 'questions' %}"
+                           style="margin-left: 5px;">
+                            <img src="{{ u.profile_pic.url }}" alt="" height="16" width="16"/>
+                            {{ u.display_name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if tag.stars_list %}
+                <div class="text-muted pb-2">
+                    Rising stars:
+                    {% for u in tag.stars_list %}
+                        <a href="{% url 'userauth:profile' u.username 'questions' %}"
+                           style="margin-left: 5px;">
+                            <img src="{{ u.profile_pic.url }}" alt="" height="16" width="16"/>
+                            {{ u.display_name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <hr/>
+            <h5>Tag wiki</h5>
+            <div class="mb-2">
+                {% if tag.wiki %}
+                    {{ tag.wiki | markdownify }}
+                {% else %}
+                    No wiki for tag yet, edit tag info.
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-3">
+            <h5>{{ tag.number_followers }} Followers</h5>
+            {% for member in followers %}
+                {% include 'tags/includes/user_card.template.html' with item=member %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

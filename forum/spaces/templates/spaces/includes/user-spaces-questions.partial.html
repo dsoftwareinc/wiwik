@@ -1,0 +1,17 @@
+{% if has_results %}
+    <div>
+        {% if query %}
+            <h3>Search results for <b>"{{ query }}"</b> from your spaces</h3>
+        {% elif tag_word %}
+            <h3>Questions tagged [<b>{{ tag_word }}</b>] from your spaces</h3>
+        {% else %}
+            <h3>Latest questions from your spaces</h3>
+        {% endif %}
+        <div>
+            {% for q in space_questions %}
+                {% include "main/includes/questions.single-question.template.html" with q=q last=forloop.last %}
+            {% endfor %}
+        </div>
+    </div>
+    <h3 class="my-2">Public questions</h3>
+{% endif %}

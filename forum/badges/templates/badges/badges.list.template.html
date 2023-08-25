@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load wiwik_template_tags %}
+{% block content %}
+    <div class="row">
+        <div class="col-xl-8 col-lg-9">
+            <h1>Badges</h1>
+            <p>
+                Besides gaining reputation with your questions and answers,
+                you receive badges for being especially helpful.
+                Badges appear on your profile page, flair, and your posts.
+            </p>
+            <hr/>
+            <br/><br/>
+            {% regroup items by section as sections %}
+            {% for section in sections %}
+                <h3 class="mt-3">{{ section.grouper }}</h3>
+                {% for item in section.list %}
+                    {% ifchanged item.group %}
+                        <hr/>
+                    {% endifchanged %}
+
+                    <div class="row mb-2" id="badge_{{ item.name }}">
+                        <div class="col col-3">
+                            <div class="row">
+                                <div class="col-2">
+                                    {% if item.earned %}
+                                        <span class="material-icons" style="color: green;font-size:23px;">check</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-9">
+                                    <a class="badge-btn"
+                                       href="{% url 'badges:detail' item.pk %}"
+                                       title="{{ item.description }}">
+                                        <span class="material-icons text-{{ item.type }} icon-small">verified</span>
+                                        {{ item.name }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-7" style="font-size: 12px;"
+                        >{{ item.description }}</div>
+                        <div class="col col-2 text-muted" style="font-size: 12px;text-align: right;"
+                        >{{ item.users | humanize_number }} awarded
+                        </div>
+                    </div>
+                {% endfor %}
+                <br/>
+            {% endfor %}
+        </div>
+        <div class="col-xl-3 col-lg-4">
+            <h3>Recent badges</h3>
+            {% for item in recent %}
+                <div class="row mb-1">
+                    <div class="col">
+                        <a class="badge-btn"
+                           href="{% url 'badges:detail' item.badge.pk %}"
+                           title="{{ item.badge.description }}">
+                            <span class="material-icons text-{{ item.badge.type }} icon-small">verified</span>
+                            {{ item.badge.name }}
+                        </a>
+                        <a class="small"
+                           href="{% url 'userauth:profile' item.target.username 'badges' %}">
+                            {{ item.target.display_name }}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

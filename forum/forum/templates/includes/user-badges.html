@@ -1,0 +1,23 @@
+{% load static %}
+{% load humanize %}
+{# Badges info #}
+<span>
+{% if user.gold_badges %}
+    <span class="mx-1 text-gold">
+        <span class="material-icons">verified</span>
+        {{ user.gold_badges | intcomma }}
+    </span>
+{% endif %}
+    {% if user.silver_badges %}
+        <span class="mx-1 text-silver">
+        <span class="material-icons">verified</span>
+        {{ user.silver_badges | intcomma }}
+    </span>
+    {% endif %}
+    {% if user.bronze_badges %}
+        <span class="mx-1 text-bronze">
+        <span class="material-icons">verified</span>
+        {{ user.bronze_badges | intcomma }}
+    </span>
+    {% endif %}
+</span>

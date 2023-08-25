@@ -1,0 +1,56 @@
+name: Report a bug
+description: Something is not working? Report a bug
+body:
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: >-
+        This field is optional. You may provide additional context for the bug
+        you want to report, helping us to understand what you are working on and
+        what you are trying to achieve. If the context is not relevant, you can
+        leave this field empty. 
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug description
+      description: >-
+        Please give a detailed description of the bug. Explain where Material
+        for MkDocs does not behave as you would expect it to. Be as specific as
+        possible. If you have found a workaround or a fix for the problem,
+        please let us maintainers (and all other users) know.
+    validations:
+      required: true
+
+  - type: textarea
+    id: related-links
+    attributes:
+      label: Related links
+      description: >-
+        Please list all links to the sections of that
+        are relevant to the bug in order to show that you have consulted and
+        thoroughly read it. Additionally, list links to possibly related open
+        and closed [issues](https://github.com/dsoftwareinc/wiwik/issues)
+        and [discussions](https://github.com/dsoftwareinc/wiwik/discussions)
+        you encountered when searching our issue tracker.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: >-
+        Please provide a detailed list of instructions, guiding us maintainers
+        through the required steps, helping us to recreate the problem using the
+        minimal reproduction you provided. Be as specific as possible and as
+        verbose as necessary – try not to leave anything out.
+        Include screenshots, stack traces, etc.
+      placeholder: |-
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true

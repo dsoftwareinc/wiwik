@@ -1,0 +1,71 @@
+{% load wiwik_template_tags %}
+{% load humanize %}
+<table width="100%" align="left" border="0" cellpadding="0" cellspacing="0" role="presentation">
+    <tr>
+        <td style="font-size: 15px; line-height: 140%; color: #3C3F44; text-align: left;">
+            <h4 style="margin: 0 0 15px;">
+                {{ users_data | length }} users created content,
+                {{ num_users_visited }} visited wiwik
+            </h4>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding-top: 10px; padding-bottom:10px;border-top: 1px solid #D6D8DB;" class="sm-pt">
+            <table cellspacing="0" cellpadding="0" border="0" width="100%" role="presentation">
+                <thead>
+                <td style="width:280px;font-size: 12px; line-height: 12px; color: #828282;">User</td>
+                <td style="font-size: 12px; line-height: 12px; color: #828282;">visits</td>
+                <td style="font-size: 12px; line-height: 12px; color: #828282;">searches</td>
+                <td style="font-size: 12px; line-height: 12px; color: #828282;">questions</td>
+                <td style="font-size: 12px; line-height: 12px; color: #828282;">answers</td>
+                <td style="font-size: 12px; line-height: 12px; color: #828282;">pts</td>
+                </thead>
+                {% for u in users_data %}
+                    <tr style="border-top: 1px solid #eeeeee;">
+                        <td style="padding-right: 5px; vertical-align: top; padding-top: 3px; font-size: 12px; line-height: 12px; color: #828282;">
+                            <img src="{{ basesite }}{{ u.user.profile_pic.url }}"
+                                 alt="" height="16" width="16" align="left"
+                                 border="0" style="display: block"/>
+                            <span style="padding-left: 5px;">
+                                {{ u.user.name }} ({{ u.username }})
+                            </span>
+
+                            {% if u.num_question_comments > 0 or u.num_answer_comments > 0 %}
+                                <br/>
+                                {{ u.num_question_comments |intcomma }} comments on questions,
+                                {{ u.num_answer_comments |intcomma }} comments on answers.
+                            {% endif %}
+
+                            {% if u.user|user_active_tags %}
+                                <br/>
+                                Active in tags:
+                                {% for tag in u.user|user_active_tags %}
+                                    <a href="#"
+                                       style="display: inline-block; border: 5px solid #E1ECF4; margin: 0 1px 4px 0; background: #E1ECF4; border-radius: 3px; color: #39739D; font-size: 12px; line-height: 100%; text-decoration: none; white-space: nowrap;"
+                                       class="s-tag">{{ tag }}</a>
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                        <td style="padding-top: 5px; vertical-align: top;font-size: 13px; color: #54595f;width:60px;">
+                            {{ u.num_visits |intcomma }}
+                        </td>
+                        <td style="padding-top: 5px; vertical-align: top;font-size: 13px; color: #54595f;width:60px;">
+                            {{ u.search_count |intcomma }}
+                        </td>
+                        <td style="padding-top: 5px; vertical-align: top;font-size: 13px; color: #54595f;width:60px;">
+                            {{ u.num_questions |intcomma }}
+                        </td>
+                        <td style="padding-top: 5px; vertical-align: top; font-size: 13px; color: #54595f;width:60px;">
+                            {{ u.num_answers |intcomma }}
+                        </td>
+                        <td style="padding-top: 5px; vertical-align: top; font-size: 13px; color: #54595f;width:60px;">
+                            {{ u.reputation |intcomma }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </td>
+    </tr>
+
+</table>

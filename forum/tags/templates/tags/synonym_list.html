@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load wiwik_template_tags static compress %}
+
+{% block content %}
+    <h1 style="font-size: 26px">Synonyms</h1>
+    <form method="get" class="d-flex search">
+        <i class="material-icons">search</i>
+        <input class="form-control" type="search" placeholder="Search for a synonym"
+               aria-label="Search" name="q"
+               style="max-width: 200px;">
+        <button onclick="location.href='{% url 'tags:synonyms_list' %}"
+                class="btn btn-sm btn-outline-secondary" type="submit"><span class="material-icons">search</span></button>
+    </form>
+
+
+    <div class="row">
+        <div class="col-9">
+            {% if items %}
+                <hr/>
+                <div class="container p-4">
+                    {% include 'tags/includes/synonym_list.table.template.html' with items=items %}
+                </div>
+            {% endif %}
+
+            <div class="container">
+                <form method="post" class="group">
+                    {% csrf_token %}
+                    <hr/>
+                    <h3>Suggest a new synonym</h3>
+                    <div class="form row">
+                        <div class="form-group col-4">
+                            <label for="synonymId">Synonym</label>
+                            <input class="form-control" name="synonym" type="text"
+                                   aria-describedby="synonymHelp" id="synonymName"
+                                   autocomplete="off"
+                                   pattern="[-\w]{4,}"
+                                   required
+                                   title="only alphabet, digits, and dashes are allowed"/>
+                            <small id="synonymHelp" class="form-text text-muted">
+                                New synonym name, spaces not allowed.
+                            </small>
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="tagId">Tag</label>
+                            <input class="form-control" name="tag" type="text"
+                                   id="tagId" required title="Tag required"/>
+                        </div>
+                        <div class="form-group col-4">
+                            <button onclick="location.href='{% url 'tags:synonyms_list' %}"
+                                    class="btn btn-primary mt-3 mb-2"
+                                    type="submit">
+                                Submit suggestion
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% tool_url 'tagify-js' %}"></script>
+    <script src="{% tool_url 'tagify-polyfills-js' %}"></script>
+    {% compress css %}
+        <link href="{% static 'css/tagify.tags.css' %}" rel="stylesheet" type="text/css"/>
+    {% endcompress %}
+    {% compress js %}
+        <script>
+            (function () {
+                var inputElm = document.getElementById('tagId');
+                var tagify = new Tagify(inputElm, {
+                    enforceWhitelist: true,
+                    maxTags: 1,
+                    autocomplete: {rightKey: true,},
+                    highlightFirst: true,
+                    dropdown: {
+                        enabled: 1,
+                        closeOnSelect: true,
+                        highlightFirst: true,
+                    },
+                    originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
+                });
+                tagify.on('input', onInput).on('dropdown:select', onDropdownSelect);
+
+                function onDropdownSelect(e) {
+                    console.log("onDropdownSelect: ", e.detail);
+                }
+
+                function onInput(e) {
+                    tagify.settings.whitelist = null; // reset current whitelist
+                    tagify.loading(true);
+
+                    // show loading animation and hide the suggestions dropdown
+                    tagify.loading(true).dropdown.hide();
+
+                    fetch('/tags/tags-autocomplete/?q=' + e.detail.value)
+                        .then(RES => RES.json())
+                        .then(function (res) {
+                            tagify.settings.whitelist = res['results']; // update inwhitelist Array in-place
+                            tagify.loading(false).dropdown.show(e.detail.value); // render the suggestions dropdown
+                        })
+                        .catch(err => {
+                            tagify.dropdown.hide();
+                            tagify.loading(false);
+                        });
+                }
+            })();
+        </script>
+    {% endcompress %}
+
+{% endblock %}

@@ -1,0 +1,17 @@
+[Unit]
+Description=rqworker daemon
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+SyslogIdentifier=rqworker
+WorkingDirectory=/home/ubuntu/projects/devbb
+Environment=OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+Environment=LC_ALL=en_US.UTF-8
+Environment=LANG=en_US.UTF-8
+ExecStart=/home/ubuntu/projects/devbb/env/bin/python /home/ubuntu/projects/devbb/forum/manage.py rqworker cron default
+
+
+[Install]
+WantedBy=multi-user.target

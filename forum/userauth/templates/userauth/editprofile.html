@@ -1,0 +1,118 @@
+{% extends 'userauth-base.html' %}
+{% load wiwik_template_tags %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% tool_url 'croppie-css' %}"/>
+    <script src="{% tool_url 'croppie-js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="container py-5 px-1">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-auto mb-3">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <img id="profile_pic" class="user-profile-img"
+                             data-bs-toggle="modal" data-bs-target="#profile-pic-modal"
+                             onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"
+                             src="{{ user.profile_pic.url }}">
+                    </div>
+                </div>
+                <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
+                    <div class="text-sm-left mb-2 mb-sm-0">
+                        <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{ user.name }}</h4>
+                        <p class="mb-0">@{{ user.username }}</p>
+                        <div class="text-muted">
+                            <small>Last seen {{ user.last_login }}</small>
+                        </div>
+                        <div class="text-muted">
+                            <small>Joined on {{ user.date_joined }} </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a href="" class="active nav-link">Personal details</a>
+                </li>
+            </ul>
+            <form class="form" novalidate="">
+                <div class="form-group m-2">
+                    <div class="form-check form-switch">
+                        <label for="email_notifications">Enable email notifications</label>
+                        <input id='email_notifications'
+                               name='email_notifications'
+                               type="checkbox"
+                               class="form-check-input"
+                               {% if user.email_notifications %}checked{% endif %}>
+                    </div>
+                </div>
+                <div class="form-group m-2">
+                    <label>Full Name</label>
+                    <input name='fullname' class="form-control"
+                           type="text"
+                           placeholder="full name"
+                           value="{{ user.name | default_if_none:"" }}">
+                </div>
+                <div class="form-group m-2">
+                    <div class="row">
+                        <h5>User external data</h5>
+                        <div class="col-6">
+                            <label>
+                                <img src="{% static 'logos/GitHub-Mark-64px.png' %}" style="height: 32px;"/>
+                                GitHub handle
+                            </label>
+                            <input name='github_handle' class="form-control"
+                                   type="text"
+                                   placeholder="Github handle"
+                                   value="{{ user.github_handle | default_if_none:"" }}">
+                        </div>
+                        <div class="col-6">
+                            <label>
+                                <img src="{% static 'logos/Keybase_logo_official.png' %}" style="height: 32px;"/>
+                                Keybase user
+                            </label>
+                            <input name='keybase_user' class="form-control"
+                                   type="text"
+                                   placeholder="Keybase user"
+                                   value="{{ user.keybase_user | default_if_none:"" }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group m-2">
+                    <label>Title</label>
+                    <input name='title' class="form-control"
+                           type="text"
+                           placeholder="Title"
+                           value="{{ user.title | default:"" }}">
+                </div>
+                <div class="form-group m-2">
+                    <label>About</label>
+                    <textarea name='about'
+                              class="form-control"
+                              rows="5"
+                              placeholder="Write here a little about yourself"
+                    >{{ user.about_me|default:"" }}</textarea>
+                </div>
+                <button class="btn btn-primary my-2" type="submit">Save Changes
+                </button>
+                <a class="btn btn-danger my-2"
+                   href="{% url 'userauth:profile' user.username 'questions' %}">
+                    Cancel
+                </a>
+            </form>
+
+            <div class="my-2">
+                <a href="{% url 'userauth:logout' %}"
+                   class="btn btn-block btn-secondary">
+                    <i class="material-icons">logout</i>
+                    Logout
+                </a>
+            </div>
+
+        </form>
+    </div>
+    {% include 'userauth/includes/editprofile.profile-pic-modal.template.html' %}
+
+{% endblock %}

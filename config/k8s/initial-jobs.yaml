@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migrations
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      initContainers:
+      - name: check-db-ready
+        image: postgres:13-alpine
+        command:
+        - sh
+        - -c
+        - "until pg_isready -h $(POSTGRES_SERVICE) -p 5432; do echo waiting for database; sleep 2; done;"
+      containers:
+      - name: django-populate-db
+        image: wiwik-image
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh"]
+        args:
+        - -c
+        -
+          python manage.py migrate;
+          python manage.py create_social_apps;
+          python manage.py create_cron_jobs;
+          python manage.py createsuperuser --noinput || echo "";
+        envFrom:
+        - configMapRef:
+            name: wiwik-config
+        - secretRef:
+            name: wiwik-secrets
+        env:
+        - name: SQL_HOST
+          value: $(POSTGRES_SERVICE)
+

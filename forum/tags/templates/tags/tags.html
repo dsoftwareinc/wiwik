@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load compress %}
+
+{% block content %}
+    <h1 style="font-size: 26px;">Tags</h1>
+    <p>
+        A tag is a keyword or label that categorizes your question with other,
+        similar questions. Using the right tags makes it easier for others to
+        find and answer your question.
+    </p>
+    <p>
+        <a href="{% url 'tags:synonyms_list' %}">Show tag synonyms</a>
+    </p>
+    <div class="mb-2 search">
+        <i class="material-icons">search</i>
+        <input class="form-control" type="search" placeholder="Search for a tag"
+               aria-label="Search" name="q" id="queryInput" autocomplete="off"
+               hx-get="{% url 'tags:list_query' %}?"
+               hx-trigger="keyup changed delay:300ms"
+               hx-target="#tagsList"
+               style="max-width: 200px;">
+    </div>
+
+    {{ content }}
+{% endblock %}

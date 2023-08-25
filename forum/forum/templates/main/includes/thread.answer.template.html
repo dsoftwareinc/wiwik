@@ -1,0 +1,72 @@
+{% load wiwik_template_tags %}
+<div style="display: flex;flex-direction: row;" id="answer_{{ a.pk }}">
+    <div style="display: flex; flex-direction:column;" class="pt-2">
+        <div>
+            <a href="{% url 'forum:upvote' q.pk 'answer' a.pk %}">
+                <span class="material-icons vote-button-icon"
+                      style="color:{% if a.user_upvoted %}coral{% else %}#555{% endif %};">arrow_drop_up</span>
+            </a>
+            <div class="text-center single-question-votes">
+                {{ a.votes | humanize_number }}
+            </div>
+            <a href="{% url 'forum:downvote' q.pk 'answer' a.pk %}">
+                <i style="color:{% if a.user_downvoted %}coral{% else %}#555{% endif %};"
+                   class="material-icons vote-button-icon">arrow_drop_down</i>
+            </a>
+            {% if a.is_accepted %}
+                <div style="width: 100%;text-align: center;" class="pt-1 pb-1">
+                    <i class="accept-answer-button material-icons" style="color: green;">done</i>
+                </div>
+            {% else %}
+                {% if show_accept_button %}
+                    <div style="width: 100%;text-align: center;" class="pt-1 pb-1">
+                        <a href="{% url 'forum:answer_accept' q.pk a.pk %}">
+                            <i class="accept-answer-button material-icons" style="color: gray;">done</i>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <div style="width:100%;overflow-x: unset; padding-left: 10px;padding-right: 10px;">
+        <div class="user-content">
+            {{ a.content | markdownify }}
+        </div>
+        <div>
+            {% include 'main/includes/thread.user_card.template.html' with item=a %}
+            <a class="btn btn-sm text-secondary"
+               data-bs-container="body"
+               data-bs-placement="bottom"
+               data-bs-toggle="popover"
+               title="Share a link to this question"
+               data-bs-content="{% share_link a %}">
+                Share
+            </a>
+
+            {% if user == a.author or show_edit_button %}
+                <a class="btn btn-sm text-secondary" href="{% url 'forum:answer_edit' a.pk %}">
+                    Edit
+                </a>
+            {% endif %}
+            {% if show_delete_a_button or user == a.author %}
+                <a class="btn btn-sm text-secondary"
+                   href="{% url 'forum:answer_delete' q.pk a.pk %}">
+                    Delete
+                </a>
+            {% endif %}
+            <a class="btn btn-sm text-secondary"
+               data-bs-toggle="modal"
+               data-bs-target="#flag-model-modal-answer-{{ a.pk }}">
+                Flag
+            </a>
+        </div>
+
+        <div hx-get="{% url 'forum:post_comments' 'answer' a.id %}"
+             hx-trigger="load" hx-swap="outerHTML">
+        </div>
+        {% include 'main/includes/flag-model-modal.template.html' with q_pk=q.pk model_pk=a.pk model_name='answer' model_name_for_user='answer' %}
+    </div>
+</div>
+
+
+<hr/>

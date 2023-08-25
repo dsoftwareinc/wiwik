@@ -1,0 +1,41 @@
+{% extends 'emails/base.html' %}
+{% load wiwik_template_tags %}
+<!-- Visually Hidden Preview Text : BEGIN -->
+<div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
+    You were invited by
+    <a href="{{ basesite }}{% url 'userauth:profile' inviter.username 'questions' %}">
+        {{ inviter.display_name }}
+    </a>
+    to answer a question on wiwik
+</div>
+<!-- Visually Hidden Preview Text : END -->
+{% block content %}
+    <h1 style="font-weight: bold; font-size: 20px; line-height: 20px; color: #0C0D0E; margin: 0 0 15px 0;">
+        You were invited by
+        <a href="{{ basesite }}{% url 'userauth:profile' inviter.username 'questions' %}">
+            {{ inviter.display_name }}
+        </a>
+        to answer a question on wiwik
+    </h1>
+    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="max-width: 680px; width:100%">
+        <tr>
+            <td style="padding: 30px 30px 10px; background-color: #ffffff; text-align: left;"
+                class="sm-px sm-pt bar">
+                <table width="100%" align="left" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                    <tr>
+                        <td style="font-size: 15px; line-height: 140%; color: #3C3F44; text-align: left;">
+                            <h4 style="margin: 0 0 15px;">
+                                <a href="{{ basesite }}{% url 'userauth:profile' inviter.username 'questions' %}">
+                                    {{ inviter.display_name }}
+                                </a>
+                                invited you to answer the following question.
+                            </h4>
+                        </td>
+                    </tr>
+                    {% include 'emails/reports/includes/report.question.template.html' with q=q %}
+                </table>
+            </td>
+        </tr>
+
+    </table>
+{% endblock %}

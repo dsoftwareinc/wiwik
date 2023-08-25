@@ -1,0 +1,56 @@
+{% load wiwik_template_tags %}
+<div class="row summary">
+    <div class="col-12 col-lg-2">
+        <div class="votes-container">
+            <div class="votes">
+                {{ q.votes | humanize_number }} votes
+            </div>
+            <div class="votes">
+                {{ q.views | humanize_number }} views
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-10">
+        <div class="text-small">
+            <span class="material-icons">article</span>
+            Knowledge article
+        </div>
+        <div style="max-height: 70px;overflow: hidden;" class="mb-2">
+            <a href="{% url 'articles:detail' q.pk %}">{{ q.title | markdownify }}</a>
+        </div>
+        <div style="max-height: 40px;overflow: hidden;" class="mb-2">
+            {% for t in q.tags.all %}
+                {% include 'main/includes/tag-popover.template.html' with q_id=q.id t=t %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-12 p-1">
+        <div class="question-details px-1">
+            <span>
+                {% if q.space %}
+                    <a class="mx-4" href="{% url 'spaces:questions' q.space.id %}">
+                        {% if q.space.logo %}
+                            <img src="{{ q.space.logo.url }}" alt="" height="25"/>
+                        {% endif %}
+                        {{ q.space.short_name }}
+                    </a>
+
+                {% endif %}
+
+                {% if q.is_anonymous %}
+                    Posted anonymously {{ q.created_at | timesince }}
+                {% else %}
+                    Posted {{ q.created_at | timesince }} ago by
+                    <a href="{% url 'userauth:profile' q.author.username 'questions' %}">
+                    {{ q.author.display_name }}
+                </a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    {% if not last %}
+        <hr/>
+    {% endif %}
+</div>
+
+

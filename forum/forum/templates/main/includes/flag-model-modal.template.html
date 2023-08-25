@@ -1,0 +1,109 @@
+{% load compress %}
+<div class="modal fade"
+     id="flag-model-modal-{{ model_name }}-{{ model_pk }}"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">I am flagging to report this {{ model_name_for_user }} as</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{% url 'general:flag_create' model_pk %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <fieldset>
+                        {% if model_name == 'question' or model_name == 'tag' %}
+                            <div class="form-check m-2">
+                                <input class="form-check-input" type="radio" value="close" id="close-flag"
+                                       name="flag_type">
+                                <label class="form-check-label" for="close-flag">
+                                    Should be closed
+                                </label>
+                                <small class="text-muted">This thread should be closed for further
+                                    answers/comments</small>
+                            </div>
+                            <div class="form-check m-2">
+                                <input class="form-check-input" type="radio" value="duplicate" id="duplicate"
+                                       name="flag_type">
+                                <label class="form-check-label" for="duplicate">
+                                    A duplicate
+                                </label>
+                                <small class="text-muted">
+                                    This question has been asked before and already has an answer, write a link to the
+                                    answer.
+                                </small>
+                                <div id="duplicate-{{ model_name }}-{{ model_pk }}">
+                                    <textarea name="link"
+                                              class="comment-text-area"
+                                              rows="3" cols="68"
+                                    ></textarea>
+                                    <small>Enter a link to the duplicate</small>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="form-check m-2">
+                            <input class="form-check-input" type="radio" value="spam" id="spam" name="flag_type">
+                            <label class="form-check-label" for="spam">
+                                Spam
+                            </label>
+                            <small class="text-muted">Exists only to promote a product or service.</small>
+                        </div>
+                        <div class="form-check m-2">
+                            <input class="form-check-input" type="radio" value="rude" id="rude" name="flag_type">
+                            <label class="form-check-label" for="rude">
+                                Rude or abusive
+                            </label>
+                            <small class="text-muted">A reasonable person would find this content inappropriate.</small>
+                        </div>
+                        <div class="form-check m-2">
+                            <input class="form-check-input" type="radio" value="moderator" id="moderator"
+                                   name="flag_type">
+                            <label class="form-check-label" for="moderator">
+                                In need of moderator intervention
+                            </label>
+                            <small class="text-muted">A problem not listed here that requires action by a
+                                moderator.</small>
+                            <div id="extra-{{ model_name }}-{{ model_pk }}">
+                                <textarea name="extra"
+                                          class="comment-text-area"
+                                          rows="3" cols="68"
+                                ></textarea>
+                                <small>Type your explanation why you think intervention is required</small>
+                            </div>
+                        </div>
+
+                        {% compress js %}
+                            <script>
+                                (function () {
+                                    const extraId = "#extra-{{ model_name }}-{{ model_pk }}";
+                                    const duplicateId = "#duplicate-{{ model_name }}-{{ model_pk }}";
+                                    $(extraId).hide();
+                                    $(duplicateId).hide();
+                                    $('#flag-model-modal-{{ model_name }}-{{ model_pk }} input[type=radio][name=flag_type]').click(function () {
+                                        if (this.value === 'moderator') {
+                                            $(duplicateId).hide();
+                                            $(extraId).show();
+                                        } else if (this.value === 'duplicate') {
+                                            $(extraId).hide();
+                                            $(duplicateId).show();
+                                        } else {
+                                            $(extraId).hide();
+                                            $(duplicateId).hide();
+                                        }
+                                    });
+                                })();
+                            </script>
+                        {% endcompress %}
+                        <input id="model-name" name="model-name" type="hidden" value="{{ model_name }}">
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button
+                            type="submit" class="btn btn-primary">Flag {{ model_name_for_user }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

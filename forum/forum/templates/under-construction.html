@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self' https://www.google-analytics.com;script-src https://www.googletagmanager.com/gtag/js 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Under Construction</title>
+    <style>
+        *, :after, :before {
+            box-sizing: border-box;
+            border: 0 solid #e5e7eb;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+            background-color: #fbfbfb;
+            color: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: bolder;
+            font-size: 34px;
+            text-transform: uppercase;
+        }
+
+        p {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1>
+        🛠️ Comming Soon
+    </h1>
+    <p>
+        This feature is currently under construction
+    </p>
+</div>
+</body>
+</html>
+{#{% extends "base.html" %}#}
+{#{% block content %}#}
+{#    <div class="row">#}
+{#        <div class="col-2"></div>#}
+{#        <div class="col col-8">#}
+{#            <div class="card m-5">#}
+{#                <div class="card-header">#}
+{#                    <h2>We are still working on this feature</h2>#}
+{#                </div>#}
+{#                <div class="card-body">#}
+{#                    <p>We’re sorry, this feature is currently under construction.</p>#}
+{##}
+{#                    <p>Browse <a href="{% url 'forum:list' %}">recent questions</a></p>#}
+{##}
+{#                    <p>Browse popular <a href="{% url 'tags:list' %}">tags</a></p>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="col-2"></div>#}
+{#    </div>#}
+{#{% endblock %}#}

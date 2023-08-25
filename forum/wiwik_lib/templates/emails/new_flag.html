@@ -1,0 +1,12 @@
+{% load wiwik_template_tags %}
+<div>
+    <p>
+        New {{ model_name }} flagged by
+        <a href="{{ basesite }}{% url 'userauth:profile' username 'questions' %}">{{ username }}</a>
+        see content
+        <a href="{{ link }}">
+            here
+        </a>
+    </p>
+
+</div>

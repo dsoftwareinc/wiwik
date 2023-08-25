@@ -1,0 +1,49 @@
+{% load wiwik_template_tags compress static %}
+<script src="{% static 'highlightjs/highlight.min.js' %}"></script>
+<script src="{% static 'highlightjs/highlightjs-badge.min.js' %}"></script>
+{% compress js %}
+    <script>
+        window.highlightJsBadge();
+        var pres = document.querySelectorAll("pre>code");
+        for (var i = 0; i < pres.length; i++) {
+            hljs.highlightElement(pres[i]);
+        }
+    </script>
+{% endcompress %}
+<div id="CodeBadgeTemplate" style="display:none">
+    <div class="code-badge">
+        <div class="code-badge-language"></div>
+        <div title="Copy to clipboard">
+            <i class="material-icons code-badge-copy-icon">content_copy</i>
+        </div>
+    </div>
+</div>
+<script type="module">
+    import mermaid from '{% tool_url 'mermaidjs' %}';
+
+    const wiwikTheme = localStorage.getItem("theme");
+    const mermaidTheme = (wiwikTheme === 'light') ? 'neutral' : 'dark';
+    mermaid.initialize({startOnLoad: true, theme: mermaidTheme,});
+</script>
+{% if LATEX_SUPPORT_ENABLED %}
+    <script type="module" type="text/javascript">
+        import katex from '{% static 'katex/katex.mjs' %}';
+
+        (function () {
+            $(document).ready(function () {
+                var maths = document.querySelectorAll('.arithmatex'),
+                    tex;
+
+                for (var i = 0; i < maths.length; i++) {
+                    tex = maths[i].textContent || maths[i].innerText;
+                    if (tex.startsWith('\\(') && tex.endsWith('\\)')) {
+                        katex.render(tex.slice(2, -2), maths[i], {'displayMode': false});
+                    } else if (tex.startsWith('\\[') && tex.endsWith('\\]')) {
+                        katex.render(tex.slice(2, -2), maths[i], {'displayMode': true});
+                    }
+                }
+            });
+        }());
+    </script>
+    <link rel="stylesheet" type="text/css" href="{% static 'katex/katex.min.css' %}">
+{% endif %}

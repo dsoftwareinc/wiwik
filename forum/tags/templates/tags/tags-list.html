@@ -1,0 +1,13 @@
+<div id="tagsList">
+    <div class="row g-0">
+        <div class="form-control-plaintext">{{ count }} tags found</div>
+        {% for tag in tags %}
+            <div class="col-sm-4">
+                {% include 'tags/includes/home.tag-card.html' with tag=tag tags_watched=tags_watched %}
+            </div>
+        {% empty %}
+            <div>No tags results found for {{ query }}</div>
+        {% endfor %}
+    </div>
+    {% include 'tags/includes/home.pagination.template.html' with tags=tags %}
+</div>

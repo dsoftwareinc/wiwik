@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: postgres-service
+      labels:
+        service: postgres
+    spec:
+      selector:
+        service: postgres
+      type: ClusterIP
+      ports:
+        - port: 5432
+  - apiVersion: v1
+    kind: PersistentVolume
+    metadata:
+      name: postgres-pv
+      labels:
+        type: local
+    spec:
+      capacity:
+        storage: 2Gi
+      storageClassName: standard
+      accessModes:
+        - ReadWriteOnce
+      hostPath:
+        path: "/data/postgres-pv1"
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: postgres-pvc
+      labels:
+        type: local
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+      volumeName: postgres-pv
+      storageClassName: standard
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        service: postgres
+      name: postgres
+    spec:
+      progressDeadlineSeconds: 2147483647
+      replicas: 1
+      selector:
+        matchLabels:
+          service: postgres
+      template:
+        metadata:
+          labels:
+            service: postgres
+        spec:
+          containers:
+            - name: postgres
+              image: postgres:13-alpine
+              env:
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: wiwik-secrets
+                      key: SQL_USER
+                - name: POSTGRES_DB
+                  valueFrom:
+                    secretKeyRef:
+                      name: wiwik-secrets
+                      key: SQL_DATABASE
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: wiwik-secrets
+                      key: SQL_PASSWORD
+              volumeMounts:
+                - mountPath: /var/lib/postgresql/data
+                  name: postgres-volume-mount
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext: { }
+          terminationGracePeriodSeconds: 30
+          volumes:
+            - name: postgres-volume-mount
+              persistentVolumeClaim:
+                claimName: postgres-pvc

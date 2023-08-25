@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: gunicorn-service
+      labels:
+        service: gunicorn
+    spec:
+      selector:
+        service: gunicorn
+      type: LoadBalancer
+      ports:
+        - port: 8000
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: gunicorn
+      labels:
+        service: gunicorn
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          service: gunicorn
+      template:
+        metadata:
+          labels:
+            service: gunicorn
+        spec:
+          initContainers:
+            - name: check-db-ready
+              image: postgres:13-alpine
+              command:
+                - sh
+                - -c
+                - "until pg_isready -h $(POSTGRES_SERVICE) -p 5432; do echo waiting for database; sleep 2; done;"
+          containers:
+            - name: gunicorn
+              image: wiwik-image
+              imagePullPolicy: IfNotPresent
+              command:
+                - sh
+                - -c
+                - python manage.py collectstatic;
+                  gunicorn --capture-output --access-logfile - --workers 3 -b 0.0.0.0:8000 main.wsgi:application;
+              ports:
+                - containerPort: 8000
+              envFrom:
+                - configMapRef:
+                    name: wiwik-config
+                - secretRef:
+                    name: wiwik-secrets
+              env:
+                - name: SQL_HOST
+                  value: $(POSTGRES_SERVICE)
+                - name: REDIS_HOST
+                  value: $(REDIS_SERVICE)

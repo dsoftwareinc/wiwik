@@ -1,0 +1,27 @@
+{% load wiwik_template_tags %}
+<!-- User cards -->
+
+<div class="user-card" style="font-size: 13px;margin:10px;">
+    <small>
+        Started following at {{ item.created_at | absolute_date }}
+    </small>
+    <a href="{% url 'userauth:profile' item.user.username 'following' %}">
+        <div style="display: flex;flex-direction: row;width: 220px;">
+            <div style="flex: 0.2;" class="p-1">
+                <img src="{{ item.user.profile_pic.url }}"
+                     class="user-card-img" alt="{{ item.user.display_name }}">
+            </div>
+            <div style="flex: 0.8;" class="p-1">
+                <p><strong>
+                    {{ item.user.display_name }}
+                </strong>
+                    <br/>
+                    <span style="color:gray;">
+                        {{ item.user.reputation_score }}
+                        {% include 'includes/user-badges.html' with user=item.user %}
+                    </span>
+                </p>
+            </div>
+        </div>
+    </a>
+</div>

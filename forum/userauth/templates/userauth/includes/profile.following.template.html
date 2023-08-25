@@ -1,0 +1,38 @@
+{% load userauth_tags %}
+<div>
+    <div>
+        <h4>Watched tags</h4>
+        <hr/>
+        {% for follow in tagfollows %}
+            {% include 'userauth/includes/tag-popover-userdata.template.html' with follow=follow %}
+        {% empty %}
+            No tags watched
+        {% endfor %}
+    </div>
+    <br/>
+    <div>
+        <h4>Followed questions</h4>
+        {% regroup questions by created_at.year as votes %}
+        {% for year in votes %}
+            <div>
+                <h5>{{ year.grouper }}</h5>
+                <hr/>
+                {% for q in year.list|sort_list_created_at %}
+                    <div class="row p-1">
+                        <div class="col-md-1">
+                            {{ q.created_at | date:"M d" }}
+                        </div>
+                        <div class="col-md-8">
+                            <a href="{% url 'forum:thread' q.id %}">
+                                <span class="badge {% class_for_votes q.votes %}"> {{ q.votes }} </span>
+                                {{ q.title }}
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% empty %}
+            No questions followed
+        {% endfor %}
+    </div>
+</div>
