@@ -10,9 +10,6 @@
     <link rel="icon" type="image/png" href="{{ favicon_link_dark }}" media="(prefers-color-scheme: dark)">
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
     <title>{{ title|default:'What I wish I knew' }}</title>
-    {% compress js %}
-        <script src="{% static 'js/main.js' %}"></script>
-    {% endcompress %}
     <link rel="stylesheet" href="{% tool_url 'bootstrap-css' %}">
     {% block extrastyle %}{% endblock %}
     {% compress css %}
@@ -22,6 +19,9 @@
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {% endcompress %}
     <link rel="stylesheet" href="{% tool_url 'font-awesome-css' %}">
+    {% compress js %}
+        <script src="{% static 'js/main.js' %}"></script>
+    {% endcompress %}
     {% block extrahead %}{% endblock %}
 </head>
 
@@ -149,6 +149,7 @@
 <script>
     htmx.on('htmx:responseError', function (event) {
         console.log(event.detail.xhr.status);
+        location.href = "{% url 'userauth:login' %}";
     });
 </script>
 {#        <script src="{% static 'js/htmx/debug.js' %}" defer></script>#}

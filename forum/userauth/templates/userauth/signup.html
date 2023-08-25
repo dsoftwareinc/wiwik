@@ -1,6 +1,5 @@
 {% extends 'userauth-base.html' %}
-{% load compress %}
-{% load crispy_forms_tags %}
+{% load compress crispy_forms_filters crispy_forms_tags %}
 
 {% block content %}
 
@@ -13,7 +12,7 @@
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Join Today</legend>
-                {{ form |crispy }}
+                {{ form | crispy }}
             </fieldset>
             <small class="text-muted">
                 Already Have An Account? <a class="ml-2" href="{% url 'userauth:login' %}">Sign In</a>
@@ -27,7 +26,6 @@
         {% compress js %}
             <script type="text/javascript">
                 $(document).ready(function () {
-                    console.log('s');
                     $("form").submit(function () {
                         $(this).submit(function () {
                             return false;

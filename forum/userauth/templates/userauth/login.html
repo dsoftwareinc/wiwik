@@ -29,7 +29,8 @@
                     <a class="btn btn-outline-dark" role="button"
                        href="{% provider_login_url 'facebook' %}"
                        style="text-transform:none">
-                        Login with <i class="fa fa-facebook" style="color:#3b5998;"></i>
+                        Login with <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Facebook sign-in"
+                                        src="{% static 'logos/facebook.png' %}"/>
                     </a>
                 {% endif %}
                 {% if okta_login_allowed %}
