@@ -145,7 +145,12 @@
     <script src="{% static 'js/end.js' %}"></script>
 {% endcompress %}
 {% include 'includes/base.google-analytics.html' %}
-<script src="{% static 'js/htmx.min.js' %}" defer></script>
+<script src="{% static 'js/htmx.min.js' %}"></script>
+<script>
+    htmx.on('htmx:responseError', function (event) {
+        console.log(event.detail.xhr.status);
+    });
+</script>
 {#        <script src="{% static 'js/htmx/debug.js' %}" defer></script>#}
 </body>
 </html>

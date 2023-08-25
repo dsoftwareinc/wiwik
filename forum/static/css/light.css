@@ -19,6 +19,7 @@
     height: 100%;
     --code-bg-color: var(--bs-gray-200);
     --code-fg-color: var(--bs-gray-700);
+    --bs-secondary-bg: #e9ecef;
 }
 
 [data-theme="dark"] {
@@ -76,4 +77,6 @@
     --gold-bg-color: #5d573c;
     --code-bg-color: #373831;
     --code-fg-color: #f8f8f0;
+    --bs-emphasis-color: var(--bs-body-color);
+    --bs-secondary-bg: #e9ecef;
 }
