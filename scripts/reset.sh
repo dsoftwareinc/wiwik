@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BASE_DIR="$SCRIPT_DIR/.."
-INITIAL_DB="$BASE_DIR/private/db2023-04-29.sqlite3"
+INITIAL_DB="$BASE_DIR/private/db2023-08-25.sqlite3"
 echo "[reset.sh] Activating virtualenv"
 source "$BASE_DIR/env/bin/activate" || (echo "Couldn't activate virtualenv" && exit)
 cd $BASE_DIR || exit
 
 echo "[reset.sh] Checking if there is a need to update requirements"
 pip install poetry
-poetry export --without-hashes --with dev -o requirements.txt
-pip install -r requirements.txt
-rm requirements.txt
+poetry update
 
 echo "[reset.sh] Removing previous database if exists"
 rm "$BASE_DIR/forum/db.sqlite3"

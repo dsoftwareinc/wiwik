@@ -62,7 +62,7 @@
                            data-bs-placement="bottom"
                            data-bs-toggle="popover"
                            title="Share a link to this question"
-                           data-bs-content="{% share_link q %}">
+                           data-bs-content="{{ q.share_link }}">
                             Share
                         </a>
                         {% if show_follow %}

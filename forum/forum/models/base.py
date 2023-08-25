@@ -9,6 +9,7 @@ from django.contrib.postgres.search import SearchVectorField
 from django.db import models
 from django.db.models import F, TextField
 from django.db.models.signals import post_save
+from django.urls import reverse
 from django.utils import timezone
 
 from common.utils import dedent_code
@@ -16,6 +17,7 @@ from forum.apps import logger
 from spaces.models import Space
 from tags.models import Tag
 from wiwik_lib.models import Flaggable, Editable
+from wiwik_lib.utils import CURRENT_SITE
 
 
 class Votable(models.Model):
@@ -63,6 +65,9 @@ class UserInput(Editable):
         raise NotImplementedError
 
     def get_answer(self):
+        raise NotImplementedError
+
+    def share_link(self):
         raise NotImplementedError
 
     @property
@@ -206,6 +211,9 @@ class Question(VotableUserInput, Flaggable):
     def get_question(self):
         return self
 
+    def share_link(self):
+        return f"{CURRENT_SITE}{reverse('forum:thread', args=[self.pk])}#question_{self.pk}"
+
     def get_model(self):
         return 'question'
 
@@ -274,6 +282,9 @@ class Answer(VotableUserInput, Flaggable):
 
     def get_model(self):
         return 'answer'
+
+    def share_link(self):
+        return f"{CURRENT_SITE}{reverse('forum:thread', args=[self.question.pk])}#answer_{self.pk}"
 
     def get_answer(self):
         """

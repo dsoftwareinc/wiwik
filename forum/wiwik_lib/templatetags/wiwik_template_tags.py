@@ -6,16 +6,14 @@ import pymdownx.arithmatex as arithmatex
 from django import template
 from django.conf import settings
 from django.templatetags.static import static
-from django.urls import reverse
 from django.utils.safestring import mark_safe
 from markdown import Markdown
 from pymdownx import superfences
 
-from forum.models import UserInput, Question, TagFollow
+from forum.models import TagFollow
 from tags.models import Tag
 from userauth.models import ForumUser
 from userauth.utils import user_most_active_tags
-from wiwik_lib.utils import CURRENT_SITE
 
 register = template.Library()
 
@@ -63,7 +61,7 @@ ALLOWED_ATTRIBUTES = {
     "abbr": ["title"],
     "acronym": ["title"],
 }
-ALLOWED_TAGS = [
+ALLOWED_TAGS = frozenset({
     'kbd',
     "h1", "h2", "h3", "h4", "h5", "h6",
     "b", "i", "strong", "em", "tt",
@@ -73,7 +71,8 @@ ALLOWED_TAGS = [
     "img",
     "a",
     "sub", "sup",
-]
+    "details", "summary",
+})
 
 
 @register.filter(is_safe=True)
@@ -110,19 +109,10 @@ def humanize_number(value: int):
     return value
 
 
-@register.simple_tag()
-def share_link(u: UserInput):
-    if isinstance(u, Question):
-        link = f"{CURRENT_SITE}{reverse('forum:thread', args=[u.pk])}#question_{u.pk}"
-    else:
-        link = f"{CURRENT_SITE}{reverse('forum:thread', args=[u.question.pk])}#answer_{u.pk}"
-    return mark_safe(link)
-
-
 @register.filter(is_safe=True)
 def tag_experts(tag: Tag) -> List[TagFollow]:
     """
-    Returns list of 3 users with most reputation on the tag.
+    Returns list of three users with most reputation on the tag.
 
     The reason to use this method and not tag.experts property is because this
     method returns the TagFollow objects which have the user reputation for the tag.
@@ -142,24 +132,36 @@ def user_active_tags(u: ForumUser):
     return user_most_active_tags(u)
 
 
+VERSION_BOOTSTRAP = '5.3.1'
+VERSION_EASYMDE = '2.18.0'
+VERSION_CROPPIE = '2.6.5'
+VERSION_FONTAWESOME = '4.7.0'
+VERSION_TAGIFY = '4.17.9'
+VERSION_MERMAIDJS = '10.3.1'
+VERSION_KATEX = '0.16.8'
+
 _3RD_PARTY_URLS = {
     'CDN': {
-        'bootstrap-css': 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css',
-        'bootstrap-js': 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js',
-        'bootstrap-bundle-js': 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js',
-        'easymde-js': 'https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js',
-        'easymde-css': 'https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css',
-        'croppie-js': 'https://cdn.jsdelivr.net/npm/croppie@2.6.5/croppie.min.js',
-        'croppie-css': 'https://cdn.jsdelivr.net/npm/croppie@2.6.5/croppie.css',
-        'font-awesome-css': 'https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css',
-        'tagify-js': 'https://cdn.jsdelivr.net/npm/@yaireo/tagify@4.17.8/dist/tagify.min.js',
-        'tagify-polyfills-js': 'https://cdn.jsdelivr.net/npm/@yaireo/tagify@4.17.8/dist/tagify.polyfills.min.js',
-        'mermaidjs': 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs',
+        'bootstrap-css': f'https://cdn.jsdelivr.net/npm/bootstrap@{VERSION_BOOTSTRAP}/dist/css/bootstrap.min.css',
+        'bootstrap-js': f'https://cdn.jsdelivr.net/npm/bootstrap@{VERSION_BOOTSTRAP}/dist/js/bootstrap.min.js',
+        'bootstrap-bundle-js': f'https://cdn.jsdelivr.net/npm/bootstrap@{VERSION_BOOTSTRAP}/dist/js/bootstrap.bundle.min.js',
+        'easymde-js': f'https://cdn.jsdelivr.net/npm/easymde@{VERSION_EASYMDE}/dist/easymde.min.js',
+        'easymde-css': f'https://cdn.jsdelivr.net/npm/easymde@{VERSION_EASYMDE}/dist/easymde.min.css',
+        'croppie-js': f'https://cdn.jsdelivr.net/npm/croppie@{VERSION_CROPPIE}/croppie.min.js',
+        'croppie-css': f'https://cdn.jsdelivr.net/npm/croppie@{VERSION_CROPPIE}/croppie.css',
+        'font-awesome-css': f'https://cdn.jsdelivr.net/npm/font-awesome@{VERSION_FONTAWESOME}/css/font-awesome.min.css',
+        'tagify-js': f'https://cdn.jsdelivr.net/npm/@yaireo/tagify@{VERSION_TAGIFY}/dist/tagify.min.js',
+        'tagify-polyfills-js': f'https://cdn.jsdelivr.net/npm/@yaireo/tagify@{VERSION_TAGIFY}/dist/tagify.polyfills.min.js',
+        'mermaidjs': f'https://cdn.jsdelivr.net/npm/mermaid@{VERSION_MERMAIDJS}/dist/mermaid.esm.min.mjs',
+        'katex-css': f'https://cdn.jsdelivr.net/npm/katex@{VERSION_KATEX}/dist/katex.min.css',
+        'katex-js': f'https://cdn.jsdelivr.net/npm/katex@{VERSION_KATEX}/dist/katex.min.js',
+        'katex-autorender-js': f'https://cdn.jsdelivr.net/npm/katex@{VERSION_KATEX}/dist/contrib/auto-render.min.js',
+        'katex-mjs': f'https://cdn.jsdelivr.net/npm/katex@{VERSION_KATEX}/dist/katex.mjs',
     },
     'STATIC': {
-        'bootstrap-css': 'bootstrap-5.2.3-dist/css/bootstrap.min.css',
-        'bootstrap-js': 'bootstrap-5.2.3/dist/js/bootstrap.min.js',
-        'bootstrap-bundle-js': 'bootstrap-5.2.3/dist/js/bootstrap.bundle.min.js',
+        'bootstrap-css': 'bootstrap/css/bootstrap.min.css',
+        'bootstrap-js': 'bootstrap/js/bootstrap.min.js',
+        'bootstrap-bundle-js': 'bootstrap/js/bootstrap.bundle.min.js',
         'easymde-js': 'easymde/easymde.min.js',
         'easymde-css': 'easymde/easymde.min.css',
         'croppie-js': 'croppie/croppie.min.js',
@@ -168,6 +170,9 @@ _3RD_PARTY_URLS = {
         'tagify-js': 'tagify/tagify.js',
         'tagify-polyfills-js': 'tagify/tagify.polyfills.min.js',
         'mermaidjs': 'mermaidjs/dist/mermaid.esm.min.mjs',
+        'katex-mjs': 'katex/katex.mjs',
+        'katex-js': 'katex/katex.min.js',
+        'katex-css': 'katex/katex.min.css',
     },
 }
 
