@@ -44,11 +44,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           poetry-version: ${{ matrix.poetry-version }}
-      - uses: actions/cache@v3
-        name: Define a cache for the virtual environment based on the dependencies lock file
-        with:
-          path: ./.venv
-          key: venv-${{ hashFiles('poetry.lock') }}
       - name: Run Tests
         run: |          
           cd forum
