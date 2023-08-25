@@ -2,7 +2,7 @@ import katex from '../katex.mjs';
 
 /* eslint-disable */
 
-/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
+/* -*- Mode: JavaScript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
 
 /* vim: set ts=2 et sw=2 tw=80: */
 
@@ -21,7 +21,7 @@ import katex from '../katex.mjs';
  *    5. \tripledash vertical alignment is slightly adjusted.
  *
  *    This code, as other KaTeX code, is released under the MIT license.
- *
+ * 
  * /*************************************************************
  *
  *  MathJax/extensions/TeX/mhchem.js
@@ -2961,7 +2961,7 @@ var texify = {
 
       default:
         throw ["MhchemBugT", "mhchem bug T. Please report."];
-        // Missing texify rule or unknown MhchemParser output
+      // Missing texify rule or unknown MhchemParser output
     }
     return res;
   },

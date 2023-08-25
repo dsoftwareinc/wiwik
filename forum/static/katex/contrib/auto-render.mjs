@@ -195,50 +195,50 @@ var renderMathInElement = function renderMathInElement(elem, options) {
   } // default options
 
 
-    optionsCopy.delimiters = optionsCopy.delimiters || [{
-        left: "$$",
-        right: "$$",
-        display: true
-    }, {
-        left: "\\(",
-        right: "\\)",
-        display: false
-    }, // LaTeX uses $…$, but it ruins the display of normal `$` in text:
-        // {left: "$", right: "$", display: false},
-        // $ must come after $$
-        // Render AMS environments even if outside $$…$$ delimiters.
-        {
-            left: "\\begin{equation}",
-            right: "\\end{equation}",
-            display: true
-        }, {
-            left: "\\begin{align}",
-            right: "\\end{align}",
-            display: true
-        }, {
-            left: "\\begin{alignat}",
-            right: "\\end{alignat}",
-            display: true
-        }, {
-            left: "\\begin{gather}",
-            right: "\\end{gather}",
-            display: true
-        }, {
-            left: "\\begin{CD}",
-            right: "\\end{CD}",
-            display: true
-        }, {
-            left: "\\[",
-            right: "\\]",
-            display: true
-        }];
-    optionsCopy.ignoredTags = optionsCopy.ignoredTags || ["script", "noscript", "style", "textarea", "pre", "code", "option"];
-    optionsCopy.ignoredClasses = optionsCopy.ignoredClasses || [];
-    optionsCopy.errorCallback = optionsCopy.errorCallback || console.error; // Enable sharing of global macros defined via `\gdef` between different
-    // math elements within a single call to `renderMathInElement`.
+  optionsCopy.delimiters = optionsCopy.delimiters || [{
+    left: "$$",
+    right: "$$",
+    display: true
+  }, {
+    left: "\\(",
+    right: "\\)",
+    display: false
+  }, // LaTeX uses $…$, but it ruins the display of normal `$` in text:
+  // {left: "$", right: "$", display: false},
+  // $ must come after $$
+  // Render AMS environments even if outside $$…$$ delimiters.
+  {
+    left: "\\begin{equation}",
+    right: "\\end{equation}",
+    display: true
+  }, {
+    left: "\\begin{align}",
+    right: "\\end{align}",
+    display: true
+  }, {
+    left: "\\begin{alignat}",
+    right: "\\end{alignat}",
+    display: true
+  }, {
+    left: "\\begin{gather}",
+    right: "\\end{gather}",
+    display: true
+  }, {
+    left: "\\begin{CD}",
+    right: "\\end{CD}",
+    display: true
+  }, {
+    left: "\\[",
+    right: "\\]",
+    display: true
+  }];
+  optionsCopy.ignoredTags = optionsCopy.ignoredTags || ["script", "noscript", "style", "textarea", "pre", "code", "option"];
+  optionsCopy.ignoredClasses = optionsCopy.ignoredClasses || [];
+  optionsCopy.errorCallback = optionsCopy.errorCallback || console.error; // Enable sharing of global macros defined via `\gdef` between different
+  // math elements within a single call to `renderMathInElement`.
 
-    optionsCopy.macros = optionsCopy.macros || {};
-    renderElem(elem, optionsCopy);
+  optionsCopy.macros = optionsCopy.macros || {};
+  renderElem(elem, optionsCopy);
 };
 
-export {renderMathInElement as default};
+export { renderMathInElement as default };

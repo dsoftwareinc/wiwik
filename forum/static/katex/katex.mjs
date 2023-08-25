@@ -15,7 +15,6 @@ class SourceLocation {
     this.start = start;
     this.end = end;
   }
-
   /**
    * Merges two `SourceLocation`s from location providers, given they are
    * provided in order of appearance.
@@ -60,7 +59,7 @@ class Token {
   // don't expand the token
   // used in \noexpand
   constructor(text, // the text of this token
-              loc) {
+  loc) {
     this.text = void 0;
     this.loc = void 0;
     this.noexpand = void 0;
@@ -68,7 +67,6 @@ class Token {
     this.text = text;
     this.loc = loc;
   }
-
   /**
    * Given a pair of tokens (this and endToken), compute a `Token` encompassing
    * the whole input range enclosed by these two.
@@ -76,7 +74,7 @@ class Token {
 
 
   range(endToken, // last token of the range, inclusive
-        text // the text of the newly constructed token
+  text // the text of the newly constructed token
   ) {
     return new Token(text, SourceLocation.range(this, endToken));
   }
@@ -92,13 +90,19 @@ class Token {
  * about where in the source string the problem occurred.
  */
 class ParseError {
-  // Error position based on passed-in Token or ParseNode.
+  // Error start position based on passed-in Token or ParseNode.
+  // Length of affected text based on passed-in Token or ParseNode.
+  // The underlying error message without any context added.
   constructor(message, // The error message
-              token // An object providing position information
+  token // An object providing position information
   ) {
+    this.name = void 0;
     this.position = void 0;
+    this.length = void 0;
+    this.rawMessage = void 0;
     var error = "KaTeX parse error: " + message;
     var start;
+    var end;
     var loc = token && token.loc;
 
     if (loc && loc.start <= loc.end) {
@@ -107,7 +111,7 @@ class ParseError {
       var input = loc.lexer.input; // Prepend some information
 
       start = loc.start;
-      var end = loc.end;
+      end = loc.end;
 
       if (start === input.length) {
         error += " at end of input: ";
@@ -137,14 +141,20 @@ class ParseError {
       error += left + underlined + right;
     } // Some hackery to make ParseError a prototype of Error
     // See http://stackoverflow.com/a/8460753
+    // $FlowFixMe
 
 
     var self = new Error(error);
     self.name = "ParseError"; // $FlowFixMe
 
-    self.__proto__ = ParseError.prototype; // $FlowFixMe
-
+    self.__proto__ = ParseError.prototype;
     self.position = start;
+
+    if (start != null && end != null) {
+      self.length = end - start;
+    }
+
+    self.rawMessage = message;
     return self;
   }
 
@@ -423,7 +433,6 @@ class Settings {
       }
     }
   }
-
   /**
    * Report nonstrict (non-LaTeX-compatible) input.
    * Can safely not be called if `this.strict` is false in JavaScript.
@@ -450,7 +459,6 @@ class Settings {
       typeof console !== "undefined" && console.warn("LaTeX-incompatible input and strict mode is set to " + ("unrecognized '" + strict + "': " + errorMsg + " [" + errorCode + "]"));
     }
   }
-
   /**
    * Check whether to apply strict (LaTeX-adhering) behavior for unusual
    * input (like `\\`).  Unlike `nonstrict`, will not throw an error;
@@ -489,7 +497,6 @@ class Settings {
       return false;
     }
   }
-
   /**
    * Check whether to test potentially dangerous input, and return
    * `true` (trusted) or `false` (untrusted).  The sole argument `context`
@@ -532,7 +539,6 @@ class Style {
     this.size = size;
     this.cramped = cramped;
   }
-
   /**
    * Get the style of a superscript given a base in the current style.
    */
@@ -541,7 +547,6 @@ class Style {
   sup() {
     return styles[sup[this.id]];
   }
-
   /**
    * Get the style of a subscript given a base in the current style.
    */
@@ -550,7 +555,6 @@ class Style {
   sub() {
     return styles[sub[this.id]];
   }
-
   /**
    * Get the style of a fraction numerator given the fraction in the current
    * style.
@@ -560,7 +564,6 @@ class Style {
   fracNum() {
     return styles[fracNum[this.id]];
   }
-
   /**
    * Get the style of a fraction denominator given the fraction in the current
    * style.
@@ -570,7 +573,6 @@ class Style {
   fracDen() {
     return styles[fracDen[this.id]];
   }
-
   /**
    * Get the cramped version of a style (in particular, cramping a cramped style
    * doesn't change the style).
@@ -580,7 +582,6 @@ class Style {
   cramp() {
     return styles[cramp[this.id]];
   }
-
   /**
    * Get a text or display version of this style.
    */
@@ -589,7 +590,6 @@ class Style {
   text() {
     return styles[text$1[this.id]];
   }
-
   /**
    * Return true if this style is tightly spaced (scriptstyle/scriptscriptstyle)
    */
@@ -651,7 +651,7 @@ var scriptData = [{
   // Needed for Czech, Hungarian and Turkish text, for example.
   name: 'latin',
   blocks: [[0x0100, 0x024f], // Latin Extended-A and Latin Extended-B
-    [0x0300, 0x036f] // Combining Diacritical marks
+  [0x0300, 0x036f] // Combining Diacritical marks
   ]
 }, {
   // The Cyrillic script used by Russian and related languages.
@@ -689,9 +689,9 @@ var scriptData = [{
   // The "k" in cjk is for Korean, but we've separated Korean out
   name: "cjk",
   blocks: [[0x3000, 0x30FF], // CJK symbols and punctuation, Hiragana, Katakana
-    [0x4E00, 0x9FAF], // CJK ideograms
-    [0xFF00, 0xFF60] // Fullwidth punctuation
-    // TODO: add halfwidth Katakana and Romanji glyphs
+  [0x4E00, 0x9FAF], // CJK ideograms
+  [0xFF00, 0xFF60] // Fullwidth punctuation
+  // TODO: add halfwidth Katakana and Romanji glyphs
   ]
 }, {
   // Korean
@@ -749,49 +749,49 @@ function supportedCodepoint(codepoint) {
  * It's a storehouse of path geometry for SVG images.
  */
 // In all paths below, the viewBox-to-em scale is 1000:1.
-var hLinePad = 80; // padding above a sqrt viniculum. Prevents image cropping.
-// The viniculum of a \sqrt can be made thicker by a KaTeX rendering option.
-// Think of variable extraViniculum as two detours in the SVG path.
-// The detour begins at the lower left of the area labeled extraViniculum below.
-// The detour proceeds one extraViniculum distance up and slightly to the right,
-// displacing the radiused corner between surd and viniculum. The radius is
+var hLinePad = 80; // padding above a sqrt vinculum. Prevents image cropping.
+// The vinculum of a \sqrt can be made thicker by a KaTeX rendering option.
+// Think of variable extraVinculum as two detours in the SVG path.
+// The detour begins at the lower left of the area labeled extraVinculum below.
+// The detour proceeds one extraVinculum distance up and slightly to the right,
+// displacing the radiused corner between surd and vinculum. The radius is
 // traversed as usual, then the detour resumes. It goes right, to the end of
-// the very long viniculumn, then down one extraViniculum distance,
+// the very long vinculum, then down one extraVinculum distance,
 // after which it resumes regular path geometry for the radical.
 
-/*                                                  viniculum
+/*                                                  vinculum
                                                    /
-         /▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒←extraViniculum
-        / █████████████████████←0.04em (40 unit) std viniculum thickness
+         /▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒←extraVinculum
+        / █████████████████████←0.04em (40 unit) std vinculum thickness
        / /
       / /
      / /\
     / / surd
 */
 
-var sqrtMain = function sqrtMain(extraViniculum, hLinePad) {
+var sqrtMain = function sqrtMain(extraVinculum, hLinePad) {
   // sqrtMain path geometry is from glyph U221A in the font KaTeX Main
-  return "M95," + (622 + extraViniculum + hLinePad) + "\nc-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14\nc0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54\nc44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10\ns173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429\nc69,-144,104.5,-217.7,106.5,-221\nl" + extraViniculum / 2.075 + " -" + extraViniculum + "\nc5.3,-9.3,12,-14,20,-14\nH400000v" + (40 + extraViniculum) + "H845.2724\ns-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7\nc-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z\nM" + (834 + extraViniculum) + " " + hLinePad + "h400000v" + (40 + extraViniculum) + "h-400000z";
+  return "M95," + (622 + extraVinculum + hLinePad) + "\nc-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14\nc0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54\nc44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10\ns173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429\nc69,-144,104.5,-217.7,106.5,-221\nl" + extraVinculum / 2.075 + " -" + extraVinculum + "\nc5.3,-9.3,12,-14,20,-14\nH400000v" + (40 + extraVinculum) + "H845.2724\ns-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7\nc-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z\nM" + (834 + extraVinculum) + " " + hLinePad + "h400000v" + (40 + extraVinculum) + "h-400000z";
 };
 
-var sqrtSize1 = function sqrtSize1(extraViniculum, hLinePad) {
+var sqrtSize1 = function sqrtSize1(extraVinculum, hLinePad) {
   // size1 is from glyph U221A in the font KaTeX_Size1-Regular
-  return "M263," + (601 + extraViniculum + hLinePad) + "c0.7,0,18,39.7,52,119\nc34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120\nc340,-704.7,510.7,-1060.3,512,-1067\nl" + extraViniculum / 2.084 + " -" + extraViniculum + "\nc4.7,-7.3,11,-11,19,-11\nH40000v" + (40 + extraViniculum) + "H1012.3\ns-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232\nc-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1\ns-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26\nc-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z\nM" + (1001 + extraViniculum) + " " + hLinePad + "h400000v" + (40 + extraViniculum) + "h-400000z";
+  return "M263," + (601 + extraVinculum + hLinePad) + "c0.7,0,18,39.7,52,119\nc34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120\nc340,-704.7,510.7,-1060.3,512,-1067\nl" + extraVinculum / 2.084 + " -" + extraVinculum + "\nc4.7,-7.3,11,-11,19,-11\nH40000v" + (40 + extraVinculum) + "H1012.3\ns-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232\nc-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1\ns-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26\nc-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z\nM" + (1001 + extraVinculum) + " " + hLinePad + "h400000v" + (40 + extraVinculum) + "h-400000z";
 };
 
-var sqrtSize2 = function sqrtSize2(extraViniculum, hLinePad) {
+var sqrtSize2 = function sqrtSize2(extraVinculum, hLinePad) {
   // size2 is from glyph U221A in the font KaTeX_Size2-Regular
-  return "M983 " + (10 + extraViniculum + hLinePad) + "\nl" + extraViniculum / 3.13 + " -" + extraViniculum + "\nc4,-6.7,10,-10,18,-10 H400000v" + (40 + extraViniculum) + "\nH1013.1s-83.4,268,-264.1,840c-180.7,572,-277,876.3,-289,913c-4.7,4.7,-12.7,7,-24,7\ns-12,0,-12,0c-1.3,-3.3,-3.7,-11.7,-7,-25c-35.3,-125.3,-106.7,-373.3,-214,-744\nc-10,12,-21,25,-33,39s-32,39,-32,39c-6,-5.3,-15,-14,-27,-26s25,-30,25,-30\nc26.7,-32.7,52,-63,76,-91s52,-60,52,-60s208,722,208,722\nc56,-175.3,126.3,-397.3,211,-666c84.7,-268.7,153.8,-488.2,207.5,-658.5\nc53.7,-170.3,84.5,-266.8,92.5,-289.5z\nM" + (1001 + extraViniculum) + " " + hLinePad + "h400000v" + (40 + extraViniculum) + "h-400000z";
+  return "M983 " + (10 + extraVinculum + hLinePad) + "\nl" + extraVinculum / 3.13 + " -" + extraVinculum + "\nc4,-6.7,10,-10,18,-10 H400000v" + (40 + extraVinculum) + "\nH1013.1s-83.4,268,-264.1,840c-180.7,572,-277,876.3,-289,913c-4.7,4.7,-12.7,7,-24,7\ns-12,0,-12,0c-1.3,-3.3,-3.7,-11.7,-7,-25c-35.3,-125.3,-106.7,-373.3,-214,-744\nc-10,12,-21,25,-33,39s-32,39,-32,39c-6,-5.3,-15,-14,-27,-26s25,-30,25,-30\nc26.7,-32.7,52,-63,76,-91s52,-60,52,-60s208,722,208,722\nc56,-175.3,126.3,-397.3,211,-666c84.7,-268.7,153.8,-488.2,207.5,-658.5\nc53.7,-170.3,84.5,-266.8,92.5,-289.5z\nM" + (1001 + extraVinculum) + " " + hLinePad + "h400000v" + (40 + extraVinculum) + "h-400000z";
 };
 
-var sqrtSize3 = function sqrtSize3(extraViniculum, hLinePad) {
+var sqrtSize3 = function sqrtSize3(extraVinculum, hLinePad) {
   // size3 is from glyph U221A in the font KaTeX_Size3-Regular
-  return "M424," + (2398 + extraViniculum + hLinePad) + "\nc-1.3,-0.7,-38.5,-172,-111.5,-514c-73,-342,-109.8,-513.3,-110.5,-514\nc0,-2,-10.7,14.3,-32,49c-4.7,7.3,-9.8,15.7,-15.5,25c-5.7,9.3,-9.8,16,-12.5,20\ns-5,7,-5,7c-4,-3.3,-8.3,-7.7,-13,-13s-13,-13,-13,-13s76,-122,76,-122s77,-121,77,-121\ns209,968,209,968c0,-2,84.7,-361.7,254,-1079c169.3,-717.3,254.7,-1077.7,256,-1081\nl" + extraViniculum / 4.223 + " -" + extraViniculum + "c4,-6.7,10,-10,18,-10 H400000\nv" + (40 + extraViniculum) + "H1014.6\ns-87.3,378.7,-272.6,1166c-185.3,787.3,-279.3,1182.3,-282,1185\nc-2,6,-10,9,-24,9\nc-8,0,-12,-0.7,-12,-2z M" + (1001 + extraViniculum) + " " + hLinePad + "\nh400000v" + (40 + extraViniculum) + "h-400000z";
+  return "M424," + (2398 + extraVinculum + hLinePad) + "\nc-1.3,-0.7,-38.5,-172,-111.5,-514c-73,-342,-109.8,-513.3,-110.5,-514\nc0,-2,-10.7,14.3,-32,49c-4.7,7.3,-9.8,15.7,-15.5,25c-5.7,9.3,-9.8,16,-12.5,20\ns-5,7,-5,7c-4,-3.3,-8.3,-7.7,-13,-13s-13,-13,-13,-13s76,-122,76,-122s77,-121,77,-121\ns209,968,209,968c0,-2,84.7,-361.7,254,-1079c169.3,-717.3,254.7,-1077.7,256,-1081\nl" + extraVinculum / 4.223 + " -" + extraVinculum + "c4,-6.7,10,-10,18,-10 H400000\nv" + (40 + extraVinculum) + "H1014.6\ns-87.3,378.7,-272.6,1166c-185.3,787.3,-279.3,1182.3,-282,1185\nc-2,6,-10,9,-24,9\nc-8,0,-12,-0.7,-12,-2z M" + (1001 + extraVinculum) + " " + hLinePad + "\nh400000v" + (40 + extraVinculum) + "h-400000z";
 };
 
-var sqrtSize4 = function sqrtSize4(extraViniculum, hLinePad) {
+var sqrtSize4 = function sqrtSize4(extraVinculum, hLinePad) {
   // size4 is from glyph U221A in the font KaTeX_Size4-Regular
-  return "M473," + (2713 + extraViniculum + hLinePad) + "\nc339.3,-1799.3,509.3,-2700,510,-2702 l" + extraViniculum / 5.298 + " -" + extraViniculum + "\nc3.3,-7.3,9.3,-11,18,-11 H400000v" + (40 + extraViniculum) + "H1017.7\ns-90.5,478,-276.2,1466c-185.7,988,-279.5,1483,-281.5,1485c-2,6,-10,9,-24,9\nc-8,0,-12,-0.7,-12,-2c0,-1.3,-5.3,-32,-16,-92c-50.7,-293.3,-119.7,-693.3,-207,-1200\nc0,-1.3,-5.3,8.7,-16,30c-10.7,21.3,-21.3,42.7,-32,64s-16,33,-16,33s-26,-26,-26,-26\ns76,-153,76,-153s77,-151,77,-151c0.7,0.7,35.7,202,105,604c67.3,400.7,102,602.7,104,\n606zM" + (1001 + extraViniculum) + " " + hLinePad + "h400000v" + (40 + extraViniculum) + "H1017.7z";
+  return "M473," + (2713 + extraVinculum + hLinePad) + "\nc339.3,-1799.3,509.3,-2700,510,-2702 l" + extraVinculum / 5.298 + " -" + extraVinculum + "\nc3.3,-7.3,9.3,-11,18,-11 H400000v" + (40 + extraVinculum) + "H1017.7\ns-90.5,478,-276.2,1466c-185.7,988,-279.5,1483,-281.5,1485c-2,6,-10,9,-24,9\nc-8,0,-12,-0.7,-12,-2c0,-1.3,-5.3,-32,-16,-92c-50.7,-293.3,-119.7,-693.3,-207,-1200\nc0,-1.3,-5.3,8.7,-16,30c-10.7,21.3,-21.3,42.7,-32,64s-16,33,-16,33s-26,-26,-26,-26\ns76,-153,76,-153s77,-151,77,-151c0.7,0.7,35.7,202,105,604c67.3,400.7,102,602.7,104,\n606zM" + (1001 + extraVinculum) + " " + hLinePad + "h400000v" + (40 + extraVinculum) + "H1017.7z";
 };
 
 var phasePath = function phasePath(y) {
@@ -800,43 +800,43 @@ var phasePath = function phasePath(y) {
   return "M400000 " + y + " H0 L" + x + " 0 l65 45 L145 " + (y - 80) + " H400000z";
 };
 
-var sqrtTall = function sqrtTall(extraViniculum, hLinePad, viewBoxHeight) {
+var sqrtTall = function sqrtTall(extraVinculum, hLinePad, viewBoxHeight) {
   // sqrtTall is from glyph U23B7 in the font KaTeX_Size4-Regular
-  // One path edge has a variable length. It runs vertically from the viniculumn
-  // to a point near (14 units) the bottom of the surd. The viniculum
+  // One path edge has a variable length. It runs vertically from the vinculum
+  // to a point near (14 units) the bottom of the surd. The vinculum
   // is normally 40 units thick. So the length of the line in question is:
-  var vertSegment = viewBoxHeight - 54 - hLinePad - extraViniculum;
-  return "M702 " + (extraViniculum + hLinePad) + "H400000" + (40 + extraViniculum) + "\nH742v" + vertSegment + "l-4 4-4 4c-.667.7 -2 1.5-4 2.5s-4.167 1.833-6.5 2.5-5.5 1-9.5 1\nh-12l-28-84c-16.667-52-96.667 -294.333-240-727l-212 -643 -85 170\nc-4-3.333-8.333-7.667-13 -13l-13-13l77-155 77-156c66 199.333 139 419.667\n219 661 l218 661zM702 " + hLinePad + "H400000v" + (40 + extraViniculum) + "H742z";
+  var vertSegment = viewBoxHeight - 54 - hLinePad - extraVinculum;
+  return "M702 " + (extraVinculum + hLinePad) + "H400000" + (40 + extraVinculum) + "\nH742v" + vertSegment + "l-4 4-4 4c-.667.7 -2 1.5-4 2.5s-4.167 1.833-6.5 2.5-5.5 1-9.5 1\nh-12l-28-84c-16.667-52-96.667 -294.333-240-727l-212 -643 -85 170\nc-4-3.333-8.333-7.667-13 -13l-13-13l77-155 77-156c66 199.333 139 419.667\n219 661 l218 661zM702 " + hLinePad + "H400000v" + (40 + extraVinculum) + "H742z";
 };
 
-var sqrtPath = function sqrtPath(size, extraViniculum, viewBoxHeight) {
-  extraViniculum = 1000 * extraViniculum; // Convert from document ems to viewBox.
+var sqrtPath = function sqrtPath(size, extraVinculum, viewBoxHeight) {
+  extraVinculum = 1000 * extraVinculum; // Convert from document ems to viewBox.
 
   var path = "";
 
   switch (size) {
     case "sqrtMain":
-      path = sqrtMain(extraViniculum, hLinePad);
+      path = sqrtMain(extraVinculum, hLinePad);
       break;
 
     case "sqrtSize1":
-      path = sqrtSize1(extraViniculum, hLinePad);
+      path = sqrtSize1(extraVinculum, hLinePad);
       break;
 
     case "sqrtSize2":
-      path = sqrtSize2(extraViniculum, hLinePad);
+      path = sqrtSize2(extraVinculum, hLinePad);
       break;
 
     case "sqrtSize3":
-      path = sqrtSize3(extraViniculum, hLinePad);
+      path = sqrtSize3(extraVinculum, hLinePad);
       break;
 
     case "sqrtSize4":
-      path = sqrtSize4(extraViniculum, hLinePad);
+      path = sqrtSize4(extraVinculum, hLinePad);
       break;
 
     case "sqrtTall":
-      path = sqrtTall(extraViniculum, hLinePad, viewBoxHeight);
+      path = sqrtTall(extraVinculum, hLinePad, viewBoxHeight);
   }
 
   return path;
@@ -942,7 +942,7 @@ var path = {
   widecheck4: "M1181,340h2l1171,-296c6,0,10,-5,10,-11l-2,-23c-1,-6,-5,-10,\n-11,-10h-1l-1168,273l-1167,-273h-1c-6,0,-10,4,-11,10l-2,23c-1,6,4,11,10,11z",
   // The next ten paths support reaction arrows from the mhchem package.
   // Arrows for \ce{<-->} are offset from xAxis by 0.22ex, per mhchem in LaTeX
-  // baraboveleftarrow is mostly from from glyph U+2190 in font KaTeX Main
+  // baraboveleftarrow is mostly from glyph U+2190 in font KaTeX Main
   baraboveleftarrow: "M400000 620h-399890l3 -3c68.7 -52.7 113.7 -120 135 -202\nc4 -14.7 6 -23 6 -25c0 -7.3 -7 -11 -21 -11c-8 0 -13.2 0.8 -15.5 2.5\nc-2.3 1.7 -4.2 5.8 -5.5 12.5c-1.3 4.7 -2.7 10.3 -4 17c-12 48.7 -34.8 92 -68.5 130\ns-74.2 66.3 -121.5 85c-10 4 -16 7.7 -18 11c0 8.7 6 14.3 18 17c47.3 18.7 87.8 47\n121.5 85s56.5 81.3 68.5 130c0.7 2 1.3 5 2 9s1.2 6.7 1.5 8c0.3 1.3 1 3.3 2 6\ns2.2 4.5 3.5 5.5c1.3 1 3.3 1.8 6 2.5s6 1 10 1c14 0 21 -3.7 21 -11\nc0 -2 -2 -10.3 -6 -25c-20 -79.3 -65 -146.7 -135 -202l-3 -3h399890z\nM100 620v40h399900v-40z M0 241v40h399900v-40zM0 241v40h399900v-40z",
   // rightarrowabovebar is mostly from glyph U+2192, KaTeX Main
   rightarrowabovebar: "M0 241v40h399891c-47.3 35.3-84 78-110 128-16.7 32\n-27.7 63.7-33 95 0 1.3-.2 2.7-.5 4-.3 1.3-.5 2.3-.5 3 0 7.3 6.7 11 20 11 8 0\n13.2-.8 15.5-2.5 2.3-1.7 4.2-5.5 5.5-11.5 2-13.3 5.7-27 11-41 14.7-44.7 39\n-84.5 73-119.5s73.7-60.2 119-75.5c6-2 9-5.7 9-11s-3-9-9-11c-45.3-15.3-85-40.5\n-119-75.5s-58.3-74.8-73-119.5c-4.7-14-8.3-27.3-11-40-1.3-6.7-3.2-10.8-5.5\n-12.5-2.3-1.7-7.5-2.5-15.5-2.5-14 0-21 3.7-21 11 0 2 2 10.3 6 25 20.7 83.3 67\n151.7 139 205zm96 379h399894v40H0zm0 0h399904v40H0z",
@@ -1017,7 +1017,6 @@ class DocumentFragment {
   hasClass(className) {
     return utils.contains(this.classes, className);
   }
-
   /** Convert the fragment into a node. */
 
 
@@ -1030,7 +1029,6 @@ class DocumentFragment {
 
     return frag;
   }
-
   /** Convert the fragment into HTML markup. */
 
 
@@ -1043,7 +1041,6 @@ class DocumentFragment {
 
     return markup;
   }
-
   /**
    * Converts the math node into a string, similar to innerText. Applies to
    * MathDomNode's only.
@@ -3148,9 +3145,9 @@ var fontMetricsData = {
 // In TeX, there are actually three sets of dimensions, one for each of
 // textstyle (size index 5 and higher: >=9pt), scriptstyle (size index 3 and 4:
 // 7-8pt), and scriptscriptstyle (size index 1 and 2: 5-6pt).  These are
-// provided in the the arrays below, in that order.
+// provided in the arrays below, in that order.
 //
-// The font metrics are stored in fonts cmsy10, cmsy7, and cmsy5 respsectively.
+// The font metrics are stored in fonts cmsy10, cmsy7, and cmsy5 respectively.
 // This was determined by running the following script:
 //
 //     latex -interaction=nonstopmode \
@@ -3160,7 +3157,7 @@ var fontMetricsData = {
 //     '\expandafter\show\the\scriptscriptfont2' \
 //     '\stop'
 //
-// The metrics themselves were retreived using the following commands:
+// The metrics themselves were retrieved using the following commands:
 //
 //     tftopl cmsy10
 //     tftopl cmsy7
@@ -3367,7 +3364,7 @@ function getCharacterMetrics(character, font, mode) {
     // So if the character is in a script we support but we
     // don't have metrics for it, just use the metrics for
     // the Latin capital letter M. This is close enough because
-    // we (currently) only care about the height of the glpyh
+    // we (currently) only care about the height of the glyph
     // not its width.
     if (supportedCodepoint(ch)) {
       metrics = fontMetricsData[font][77]; // 77 is the charcode for 'M'
@@ -3423,21 +3420,21 @@ function getGlobalMetrics(size) {
  */
 var sizeStyleMap = [// Each element contains [textsize, scriptsize, scriptscriptsize].
 // The size mappings are taken from TeX with \normalsize=10pt.
-  [1, 1, 1], // size1: [5, 5, 5]              \tiny
-  [2, 1, 1], // size2: [6, 5, 5]
-  [3, 1, 1], // size3: [7, 5, 5]              \scriptsize
-  [4, 2, 1], // size4: [8, 6, 5]              \footnotesize
-  [5, 2, 1], // size5: [9, 6, 5]              \small
-  [6, 3, 1], // size6: [10, 7, 5]             \normalsize
-  [7, 4, 2], // size7: [12, 8, 6]             \large
-  [8, 6, 3], // size8: [14.4, 10, 7]          \Large
-  [9, 7, 6], // size9: [17.28, 12, 10]        \LARGE
-  [10, 8, 7], // size10: [20.74, 14.4, 12]     \huge
-  [11, 10, 9] // size11: [24.88, 20.74, 17.28] \HUGE
+[1, 1, 1], // size1: [5, 5, 5]              \tiny
+[2, 1, 1], // size2: [6, 5, 5]
+[3, 1, 1], // size3: [7, 5, 5]              \scriptsize
+[4, 2, 1], // size4: [8, 6, 5]              \footnotesize
+[5, 2, 1], // size5: [9, 6, 5]              \small
+[6, 3, 1], // size6: [10, 7, 5]             \normalsize
+[7, 4, 2], // size7: [12, 8, 6]             \large
+[8, 6, 3], // size8: [14.4, 10, 7]          \Large
+[9, 7, 6], // size9: [17.28, 12, 10]        \LARGE
+[10, 8, 7], // size10: [20.74, 14.4, 12]     \huge
+[11, 10, 9] // size11: [24.88, 20.74, 17.28] \HUGE
 ];
 var sizeMultipliers = [// fontMetrics.js:getGlobalMetrics also uses size indexes, so if
 // you change size indexes, change that function.
-  0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.728, 2.074, 2.488];
+0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.2, 1.44, 1.728, 2.074, 2.488];
 
 var sizeAtStyle = function sizeAtStyle(size, style) {
   return style.size < 2 ? size : sizeStyleMap[size - 1][style.size - 1];
@@ -3487,7 +3484,6 @@ class Options {
     this.minRuleThickness = data.minRuleThickness;
     this._fontMetrics = undefined;
   }
-
   /**
    * Returns a new options object with the same properties as "this".  Properties
    * from "extension" will be copied to the new options object.
@@ -3517,7 +3513,6 @@ class Options {
 
     return new Options(data);
   }
-
   /**
    * Return an options object with the given style. If `this.style === style`,
    * returns `this`.
@@ -3534,7 +3529,6 @@ class Options {
       });
     }
   }
-
   /**
    * Return an options object with a cramped version of the current style. If
    * the current style is cramped, returns `this`.
@@ -3544,7 +3538,6 @@ class Options {
   havingCrampedStyle() {
     return this.havingStyle(this.style.cramp());
   }
-
   /**
    * Return an options object with the given size and in at least `\textstyle`.
    * Returns `this` if appropriate.
@@ -3563,7 +3556,6 @@ class Options {
       });
     }
   }
-
   /**
    * Like `this.havingSize(BASESIZE).havingStyle(style)`. If `style` is omitted,
    * changes to at least `\textstyle`.
@@ -3583,7 +3575,6 @@ class Options {
       });
     }
   }
-
   /**
    * Remove the effect of sizing changes such as \Huge.
    * Keep the effect of the current style, such as \scriptstyle.
@@ -3608,7 +3599,7 @@ class Options {
 
       default:
         size = 6;
-        // normalsize in textstyle or displaystyle
+      // normalsize in textstyle or displaystyle
     }
 
     return this.extend({
@@ -3616,7 +3607,6 @@ class Options {
       size: size
     });
   }
-
   /**
    * Create a new options object with the given color.
    */
@@ -3627,7 +3617,6 @@ class Options {
       color: color
     });
   }
-
   /**
    * Create a new options object with "phantom" set to true.
    */
@@ -3638,7 +3627,6 @@ class Options {
       phantom: true
     });
   }
-
   /**
    * Creates a new options object with the given math font or old text font.
    * @type {[type]}
@@ -3650,7 +3638,6 @@ class Options {
       font
     });
   }
-
   /**
    * Create a new options objects with the given fontFamily.
    */
@@ -3662,7 +3649,6 @@ class Options {
       font: ""
     });
   }
-
   /**
    * Creates a new options object with the given font weight
    */
@@ -3674,7 +3660,6 @@ class Options {
       font: ""
     });
   }
-
   /**
    * Creates a new options object with the given font weight
    */
@@ -3686,7 +3671,6 @@ class Options {
       font: ""
     });
   }
-
   /**
    * Return the CSS sizing classes required to switch from enclosing options
    * `oldOptions` to `this`. Returns an array of classes.
@@ -3700,7 +3684,6 @@ class Options {
       return [];
     }
   }
-
   /**
    * Return the CSS sizing classes required to switch to the base size. Like
    * `this.havingSize(BASESIZE).sizingClasses(this)`.
@@ -3714,7 +3697,6 @@ class Options {
       return [];
     }
   }
-
   /**
    * Return the font metrics for this size.
    */
@@ -3727,7 +3709,6 @@ class Options {
 
     return this._fontMetrics;
   }
-
   /**
    * Gets the CSS color of the current options object
    */
@@ -3812,8 +3793,8 @@ var calculateSize = function calculateSize(sizeValue, options) {
   if (sizeValue.unit in ptPerUnit) {
     // Absolute units
     scale = ptPerUnit[sizeValue.unit] // Convert unit to pt
-        / options.fontMetrics().ptPerEm // Convert pt to CSS em
-        / options.sizeMultiplier; // Unscale to make absolute units
+    / options.fontMetrics().ptPerEm // Convert pt to CSS em
+    / options.sizeMultiplier; // Unscale to make absolute units
   } else if (sizeValue.unit === "mu") {
     // `mu` units scale with scriptstyle/scriptscriptstyle.
     scale = options.fontMetrics().cssEmPerMu;
@@ -4002,7 +3983,6 @@ class Span {
     initNode.call(this, classes, options, style);
     this.children = children || [];
   }
-
   /**
    * Sets an arbitrary attribute on the span. Warning: use this wisely. Not
    * all browsers support attributes the same, and having too many custom
@@ -4027,7 +4007,6 @@ class Span {
   }
 
 }
-
 /**
  * This node represents an anchor (<a>) element with a hyperlink.  See `span`
  * for further details.
@@ -4064,7 +4043,6 @@ class Anchor {
   }
 
 }
-
 /**
  * This node represents an image embed (<img>) element.
  */
@@ -4131,7 +4109,6 @@ var iCombinations = {
   // 'ī': '\u0131\u0304', // enable when we add Extended Latin
   'ì': '\u0131\u0300'
 };
-
 /**
  * A symbol node contains information about a single symbol. It either renders
  * to a single text node, or a span with a single text node in it, depending on
@@ -4180,7 +4157,6 @@ class SymbolNode {
   hasClass(className) {
     return utils.contains(this.classes, className);
   }
-
   /**
    * Creates a text node or span from a symbol node. Note that a span is only
    * created if it is needed.
@@ -4216,7 +4192,6 @@ class SymbolNode {
       return node;
     }
   }
-
   /**
    * Creates markup for a symbol node.
    */
@@ -4265,7 +4240,6 @@ class SymbolNode {
   }
 
 }
-
 /**
  * SVG nodes are used to render stretchy wide elements.
  */
@@ -4315,7 +4289,6 @@ class SvgNode {
   }
 
 }
-
 class PathNode {
   constructor(pathName, alternate) {
     this.pathName = void 0;
@@ -4346,7 +4319,6 @@ class PathNode {
   }
 
 }
-
 class LineNode {
   constructor(attributes) {
     this.attributes = void 0;
@@ -4401,10 +4373,10 @@ function assertSpan(group) {
  *
  * For each of the symbols, there are three properties they can have:
  * - font (required): the font to be used for this symbol. Either "main" (the
- normal font), or "ams" (the ams fonts).
+     normal font), or "ams" (the ams fonts).
  * - group (required): the ParseNode group type the symbol should have (i.e.
- "textord", "mathord", etc).
- See https://github.com/KaTeX/KaTeX/wiki/Examining-TeX#group-types
+     "textord", "mathord", etc).
+     See https://github.com/KaTeX/KaTeX/wiki/Examining-TeX#group-types
  * - replace: the character that this symbol or function should be
  *   replaced with (i.e. "\phi" has a replace value of "\u03d5", the phi
  *   character in the main font).
@@ -5290,39 +5262,39 @@ for (var _i5 = 0; _i5 < extraLatin.length; _i5++) {
  */
 
 var wideLatinLetterData = [["mathbf", "textbf", "Main-Bold"], // A-Z bold upright
-  ["mathbf", "textbf", "Main-Bold"], // a-z bold upright
-  ["mathnormal", "textit", "Math-Italic"], // A-Z italic
-  ["mathnormal", "textit", "Math-Italic"], // a-z italic
-  ["boldsymbol", "boldsymbol", "Main-BoldItalic"], // A-Z bold italic
-  ["boldsymbol", "boldsymbol", "Main-BoldItalic"], // a-z bold italic
+["mathbf", "textbf", "Main-Bold"], // a-z bold upright
+["mathnormal", "textit", "Math-Italic"], // A-Z italic
+["mathnormal", "textit", "Math-Italic"], // a-z italic
+["boldsymbol", "boldsymbol", "Main-BoldItalic"], // A-Z bold italic
+["boldsymbol", "boldsymbol", "Main-BoldItalic"], // a-z bold italic
 // Map fancy A-Z letters to script, not calligraphic.
 // This aligns with unicode-math and math fonts (except Cambria Math).
-  ["mathscr", "textscr", "Script-Regular"], // A-Z script
-  ["", "", ""], // a-z script.  No font
-  ["", "", ""], // A-Z bold script. No font
-  ["", "", ""], // a-z bold script. No font
-  ["mathfrak", "textfrak", "Fraktur-Regular"], // A-Z Fraktur
-  ["mathfrak", "textfrak", "Fraktur-Regular"], // a-z Fraktur
-  ["mathbb", "textbb", "AMS-Regular"], // A-Z double-struck
-  ["mathbb", "textbb", "AMS-Regular"], // k double-struck
-  ["", "", ""], // A-Z bold Fraktur No font metrics
-  ["", "", ""], // a-z bold Fraktur.   No font.
-  ["mathsf", "textsf", "SansSerif-Regular"], // A-Z sans-serif
-  ["mathsf", "textsf", "SansSerif-Regular"], // a-z sans-serif
-  ["mathboldsf", "textboldsf", "SansSerif-Bold"], // A-Z bold sans-serif
-  ["mathboldsf", "textboldsf", "SansSerif-Bold"], // a-z bold sans-serif
-  ["mathitsf", "textitsf", "SansSerif-Italic"], // A-Z italic sans-serif
-  ["mathitsf", "textitsf", "SansSerif-Italic"], // a-z italic sans-serif
-  ["", "", ""], // A-Z bold italic sans. No font
-  ["", "", ""], // a-z bold italic sans. No font
-  ["mathtt", "texttt", "Typewriter-Regular"], // A-Z monospace
-  ["mathtt", "texttt", "Typewriter-Regular"] // a-z monospace
+["mathscr", "textscr", "Script-Regular"], // A-Z script
+["", "", ""], // a-z script.  No font
+["", "", ""], // A-Z bold script. No font
+["", "", ""], // a-z bold script. No font
+["mathfrak", "textfrak", "Fraktur-Regular"], // A-Z Fraktur
+["mathfrak", "textfrak", "Fraktur-Regular"], // a-z Fraktur
+["mathbb", "textbb", "AMS-Regular"], // A-Z double-struck
+["mathbb", "textbb", "AMS-Regular"], // k double-struck
+["", "", ""], // A-Z bold Fraktur No font metrics
+["", "", ""], // a-z bold Fraktur.   No font.
+["mathsf", "textsf", "SansSerif-Regular"], // A-Z sans-serif
+["mathsf", "textsf", "SansSerif-Regular"], // a-z sans-serif
+["mathboldsf", "textboldsf", "SansSerif-Bold"], // A-Z bold sans-serif
+["mathboldsf", "textboldsf", "SansSerif-Bold"], // a-z bold sans-serif
+["mathitsf", "textitsf", "SansSerif-Italic"], // A-Z italic sans-serif
+["mathitsf", "textitsf", "SansSerif-Italic"], // a-z italic sans-serif
+["", "", ""], // A-Z bold italic sans. No font
+["", "", ""], // a-z bold italic sans. No font
+["mathtt", "texttt", "Typewriter-Regular"], // A-Z monospace
+["mathtt", "texttt", "Typewriter-Regular"] // a-z monospace
 ];
 var wideNumeralData = [["mathbf", "textbf", "Main-Bold"], // 0-9 bold
-  ["", "", ""], // 0-9 double-struck. No KaTeX font.
-  ["mathsf", "textsf", "SansSerif-Regular"], // 0-9 sans-serif
-  ["mathboldsf", "textboldsf", "SansSerif-Bold"], // 0-9 bold sans-serif
-  ["mathtt", "texttt", "Typewriter-Regular"] // 0-9 monospace
+["", "", ""], // 0-9 double-struck. No KaTeX font.
+["mathsf", "textsf", "SansSerif-Regular"], // 0-9 sans-serif
+["mathboldsf", "textboldsf", "SansSerif-Bold"], // 0-9 bold sans-serif
+["mathtt", "texttt", "Typewriter-Regular"] // 0-9 monospace
 ];
 var wideCharacterFont = function wideCharacterFont(wideChar, mode) {
   // IE doesn't support codePointAt(). So work with the surrogate pair.
@@ -5362,7 +5334,7 @@ var wideCharacterFont = function wideCharacterFont(wideChar, mode) {
  * replacements defined in symbol.js
  */
 var lookupSymbol = function lookupSymbol(value, // TODO(#963): Use a union type for this.
-                                         fontName, mode) {
+fontName, mode) {
   // Replace the value with its replaced value from symbol.js
   if (symbols[mode][value] && symbols[mode][value].replace) {
     value = symbols[mode][value].replace;
@@ -5902,7 +5874,7 @@ var retrieveTextFontName = function retrieveTextFontName(fontFamily, fontWeight,
 
     default:
       baseFontName = fontFamily;
-      // use fonts added by a plugin
+    // use fonts added by a plugin
   }
 
   var fontStylesName;
@@ -6603,13 +6575,12 @@ function buildHTML(tree, options) {
  * since we're mainly using MathML to improve accessibility, we don't manage
  * any of the styling state that the plain DOM nodes do.
  *
- * The `toNode` and `toMarkup` functions work simlarly to how they do in
+ * The `toNode` and `toMarkup` functions work similarly to how they do in
  * domTree.js, creating namespaced DOM nodes and HTML text markup respectively.
  */
 function newDocumentFragment(children) {
   return new DocumentFragment(children);
 }
-
 /**
  * This node represents a general purpose MathML node of any type. The
  * constructor requires the type of node to create (for example, `"mo"` or
@@ -6627,7 +6598,6 @@ class MathNode {
     this.children = children || [];
     this.classes = classes || [];
   }
-
   /**
    * Sets an attribute on a MathML node. MathML depends on attributes to convey a
    * semantic content, so this is used heavily.
@@ -6637,7 +6607,6 @@ class MathNode {
   setAttribute(name, value) {
     this.attributes[name] = value;
   }
-
   /**
    * Gets an attribute on a MathML node.
    */
@@ -6646,7 +6615,6 @@ class MathNode {
   getAttribute(name) {
     return this.attributes[name];
   }
-
   /**
    * Converts the math node into a MathML-namespaced DOM element.
    */
@@ -6671,7 +6639,6 @@ class MathNode {
 
     return node;
   }
-
   /**
    * Converts the math node into an HTML markup string.
    */
@@ -6701,7 +6668,6 @@ class MathNode {
     markup += "</" + this.type + ">";
     return markup;
   }
-
   /**
    * Converts the math node into a string, similar to innerText, but escaped.
    */
@@ -6712,7 +6678,6 @@ class MathNode {
   }
 
 }
-
 /**
  * This node represents a piece of text.
  */
@@ -6722,7 +6687,6 @@ class TextNode {
     this.text = void 0;
     this.text = text;
   }
-
   /**
    * Converts the text node into a DOM text node.
    */
@@ -6731,7 +6695,6 @@ class TextNode {
   toNode() {
     return document.createTextNode(this.text);
   }
-
   /**
    * Converts the text node into escaped HTML markup
    * (representing the text itself).
@@ -6741,10 +6704,9 @@ class TextNode {
   toMarkup() {
     return utils.escape(this.toText());
   }
-
   /**
    * Converts the text node into a string
-   * (representing the text iteself).
+   * (representing the text itself).
    */
 
 
@@ -6753,7 +6715,6 @@ class TextNode {
   }
 
 }
-
 /**
  * This node represents a space, but may render as <mspace.../> or as text,
  * depending on the width.
@@ -6791,7 +6752,6 @@ class SpaceNode {
       this.character = null;
     }
   }
-
   /**
    * Converts the math node into a MathML-namespaced DOM element.
    */
@@ -6806,7 +6766,6 @@ class SpaceNode {
       return node;
     }
   }
-
   /**
    * Converts the math node into an HTML markup string.
    */
@@ -6819,7 +6778,6 @@ class SpaceNode {
       return "<mspace width=\"" + makeEm(this.width) + "\"/>";
     }
   }
-
   /**
    * Converts the math node into a string, similar to innerText.
    */
@@ -6843,7 +6801,7 @@ var mathMLTree = {
 };
 
 /**
- * This file converts a parse tree into a cooresponding MathML tree. The main
+ * This file converts a parse tree into a corresponding MathML tree. The main
  * entry point is the `buildMathML` function, which takes a parse tree from the
  * parser.
  */
@@ -6918,7 +6876,7 @@ var getVariant = function getVariant(group, options) {
   } else if (font === "mathfrak") {
     return "fraktur";
   } else if (font === "mathscr" || font === "mathcal") {
-    // MathML makes no distinction between script and caligrahpic
+    // MathML makes no distinction between script and calligraphic
     return "script";
   } else if (font === "mathsf") {
     return "sans-serif";
@@ -7811,9 +7769,9 @@ var paddedNode = group => {
 defineFunction({
   type: "xArrow",
   names: ["\\xleftarrow", "\\xrightarrow", "\\xLeftarrow", "\\xRightarrow", "\\xleftrightarrow", "\\xLeftrightarrow", "\\xhookleftarrow", "\\xhookrightarrow", "\\xmapsto", "\\xrightharpoondown", "\\xrightharpoonup", "\\xleftharpoondown", "\\xleftharpoonup", "\\xrightleftharpoons", "\\xleftrightharpoons", "\\xlongequal", "\\xtwoheadrightarrow", "\\xtwoheadleftarrow", "\\xtofrom", // The next 3 functions are here to support the mhchem extension.
-    // Direct use of these functions is discouraged and may break someday.
-    "\\xrightleftarrows", "\\xrightequilibrium", "\\xleftequilibrium", // The next 3 functions are here only to support the {CD} environment.
-    "\\\\cdrightarrow", "\\\\cdleftarrow", "\\\\cdlongequal"],
+  // Direct use of these functions is discouraged and may break someday.
+  "\\xrightleftarrows", "\\xrightequilibrium", "\\xleftequilibrium", // The next 3 functions are here only to support the {CD} environment.
+  "\\\\cdrightarrow", "\\\\cdleftarrow", "\\\\cdlongequal"],
   props: {
     numArgs: 1,
     numOptionalArgs: 1
@@ -7834,7 +7792,7 @@ defineFunction({
   },
 
   // Flow is unable to correctly infer the type of `group`, even though it's
-  // unamibiguously determined from the passed-in `type` above.
+  // unambiguously determined from the passed-in `type` above.
   htmlBuilder(group, options) {
     var style = options.style; // Build the argument groups in the appropriate style.
     // Ref: amsmath.dtx:   \hbox{$\scriptstyle\mkern#3mu{#6}\mkern#4mu$}%
@@ -8190,35 +8148,37 @@ function cdArrow(arrowChar, labels, parser) {
       return parser.callFunction(funcName, [labels[0]], [labels[1]]);
 
     case "\\uparrow":
-    case "\\downarrow": {
-      var leftLabel = parser.callFunction("\\\\cdleft", [labels[0]], []);
-      var bareArrow = {
-        type: "atom",
-        text: funcName,
-        mode: "math",
-        family: "rel"
-      };
-      var sizedArrow = parser.callFunction("\\Big", [bareArrow], []);
-      var rightLabel = parser.callFunction("\\\\cdright", [labels[1]], []);
-      var arrowGroup = {
-        type: "ordgroup",
-        mode: "math",
-        body: [leftLabel, sizedArrow, rightLabel]
-      };
-      return parser.callFunction("\\\\cdparent", [arrowGroup], []);
-    }
+    case "\\downarrow":
+      {
+        var leftLabel = parser.callFunction("\\\\cdleft", [labels[0]], []);
+        var bareArrow = {
+          type: "atom",
+          text: funcName,
+          mode: "math",
+          family: "rel"
+        };
+        var sizedArrow = parser.callFunction("\\Big", [bareArrow], []);
+        var rightLabel = parser.callFunction("\\\\cdright", [labels[1]], []);
+        var arrowGroup = {
+          type: "ordgroup",
+          mode: "math",
+          body: [leftLabel, sizedArrow, rightLabel]
+        };
+        return parser.callFunction("\\\\cdparent", [arrowGroup], []);
+      }
 
     case "\\\\cdlongequal":
       return parser.callFunction("\\\\cdlongequal", [], []);
 
-    case "\\Vert": {
-      var arrow = {
-        type: "textord",
-        text: "\\Vert",
-        mode: "math"
-      };
-      return parser.callFunction("\\Big", [arrow], []);
-    }
+    case "\\Vert":
+      {
+        var arrow = {
+          type: "textord",
+          text: "\\Vert",
+          mode: "math"
+        };
+        return parser.callFunction("\\Big", [arrow], []);
+      }
 
     default:
       return {
@@ -9005,10 +8965,10 @@ var makeGlyphSpan = function makeGlyphSpan(symbol, font, mode) {
   if (font === "Size1-Regular") {
     sizeClass = "delim-size1";
   } else
-      /* if (font === "Size4-Regular") */
-  {
-    sizeClass = "delim-size4";
-  }
+    /* if (font === "Size4-Regular") */
+    {
+      sizeClass = "delim-size4";
+    }
 
   var corner = buildCommon.makeSpan(["delimsizinginner", sizeClass], [buildCommon.makeSpan([], [buildCommon.makeSymbol(symbol, font, mode)])]); // Since this will be passed into `makeVList` in the end, wrap the element
   // in the appropriate tag that VList uses.
@@ -9194,7 +9154,7 @@ var makeStackedDelim = function makeStackedDelim(delim, heightTotal, center, opt
     var middleMetrics = getMetrics(middle, font, mode);
     middleHeightTotal = middleMetrics.height + middleMetrics.depth;
     middleFactor = 2; // repeat symmetrically above and below middle
-  } // Calcuate the minimal height that the delimiter can have.
+  } // Calculate the minimal height that the delimiter can have.
   // It is at least the size of the top, bottom, and optional middle combined.
 
 
@@ -9278,7 +9238,7 @@ var makeStackedDelim = function makeStackedDelim(delim, heightTotal, center, opt
     children: stack
   }, newOptions);
   return styleWrap(buildCommon.makeSpan(["delimsizing", "mult"], [inner], newOptions), Style$1.TEXT, options, classes);
-}; // All surds have 0.08em padding above the viniculum inside the SVG.
+}; // All surds have 0.08em padding above the vinculum inside the SVG.
 // That keeps browser span height rounding error from pinching the line.
 
 
@@ -9286,8 +9246,8 @@ var vbPad = 80; // padding above the surd, measured inside the viewBox.
 
 var emPad = 0.08; // padding, in ems, measured in the document.
 
-var sqrtSvg = function sqrtSvg(sqrtName, height, viewBoxHeight, extraViniculum, options) {
-  var path = sqrtPath(sqrtName, extraViniculum, viewBoxHeight);
+var sqrtSvg = function sqrtSvg(sqrtName, height, viewBoxHeight, extraVinculum, options) {
+  var path = sqrtPath(sqrtName, extraVinculum, viewBoxHeight);
   var pathNode = new PathNode(sqrtName, path);
   var svg = new SvgNode([pathNode], {
     // Note: 1000:1 ratio of viewBox to document em width.
@@ -9310,10 +9270,10 @@ var makeSqrtImage = function makeSqrtImage(height, options) {
 
   var delim = traverseSequence("\\surd", height * newOptions.sizeMultiplier, stackLargeDelimiterSequence, newOptions);
   var sizeMultiplier = newOptions.sizeMultiplier; // default
-  // The standard sqrt SVGs each have a 0.04em thick viniculum.
-  // If Settings.minRuleThickness is larger than that, we add extraViniculum.
+  // The standard sqrt SVGs each have a 0.04em thick vinculum.
+  // If Settings.minRuleThickness is larger than that, we add extraVinculum.
 
-  var extraViniculum = Math.max(0, options.minRuleThickness - options.fontMetrics().sqrtRuleThickness); // Create a span containing an SVG image of a sqrt symbol.
+  var extraVinculum = Math.max(0, options.minRuleThickness - options.fontMetrics().sqrtRuleThickness); // Create a span containing an SVG image of a sqrt symbol.
 
   var span;
   var spanHeight = 0;
@@ -9321,14 +9281,14 @@ var makeSqrtImage = function makeSqrtImage(height, options) {
   var viewBoxHeight = 0;
   var advanceWidth; // We create viewBoxes with 80 units of "padding" above each surd.
   // Then browser rounding error on the parent span height will not
-  // encroach on the ink of the viniculum. But that padding is not
+  // encroach on the ink of the vinculum. But that padding is not
   // included in the TeX-like `height` used for calculation of
   // vertical alignment. So texHeight = span.height < span.style.height.
 
   if (delim.type === "small") {
     // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
     // 1000 unit normal glyph height.
-    viewBoxHeight = 1000 + 1000 * extraViniculum + vbPad;
+    viewBoxHeight = 1000 + 1000 * extraVinculum + vbPad;
 
     if (height < 1.0) {
       sizeMultiplier = 1.0; // mimic a \textfont radical
@@ -9336,26 +9296,26 @@ var makeSqrtImage = function makeSqrtImage(height, options) {
       sizeMultiplier = 0.7; // mimic a \scriptfont radical
     }
 
-    spanHeight = (1.0 + extraViniculum + emPad) / sizeMultiplier;
-    texHeight = (1.00 + extraViniculum) / sizeMultiplier;
-    span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, extraViniculum, options);
+    spanHeight = (1.0 + extraVinculum + emPad) / sizeMultiplier;
+    texHeight = (1.00 + extraVinculum) / sizeMultiplier;
+    span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, extraVinculum, options);
     span.style.minWidth = "0.853em";
     advanceWidth = 0.833 / sizeMultiplier; // from the font.
   } else if (delim.type === "large") {
     // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
     viewBoxHeight = (1000 + vbPad) * sizeToMaxHeight[delim.size];
-    texHeight = (sizeToMaxHeight[delim.size] + extraViniculum) / sizeMultiplier;
-    spanHeight = (sizeToMaxHeight[delim.size] + extraViniculum + emPad) / sizeMultiplier;
-    span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, extraViniculum, options);
+    texHeight = (sizeToMaxHeight[delim.size] + extraVinculum) / sizeMultiplier;
+    spanHeight = (sizeToMaxHeight[delim.size] + extraVinculum + emPad) / sizeMultiplier;
+    span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight, extraVinculum, options);
     span.style.minWidth = "1.02em";
     advanceWidth = 1.0 / sizeMultiplier; // 1.0 from the font.
   } else {
     // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
     // We'll use a single SVG to accomplish the same thing.
-    spanHeight = height + extraViniculum + emPad;
-    texHeight = height + extraViniculum;
-    viewBoxHeight = Math.floor(1000 * height + extraViniculum) + vbPad;
-    span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, extraViniculum, options);
+    spanHeight = height + extraVinculum + emPad;
+    texHeight = height + extraVinculum;
+    viewBoxHeight = Math.floor(1000 * height + extraVinculum) + vbPad;
+    span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, extraVinculum, options);
     span.style.minWidth = "0.742em";
     advanceWidth = 1.056;
   }
@@ -9369,7 +9329,7 @@ var makeSqrtImage = function makeSqrtImage(height, options) {
     // This actually should depend on the chosen font -- e.g. \boldmath
     // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
     // have thicker rules.
-    ruleWidth: (options.fontMetrics().sqrtRuleThickness + extraViniculum) * sizeMultiplier
+    ruleWidth: (options.fontMetrics().sqrtRuleThickness + extraVinculum) * sizeMultiplier
   };
 }; // There are three kinds of delimiters, delimiters that stack when they become
 // too large
@@ -9567,10 +9527,10 @@ var makeCustomSizedDelim = function makeCustomSizedDelim(delim, height, center, 
   } else if (delimType.type === "large") {
     return makeLargeDelim(delim, delimType.size, center, options, mode, classes);
   } else
-      /* if (delimType.type === "stack") */
-  {
-    return makeStackedDelim(delim, height, center, options, mode, classes);
-  }
+    /* if (delimType.type === "stack") */
+    {
+      return makeStackedDelim(delim, height, center, options, mode, classes);
+    }
 };
 /**
  * Make a delimiter for use with `\left` and `\right`, given a height and depth
@@ -9586,15 +9546,15 @@ var makeLeftRightDelim = function makeLeftRightDelim(delim, height, depth, optio
   var delimiterExtend = 5.0 / options.fontMetrics().ptPerEm;
   var maxDistFromAxis = Math.max(height - axisHeight, depth + axisHeight);
   var totalHeight = Math.max( // In real TeX, calculations are done using integral values which are
-      // 65536 per pt, or 655360 per em. So, the division here truncates in
-      // TeX but doesn't here, producing different results. If we wanted to
-      // exactly match TeX's calculation, we could do
-      //   Math.floor(655360 * maxDistFromAxis / 500) *
-      //    delimiterFactor / 655360
-      // (To see the difference, compare
-      //    x^{x^{\left(\rule{0.1em}{0.68em}\right)}}
-      // in TeX and KaTeX)
-      maxDistFromAxis / 500 * delimiterFactor, 2 * maxDistFromAxis - delimiterExtend); // Finally, we defer to `makeCustomSizedDelim` with our calculated total
+  // 65536 per pt, or 655360 per em. So, the division here truncates in
+  // TeX but doesn't here, producing different results. If we wanted to
+  // exactly match TeX's calculation, we could do
+  //   Math.floor(655360 * maxDistFromAxis / 500) *
+  //    delimiterFactor / 655360
+  // (To see the difference, compare
+  //    x^{x^{\left(\rule{0.1em}{0.68em}\right)}}
+  // in TeX and KaTeX)
+  maxDistFromAxis / 500 * delimiterFactor, 2 * maxDistFromAxis - delimiterExtend); // Finally, we defer to `makeCustomSizedDelim` with our calculated total
   // height
 
   return makeCustomSizedDelim(delim, totalHeight, true, options, mode, classes);
@@ -9936,7 +9896,7 @@ defineFunction({
     return middleDelim;
   },
   mathmlBuilder: (group, options) => {
-    // A Firefox \middle will strech a character vertically only if it
+    // A Firefox \middle will stretch a character vertically only if it
     // is in the fence part of the operator dictionary at:
     // https://www.w3.org/TR/MathML3/appendixc.html.
     // So we need to avoid U+2223 and use plain "|" instead.
@@ -10019,7 +9979,7 @@ var htmlBuilder$7 = (group, options) => {
 
     if (/box/.test(label)) {
       ruleThickness = Math.max(options.fontMetrics().fboxrule, // default
-          options.minRuleThickness // User override.
+      options.minRuleThickness // User override.
       );
       topPad = options.fontMetrics().fboxsep + (label === "colorbox" ? 0 : ruleThickness);
       bottomPad = topPad;
@@ -10060,31 +10020,31 @@ var htmlBuilder$7 = (group, options) => {
     vlist = buildCommon.makeVList({
       positionType: "individualShift",
       children: [// Put the color background behind inner;
-        {
-          type: "elem",
-          elem: img,
-          shift: imgShift
-        }, {
-          type: "elem",
-          elem: inner,
-          shift: 0
-        }]
+      {
+        type: "elem",
+        elem: img,
+        shift: imgShift
+      }, {
+        type: "elem",
+        elem: inner,
+        shift: 0
+      }]
     }, options);
   } else {
     var classes = /cancel|phase/.test(label) ? ["svg-align"] : [];
     vlist = buildCommon.makeVList({
       positionType: "individualShift",
       children: [// Write the \cancel stroke on top of inner.
-        {
-          type: "elem",
-          elem: inner,
-          shift: 0
-        }, {
-          type: "elem",
-          elem: img,
-          shift: imgShift,
-          wrapperClasses: classes
-        }]
+      {
+        type: "elem",
+        elem: inner,
+        shift: 0
+      }, {
+        type: "elem",
+        elem: img,
+        shift: imgShift,
+        wrapperClasses: classes
+      }]
     }, options);
   }
 
@@ -10145,7 +10105,7 @@ var mathmlBuilder$6 = (group, options) => {
 
       if (group.label === "\\fcolorbox") {
         var thk = Math.max(options.fontMetrics().fboxrule, // default
-            options.minRuleThickness // user override
+        options.minRuleThickness // user override
         );
         node.setAttribute("style", "border: " + thk + "em solid " + String(group.borderColor));
       }
@@ -10576,7 +10536,7 @@ var htmlBuilder$6 = function htmlBuilder(group, options) {
   var body = new Array(nr);
   var hlines = [];
   var ruleThickness = Math.max( // From LaTeX \showthe\arrayrulewidth. Equals 0.04 em.
-      options.fontMetrics().arrayRuleWidth, options.minRuleThickness // User override.
+  options.fontMetrics().arrayRuleWidth, options.minRuleThickness // User override.
   ); // Horizontal spacing
 
   var pt = 1 / options.fontMetrics().ptPerEm;
@@ -10723,8 +10683,8 @@ var htmlBuilder$6 = function htmlBuilder(group, options) {
   }
 
   for (c = 0, colDescrNum = 0; // Continue while either there are more columns or more column
-      // descriptions, so trailing separators don't get lost.
-       c < nc || colDescrNum < colDescriptions.length; ++c, ++colDescrNum) {
+  // descriptions, so trailing separators don't get lost.
+  c < nc || colDescrNum < colDescriptions.length; ++c, ++colDescrNum) {
     var colDescr = colDescriptions[colDescrNum] || {};
     var firstSeparator = true;
 
@@ -10905,11 +10865,11 @@ var mathmlBuilder$5 = function mathmlBuilder(group, options) {
   // LaTeX \arraystretch multiplies the row baseline-to-baseline distance.
   // We simulate this by adding (arraystretch - 1)em to the gap. This
   // does a reasonable job of adjusting arrays containing 1 em tall content.
-  // The 0.16 and 0.09 values are found emprically. They produce an array
-  // similar to LaTeX and in which content does not interfere with \hines.
+  // The 0.16 and 0.09 values are found empirically. They produce an array
+  // similar to LaTeX and in which content does not interfere with \hlines.
 
   var gap = group.arraystretch === 0.5 ? 0.1 // {smallmatrix}, {subarray}
-      : 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);
+  : 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);
   table.setAttribute("rowspacing", makeEm(gap)); // MathML table lines go only between cells.
   // To place a line on an edge we'll use <menclose>, if necessary.
 
@@ -10989,7 +10949,7 @@ var mathmlBuilder$5 = function mathmlBuilder(group, options) {
 
   for (var _i3 = 1; _i3 < hlines.length - 1; _i3++) {
     rowLines += hlines[_i3].length === 0 ? "none " // MathML accepts only a single line between rows. Read one element.
-        : hlines[_i3][0] ? "dashed " : "solid ";
+    : hlines[_i3][0] ? "dashed " : "solid ";
   }
 
   if (/[sd]/.test(rowLines)) {
@@ -11557,9 +11517,9 @@ var fontAliases = {
 defineFunction({
   type: "font",
   names: [// styles, except \boldsymbol defined below
-    "\\mathrm", "\\mathit", "\\mathbf", "\\mathnormal", // families
-    "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf", "\\mathtt", // aliases, except \bm defined below
-    "\\Bbb", "\\bold", "\\frak"],
+  "\\mathrm", "\\mathit", "\\mathbf", "\\mathnormal", // families
+  "\\mathbb", "\\mathcal", "\\mathfrak", "\\mathscr", "\\mathsf", "\\mathtt", // aliases, except \bm defined below
+  "\\Bbb", "\\bold", "\\frak"],
   props: {
     numArgs: 1,
     allowedInArgument: true
@@ -11871,7 +11831,7 @@ var mathmlBuilder$3 = (group, options) => {
 defineFunction({
   type: "genfrac",
   names: ["\\dfrac", "\\frac", "\\tfrac", "\\dbinom", "\\binom", "\\tbinom", "\\\\atopfrac", // can’t be entered directly
-    "\\\\bracefrac", "\\\\brackfrac" // ditto
+  "\\\\bracefrac", "\\\\brackfrac" // ditto
   ],
   props: {
     numArgs: 2,
@@ -12486,25 +12446,26 @@ defineFunction({
         };
         break;
 
-      case "\\htmlData": {
-        var data = value.split(",");
+      case "\\htmlData":
+        {
+          var data = value.split(",");
 
-        for (var i = 0; i < data.length; i++) {
-          var keyVal = data[i].split("=");
+          for (var i = 0; i < data.length; i++) {
+            var keyVal = data[i].split("=");
 
-          if (keyVal.length !== 2) {
-            throw new ParseError("Error parsing key-value for \\htmlData");
+            if (keyVal.length !== 2) {
+              throw new ParseError("Error parsing key-value for \\htmlData");
+            }
+
+            attributes["data-" + keyVal[0].trim()] = keyVal[1].trim();
           }
 
-          attributes["data-" + keyVal[0].trim()] = keyVal[1].trim();
+          trustContext = {
+            command: "\\htmlData",
+            attributes
+          };
+          break;
         }
-
-        trustContext = {
-          command: "\\htmlData",
-          attributes
-        };
-        break;
-      }
 
       default:
         throw new Error("Unrecognized html command");
@@ -13486,19 +13447,20 @@ var mathmlBuilder = (group, options) => {
         case "mspace":
         case "mtext":
           break;
-          // Do nothing yet.
+        // Do nothing yet.
 
-        case "mo": {
-          var child = node.children[0];
+        case "mo":
+          {
+            var child = node.children[0];
 
-          if (node.children.length === 1 && child instanceof mathMLTree.TextNode) {
-            child.text = child.text.replace(/\u2212/, "-").replace(/\u2217/, "*");
-          } else {
-            isAllString = false;
+            if (node.children.length === 1 && child instanceof mathMLTree.TextNode) {
+              child.text = child.text.replace(/\u2212/, "-").replace(/\u2217/, "*");
+            } else {
+              isAllString = false;
+            }
+
+            break;
           }
-
-          break;
-        }
 
         default:
           isAllString = false;
@@ -14687,9 +14649,9 @@ var optionsWithFont = (group, options) => {
 defineFunction({
   type: "text",
   names: [// Font families
-    "\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal", // Font weights
-    "\\textbf", "\\textmd", // Font Shapes
-    "\\textit", "\\textup"],
+  "\\text", "\\textrm", "\\textsf", "\\texttt", "\\textnormal", // Font weights
+  "\\textbf", "\\textmd", // Font Shapes
+  "\\textit", "\\textup"],
   props: {
     numArgs: 1,
     argTypes: ["text"],
@@ -14924,15 +14886,15 @@ var controlSpaceRegexString = "\\\\(\n|[ \r\t]+\n?)[ \r\t]*";
 var combiningDiacriticalMarkString = "[\u0300-\u036f]";
 var combiningDiacriticalMarksEndRegex = new RegExp(combiningDiacriticalMarkString + "+$");
 var tokenRegexString = "(" + spaceRegexString + "+)|" + ( // whitespace
-        controlSpaceRegexString + "|") + // \whitespace
-    "([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" + ( // single codepoint
-        combiningDiacriticalMarkString + "*") + // ...plus accents
-    "|[\uD800-\uDBFF][\uDC00-\uDFFF]" + ( // surrogate pair
-        combiningDiacriticalMarkString + "*") + // ...plus accents
-    "|\\\\verb\\*([^]).*?\\4" + // \verb*
-    "|\\\\verb([^*a-zA-Z]).*?\\5" + ( // \verb unstarred
-        "|" + controlWordWhitespaceRegexString) + ( // \macroName + spaces
-        "|" + controlSymbolRegexString + ")"); // \\, \', etc.
+controlSpaceRegexString + "|") + // \whitespace
+"([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" + ( // single codepoint
+combiningDiacriticalMarkString + "*") + // ...plus accents
+"|[\uD800-\uDBFF][\uDC00-\uDFFF]" + ( // surrogate pair
+combiningDiacriticalMarkString + "*") + // ...plus accents
+"|\\\\verb\\*([^]).*?\\4" + // \verb*
+"|\\\\verb([^*a-zA-Z]).*?\\5" + ( // \verb unstarred
+"|" + controlWordWhitespaceRegexString) + ( // \macroName + spaces
+"|" + controlSymbolRegexString + ")"); // \\, \', etc.
 
 /** Main Lexer class */
 
@@ -14959,7 +14921,6 @@ class Lexer {
   setCatcode(char, code) {
     this.catcodes[char] = code;
   }
-
   /**
    * This function lexes a single token.
    */
@@ -15031,7 +14992,6 @@ class Namespace {
     this.builtins = builtins;
     this.undefStack = [];
   }
-
   /**
    * Start a new nested group, affecting future local `set`s.
    */
@@ -15040,7 +15000,6 @@ class Namespace {
   beginGroup() {
     this.undefStack.push({});
   }
-
   /**
    * End current nested group, restoring values before the group began.
    */
@@ -15063,7 +15022,6 @@ class Namespace {
       }
     }
   }
-
   /**
    * Ends all currently nested groups (if any), restoring values before the
    * groups began.  Useful in case of an error in the middle of parsing.
@@ -15075,7 +15033,6 @@ class Namespace {
       this.endGroup();
     }
   }
-
   /**
    * Detect whether `name` has a definition.  Equivalent to
    * `get(name) != null`.
@@ -15085,7 +15042,6 @@ class Namespace {
   has(name) {
     return this.current.hasOwnProperty(name) || this.builtins.hasOwnProperty(name);
   }
-
   /**
    * Get the current value of a name, or `undefined` if there is no value.
    *
@@ -15103,7 +15059,6 @@ class Namespace {
       return this.builtins[name];
     }
   }
-
   /**
    * Set the current value of a name, and optionally set it globally too.
    * Local set() sets the current value and (when appropriate) adds an undo
@@ -16112,7 +16067,6 @@ var implicitCommands = {
   "\\nolimits": true // Parser.js
 
 };
-
 class MacroExpander {
   constructor(input, settings, mode) {
     this.settings = void 0;
@@ -16129,7 +16083,6 @@ class MacroExpander {
     this.mode = mode;
     this.stack = []; // contains tokens in REVERSE order
   }
-
   /**
    * Feed a new input string to the same MacroExpander
    * (with existing macros etc.).
@@ -16139,7 +16092,6 @@ class MacroExpander {
   feed(input) {
     this.lexer = new Lexer(input, this.settings);
   }
-
   /**
    * Switches between "text" and "math" modes.
    */
@@ -16148,7 +16100,6 @@ class MacroExpander {
   switchMode(newMode) {
     this.mode = newMode;
   }
-
   /**
    * Start a new group nesting within all namespaces.
    */
@@ -16157,7 +16108,6 @@ class MacroExpander {
   beginGroup() {
     this.macros.beginGroup();
   }
-
   /**
    * End current group nesting within all namespaces.
    */
@@ -16166,7 +16116,6 @@ class MacroExpander {
   endGroup() {
     this.macros.endGroup();
   }
-
   /**
    * Ends all currently nested groups (if any), restoring values before the
    * groups began.  Useful in case of an error in the middle of parsing.
@@ -16176,7 +16125,6 @@ class MacroExpander {
   endGroups() {
     this.macros.endGroups();
   }
-
   /**
    * Returns the topmost token on the stack, without expanding it.
    * Similar in behavior to TeX's `\futurelet`.
@@ -16190,7 +16138,6 @@ class MacroExpander {
 
     return this.stack[this.stack.length - 1];
   }
-
   /**
    * Remove and return the next unexpanded token.
    */
@@ -16201,7 +16148,6 @@ class MacroExpander {
 
     return this.stack.pop();
   }
-
   /**
    * Add a given token to the token stack.  In particular, this get be used
    * to put back a token returned from one of the other methods.
@@ -16211,7 +16157,6 @@ class MacroExpander {
   pushToken(token) {
     this.stack.push(token);
   }
-
   /**
    * Append an array of tokens to the token stack.
    */
@@ -16220,7 +16165,6 @@ class MacroExpander {
   pushTokens(tokens) {
     this.stack.push(...tokens);
   }
-
   /**
    * Find an macro argument without expanding tokens and append the array of
    * tokens to the token stack. Uses Token as a container for the result.
@@ -16258,14 +16202,13 @@ class MacroExpander {
     this.pushTokens(tokens);
     return start.range(end, "");
   }
-
   /**
    * Consume all following space tokens, without expansion.
    */
 
 
   consumeSpaces() {
-    for (; ;) {
+    for (;;) {
       var token = this.future();
 
       if (token.text === " ") {
@@ -16275,7 +16218,6 @@ class MacroExpander {
       }
     }
   }
-
   /**
    * Consume an argument from the token stream, and return the resulting array
    * of tokens and start/end token.
@@ -16351,7 +16293,6 @@ class MacroExpander {
       end: tok
     };
   }
-
   /**
    * Consume the specified number of (delimited) arguments from the token
    * stream and return the resulting array of arguments.
@@ -16383,20 +16324,19 @@ class MacroExpander {
 
     return args;
   }
-
   /**
    * Expand the next token only once if possible.
    *
    * If the token is expanded, the resulting tokens will be pushed onto
-   * the stack in reverse order and will be returned as an array,
-   * also in reverse order.
+   * the stack in reverse order, and the number of such tokens will be
+   * returned.  This number might be zero or positive.
    *
-   * If not, the next token will be returned without removing it
-   * from the stack.  This case can be detected by a `Token` return value
-   * instead of an `Array` return value.
+   * If not, the return value is `false`, and the next token remains at the
+   * top of the stack.
    *
    * In either case, the next token will be on the top of the stack,
-   * or the stack will be empty.
+   * or the stack will be empty (in case of empty expansion
+   * and no other tokens).
    *
    * Used to implement `expandAfterFuture` and `expandNextToken`.
    *
@@ -16416,7 +16356,7 @@ class MacroExpander {
       }
 
       this.pushToken(topToken);
-      return topToken;
+      return false;
     }
 
     this.expansionCount++;
@@ -16457,9 +16397,8 @@ class MacroExpander {
 
 
     this.pushTokens(tokens);
-    return tokens;
+    return tokens.length;
   }
-
   /**
    * Expand the next token only once (if possible), and return the resulting
    * top token on the stack (without removing anything from the stack).
@@ -16472,24 +16411,23 @@ class MacroExpander {
     this.expandOnce();
     return this.future();
   }
-
   /**
    * Recursively expand first token, then return first non-expandable token.
    */
 
 
   expandNextToken() {
-    for (; ;) {
-      var expanded = this.expandOnce(); // expandOnce returns Token if and only if it's fully expanded.
-
-      if (expanded instanceof Token) {
-        // the token after \noexpand is interpreted as if its meaning
+    for (;;) {
+      if (this.expandOnce() === false) {
+        // fully expanded
+        var token = this.stack.pop(); // the token after \noexpand is interpreted as if its meaning
         // were ‘\relax’
-        if (expanded.treatAsRelax) {
-          expanded.text = "\\relax";
+
+        if (token.treatAsRelax) {
+          token.text = "\\relax";
         }
 
-        return this.stack.pop(); // === expanded
+        return token;
       }
     } // Flow unable to figure out that this pathway is impossible.
     // https://github.com/facebook/flow/issues/4808
@@ -16497,7 +16435,6 @@ class MacroExpander {
 
     throw new Error(); // eslint-disable-line no-unreachable
   }
-
   /**
    * Fully expand the given macro name and return the resulting list of
    * tokens, or return `undefined` if no such macro is defined.
@@ -16507,7 +16444,6 @@ class MacroExpander {
   expandMacro(name) {
     return this.macros.has(name) ? this.expandTokens([new Token(name)]) : undefined;
   }
-
   /**
    * Fully expand the given token stream and return the resulting list of
    * tokens.  Note that the input tokens are in reverse order, but the
@@ -16521,23 +16457,23 @@ class MacroExpander {
     this.pushTokens(tokens);
 
     while (this.stack.length > oldStackLength) {
-      var expanded = this.expandOnce(true); // expand only expandable tokens
-      // expandOnce returns Token if and only if it's fully expanded.
+      // Expand only expandable tokens
+      if (this.expandOnce(true) === false) {
+        // fully expanded
+        var token = this.stack.pop();
 
-      if (expanded instanceof Token) {
-        if (expanded.treatAsRelax) {
+        if (token.treatAsRelax) {
           // the expansion of \noexpand is the token itself
-          expanded.noexpand = false;
-          expanded.treatAsRelax = false;
+          token.noexpand = false;
+          token.treatAsRelax = false;
         }
 
-        output.push(this.stack.pop());
+        output.push(token);
       }
     }
 
     return output;
   }
-
   /**
    * Fully expand the given macro name and return the result as a string,
    * or return `undefined` if no such macro is defined.
@@ -16553,7 +16489,6 @@ class MacroExpander {
       return tokens;
     }
   }
-
   /**
    * Returns the expanded macro as a reversed array of tokens and a macro
    * argument count.  Or returns `null` if no such macro.
@@ -16611,7 +16546,6 @@ class MacroExpander {
 
     return expansion;
   }
-
   /**
    * Determine whether a command is currently "defined" (has some
    * functionality), meaning that it's a macro (in the current group),
@@ -16623,7 +16557,6 @@ class MacroExpander {
   isDefined(name) {
     return this.macros.has(name) || functions.hasOwnProperty(name) || symbols.math.hasOwnProperty(name) || symbols.text.hasOwnProperty(name) || implicitCommands.hasOwnProperty(name);
   }
-
   /**
    * Determine whether a command is expandable.
    */
@@ -17186,7 +17119,6 @@ class Parser {
 
     this.leftrightDepth = 0;
   }
-
   /**
    * Checks a result to make sure it has the right type, and throws an
    * appropriate error otherwise.
@@ -17206,7 +17138,6 @@ class Parser {
       this.consume();
     }
   }
-
   /**
    * Discards the current lookahead token, considering it consumed.
    */
@@ -17215,7 +17146,6 @@ class Parser {
   consume() {
     this.nextToken = null;
   }
-
   /**
    * Return the current lookahead token, or if there isn't one (at the
    * beginning, or if the previous lookahead token was consume()d),
@@ -17230,7 +17160,6 @@ class Parser {
 
     return this.nextToken;
   }
-
   /**
    * Switches between "text" and "math" modes.
    */
@@ -17240,7 +17169,6 @@ class Parser {
     this.mode = newMode;
     this.gullet.switchMode(newMode);
   }
-
   /**
    * Main parsing function, which parses an entire input.
    */
@@ -17275,7 +17203,6 @@ class Parser {
       this.gullet.endGroups();
     }
   }
-
   /**
    * Fully parse a separate sequence of tokens as a separate job.
    * Tokens should be specified in reverse order, as in a MacroDefinition.
@@ -17300,7 +17227,7 @@ class Parser {
    * Parses an "expression", which is a list of atoms.
    *
    * `breakOnInfix`: Should the parsing stop when we hit infix nodes? This
-   *                 happens when functions have higher precendence han infix
+   *                 happens when functions have higher precedence han infix
    *                 nodes in implicit parses.
    *
    * `breakOnTokenText`: The text of the token that the expression should end
@@ -17348,7 +17275,6 @@ class Parser {
 
     return this.handleInfixNodes(body);
   }
-
   /**
    * Rewrites infix operators such as \over with corresponding commands such
    * as \frac.
@@ -17412,7 +17338,6 @@ class Parser {
       return body;
     }
   }
-
   /**
    * Handle a subscript or superscript with nice errors.
    */
@@ -17433,7 +17358,6 @@ class Parser {
 
     return group;
   }
-
   /**
    * Converts the textual input of an unsupported command into a text node
    * contained within a color node whose color is determined by errorColor
@@ -17464,7 +17388,6 @@ class Parser {
     };
     return colorNode;
   }
-
   /**
    * Parses a group with optional super/subscripts.
    */
@@ -17613,7 +17536,6 @@ class Parser {
       return base;
     }
   }
-
   /**
    * Parses an entire function, including its base and all of its arguments.
    */
@@ -17645,7 +17567,6 @@ class Parser {
     } = this.parseArguments(func, funcData);
     return this.callFunction(func, args, optArgs, token, breakOnTokenText);
   }
-
   /**
    * Call a function handler with a suitable context and arguments.
    */
@@ -17666,14 +17587,13 @@ class Parser {
       throw new ParseError("No function handler for " + name);
     }
   }
-
   /**
    * Parses the arguments of a function or environment
    */
 
 
   parseArguments(func, // Should look like "\name" or "\begin{name}".
-                 funcData) {
+  funcData) {
     var totalArgs = funcData.numArgs + funcData.numOptionalArgs;
 
     if (totalArgs === 0) {
@@ -17691,7 +17611,7 @@ class Parser {
       var isOptional = i < funcData.numOptionalArgs;
 
       if (funcData.primitive && argType == null || // \sqrt expands into primitive if optional argument doesn't exist
-          funcData.type === "sqrt" && i === 1 && optArgs[0] == null) {
+      funcData.type === "sqrt" && i === 1 && optArgs[0] == null) {
         argType = "primitive";
       }
 
@@ -17712,7 +17632,6 @@ class Parser {
       optArgs
     };
   }
-
   /**
    * Parses a group when the mode is changing.
    */
@@ -17733,41 +17652,44 @@ class Parser {
       case "text":
         return this.parseArgumentGroup(optional, type);
 
-      case "hbox": {
-        // hbox argument type wraps the argument in the equivalent of
-        // \hbox, which is like \text but switching to \textstyle size.
-        var group = this.parseArgumentGroup(optional, "text");
-        return group != null ? {
-          type: "styling",
-          mode: group.mode,
-          body: [group],
-          style: "text" // simulate \textstyle
+      case "hbox":
+        {
+          // hbox argument type wraps the argument in the equivalent of
+          // \hbox, which is like \text but switching to \textstyle size.
+          var group = this.parseArgumentGroup(optional, "text");
+          return group != null ? {
+            type: "styling",
+            mode: group.mode,
+            body: [group],
+            style: "text" // simulate \textstyle
 
-        } : null;
-      }
-
-      case "raw": {
-        var token = this.parseStringGroup("raw", optional);
-        return token != null ? {
-          type: "raw",
-          mode: "text",
-          string: token.text
-        } : null;
-      }
-
-      case "primitive": {
-        if (optional) {
-          throw new ParseError("A primitive argument cannot be optional");
+          } : null;
         }
 
-        var _group = this.parseGroup(name);
-
-        if (_group == null) {
-          throw new ParseError("Expected group as " + name, this.fetch());
+      case "raw":
+        {
+          var token = this.parseStringGroup("raw", optional);
+          return token != null ? {
+            type: "raw",
+            mode: "text",
+            string: token.text
+          } : null;
         }
 
-        return _group;
-      }
+      case "primitive":
+        {
+          if (optional) {
+            throw new ParseError("A primitive argument cannot be optional");
+          }
+
+          var _group = this.parseGroup(name);
+
+          if (_group == null) {
+            throw new ParseError("Expected group as " + name, this.fetch());
+          }
+
+          return _group;
+        }
 
       case "original":
       case null:
@@ -17778,7 +17700,6 @@ class Parser {
         throw new ParseError("Unknown group type as " + name, this.fetch());
     }
   }
-
   /**
    * Discard any space tokens, fetching the next non-space token.
    */
@@ -17789,7 +17710,6 @@ class Parser {
       this.consume();
     }
   }
-
   /**
    * Parses a group, essentially returning the string formed by the
    * brace-enclosed tokens plus some position information.
@@ -17797,7 +17717,7 @@ class Parser {
 
 
   parseStringGroup(modeName, // Used to describe the mode in error messages.
-                   optional) {
+  optional) {
     var argToken = this.gullet.scanArgument(optional);
 
     if (argToken == null) {
@@ -17817,7 +17737,6 @@ class Parser {
     argToken.text = str;
     return argToken;
   }
-
   /**
    * Parses a regex-delimited group: the largest sequence of tokens
    * whose concatenated strings match `regex`. Returns the string
@@ -17844,7 +17763,6 @@ class Parser {
 
     return firstToken.range(lastToken, str);
   }
-
   /**
    * Parses a color description.
    */
@@ -17878,7 +17796,6 @@ class Parser {
       color
     };
   }
-
   /**
    * Parses a size specification, consisting of magnitude and unit.
    */
@@ -17932,7 +17849,6 @@ class Parser {
       isBlank
     };
   }
-
   /**
    * Parses an URL, checking escaped letters and allowed protocols,
    * and setting the catcode of % as an active character (as in \hyperref).
@@ -17964,7 +17880,6 @@ class Parser {
       url
     };
   }
-
   /**
    * Parses an argument with the mode specified.
    */
@@ -18004,7 +17919,6 @@ class Parser {
 
     return result;
   }
-
   /**
    * Parses an ordinary group, which is either a single nucleus (like "x")
    * or an expression in braces (like "{x+y}") or an implicit group, a group
@@ -18014,7 +17928,7 @@ class Parser {
 
 
   parseGroup(name, // For error reporting.
-             breakOnTokenText) {
+  breakOnTokenText) {
     var firstToken = this.fetch();
     var text = firstToken.text;
     var result; // Try to parse an open brace or \begingroup
@@ -18057,7 +17971,6 @@ class Parser {
 
     return result;
   }
-
   /**
    * Form ligature-like combinations of characters for text mode.
    * This includes inputs like "--", "---", "``" and "''".
@@ -18107,7 +18020,6 @@ class Parser {
       }
     }
   }
-
   /**
    * Parse a single symbol out of the string. Here, we handle single character
    * symbols and special functions like \verb.
@@ -18397,7 +18309,7 @@ var katex = {
   /**
    * Current KaTeX version
    */
-  version: "0.16.4",
+  version: "0.16.8",
 
   /**
    * Renders the given LaTeX into an HTML+MathML combination, and adds
@@ -18454,13 +18366,20 @@ var katex = {
   /**
    * extends internal font metrics object with a new object
    * each key in the new object represents a font name
-   */
+  */
   __setFontMetrics: setFontMetrics,
 
   /**
    * adds a new symbol to builtin symbols table
    */
   __defineSymbol: defineSymbol,
+
+  /**
+   * adds a new function to builtin function list,
+   * which directly produce parse tree elements
+   * and have their own html/mathml builders
+   */
+  __defineFunction: defineFunction,
 
   /**
    * adds a new macro to builtin macro list
@@ -18484,4 +18403,4 @@ var katex = {
   }
 };
 
-export {katex as default};
+export { katex as default };
