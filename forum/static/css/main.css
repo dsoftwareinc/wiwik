@@ -473,6 +473,11 @@ pre {
     color: var(--bs-dark);
 }
 
+.form-control::placeholder {
+    color: #6c757d;
+    opacity: 1;
+}
+
 .card {
     color: var(--bs-dark);
     background-color: var(--bs-light);

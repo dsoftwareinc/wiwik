@@ -30,7 +30,6 @@ urlpatterns = [
     path('general/', include(('wiwik_lib.urls', 'wiwik_lib'), namespace='general')),
     path('spaces/', include(('spaces.urls', 'spaces'), namespace='spaces')),
     path('similarity/', include(('similarity.urls', 'similarity'), namespace='similarity')),
-    path('landing-page/', include(('landingpage.urls', 'landingpage'), namespace='landing-page')),
 ]
 
 if settings.DEBUG_TOOLS:
