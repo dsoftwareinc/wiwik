@@ -66,6 +66,7 @@
     height: 100%;
     --bs-emphasis-color: var(--bs-body-color);
     --bs-secondary-bg: #e9ecef;
+    --bs-tertiary-color: rgba(222, 218, 204, 0.5);
 }
 
 [data-theme="light"] {
@@ -132,4 +133,5 @@
     --code-fg-color: var(--bs-gray-700);
     --bs-emphasis-color: var(--bs-body-color);
     --bs-secondary-bg: #e9ecef;
+    --bs-tertiary-color: rgba(222, 218, 204, 0.5);
 }

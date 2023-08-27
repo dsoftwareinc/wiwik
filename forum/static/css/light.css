@@ -20,6 +20,7 @@
     --code-bg-color: var(--bs-gray-200);
     --code-fg-color: var(--bs-gray-700);
     --bs-secondary-bg: #e9ecef;
+    --bs-tertiary-color: rgba(33, 37, 41, 0.5);
 }
 
 [data-theme="dark"] {
@@ -79,4 +80,5 @@
     --code-fg-color: #f8f8f0;
     --bs-emphasis-color: var(--bs-body-color);
     --bs-secondary-bg: #e9ecef;
+    --bs-tertiary-color: rgba(222, 218, 204, 0.5);
 }
