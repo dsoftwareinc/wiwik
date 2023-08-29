@@ -16,20 +16,20 @@
     <div class="row">
         <div class="col-lg-9">
             <!-- Article body -->
-            <div style="display: flex;flex-direction: row;">
-                <div style="display: flex; flex-direction:column;" class="pt-2">
+            <div class="d-flex flex-row">
+                <div class="d-flex flex-column pt-2">
                     <div>
                         <a href="{% url 'forum:upvote' q.pk 'question' q.pk %}">
                             <span class="material-icons vote-button-icon"
-                                  style="color:{% if q.user_upvoted %}coral{% else %}#555{% endif %};">arrow_drop_up</span>
+                                  style="color:{% if q.user_upvoted %}coral{% else %}#555{% endif %};">thumb_up_off_alt</span>
                         </a>
                         <div class="text-center single-question-votes">{{ q.votes | humanize_number }}</div>
                         <a href="{% url 'forum:downvote' q.pk 'question' q.pk %}">
                             <span class="material-icons vote-button-icon"
-                                  style="color:{% if q.user_downvoted %}coral{% else %}#555{% endif %};">arrow_drop_down</span>
+                                  style="color:{% if q.user_downvoted %}coral{% else %}#555{% endif %};">thumb_down_off_alt</span>
                         </a>
                     </div>
-                    <div style="text-align: center;" class="pt-1 pb-1">
+                    <div class="mt-2 pt-1 pb-1">
                         {% if bookmarked %}
                             <a href="{% url 'forum:unbookmark' q.pk %}">
                                 <span style="color:coral;" class="bookmark-button material-icons">bookmark</span>
@@ -40,15 +40,15 @@
                                       class="bookmark-button material-icons">bookmark_border</span>
                             </a>
                         {% endif %}
-                        {% if  num_bookmarks > 0 %}
+                        {% if num_bookmarks > 0 %}
                             <div class="text-center">
                                 {{ num_bookmarks }}
                             </div>
                         {% endif %}
                     </div>
                 </div>
-                <!-- right (question content) -->
-                <div style="width:calc(100% - 20px);overflow-x: unset;padding-left: 10px;padding-right: 10px;">
+                <!-- right (post-container) -->
+                <div class="post-container">
 
                     <div class="user-content">
                         {{ q.content | markdownify }}

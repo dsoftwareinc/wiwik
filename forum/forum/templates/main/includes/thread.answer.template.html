@@ -4,14 +4,14 @@
         <div>
             <a href="{% url 'forum:upvote' q.pk 'answer' a.pk %}">
                 <span class="material-icons vote-button-icon"
-                      style="color:{% if a.user_upvoted %}coral{% else %}#555{% endif %};">arrow_drop_up</span>
+                      style="color:{% if a.user_upvoted %}coral{% else %}#555{% endif %};">thumb_up_off_alt</span>
             </a>
             <div class="text-center single-question-votes">
                 {{ a.votes | humanize_number }}
             </div>
             <a href="{% url 'forum:downvote' q.pk 'answer' a.pk %}">
                 <i style="color:{% if a.user_downvoted %}coral{% else %}#555{% endif %};"
-                   class="material-icons vote-button-icon">arrow_drop_down</i>
+                   class="material-icons vote-button-icon">thumb_down_off_alt</i>
             </a>
             {% if a.is_accepted %}
                 <div style="width: 100%;text-align: center;" class="pt-1 pb-1">

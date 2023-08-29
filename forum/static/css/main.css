@@ -17,7 +17,11 @@ blockquote {
 }
 
 .vote-button-icon {
-    font-size: 3rem !important;
+    font-size: 1.5rem !important;
+}
+
+.vote-button-icon:hover {
+    color: var(--bs-btn-hover-bg) !important;
 }
 
 .bookmark-button {
@@ -701,6 +705,13 @@ p {
 
 .share-link {
     cursor: pointer;
+}
+
+.post-container {
+    width: calc(100% - 20px);
+    overflow-x: unset;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .user-content {
