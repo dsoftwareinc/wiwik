@@ -34,7 +34,6 @@
                         {% endif %}
                         {{ q.space.short_name }}
                     </a>
-
                 {% endif %}
 
                 {% if q.is_anonymous %}
@@ -42,8 +41,8 @@
                 {% else %}
                     Posted {{ q.created_at | timesince }} ago by
                     <a href="{% url 'userauth:profile' q.author.username 'questions' %}">
-                    {{ q.author.display_name }}
-                </a>
+                        {{ q.author.display_name }}
+                    </a>
                 {% endif %}
             </span>
         </div>

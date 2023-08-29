@@ -40,8 +40,8 @@ class Tag(Flaggable, Editable):
         return (f'Tag[{self.tag_word};'
                 f'#Qs={self.number_of_questions};#Qs/week={self.number_asked_this_week};'
                 f'#Qs/day={self.number_asked_today};#followers={self.number_followers};'
-                f'related={self.related};'
-                f'experts={self.experts};stars={self.stars};]')
+                f'related={self.related or ""};'
+                f'experts={self.experts or ""};stars={self.stars or ""};]')
 
     def experts_list(self):
         usernames_list = self.experts.split(',') if self.experts else []
