@@ -687,6 +687,16 @@ button {
     height: 200px;
 }
 
+.input-group.date span {
+    position: absolute;
+    padding: 10px;
+    color: var(--bs-gray-400);
+}
+
+.input-group.date input {
+    padding-left: 28px;
+}
+
 @media (min-width: 768px) {
     .search i {
         position: absolute;

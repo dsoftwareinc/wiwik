@@ -18,15 +18,15 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'wiwik_lib',
     'forum',  # basic forum app
-    'articles',
+    'articles',  # support for articles, proxy of Question
     'crispy_forms',  # bootstrap django forms
     'crispy_bootstrap5',
     'tags',  # tags related data
-    'badges',
+    'badges',  # Support for badges
     'scheduler',  # Ability to schedule tasks
     'compressor',  # minify js/css
     'similarity',  # app for question similarity calculations
-    'spaces',  # app for associating posts with projects
+    'spaces',  # app for associating posts with spaces
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"

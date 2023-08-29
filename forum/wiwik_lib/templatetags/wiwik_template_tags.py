@@ -139,6 +139,7 @@ VERSION_FONTAWESOME = '4.7.0'
 VERSION_TAGIFY = '4.17.9'
 VERSION_MERMAIDJS = '10.3.1'
 VERSION_KATEX = '0.16.8'
+VERSION_BOOTSTRAP_DATEPICKER = '1.10.0'
 
 _3RD_PARTY_URLS = {
     'CDN': {
@@ -157,6 +158,8 @@ _3RD_PARTY_URLS = {
         'katex-js': f'https://cdn.jsdelivr.net/npm/katex@{VERSION_KATEX}/dist/katex.min.js',
         'katex-autorender-js': f'https://cdn.jsdelivr.net/npm/katex@{VERSION_KATEX}/dist/contrib/auto-render.min.js',
         'katex-mjs': f'https://cdn.jsdelivr.net/npm/katex@{VERSION_KATEX}/dist/katex.mjs',
+        'bootstrap-datepicker-js': f'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/{VERSION_BOOTSTRAP_DATEPICKER}/js/bootstrap-datepicker.min.js',
+        'bootstrap-datepicker-css': f'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/{VERSION_BOOTSTRAP_DATEPICKER}/css/bootstrap-datepicker.standalone.min.css',
     },
     'STATIC': {
         'bootstrap-css': 'bootstrap/css/bootstrap.min.css',
@@ -173,6 +176,8 @@ _3RD_PARTY_URLS = {
         'katex-mjs': 'katex/katex.mjs',
         'katex-js': 'katex/katex.min.js',
         'katex-css': 'katex/katex.min.css',
+        'bootstrap-datepicker-js': 'bootstrap-datepicker/bootstrap-datepicker.min.js',
+        'bootstrap-datepicker-css': 'bootstrap-datepicker/bootstrap-datepicker.min.css',
     },
 }
 

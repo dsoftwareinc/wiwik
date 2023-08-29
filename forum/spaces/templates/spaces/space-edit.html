@@ -1,14 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
+{% load wiwik_template_tags crispy_forms_tags %}
 {% block extrastyle %}
     {{ block.super }}
     <link rel="stylesheet" href="{% tool_url 'easymde-css' %}">
+    <link rel="stylesheet" href="{% tool_url 'bootstrap-datepicker-css' %}">
 {% endblock %}
 
 {% block extrahead %}
     {#    <script src="{% static 'js/jquery.validate.min.js' %}"></script>#}
     <script src="{% tool_url 'easymde-js' %}"></script>
+    <script src="{% tool_url 'bootstrap-datepicker-js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -22,6 +24,25 @@
                     </legend>
 
                     <h5>Space info</h5>
+                    <div class="row my-2">
+                        <div class="col-6">
+                            <label for="startDateInput" class="form-label">Start date</label>
+                            <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd">
+                                <span class="material-icons">calendar_month</span>
+                                <input id="startDateInput" name="startDate" type="text" class="form-control"/>
+                                <div class="input-group-addon"></div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label for="endDateInput" class="form-label">End date</label>
+                            <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd">
+                                <span class="material-icons">calendar_month</span>
+                                <input id="endDateInput" name="endDate" type="text" class="form-control"/>
+                                <div class="input-group-addon"></div>
+                            </div>
+                        </div>
+
+                    </div>
                     <textarea id="spacepage"
                               name="page">{{ space.page | default_if_none:"" }}</textarea>
                     {% include 'main/includes/easymde.template.html' with msg="Space info" el='spacepage' %}
@@ -33,5 +54,5 @@
             </form>
         </div>
     </div>
-{#    <script>$("#tagForm").validate();</script>#}
+    {#    <script>$("#tagForm").validate();</script>#}
 {% endblock %}

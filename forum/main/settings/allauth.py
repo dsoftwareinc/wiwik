@@ -34,10 +34,9 @@ SOCIALACCOUNT_PROVIDERS = {
         'VERSION': 'v7.0',
     }
 }
-OKTA_BASE_URL = os.getenv('OKTA_BASE_URL', None)
-if OKTA_BASE_URL:
+if 'OKTA_BASE_URL' in os.environ :
     SOCIALACCOUNT_PROVIDERS['okta'] = {
-        'OKTA_BASE_URL': OKTA_BASE_URL,
+        'OKTA_BASE_URL': os.getenv('OKTA_BASE_URL', None),
         'OAUTH_PKCE_ENABLED': True,
     }
 SOCIALACCOUNT_LOGIN_ON_GET = True
