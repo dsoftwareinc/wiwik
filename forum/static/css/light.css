@@ -21,6 +21,7 @@
     --code-fg-color: var(--bs-gray-700);
     --bs-secondary-bg: #e9ecef;
     --bs-tertiary-color: rgba(33, 37, 41, 0.5);
+    --gray: rgb(128, 128, 128);
 }
 
 [data-theme="dark"] {

@@ -14,14 +14,14 @@
                    class="material-icons vote-button-icon">thumb_down_off_alt</i>
             </a>
             {% if a.is_accepted %}
-                <div style="width: 100%;text-align: center;" class="pt-1 pb-1">
-                    <i class="accept-answer-button material-icons" style="color: green;">done</i>
+                <div class="pt-1 pb-1">
+                    <i class="accept-answer-button-accepted material-icons">done</i>
                 </div>
             {% else %}
                 {% if show_accept_button %}
-                    <div style="width: 100%;text-align: center;" class="pt-1 pb-1">
+                    <div class="pt-1 pb-1">
                         <a href="{% url 'forum:answer_accept' q.pk a.pk %}">
-                            <i class="accept-answer-button material-icons" style="color: gray;">done</i>
+                            <i class="accept-answer-button material-icons">done</i>
                         </a>
                     </div>
                 {% endif %}

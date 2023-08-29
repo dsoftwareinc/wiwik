@@ -26,12 +26,22 @@ blockquote {
 
 .bookmark-button {
     height: 30px;
-    font-size: 25px !important;
+    font-size: 1.5rem !important;
     text-align: center;
 }
 
 .accept-answer-button {
-    font-size: 25px !important;
+    font-size: 1.5rem !important;
+    color: var(--gray);
+}
+
+.accept-answer-button:hover {
+    color: var(--accepted-color) !important;
+}
+
+.accept-answer-button-accepted {
+    font-size: 1.5rem !important;
+    color: var(--accepted-color);
 }
 
 a i.fa:hover {
@@ -271,7 +281,7 @@ pre {
 
 .upvote-comment {
     font-size: 25px !important;
-    color: gray;
+    color: var(--gray);
 }
 
 .upvote-comment:hover {
@@ -280,7 +290,7 @@ pre {
 
 .flag-model-icon {
     font-size: 16px !important;
-    color: gray;
+    color: var(--gray);
 }
 
 .flag-model-icon:hover {
