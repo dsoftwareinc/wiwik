@@ -6,10 +6,17 @@ from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import render, redirect
 from django.urls import reverse, resolve, Resolver404
 
+from userauth.apps import logger
+
 
 def view_login(request):
     if request.method == "POST":
         next_url = request.GET['next'] if 'next' in request.GET else reverse('forum:home')
+        try:
+            resolve(next_url)
+        except Exception:
+            logger.warning(f'Bad redirect url: {next_url}')
+            next_url = reverse('forum:home')
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
