@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class UserVisitMiddleware:
     """
-    This middleware analyze each request going through django.
+    This middleware analyzes each request going through django.
     It calculates the time the request took and sends the data to be
     analyzed and logged asynchronously.
     """
