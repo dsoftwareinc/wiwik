@@ -30,6 +30,10 @@ blockquote {
     text-align: center;
 }
 
+.bookmark-button:hover {
+    color: var(--bs-btn-hover-bg) !important;
+}
+
 .accept-answer-button {
     font-size: 1.5rem !important;
     color: var(--gray);
@@ -424,6 +428,10 @@ pre {
 
 .pointer-event {
     pointer-events: auto;
+}
+
+.text-gray {
+    color: var(--gray);
 }
 
 .text-bronze {
