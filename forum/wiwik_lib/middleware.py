@@ -31,7 +31,7 @@ class UserVisitMiddleware:
         if hasattr(request, 'user') and request.user.is_authenticated:
             client_ip, is_routable = get_client_ip(request)
             try:
-                log_request.delay(request.user, client_ip,
+                log_request.delay(request.user.id, client_ip,
                                   timezone.now(), duration,
                                   request.method, request.path,
                                   )

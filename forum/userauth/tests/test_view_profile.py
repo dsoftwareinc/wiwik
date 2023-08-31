@@ -22,10 +22,10 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         utils.upvote(cls.users[1], cls.question)
         utils.downvote(cls.users[1], q2)
         QuestionBookmark.objects.create(user=cls.users[1], question=cls.question)
-        log_request(cls.users[0], '127.0.0.1',
+        log_request(cls.users[0].id, '127.0.0.1',
                     timezone.now() - datetime.timedelta(days=500), 200,
                     'GET', '/path')
-        log_request(cls.users[1], '174.95.73.69', timezone.now(),
+        log_request(cls.users[1].id, '174.95.73.69', timezone.now(),
                     200, 'GET', '/path')
 
     def test_viewprofile__own_profile__green(self):

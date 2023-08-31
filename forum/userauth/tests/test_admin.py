@@ -139,7 +139,7 @@ class UserAuthAdminTest(UserAuthTestCase):
         self.client.login(self.superuser_name, self.password)
         for u in self.users:
             for d in range(4):
-                log_request(u, '127.0.0.1', datetime.now() - timedelta(days=d),
+                log_request(u.id, '127.0.0.1', datetime.now() - timedelta(days=d),
                             100, 'method', '/path'
                             )
         for u in self.users:

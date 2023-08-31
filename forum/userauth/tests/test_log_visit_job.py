@@ -17,7 +17,7 @@ class UserAuthActivateTest(UserAuthTestCase):
 
         self.assertEqual(0, UserVisit.objects.filter(user=user).count())
         # act
-        log_request(user, '127.0.0.1', timezone.now(),
+        log_request(user.id, '127.0.0.1', timezone.now(),
                     200, 'GET', '/path')
         # assert
         self.assertEqual(1, UserVisit.objects.filter(user=user).count())
@@ -29,13 +29,13 @@ class UserAuthActivateTest(UserAuthTestCase):
     def test_visit_on_consecutive_day__green(self):
         # arrange
         user = ForumUser.objects.create_user(self.username, f'{self.username}@a.com', self.password)
-        log_request(user, '127.0.0.1',
+        log_request(user.id, '127.0.0.1',
                     timezone.now() - datetime.timedelta(days=1), 200,
                     'GET', '/path')
         # assert start
         self.assertEqual(1, UserVisit.objects.filter(user=user).count())
         # act
-        log_request(user, '127.0.0.1', timezone.now(), 200, 'GET', '/path')
+        log_request(user.id, '127.0.0.1', timezone.now(), 200, 'GET', '/path')
         # assert
         self.assertEqual(2, UserVisit.objects.filter(user=user).count())
         visit = UserVisit.objects.filter(user=user).order_by('-visit_date').first()
@@ -47,7 +47,7 @@ class UserAuthActivateTest(UserAuthTestCase):
         # arrange
         user = ForumUser.objects.create_user(self.username, f'{self.username}@a.com', self.password)
         for i in range(20, 10, -1):
-            log_request(user, '127.0.0.1',
+            log_request(user.id, '127.0.0.1',
                         timezone.now() - datetime.timedelta(days=i), 200,
                         'GET', '/path')
         # assert start
@@ -56,7 +56,7 @@ class UserAuthActivateTest(UserAuthTestCase):
         self.assertEqual(10, UserVisit.objects.filter(user=user).order_by(
             '-max_consecutive_days').first().max_consecutive_days)
         # act
-        log_request(user, '127.0.0.1', timezone.now(), 200, 'GET', '/path')
+        log_request(user.id, '127.0.0.1', timezone.now(), 200, 'GET', '/path')
         # assert
         self.assertEqual(11, UserVisit.objects.filter(user=user).count())
         visit = UserVisit.objects.filter(user=user).order_by('-visit_date').first()
@@ -77,7 +77,7 @@ class UserAuthActivateTest(UserAuthTestCase):
                                  max_consecutive_days=10,
                                  total_days=total_days)
         # act
-        log_request(user, '127.0.0.1', timezone.now(), 200, 'GET', '/path')
+        log_request(user.id, '127.0.0.1', timezone.now(), 200, 'GET', '/path')
         # assert
         self.assertEqual(2, UserVisit.objects.filter(user=user).count())
         visit = UserVisit.objects.filter(user=user).order_by('-visit_date').first()
@@ -88,13 +88,13 @@ class UserAuthActivateTest(UserAuthTestCase):
     def test_visit_on_non_consecutive_day__green(self):
         # arrange
         user = ForumUser.objects.create_user(self.username, f'{self.username}@a.com', self.password)
-        log_request(user, '127.0.0.1',
+        log_request(user.id, '127.0.0.1',
                     timezone.now() - datetime.timedelta(days=500), 200,
                     'GET', '/path')
         # assert start
         self.assertEqual(1, UserVisit.objects.filter(user=user).count())
         # act
-        log_request(user, '127.0.0.1', timezone.now(), 200, 'GET', '/other')
+        log_request(user.id, '127.0.0.1', timezone.now(), 200, 'GET', '/other')
         # assert
         self.assertEqual(2, UserVisit.objects.filter(user=user).count())
         visit = UserVisit.objects.filter(user=user).order_by('-visit_date').first()
@@ -105,13 +105,13 @@ class UserAuthActivateTest(UserAuthTestCase):
     def test_visit_on_same_day__green(self):
         # arrange
         user = ForumUser.objects.create_user(self.username, f'{self.username}@a.com', self.password)
-        log_request(user, '127.0.0.1',
+        log_request(user.id, '127.0.0.1',
                     timezone.now(), 200,
                     'GET', '/path')
         # assert start
         self.assertEqual(1, UserVisit.objects.filter(user=user).count())
         # act
-        log_request(user, '127.0.0.1', timezone.now(), 200, 'GET', '/other')
+        log_request(user.id, '127.0.0.1', timezone.now(), 200, 'GET', '/other')
         # assert
         self.assertEqual(1, UserVisit.objects.filter(user=user).count())
         visit = UserVisit.objects.filter(user=user).order_by('-visit_date').first()
@@ -123,7 +123,7 @@ class UserAuthActivateTest(UserAuthTestCase):
         # arrange
         user = ForumUser.objects.create_user(self.username, f'{self.username}@a.com', self.password)
         # act
-        log_request(user, '174.95.73.69', timezone.now(), 200, 'GET', '/path')
+        log_request(user.id, '174.95.73.69', timezone.now(), 200, 'GET', '/path')
         # assert
         self.assertEqual(1, UserVisit.objects.filter(user=user).count())
         visit = UserVisit.objects.filter(user=user).order_by('-visit_date').first()
