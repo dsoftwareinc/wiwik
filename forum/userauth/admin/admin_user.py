@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.db.models import Max
@@ -75,13 +77,13 @@ class ForumUserAdmin(UserAdmin):
 
     def get_queryset(self, request):
         qs = super(UserAdmin, self).get_queryset(request)
-        return (qs.annotate(last_visit_date=Max('uservisit__visit_date')))
+        return qs.annotate(last_visit_date=Max('uservisit__visit_date'))
 
-    def active_tag_words(self, o: ForumUser):
+    def active_tag_words(self, o: ForumUser) -> str:
         return ', '.join(user_most_active_tags(o))
 
     @admin.display(description='Last visit', ordering='last_visit_date')
-    def last_visit_date(self, o: ForumUser):
+    def last_visit_date(self, o: ForumUser) -> datetime:
         return o.last_visit_date
 
 
@@ -112,5 +114,5 @@ class UserVisitAdmin(admin.ModelAdmin):
         return qs.annotate(date_joined=Max('user__date_joined'))
 
     @admin.display(description='First visit', boolean=True, )
-    def first_visit(self, o):
+    def first_visit(self, o) -> bool:
         return o.visit_date == o.date_joined.date()

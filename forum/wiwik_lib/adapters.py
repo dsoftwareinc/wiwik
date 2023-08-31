@@ -8,7 +8,7 @@ from django.core.exceptions import PermissionDenied
 from wiwik_lib.utils import is_email_allowed
 
 
-def inform_admins_bad_registration(email, request):
+def inform_admins_bad_registration(email: str, request) -> None:
     from forum.views.notifications import notify_slack_channel
     site = get_current_site(request)
     subject = f'{email} tried to register to {site.domain}'

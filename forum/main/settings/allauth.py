@@ -34,7 +34,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'VERSION': 'v7.0',
     }
 }
-if 'OKTA_BASE_URL' in os.environ :
+if 'OKTA_BASE_URL' in os.environ:
     SOCIALACCOUNT_PROVIDERS['okta'] = {
         'OKTA_BASE_URL': os.getenv('OKTA_BASE_URL', None),
         'OAUTH_PKCE_ENABLED': True,
@@ -42,4 +42,4 @@ if 'OKTA_BASE_URL' in os.environ :
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_ADAPTER = 'wiwik_lib.adapters.CustomSocialAccountAdapter'
 ALLOWED_REGISTRATION_EMAIL_DOMAINS = list(
-    filter(lambda x: x, os.environ.get("ALLOWED_REGISTRATION_EMAIL_DOMAINS", default='').split(" ")))
+    filter(lambda x: x != '', os.environ.get("ALLOWED_REGISTRATION_EMAIL_DOMAINS", default='').split(" ")))

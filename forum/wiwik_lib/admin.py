@@ -6,11 +6,11 @@ from wiwik_lib.models import Flag, EditedResource
 
 
 class ExtendableAdmin(admin.ModelAdmin):
-    def content_object_url(self, obj):
+    def content_object_url(self, obj) -> str:
         url = reverse(f'admin:{obj.content_type.app_label}_{obj.content_type.model}_change', args=[obj.object_id])
         return mark_safe(f'<a href="{url}">{obj.content_object}</a>')
 
-    def content_author(self, obj):
+    def content_author(self, obj) -> str:
         return obj.content_object.author.email
 
 

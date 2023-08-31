@@ -3,13 +3,13 @@ from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
-from wiwik_lib.utils import CURRENT_SITE
 from forum.models import TagFollow
 from userauth.models import ForumUser
 from userauth.views.tokens import account_activation_token
+from wiwik_lib.utils import CURRENT_SITE
 
 
-def unsubscribe_link_with_base(u: ForumUser):
+def unsubscribe_link_with_base(u: ForumUser) -> str:
     if u is None:
         return None
     uid = urlsafe_base64_encode(force_bytes(u.pk))
@@ -17,7 +17,7 @@ def unsubscribe_link_with_base(u: ForumUser):
     return CURRENT_SITE + reverse('userauth:unsubscribe', args=[uid, token])
 
 
-def user_most_active_tags(u: ForumUser, count: int = 3):
+def user_most_active_tags(u: ForumUser, count: int = 3) -> list[str]:
     return (TagFollow.objects
             .filter(user=u)
             .annotate(items_by_user=F('questions_by_user') + F('answers_by_user'))
