@@ -86,6 +86,11 @@ LOGGING = {
             'level': 'WARNING',
             'propagate': True,
         },
+        'rq': {
+            'handlers': ['console', ],
+            'level': 'INFO',
+            'propagate': True,
+        }
         # 'django.db.backends': {
         #     'handlers': ['console'],
         #     'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
