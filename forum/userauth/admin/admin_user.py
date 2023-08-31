@@ -88,7 +88,7 @@ class ForumUserAdmin(UserAdmin):
 @admin.register(UserVisit)
 class UserVisitAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'user', 'ip_addr', 'visit_date', 'country', 'city',
+        'id', 'user', 'ip_addr', 'visit_date', 'first_visit', 'country', 'city',
         'consecutive_days', 'max_consecutive_days', 'total_days',
     )
     list_filter = (
@@ -105,4 +105,12 @@ class UserVisitAdmin(admin.ModelAdmin):
     actions = [
         actions.action_visits_cleanup,
     ]
-    ordering = ('-user__date_joined', '-visit_date')
+    ordering = ('-visit_date', '-user__date_joined',)
+
+    def get_queryset(self, request):
+        qs = super(UserVisitAdmin, self).get_queryset(request)
+        return qs.annotate(date_joined=Max('user__date_joined'))
+
+    @admin.display(description='First visit', boolean=True, )
+    def first_visit(self, o):
+        return o.visit_date == o.date_joined
