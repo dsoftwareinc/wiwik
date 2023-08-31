@@ -118,7 +118,7 @@ class TestSingleBadgeUsersListView(BadgesApiTestCase):
         # assert
         self.assertEqual(200, res.status_code)
         soup = BeautifulSoup(res.content, 'html.parser')
-        users_list = soup.find_all('div', {'class': 'user-card'})
+        users_list = soup.find_all('div', {'class': 'user-card-container'})
         self.assertEqual(1, len(users_list))
 
 
