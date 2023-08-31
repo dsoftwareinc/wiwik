@@ -19,7 +19,7 @@ FOOTNOTE_LINK_TEXT_RE = re.compile(r'\[([^\]]+)\]\[(\d+)\]')
 FOOTNOTE_LINK_URL_RE = re.compile(r'\[(\d+)\]:\s+(\S+)')
 
 
-def find_md_links(md):
+def _find_md_links(md):
     """ Return dict of links in markdown """
 
     links = dict(INLINE_LINK_RE.findall(md))
@@ -33,19 +33,19 @@ def find_md_links(md):
     return links
 
 
-def content_links() -> dict[int, list[str]]:
+def _content_links() -> dict[int, list[str]]:
     questions = Question.objects.all().order_by('-created_at')
     results = dict()
     for q in questions:
-        links = list(find_md_links(q.content).values())
+        links = list(_find_md_links(q.content).values())
         answers_qs = q.answer_set.all()
         for a in answers_qs:
-            links.extend(find_md_links(a.content).values())
+            links.extend(_find_md_links(a.content).values())
         results[q.id] = links
     return results
 
 
-def media_uploads() -> Set[str]:
+def _media_uploads() -> Set[str]:
     fss = FileSystemStorage()
     _, files = fss.listdir(os.path.join(settings.MEDIA_ROOT, 'uploads'))
     links = {os.path.join(settings.MEDIA_URL, 'uploads', filename)
@@ -53,21 +53,7 @@ def media_uploads() -> Set[str]:
     return links
 
 
-@job
-def scan_media_links_usage():
-    uploads = media_uploads()
-    all_links = set()
-    links = content_links()
-    for question_links in links.values():
-        all_links.update(question_links)
-    unused_media_uploads = uploads.difference(all_links)
-    if len(unused_media_uploads) > 0:
-        django.core.mail.mail_admins(
-            f'Report - media files not used in any post {datetime.date.today()}',
-            '\n'.join(unused_media_uploads))
-
-
-def test_link(url: str) -> bool:
+def _test_link(url: str) -> bool:
     try:
         response = requests.get(url)
         return response.status_code < 400
@@ -78,10 +64,24 @@ def test_link(url: str) -> bool:
 @job
 def check_urls():
     res = dict()
-    q_links = content_links()
+    q_links = _content_links()
     for q in q_links:
         for link in q_links[q]:
-            if not test_link(link):
+            if not _test_link(link):
                 res.setdefault(q, list()).append(link)
                 logger.debug(f'Q{q} Link {link} does not work')
     return res
+
+
+@job
+def scan_media_links_usage():
+    uploads = _media_uploads()
+    all_links = set()
+    links = _content_links()
+    for question_links in links.values():
+        all_links.update(question_links)
+    unused_media_uploads = uploads.difference(all_links)
+    if len(unused_media_uploads) > 0:
+        django.core.mail.mail_admins(
+            f'Report - media files not used in any post {datetime.date.today()}',
+            '\n'.join(unused_media_uploads))
