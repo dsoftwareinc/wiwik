@@ -113,4 +113,4 @@ class UserVisitAdmin(admin.ModelAdmin):
 
     @admin.display(description='First visit', boolean=True, )
     def first_visit(self, o):
-        return o.visit_date == o.date_joined
+        return o.visit_date == o.date_joined.date()
