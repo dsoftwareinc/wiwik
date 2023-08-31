@@ -1,12 +1,12 @@
 {% load wiwik_template_tags %}
 <!-- User cards -->
 
-<div class="user-card">
+<div class="user-card-container">
     <small>
         Awarded {{ item.created_at | timesince }} ago
     </small>
     <a href="{% url 'userauth:profile' item.target.username 'badges' %}">
-        <div style="display: flex;flex-direction: row;width: 220px;">
+        <div class="user-card-content">
             <div style="flex: 0.2;" class="p-1">
                 <img src="{{ item.target.profile_pic.url }}"
                      onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"

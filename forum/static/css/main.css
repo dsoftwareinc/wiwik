@@ -185,7 +185,7 @@ pre {
     border: none !important;
 }
 
-.user-card {
+.user-card-container {
     display: flex;
     flex-direction: column;
     width: 220px;
@@ -193,8 +193,14 @@ pre {
     font-size: 13px;
 }
 
-.user-card.disabled * {
+.user-card-container.disabled * {
     color: var(--bs-gray-400) !important;
+}
+
+.user-card-content {
+    display: flex;
+    flex-direction: row;
+    width: 220px;
 }
 
 .user-card-img {

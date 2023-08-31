@@ -2,7 +2,7 @@
 <!-- User cards -->
 <div class="d-flex justify-content-end">
     {% if item.editor and item.editor.is_active %}
-        <div class="user-card me-3">
+        <div class="user-card-container me-3">
             <small>edited {{ item.created_at | absolute_datetime }} </small>
 
             <a href="{% url 'userauth:profile' item.editor.username 'questions' %}">
@@ -63,7 +63,7 @@
             </div>
         </div>
     {% else %}
-        <div class="user-card">
+        <div class="user-card-container">
             <small>
                 {% if item.is_answer %}answered{% elif item.is_article %}posted{% else %}asked{% endif %}
                 {{ item.created_at | absolute_datetime }}
