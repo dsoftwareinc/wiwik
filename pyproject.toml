@@ -3,7 +3,7 @@ name = "wiwik"
 version = "0.1.0"
 description = "What I wish I knew knowledge management system"
 authors = ["Daniel Moran <daniel@moransoftware.ca>"]
-license = "GPL3"
+license = "Fair Use 50"
 readme = "README.md"
 packages = [
     { include = "forum" },
@@ -13,29 +13,35 @@ packages = [
 python = "^3.9"
 Django = "^4.2"
 django-allauth = "^0.55"
-python-dotenv = "^1.0"
-pymdown-extensions = "^10.3"
+
 pyparsing = "^3.0"
 python-dateutil = "^2.8"
 sqlparse = "^0.4"
-gunicorn = "^20.1"
 nltk = "^3.8"
+django-tasks-scheduler = "^1.0" # Async jobs scheduler using redis
+django-admin-numeric-filter = "^0.1" # Django-admin filters
+django-admin-rangefilter = "^0.11" # Django-admin filters
+django-model-utils = "^4.3" # Django-admin filters
+django-ipware = "^5.0" # For identifying IP location
+geoip2 = "^4.7" # For identifying IP location
+pillow = "^10.0" # For image field
+scikit-learn = "^1.3" # For similarity TF-IDF
+
+# Running configuration
+gunicorn = "^21.2"
+python-dotenv = "^1.0"
+
+# Frontend related
 django-compressor = "^4.3"
 django-crispy-forms = "^2.0"
 crispy-bootstrap5 = "^0.7"
 markdown = "^3.4"
 bleach = "^6.0"
-django-tasks-scheduler = "^1.0" # Async jobs scheduler using redis
-django-admin-numeric-filter = "^0.1"
-django-admin-rangefilter = "^0.11"
-django-model-utils = "^4.3"
-django-ipware = "^5.0" # For identifying IP location
-geoip2 = "^4.7" # For identifying IP location
-pillow = "^9.5" # For image field
-scikit-learn = "^1.3" # For similarity TF-IDF
+pymdown-extensions = "^10.3"
 
+# 3rd party integrations
 slack-sdk = "^3.21"
-meilisearch = "^0.26" # meilisearch driver
+meilisearch = "^0.28" # meilisearch driver
 psycopg2-binary = "^2.9" # Postgres driver
 redis = "^5.0" # Redis driver, for redis-cache
 
