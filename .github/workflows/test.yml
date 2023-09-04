@@ -57,7 +57,7 @@ jobs:
           echo 'REPORT<<EOF' >> $GITHUB_ENV         
           poetry run coverage report >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
-      - uses: mshick/add-pr-comment@v1
+      - uses: mshick/add-pr-comment@v2
         with:
           message: |
             Coverage report:
