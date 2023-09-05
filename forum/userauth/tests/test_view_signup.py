@@ -6,21 +6,27 @@ from django.urls import reverse
 from common.test_utils import assert_url_in_chain, assert_message_in_response
 from userauth import models
 from userauth.tests.utils import UserAuthTestCase
+from wiwik_lib.utils import CURRENT_SITE
 
 
 class UserAuthSignupTest(UserAuthTestCase):
     @override_settings(ADMINS=[('wiwik-admin', 'a@a.com'), ])
     def test_signup__green(self):
-        res = self.client.signup_post('u1', 'u1_display_name', 'u1@a.com', 'Cunld2332')
+        user_email = 'u1@a.com'
+        res = self.client.signup_post('u1', 'u1_display_name', user_email, 'Cunld2332')
+
         # assert user created
         assert res.status_code == 200
         assert_url_in_chain(res, reverse('forum:home'))
         self.assertEqual(1, models.ForumUser.objects.filter(username='u1').count())
         self.assertEqual(1, models.ForumUserAdditionalData.objects.filter(user__username='u1').count())
-        self.assertEqual(len(mail.outbox), 2)
-        self.assertEqual(mail.outbox[0].subject, 'Activate your forum account')
+        self.assertEqual(2, len(mail.outbox))
+
+        self.assertEqual('Activate your forum account', mail.outbox[0].subject)
         self.assertIn('u1@a.com', mail.outbox[0].to)
         self.assertIn('u1_display_name', mail.outbox[0].body)
+
+        self.assertEqual(f'[Django] {user_email} registered to {CURRENT_SITE}', mail.outbox[1].subject)
         assert_message_in_response(
             res, 'New account created: u1, Please confirm your email address to complete the registration')
         soup = bs4.BeautifulSoup(res.content, 'html.parser')

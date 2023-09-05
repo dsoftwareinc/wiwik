@@ -14,4 +14,3 @@ class ForumConfig(AppConfig):
             logger.warning("Google Analytics key is not configured! set environment variable GOOGLE_ANALYTICS_KEY")
         if not settings.ADMINS:
             logger.warning("email for admin is not configured! set environment variable ADMIN_EMAIL")
-

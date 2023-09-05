@@ -20,7 +20,7 @@ class UserAuthLoginTest(UserAuthTestCase):
         res = self.client.logout_get()
         # assert
         assert res.status_code == 200
-        assert_url_in_chain(res, reverse('userauth:login') + '?next=' + reverse('forum:list'))
+        assert_url_in_chain(res, reverse('userauth:login'))
         assert_message_in_response(res, 'Logged out successfully!')
 
     def test_login__green(self):

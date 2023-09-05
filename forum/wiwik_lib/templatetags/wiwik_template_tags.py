@@ -145,21 +145,25 @@ _3RD_PARTY_URLS = {
     'CDN': {
         'bootstrap-css': f'https://cdn.jsdelivr.net/npm/bootstrap@{VERSION_BOOTSTRAP}/dist/css/bootstrap.min.css',
         'bootstrap-js': f'https://cdn.jsdelivr.net/npm/bootstrap@{VERSION_BOOTSTRAP}/dist/js/bootstrap.min.js',
-        'bootstrap-bundle-js': f'https://cdn.jsdelivr.net/npm/bootstrap@{VERSION_BOOTSTRAP}/dist/js/bootstrap.bundle.min.js',
+        'bootstrap-bundle-js':
+            f'https://cdn.jsdelivr.net/npm/bootstrap@{VERSION_BOOTSTRAP}/dist/js/bootstrap.bundle.min.js',
         'easymde-js': f'https://cdn.jsdelivr.net/npm/easymde@{VERSION_EASYMDE}/dist/easymde.min.js',
         'easymde-css': f'https://cdn.jsdelivr.net/npm/easymde@{VERSION_EASYMDE}/dist/easymde.min.css',
         'croppie-js': f'https://cdn.jsdelivr.net/npm/croppie@{VERSION_CROPPIE}/croppie.min.js',
         'croppie-css': f'https://cdn.jsdelivr.net/npm/croppie@{VERSION_CROPPIE}/croppie.css',
         'font-awesome-css': f'https://cdn.jsdelivr.net/npm/font-awesome@{VERSION_FONTAWESOME}/css/font-awesome.min.css',
         'tagify-js': f'https://cdn.jsdelivr.net/npm/@yaireo/tagify@{VERSION_TAGIFY}/dist/tagify.min.js',
-        'tagify-polyfills-js': f'https://cdn.jsdelivr.net/npm/@yaireo/tagify@{VERSION_TAGIFY}/dist/tagify.polyfills.min.js',
+        'tagify-polyfills-js':
+            f'https://cdn.jsdelivr.net/npm/@yaireo/tagify@{VERSION_TAGIFY}/dist/tagify.polyfills.min.js',
         'mermaidjs': f'https://cdn.jsdelivr.net/npm/mermaid@{VERSION_MERMAIDJS}/dist/mermaid.esm.min.mjs',
         'katex-css': f'https://cdn.jsdelivr.net/npm/katex@{VERSION_KATEX}/dist/katex.min.css',
         'katex-js': f'https://cdn.jsdelivr.net/npm/katex@{VERSION_KATEX}/dist/katex.min.js',
         'katex-autorender-js': f'https://cdn.jsdelivr.net/npm/katex@{VERSION_KATEX}/dist/contrib/auto-render.min.js',
         'katex-mjs': f'https://cdn.jsdelivr.net/npm/katex@{VERSION_KATEX}/dist/katex.mjs',
-        'bootstrap-datepicker-js': f'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/{VERSION_BOOTSTRAP_DATEPICKER}/js/bootstrap-datepicker.min.js',
-        'bootstrap-datepicker-css': f'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/{VERSION_BOOTSTRAP_DATEPICKER}/css/bootstrap-datepicker.standalone.min.css',
+        'bootstrap-datepicker-js':
+            f'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/{VERSION_BOOTSTRAP_DATEPICKER}/js/bootstrap-datepicker.min.js',  # noqa: E501
+        'bootstrap-datepicker-css':
+            f'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/{VERSION_BOOTSTRAP_DATEPICKER}/css/bootstrap-datepicker.standalone.min.css',  # noqa: E501
     },
     'STATIC': {
         'bootstrap-css': 'bootstrap/css/bootstrap.min.css',

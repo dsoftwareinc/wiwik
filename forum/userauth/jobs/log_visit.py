@@ -19,7 +19,7 @@ MAX_MS_TIME_FOR_REQUEST = 400
 @job('default', result_ttl=5, )
 def log_request(user_id: int, client_ip: str,
                 time: datetime, duration: int,
-                method: str, path: str):
+                method: str, path: str) -> None:
     log_method = logger.warning if duration > MAX_MS_TIME_FOR_REQUEST else logger.debug
     user = ForumUser.objects.get(id=user_id)
     log_method(f'{user.username},"{method} {path}" took {duration}ms')
