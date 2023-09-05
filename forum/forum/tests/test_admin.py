@@ -2,6 +2,7 @@ from django.apps import apps
 
 from forum.tests.base import ForumApiTestCase
 from forum.views import utils
+from tags.models import Tag
 from userauth.models import ForumUser
 from wiwik_lib.views.flag_views import flag_model
 
@@ -81,3 +82,24 @@ class TestAdmin(ForumApiTestCase):
 
         res = self.client.admin_changelist('tagfollow', query=f'tag__tag_word={self.tags[0]}')
         self.assertEqual(200, res.status_code)
+
+    def test_admin_tag_changelist__merge_tags__green(self):
+        self.client.login(self.superuser_name, self.password)
+        q = self.questions[0]
+        target_tag = Tag.objects.get(tag_word=self.tags[0])
+        tag = Tag.objects.create(tag_word='tag-merge')
+        q.tags.add(tag)
+        q.save()
+        data = {
+            'action': 'merge_tags',
+            '_selected_action': [tag.pk, target_tag.pk, ]
+        }
+        # act
+        res = self.client.admin_tag_changelist_post('tag', data=data)
+
+        # assert
+        tag_refreshed = Tag.objects.filter(tag_word='tag-merge').first()
+        q.refresh_from_db()
+        self.assertIsNone(tag_refreshed)
+        self.assertEqual(1, target_tag.synonym_set.count())
+        self.assertEqual(set(self.tags), set(q.tag_words()))

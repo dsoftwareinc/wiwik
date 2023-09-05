@@ -212,6 +212,10 @@ class ForumClient:
             url += f'?{query}'
         return self.client.get(url, follow=True)
 
+    def admin_tag_changelist_post(self, model: str, data=None):
+        url = reverse(f'admin:tags_{model}_changelist')
+        return self.client.post(url, data, follow=True)
+
     def admin_change(self, model: str, pk: int):
         url = reverse(f'admin:forum_{model}_change', args=[pk, ])
         return self.client.get(url, follow=True)

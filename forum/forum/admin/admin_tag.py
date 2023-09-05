@@ -14,16 +14,26 @@ def merge_tags(self, request, queryset):
     target_tag = Tag.objects.get(tag_word=results[0])
     for tag_word in results[1:]:
         tag = Tag.objects.get(tag_word=tag_word)
-        for q in tag.question_set.all():
+        qs = tag.question_set.all()
+        for q in qs:
             q.tags.remove(tag)
             q.tags.add(target_tag)
             q.save()
-        for follow in tag.tagfollow_set.all():
+        qs = tag.tagfollow_set.all()
+        for follow in qs:
             follow.tag = target_tag
             follow.save()
-        for synonym in tag.synonym_set.all():
+        qs = tag.synonym_set.all()
+        for synonym in qs:
             synonym.tag = target_tag
             synonym.save()
+        qs = tag.tagedit_set.all()
+        for tagedit in qs:
+            tagedit.tag = target_tag
+            tagedit.save()
+        user = tag.author
+        tag.delete()
+        target_tag.synonym_set.create(name=tag_word, author=user)
 
 
 admin.site.unregister(Tag)
