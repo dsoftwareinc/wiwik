@@ -799,5 +799,5 @@ p {
 
 .text-muted {
     --bs-text-opacity: 1;
-    color: var(--bs-gray) !important;
+    color: var(--bs-gray-600) !important;
 }
