@@ -796,3 +796,8 @@ p {
 .icon-small {
     font-size: 15px;
 }
+
+.text-muted {
+    --bs-text-opacity: 1;
+    color: var(--bs-gray) !important;
+}
