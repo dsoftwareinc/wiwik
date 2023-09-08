@@ -55,7 +55,7 @@ MEILISEARCH_ENABLED = getenv_asbool("MEILISEARCH_ENABLED", default='FALSE')
 MEILISEARCH_SERVER_ADDRESS = os.getenv("MEILISEARCH_SERVER_ADDRESS", None)
 MEILISEARCH_MASTERKEY = os.getenv("MEILISEARCH_MASTERKEY", None)
 EDIT_LOCK_TIMEOUT = timedelta(minutes=5)
-admin_email = os.getenv('ADMIN_EMAIL', None)
-if admin_email is not None:
-    ADMINS = [('wiwik-admin', admin_email), ]
-    MANAGERS = [('wiwik-admin', admin_email), ]
+_admin_email = os.getenv('ADMIN_EMAIL', None)
+if _admin_email is not None:
+    ADMINS = [('wiwik-admin', _admin_email), ]
+    MANAGERS = [('wiwik-admin', _admin_email), ]
