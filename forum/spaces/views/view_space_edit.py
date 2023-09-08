@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
@@ -23,6 +25,18 @@ def view_space_edit(request, space_id: int):
         if not is_member:
             raise PermissionDenied('Only members can edit space info')
         data = request.POST.dict()
+        if 'startDate' in data and data.get('startDate') != '':
+            try:
+                start_date = datetime.fromisoformat(data.get('startDate')).date()
+                space.start_date = start_date
+            except ValueError:
+                pass
+        if 'endDate' in data and data.get('endDate') != '':
+            try:
+                end_date = datetime.fromisoformat(data.get('endDate')).date()
+                space.end_date = end_date
+            except ValueError:
+                pass
         space.page = data.get('page') or space.page
         space.save()
         return redirect('spaces:detail', space_id=space_id)

@@ -29,7 +29,11 @@
                             <label for="startDateInput" class="form-label">Start date</label>
                             <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd">
                                 <span class="material-icons">calendar_month</span>
-                                <input id="startDateInput" name="startDate" type="text" class="form-control"/>
+                                <input id="startDateInput"
+                                       name="startDate"
+                                       type="text"
+                                       class="form-control"
+                                       value="{{ space.start_date | date:'Y-m-d' }}"/>
                                 <div class="input-group-addon"></div>
                             </div>
                         </div>
@@ -37,7 +41,11 @@
                             <label for="endDateInput" class="form-label">End date</label>
                             <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd">
                                 <span class="material-icons">calendar_month</span>
-                                <input id="endDateInput" name="endDate" type="text" class="form-control"/>
+                                <input id="endDateInput"
+                                       name="endDate"
+                                       type="text"
+                                       class="form-control"
+                                       value="{{ space.end_date | date:'Y-m-d' }}"/>
                                 <div class="input-group-addon"></div>
                             </div>
                         </div>
