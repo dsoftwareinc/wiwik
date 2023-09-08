@@ -32,13 +32,6 @@ class Votable(models.Model):
     users_downvoted = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='+', )
     votes = models.IntegerField(default=0)
 
-    def did_user_vote(self, user):
-        """
-        Return True if the given user likes the snippet
-        """
-        return (self.users_upvoted.filter(id=user.id).count() > 0 or
-                self.users_downvoted.filter(id=user.id).count() > 0)
-
 
 class UserInput(Editable):
     """
@@ -197,9 +190,6 @@ class Question(VotableUserInput, Flaggable):
         for flag in flags:
             if flag.flag_type == 'duplicate' and flag.extra:
                 return flag.extra
-
-    def is_answered(self):
-        return self.answers_count > 0
 
     @property
     def is_old(self):

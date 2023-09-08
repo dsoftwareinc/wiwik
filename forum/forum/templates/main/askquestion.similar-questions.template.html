@@ -5,7 +5,7 @@
         <div class="row summary mx-2">
             <div class="col-12 col-lg-2">
                 <div class="votes-container">
-                    <div class="votes {% if q.has_accepted_answer %}has-accepted-answer{% elif q.is_answered %}votes-frame{% endif %}">
+                    <div class="votes {% if q.has_accepted_answer %}has-accepted-answer{% elif q.answers_count > 0 %}votes-frame{% endif %}">
                         {{ q.answers_count }} answer
                     </div>
                 </div>

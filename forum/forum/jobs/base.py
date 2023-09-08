@@ -5,8 +5,7 @@ from forum.apps import logger
 
 
 def start_job(method, *args, **kwargs):
-    """
-    This method starts a job in the background.
+    """This method starts a job in the background.
     If RUN_ASYNC_JOBS_SYNC flag is on, then it runs it.
     """
     if settings.RUN_ASYNC_JOBS_SYNC:

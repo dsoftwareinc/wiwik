@@ -13,6 +13,7 @@ from forum.views.helpers import _get_questions_queryset
 from forum.views.q_and_a_crud.view_ask_question import QuestionError
 from forum.views.q_and_a_crud.view_thread import view_thread_background_tasks
 from main import settings
+from userauth.models import ForumUser
 from wiwik_lib.models import user_model_defer_fields
 from wiwik_lib.utils import paginate_queryset
 from wiwik_lib.views import ask_to_edit_resource, finish_edit_resource
@@ -131,7 +132,7 @@ def view_article_edit(request, pk: int):
     article = get_object_or_404(Article, pk=pk)
     if not article.is_article:
         return redirect('forum:thread', pk=pk)
-    user = request.user
+    user: ForumUser = request.user
     if article.author != user and not user.can_edit:  # TODO change edit user permissions
         messages.error(request, 'You can not edit this article', 'danger')
         return redirect('article:detail', pk=pk)
@@ -143,10 +144,10 @@ def view_article_edit(request, pk: int):
     tags = ','.join(article.tag_words())
     # Update article
     if request.method == 'POST':
-        questiontaken = request.POST.dict()
-        title = questiontaken.get('title')
-        content = questiontaken.get('articleeditor')
-        tags = questiontaken.get('tags') or ''
+        post_data = request.POST.dict()
+        title = post_data.get('title')
+        content = post_data.get('articleeditor')
+        tags = post_data.get('tags') or ''
         try:
             validate_article_data(title, content)
             finish_edit_resource(article)

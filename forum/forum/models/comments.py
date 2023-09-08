@@ -1,5 +1,4 @@
 """
-This file contains all models which exist in the database.
 It does not (and should not) contain logic on these models.
 """
 
