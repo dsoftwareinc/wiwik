@@ -42,7 +42,7 @@ def _get_questions_queryset(
 
 
 def render_questions(request, base_qs: QuerySet, header: str, extra: dict = None):
-    tab = utils._get_request_tab(request)
+    tab = utils.get_request_tab(request)
     q = utils.get_request_param(request, 'q', None)
     all_questions_qs = _get_questions_queryset(
         base_qs.exclude(space__restricted=True), tab, q, request.user)

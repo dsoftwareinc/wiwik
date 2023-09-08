@@ -25,7 +25,7 @@ def view_article_list(request):
     q = utils.get_request_param(request, 'q', None)
     header = 'All articles' if q is None else 'Search results'
     base_qs = Article.objects.filter(type__in=Article.POST_ARTICLE_TYPES)
-    tab = common_utils._get_request_tab(request)
+    tab = common_utils.get_request_tab(request)
     q = utils.get_request_param(request, 'q', None)
     all_questions_qs = _get_questions_queryset(
         base_qs.filter(space__isnull=True), tab, q, request.user)

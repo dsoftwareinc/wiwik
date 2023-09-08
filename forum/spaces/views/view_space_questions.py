@@ -38,7 +38,7 @@ def view_user_spaces_latest_questions(request):
                    .filter(user=request.user)
                    .values_list('space_id', flat=True)
                    .order_by('-created_at')[:3])
-    tab = utils._get_request_tab(request)
+    tab = utils.get_request_tab(request)
     q = utils.get_request_param(request, 'q', None)
     tag_word = utils.get_request_param(request, 'tag', None)
     spaces_base_qs = Question.objects.filter(space__in=user_spaces, space__restricted=True)

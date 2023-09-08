@@ -3,8 +3,6 @@ from typing import Optional
 
 from django.http import HttpRequest
 
-AVAILABLE_ORDER_BY = ('mostviewed', 'unanswered', 'latest', 'unresolved',)
-
 
 def _find_code_blocks(markdown_text_lines: list[str]) -> list[tuple[int, int], ...]:
     res = list()
@@ -53,6 +51,6 @@ def get_request_param(
     return default_value
 
 
-def _get_request_tab(request):
+def get_request_tab(request: HttpRequest):
     res = get_request_param(request, 'tab', 'latest')
-    return res if res in AVAILABLE_ORDER_BY else 'latest'
+    return res if res in {'mostviewed', 'unanswered', 'latest', 'unresolved', } else 'latest'
