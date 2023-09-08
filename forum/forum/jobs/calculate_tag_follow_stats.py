@@ -6,7 +6,9 @@ from scheduler import job
 
 from forum import models
 from forum.jobs.base import logger
+from forum.models import Question
 from tags.utils import update_tag_stats_for_tag
+from userauth.models import ForumUser
 
 
 @job
@@ -37,8 +39,10 @@ def recalculate_tag_follow_stats(tagfollow: models.TagFollow):
 
 
 @job
-def update_tag_follow_stats(user_input: models.UserInput):
-    tags_to_update = user_input.get_question().tags.all()
+def update_tag_follow_stats(post_id: int, user_id: int):
+    post = Question.objects.get(id=post_id)
+    user = ForumUser.objects.get(id=user_id)
+    tags_to_update = post.tags.all()
     for tag in tags_to_update:
-        tag_follow = models.TagFollow.objects.filter(tag=tag, user=user_input.author).first()
+        tag_follow = models.TagFollow.objects.filter(tag=tag, user=user).first()
         recalculate_tag_follow_stats(tag_follow)
