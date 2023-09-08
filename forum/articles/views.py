@@ -48,7 +48,7 @@ def _do_article_create_post_action(request, pk):
     pass
 
 
-def validate_article_data(title: str, content: str) -> None:
+def _validate_article_data(title: str, content: str) -> None:
     if title is None or len(title) < settings.MIN_ARTICLE_TITLE_LENGTH:
         raise QuestionError("Title too short")
     if content is None or len(content) < settings.MIN_QUESTION_CONTENT_LENGTH:
@@ -135,10 +135,10 @@ def view_article_edit(request, pk: int):
     user: ForumUser = request.user
     if article.author != user and not user.can_edit:  # TODO change edit user permissions
         messages.error(request, 'You can not edit this article', 'danger')
-        return redirect('article:detail', pk=pk)
+        return redirect('articles:detail', pk=pk)
     if not ask_to_edit_resource(request.user, article):
         messages.warning(request, 'Article is currently edited by a different user')
-        return redirect('article:detail', pk=pk)
+        return redirect('articles:detail', pk=pk)
     title = article.title
     content = article.content
     tags = ','.join(article.tag_words())
@@ -149,7 +149,7 @@ def view_article_edit(request, pk: int):
         content = post_data.get('articleeditor')
         tags = post_data.get('tags') or ''
         try:
-            validate_article_data(title, content)
+            _validate_article_data(title, content)
             finish_edit_resource(article)
             utils.update_question(user, article, title, content, tags)
             messages.success(request, 'Article updated successfully')
@@ -175,7 +175,7 @@ def view_article_create(request):
         content = data.get('articleeditor')
         tags = data.get('tags') or ''
         try:
-            validate_article_data(title, content)
+            _validate_article_data(title, content)
         except QuestionError as e:
             messages.warning(request, f'Error: {e}')
             return render(request, 'articles/articles-create.html', {

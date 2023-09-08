@@ -70,7 +70,7 @@ class TestEditQuestionView(ForumApiTestCase):
         assert_message_in_response(res, 'Question updated successfully')
         assert_url_in_chain(res, reverse('forum:thread', args=[self.question.pk]))
         start_job.assert_has_calls([
-            mock.call(jobs.update_tag_follow_stats, q),
+            mock.call(jobs.update_tag_follow_stats, q.id, q.author_id),
         ])  # No notification should be sent if author edited.
 
     def test_edit_question_post__no_changes(self):
@@ -115,7 +115,7 @@ class TestEditQuestionView(ForumApiTestCase):
         admin_user.refresh_from_db()
         self.assertEqual(2, admin_user.reputation_score)
         start_job.assert_has_calls([
-            mock.call(jobs.update_tag_follow_stats, q),
+            mock.call(jobs.update_tag_follow_stats, q.id, q.author_id),
             mock.call(add_meilisearch_document, q.id),
             mock.call(jobs.notify_user_email, q.author, mock.ANY, mock.ANY, mock.ANY, False),
             mock.call(review_bagdes_event, mock.ANY),

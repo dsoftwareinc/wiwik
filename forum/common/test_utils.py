@@ -277,7 +277,7 @@ class ForumClient:
         url = reverse('articles:edit', args=[article_pk, ])
         return self.client.post(url, {
             'title': title,
-            'queseditor': content,
+            'articleeditor': content,
             'tags': tags,
         }, follow=True)
 
