@@ -51,9 +51,6 @@ class QuestionFollowUserFilter(InputFilter):
     title = 'Username'
 
     def queryset(self, request, queryset):
-        if self.value() is not None:
-            name = self.value()
-
-            return queryset.filter(
-                Q(user__username__icontains=name)
-            )
+        name = self.value()
+        if name is not None:
+            return queryset.filter(Q(user__username__icontains=name))
