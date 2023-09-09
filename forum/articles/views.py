@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Exists
@@ -10,9 +11,7 @@ from forum import jobs
 from forum.models import QuestionFollow, QuestionBookmark, VoteActivity
 from forum.views import utils
 from forum.views.helpers import _get_questions_queryset
-from forum.views.q_and_a_crud.view_ask_question import QuestionError
 from forum.views.q_and_a_crud.view_thread import view_thread_background_tasks
-from main import settings
 from userauth.models import ForumUser
 from wiwik_lib.models import user_model_defer_fields
 from wiwik_lib.utils import paginate_queryset
@@ -48,13 +47,24 @@ def _do_article_create_post_action(request, pk):
     pass
 
 
+class ArticleValidationError(Exception):
+    pass
+
+
 def _validate_article_data(title: str, content: str) -> None:
-    if title is None or len(title) < settings.MIN_ARTICLE_TITLE_LENGTH:
-        raise QuestionError("Title too short")
-    if content is None or len(content) < settings.MIN_QUESTION_CONTENT_LENGTH:
-        raise QuestionError(f"Content should have at least {settings.MIN_QUESTION_CONTENT_LENGTH} characters")
-    if len(title) > settings.MAX_QUESTION_TITLE_LENGTH:
-        raise QuestionError("Title too long")
+    if (title is None or
+            len(title) < settings.MIN_ARTICLE_TITLE_LENGTH or
+            len(title) > 255):
+        length = len(title) if title is not None else 0
+        raise ArticleValidationError(
+            f"Title has {length} characters, must be between {settings.MIN_ARTICLE_TITLE_LENGTH} and 255 characters.")
+    if (content is None or
+            len(content) < settings.MIN_ARTICLE_CONTENT_LENGTH or
+            len(content) > settings.MAX_ARTICLE_CONTENT_LENGTH):
+        length = len(content) if content is not None else 0
+        raise ArticleValidationError(f"Content length is {length} characters, should be between "
+                                     f"{settings.MIN_ARTICLE_CONTENT_LENGTH} "
+                                     f"and {settings.MAX_ARTICLE_CONTENT_LENGTH} characters")
 
 
 @login_required
@@ -154,7 +164,7 @@ def view_article_edit(request, pk: int):
             utils.update_question(user, article, title, content, tags)
             messages.success(request, 'Article updated successfully')
             return redirect('articles:detail', pk=pk)
-        except QuestionError as e:
+        except ArticleValidationError as e:
             messages.warning(request, f'Error: {e}')
     # Request to edit
     return render(request, 'articles/articles-edit.html', {
@@ -169,23 +179,25 @@ def view_article_edit(request, pk: int):
 def view_article_create(request):
     user = request.user
     # New article
-    if request.method == 'POST':
-        data = request.POST.dict()
-        title = data.get('title')
-        content = data.get('articleeditor')
-        tags = data.get('tags') or ''
-        try:
-            _validate_article_data(title, content)
-        except QuestionError as e:
-            messages.warning(request, f'Error: {e}')
-            return render(request, 'articles/articles-create.html', {
-                'title': title,
-                'content': content,
-                'tags': tags,
-            })
-        article = utils.create_article(user, title, content, tags)
-        messages.success(request, 'Article draft posted successfully')
-        return redirect('articles:detail', pk=article.pk)
-    return render(request, 'articles/articles-create.html', {
+    if request.method == 'GET':
+        return render(request, 'articles/articles-create.html', {})
+    if request.method != 'POST':
+        logger.warning(f'{user.username} tried {request.path} with HTTP {request.method}')
+        return render(request, 'articles/articles-create.html', {})
+    data = request.POST.dict()
+    title = data.get('title')
+    content = data.get('articleeditor')
+    tags = data.get('tags') or ''
+    try:
+        _validate_article_data(title, content)
+    except ArticleValidationError as e:
+        messages.warning(request, f'Error: {e}')
+        return render(request, 'articles/articles-create.html', {
+            'title': title,
+            'content': content,
+            'tags': tags,
+        })
+    article = utils.create_article(user, title, content, tags)
+    messages.success(request, 'Article draft posted successfully')
+    return redirect('articles:detail', pk=article.pk)
 
-    })

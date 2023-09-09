@@ -6,7 +6,13 @@ from common.test_utils import ForumClient
 from userauth.models import ForumUser
 
 
-@override_settings(SKIP_USER_VISIT_LOG=True)
+@override_settings(
+    SKIP_USER_VISIT_LOG=True,
+    SLACK_NOTIFICATIONS_CHANNEL=None,
+    MIN_ARTICLE_TITLE_LENGTH=10,
+    MIN_ARTICLE_CONTENT_LENGTH=10,
+    MAX_ARTICLE_CONTENT_LENGTH=200,
+)
 class ArticlesApiTestCase(TestCase):
     usernames = ['myuser_name1', 'myuser_name2', 'myuser_name3', ]
     password = 'magicalPa$$w0rd'

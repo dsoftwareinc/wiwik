@@ -146,7 +146,9 @@ def create_question(user: AbstractUser, title: str, content: str, tags: str,
     :param content: question content
     :param tags: tags to include, as string, separated by commas
     :param send_notifications: should notifications be sent? on by default
-    :param kwargs: anonymous flag
+    :param kwargs:
+        other params to include in Question.objects.create,
+        e.g., anonymous flag
     :return: the question created.
     """
     q = models.Question.objects.create(
