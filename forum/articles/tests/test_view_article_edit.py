@@ -127,7 +127,6 @@ class TestEditArticleView(ArticlesApiTestCase):
     def test_edit_article_post__title_exceed_max_length__should_fail(self):
         # arrange
         self.client.login(self.username1, self.password)
-        max_length = int(os.getenv('MAX_QUESTION_TITLE_LENGTH', 30000))
         new_title = 'new_title_with_appropriate_length' + 'x' * 255
         new_content = 'new content with good enough length'
         new_tags = ['tag1', 'tag2']
