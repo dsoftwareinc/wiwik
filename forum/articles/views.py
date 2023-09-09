@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Exists
+from django.db.models import Exists
 from django.shortcuts import get_object_or_404, redirect, render
 
 from articles.apps import logger
@@ -88,10 +88,7 @@ def view_article_detail(request, pk: int):
                .defer(*user_model_defer_fields('author'), )
                .get(pk=pk))
 
-    attrs = (Article.objects.only('id')
-             .annotate(num_bookmarks=Count('bookmarks'))
-             .get(pk=pk))
-    article.num_bookmarks = attrs.num_bookmarks
+    num_bookmarks = article.bookmarks.count()
 
     user = request.user
     show_follow = not article.user_follows
@@ -104,7 +101,7 @@ def view_article_detail(request, pk: int):
 
     return render(request, 'articles/articles-detail.html',
                   {'q': article,
-                   'num_bookmarks': article.num_bookmarks,
+                   'num_bookmarks': num_bookmarks,
                    'show_edit_button': show_edit_button,
                    'show_delete_q_button': show_delete_q_button,
                    'show_follow': show_follow,
@@ -120,7 +117,6 @@ def view_article_delete(request, pk: int):
     if not article.is_article:
         return redirect('forum:thread', pk=pk)
     user = request.user
-
     if not article.user_can_delete(user):
         logger.warning(f'user {user.username} tried to delete article {pk} '
                        f'which does they do not have permission to delete')
@@ -200,4 +196,3 @@ def view_article_create(request):
     article = utils.create_article(user, title, content, tags)
     messages.success(request, 'Article draft posted successfully')
     return redirect('articles:detail', pk=article.pk)
-
