@@ -41,6 +41,8 @@ jobs:
         python-version: [ '3.11' ]
         poetry-version: [ '1.6.1' ]
     name: Build and test ${{ matrix.python-version }}
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - name: "Setup Python, Poetry and Dependencies"
@@ -68,8 +70,7 @@ jobs:
             ```
             ${{ env.REPORT }}
             ```
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
+          message-id: 'coverage'
           allow-repeats: false
       - name: json report
         run: |
