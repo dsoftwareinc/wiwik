@@ -13,6 +13,10 @@ on:
         description: 'Test scenario tags'
         required: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   #  docs:
   #    name: Deploy docs
@@ -45,7 +49,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           poetry-version: ${{ matrix.poetry-version }}
       - name: Run Tests
-        run: |          
+        run: |
           cd forum
           poetry run coverage run manage.py test --no-logs
       - name: Coverage report
