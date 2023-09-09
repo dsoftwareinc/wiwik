@@ -114,7 +114,7 @@ def view_article_delete(request, pk: int):
     if not article.user_can_delete(user):
         logger.warning(f'user {user.username} tried to delete article {pk} '
                        f'which does they do not have permission to delete')
-        return redirect('articles:details', pk=pk)
+        return redirect('articles:detail', pk=pk)
     if request.method == 'POST':
         utils.delete_question(article)
         messages.success(request, "Article deleted")
@@ -183,7 +183,7 @@ def view_article_create(request):
                 'content': content,
                 'tags': tags,
             })
-        article = utils.create_question(user, title, content, tags, type='a')
+        article = utils.create_question(user, title, content, tags, type=Question.POST_TYPE_ARTICLE)
         messages.success(request, 'Article draft posted successfully')
         return redirect('articles:detail', pk=article.pk)
     return render(request, 'articles/articles-create.html', {

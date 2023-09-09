@@ -49,4 +49,4 @@ def create_documentation_posts():
                 content,
                 ','.join(tags),
                 send_notifications=False,
-                type='a')
+                type=Question.POST_TYPE_ARTICLE)

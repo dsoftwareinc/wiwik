@@ -130,6 +130,12 @@ def _get_tag(tag_word: str, user: AbstractUser) -> Tag:
     return tag
 
 
+def create_article(user: AbstractUser, title: str, content: str, tags: str, **kwargs) -> models.Question:
+    if 'type' not in kwargs:
+        kwargs['type'] = models.Question.POST_TYPE_ARTICLE
+    return create_question(user, title, content, tags, **kwargs)
+
+
 def create_question(user: AbstractUser, title: str, content: str, tags: str,
                     send_notifications=True,
                     **kwargs) -> models.Question:

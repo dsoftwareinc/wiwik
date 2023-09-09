@@ -26,7 +26,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.article = utils.create_question(cls.users[1], cls.title, cls.content, ','.join(cls.tags), type='a')
+        cls.article = utils.create_question(cls.users[1], cls.title, cls.content, ','.join(cls.tags), type=Question.POST_TYPE_ARTICLE)
         settings.MAX_COMMENTS = 3
 
     def test_articles_detail_view__user_not_logged_in(self):
@@ -338,7 +338,7 @@ class TestForumArticleListView(ArticlesApiTestCase):
         super().setUpClass()
 
         for i in range(settings.QUESTIONS_PER_PAGE + 2):
-            utils.create_question(cls.users[0], cls.title, cls.content, ','.join(cls.tags), type='a', )
+            utils.create_question(cls.users[0], cls.title, cls.content, ','.join(cls.tags), type=Question.POST_TYPE_ARTICLE, )
 
     def test_articles_list__empty_list_user_not_loggedin_default_tab(self):
         # act

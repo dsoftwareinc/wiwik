@@ -9,7 +9,7 @@ from forum import models, jobs
 from forum.views import notifications
 
 
-class TestAddQuestion(ArticlesApiTestCase):
+class TestAddArticle(ArticlesApiTestCase):
     title = 'my_question_title'
     question_content = 'my_question_content'
     tags = ['my_first_tag', ]

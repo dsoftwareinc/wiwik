@@ -103,9 +103,12 @@ class Question(VotableUserInput, Flaggable):
     """
     Class to represent a post in the forum
     """
-    POST_TYPE = [('q', 'Question'), ('a', 'Article'), ('h', 'How to'), ]
-    POST_ARTICLE_TYPES = ['a', 'h', ]
-    POST_TYPE_ACCEPTING_ANSWERS = {'q'}
+    POST_TYPE_ARTICLE = 'a'
+    POST_TYPE_QUESTION = 'q'
+    POST_TYPE_HOWTO = 'h'
+    POST_TYPES = [(POST_TYPE_QUESTION, 'Question'), (POST_TYPE_ARTICLE, 'Article'), (POST_TYPE_HOWTO, 'How to'), ]
+    POST_ARTICLE_TYPES = {POST_TYPE_ARTICLE, POST_TYPE_HOWTO, }
+    POST_TYPE_ACCEPTING_ANSWERS = {POST_TYPE_QUESTION, }
     POST_STATUS = [
         ('a', 'Open'),
         ('t', 'Triaged'),
@@ -126,7 +129,7 @@ class Question(VotableUserInput, Flaggable):
     )
     status_updated_at = models.DateTimeField(blank=True, null=True)
     type = models.CharField(
-        max_length=2, choices=POST_TYPE,
+        max_length=2, choices=POST_TYPES,
         default='q', help_text='Post type',
     )
     answers_count = models.IntegerField(
@@ -182,7 +185,7 @@ class Question(VotableUserInput, Flaggable):
 
     @property
     def is_article(self):
-        return self.type in {'a', 'h'}
+        return self.type in Question.POST_ARTICLE_TYPES
 
     @property
     def duplicate_question_link(self):
