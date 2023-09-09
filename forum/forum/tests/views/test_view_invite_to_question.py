@@ -1,7 +1,7 @@
 from django.urls import reverse
 
 from common.test_utils import assert_url_in_chain, assert_message_in_response
-from forum.models import QuestionInviteToAnswer
+from forum.models import PostInvitation
 from forum.tests.base import ForumApiTestCase
 from forum.views import utils
 from userauth.models import ForumUser
@@ -30,7 +30,7 @@ class TestInviteToQuestionView(ForumApiTestCase):
         # act
         res = self.client.invite_to_question_post(self.question.pk, username)
         # assert
-        self.assertEqual(0, QuestionInviteToAnswer.objects.all().count())
+        self.assertEqual(0, PostInvitation.objects.all().count())
         assert_url_in_chain(res, reverse('forum:thread', args=[self.question.pk, ]))
 
     def test_invite_to_question__when_post_request__green(self):
@@ -39,7 +39,7 @@ class TestInviteToQuestionView(ForumApiTestCase):
         # act
         res = self.client.invite_to_question_post(self.question.pk, self.username2)
         # assert
-        self.assertEqual(1, QuestionInviteToAnswer.objects.all().count())
+        self.assertEqual(1, PostInvitation.objects.all().count())
         assert_url_in_chain(res, reverse('forum:thread', args=[self.question.pk, ]))
         assert_message_in_response(res, "Successfully invited user(s) to this question.")
 
@@ -50,7 +50,7 @@ class TestInviteToQuestionView(ForumApiTestCase):
         # act
         res = self.client.invite_to_question_post(bad_question_pk, self.username2)
         # assert
-        self.assertEqual(0, QuestionInviteToAnswer.objects.all().count())
+        self.assertEqual(0, PostInvitation.objects.all().count())
         assert_url_in_chain(res, reverse('forum:thread', args=[bad_question_pk, ]))
 
     def test_invite_to_question__when_get_request__should_redirect_to_question_page(self):
@@ -67,5 +67,5 @@ class TestInviteToQuestionView(ForumApiTestCase):
         # act
         res = self.client.invite_to_question_post(self.question.pk, self.username1)
         # assert
-        self.assertEqual(0, QuestionInviteToAnswer.objects.all().count())
+        self.assertEqual(0, PostInvitation.objects.all().count())
         assert_url_in_chain(res, reverse('forum:thread', args=[self.question.pk, ]))

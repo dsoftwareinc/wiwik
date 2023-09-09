@@ -11,7 +11,7 @@ from common.utils import *  # noqa
 from forum import jobs
 from forum import models
 from forum.apps import logger
-from forum.models import QuestionInviteToAnswer
+from forum.models import PostInvitation
 from forum.views import notifications, follow_models
 from tags import jobs as tag_jobs
 from tags.models import Tag, Synonym
@@ -370,13 +370,13 @@ def create_invites_and_notify_invite_users_to_question(
         if inviter == invitee:
             continue
         logger.debug(f'User {inviter.username} invited {invitee.username} to answer question id: {question.id}')
-        existing = QuestionInviteToAnswer.objects.filter(
+        existing = PostInvitation.objects.filter(
             question=question,
             inviter=inviter,
             invitee=invitee,
         ).first()
         if existing is None:
-            QuestionInviteToAnswer.objects.create(
+            PostInvitation.objects.create(
                 question=question,
                 inviter=inviter,
                 invitee=invitee,

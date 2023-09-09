@@ -11,7 +11,7 @@ from common.test_utils import assert_url_in_chain
 from forum import models, jobs
 from forum.integrations import slack_api
 from forum.jobs import add_meilisearch_document
-from forum.models import QuestionInviteToAnswer, TagFollow
+from forum.models import PostInvitation, TagFollow
 from forum.tests.base import ForumApiTestCase
 from forum.views import utils, notifications
 from forum.views.q_and_a_crud.view_thread import view_thread_background_tasks
@@ -112,7 +112,7 @@ class TestThreadView(ForumApiTestCase):
 
     def test_thread_view_with_invites__show_question_invitees(self):
         # arrange
-        QuestionInviteToAnswer.objects.create(
+        PostInvitation.objects.create(
             question=self.question,
             inviter=self.users[0],
             invitee=self.users[1],
@@ -131,7 +131,7 @@ class TestThreadView(ForumApiTestCase):
         # arrange
         self.question.has_accepted_answer = True
         self.question.save()
-        QuestionInviteToAnswer.objects.create(
+        PostInvitation.objects.create(
             question=self.question,
             inviter=self.users[0],
             invitee=self.users[1],

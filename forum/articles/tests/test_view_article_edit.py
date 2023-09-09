@@ -29,7 +29,7 @@ class TestEditArticleView(ArticlesApiTestCase):
         super().setUpClass()
         cls.user1: ForumUser = ForumUser.objects.create_user(cls.username1, f'{cls.username1}@a.com', cls.password)
         cls.user2: ForumUser = ForumUser.objects.create_user(cls.username2, f'{cls.username2}@a.com', cls.password)
-        cls.article = utils.create_question(cls.user1, cls.title, cls.article_content, ','.join(cls.tags), type=Question.POST_TYPE_ARTICLE)
+        cls.article = utils.create_article(cls.user1, cls.title, cls.article_content, ','.join(cls.tags))
 
     def test_edit_article_get__green(self):
         # arrange

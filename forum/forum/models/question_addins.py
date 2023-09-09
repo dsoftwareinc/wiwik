@@ -5,10 +5,10 @@ from forum.models import Question
 from wiwik_lib.models import AdvancedModelManager, user_model_defer_fields
 
 
-class QuestionInviteToAnswer(models.Model):
-    """
-    Invite a user to answer a question.
-    This data will be added to the question data.
+class PostInvitation(models.Model):
+    """Invite a user to participate in a post, answer question, comment on article, etc.
+    This data will be shown in the post's data.
+    While a question is left unanswered => the viewer can see who is invited to answer the question.
     """
     question = models.ForeignKey(Question, on_delete=models.CASCADE, blank=False, related_name='invitations')
     invitee = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='+')
@@ -22,7 +22,7 @@ class QuestionInviteToAnswer(models.Model):
         select_related=('invitee',), deferred_fields=user_model_defer_fields('invitee'))
 
     class Meta:
-        verbose_name_plural = 'Question Invitations'
+        verbose_name_plural = 'Post Invitations'
 
 
 class QuestionBookmark(models.Model):

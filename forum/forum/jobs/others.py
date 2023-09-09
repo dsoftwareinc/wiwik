@@ -43,10 +43,4 @@ def create_documentation_posts():
             content = content[content.find('\n') + 1:]
             tags = filename.split('/')[:-1]
             tags.remove('..')
-            utils.create_question(
-                next(random_user),
-                title,
-                content,
-                ','.join(tags),
-                send_notifications=False,
-                type=Question.POST_TYPE_ARTICLE)
+            utils.create_article(next(random_user), title, content, ','.join(tags), send_notifications=False)

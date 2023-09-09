@@ -4,7 +4,7 @@ from rangefilter.filters import DateRangeFilter
 
 from forum.admin.input_filter import UserFilter
 from forum.models import Question, Answer, QuestionComment, QuestionFollow, \
-    QuestionInviteToAnswer
+    PostInvitation
 
 
 class QuestionFollowInline(admin.TabularInline):
@@ -36,7 +36,7 @@ class AnswerInline(admin.TabularInline):
 
 class QuestionInviteToAnswerInline(admin.TabularInline):
     extra = 0
-    model = QuestionInviteToAnswer
+    model = PostInvitation
     search_fields = ('invitee__username', 'invitee__email',)
     autocomplete_fields = ('invitee', 'inviter', 'question',)
     fields = ('created_at', 'question', 'invitee', 'inviter',)
@@ -86,7 +86,7 @@ class QuestionAdmin(NumericFilterModelAdmin):
         return u", ".join(o.tag_words())
 
 
-@admin.register(QuestionInviteToAnswer)
+@admin.register(PostInvitation)
 class QuestionInviteToAnswerAdmin(admin.ModelAdmin):
     list_display = ('question', 'invitee', 'inviter', 'created_at',)
     raw_id_fields = ('question', 'invitee', 'inviter',)

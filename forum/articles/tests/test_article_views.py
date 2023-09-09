@@ -12,7 +12,7 @@ from common.test_utils import assert_url_in_chain
 from forum import models, jobs
 from forum.integrations import slack_api
 from forum.jobs import add_meilisearch_document
-from forum.models import QuestionInviteToAnswer
+from forum.models import PostInvitation
 from forum.views import utils, notifications
 from forum.views.q_and_a_crud.view_thread import view_thread_background_tasks
 
@@ -26,7 +26,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.article = utils.create_question(cls.users[1], cls.title, cls.content, ','.join(cls.tags), type=Question.POST_TYPE_ARTICLE)
+        cls.article = utils.create_article(cls.users[1], cls.title, cls.content, ','.join(cls.tags))
         settings.MAX_COMMENTS = 3
 
     def test_articles_detail_view__user_not_logged_in(self):
@@ -94,7 +94,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
 
     def test_articles_detail_view_with_invites__show_question_invitees(self):
         # arrange
-        QuestionInviteToAnswer.objects.create(
+        PostInvitation.objects.create(
             question=self.article,
             inviter=self.users[0],
             invitee=self.users[1],
@@ -338,7 +338,7 @@ class TestForumArticleListView(ArticlesApiTestCase):
         super().setUpClass()
 
         for i in range(settings.QUESTIONS_PER_PAGE + 2):
-            utils.create_question(cls.users[0], cls.title, cls.content, ','.join(cls.tags), type=Question.POST_TYPE_ARTICLE, )
+            utils.create_article(cls.users[0], cls.title, cls.content, ','.join(cls.tags), )
 
     def test_articles_list__empty_list_user_not_loggedin_default_tab(self):
         # act

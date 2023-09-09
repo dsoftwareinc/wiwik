@@ -183,7 +183,7 @@ def view_article_create(request):
                 'content': content,
                 'tags': tags,
             })
-        article = utils.create_question(user, title, content, tags, type=Question.POST_TYPE_ARTICLE)
+        article = utils.create_article(user, title, content, tags)
         messages.success(request, 'Article draft posted successfully')
         return redirect('articles:detail', pk=article.pk)
     return render(request, 'articles/articles-create.html', {

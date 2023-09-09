@@ -90,5 +90,5 @@ class TestDeleteQuestionView(ForumApiTestCase):
         res = self.client.delete_question(self.question.pk)
         # assert
         self.assertEqual(200, res.status_code)
-        self.assertEqual(0, models.QuestionInviteToAnswer.objects.all().count())
+        self.assertEqual(0, models.PostInvitation.objects.all().count())
         self.assertEqual(0, models.Question.objects.filter(pk=pk).count())

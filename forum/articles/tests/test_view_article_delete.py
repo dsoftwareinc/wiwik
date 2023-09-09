@@ -3,7 +3,7 @@ from django.urls import reverse
 from articles.models import Article
 from articles.tests.base import ArticlesApiTestCase
 from common.test_utils import assert_url_in_chain
-from forum.models import Question, QuestionInviteToAnswer
+from forum.models import PostInvitation
 from forum.views import utils
 from userauth.models import ForumUser
 
@@ -17,8 +17,7 @@ class TestDeleteArticleView(ArticlesApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.article = utils.create_article(
-            cls.users[0], cls.title, cls.article_content, ','.join(cls.tags), type=Question.POST_TYPE_ARTICLE)
+        cls.article = utils.create_article(cls.users[0], cls.title, cls.article_content, ','.join(cls.tags))
 
     def test_get_delete_article_confirmation_page__green(self):
         # arrange
@@ -78,5 +77,5 @@ class TestDeleteArticleView(ArticlesApiTestCase):
         res = self.client.delete_article(self.article.pk)
         # assert
         self.assertEqual(200, res.status_code)
-        self.assertEqual(0, QuestionInviteToAnswer.objects.all().count())
+        self.assertEqual(0, PostInvitation.objects.all().count())
         self.assertEqual(0, Article.objects.filter(pk=pk).count())
