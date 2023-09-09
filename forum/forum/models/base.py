@@ -1,4 +1,5 @@
 from datetime import timedelta, datetime
+from typing import Optional
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -279,14 +280,13 @@ class Answer(VotableUserInput, Flaggable):
     def share_link(self):
         return f"{CURRENT_SITE}{reverse('forum:thread', args=[self.question.pk])}#answer_{self.pk}"
 
-    def get_answer(self):
-        """
-        Used for activity model, for answer userinput, this returns self
-        :return: None
+    def get_answer(self) -> Optional['Answer']:
+        """Used for Activity model, for answer userinput, this returns self.
+        :return: Current model
         """
         return self
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         if self.id is None:  # New answer, increase counter
             self.question.answers_count += 1
         super(Answer, self).save(*args, **kwargs)

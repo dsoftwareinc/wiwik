@@ -24,6 +24,12 @@ class PostInvitation(models.Model):
     class Meta:
         verbose_name_plural = 'Post Invitations'
 
+    def __str__(self):
+        return (f'PostInvitation['
+                f'inviter={self.inviter.username},'
+                f'invitee={self.invitee.username}'
+                f'post={self.question.id}]')
+
 
 class QuestionBookmark(models.Model):
     """

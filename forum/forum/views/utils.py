@@ -20,7 +20,7 @@ from userauth.models import ForumUser
 
 def recalculate_user_reputation(user: AbstractUser):
     """
-    Calculate user reputation based on VoteActivity
+    Calculate a user reputation based on VoteActivity
     """
     if user is None:
         return
@@ -58,11 +58,12 @@ def create_activity(source: Union[AbstractUser, None],
     if exist is not None:
         logger.warning('Activity already exist, exiting')
         return exist
-    activity = models.VoteActivity.objects.create(source=source,
-                                                  target=target,
-                                                  question=userinput.get_question(),
-                                                  answer=userinput.get_answer(),
-                                                  reputation_change=rep_change)
+    activity = models.VoteActivity.objects.create(
+        source=source,
+        target=target,
+        question=userinput.get_question(),
+        answer=userinput.get_answer(),
+        reputation_change=rep_change)
     recalculate_user_reputation(target)
     return activity
 
@@ -117,7 +118,7 @@ def get_model(model_name: str, pk: int):
 def _get_tag(tag_word: str, user: AbstractUser) -> Tag:
     """
     Get tag with tag_word.
-    If such tag doesn't exist, check for synonym with tag_word.
+    If such tag doesn't exist, check for a synonym with tag_word.
     If it doesn't exist, create a tag (with the user as its author).
     """
     tag = Tag.objects.filter(tag_word=tag_word).first()
@@ -168,7 +169,7 @@ def create_question(user: AbstractUser, title: str, content: str, tags: str,
 
 def update_question(user: AbstractUser, q: models.Question, title: str, content: str, tags: str) -> models.Question:
     """Update question content if there are changes
-    :param user: User who is updating the post
+    :param user: User who is updating the post model
     :param q: Question to be updated
     :param title: new title
     :param content: new content
@@ -223,7 +224,7 @@ def delete_question(question: models.Question):
 # Answers method
 
 def create_answer(content: str, user: AbstractUser, question: models.Question,
-                  send_notifications: bool = True) -> Union[models.Answer, None]:
+                  send_notifications: bool = True) -> Optional[models.Answer]:
     if content is None or content.strip() == '':
         logger.warning('Trying to create answer without content, ignoring')
         return None
@@ -232,6 +233,10 @@ def create_answer(content: str, user: AbstractUser, question: models.Question,
         return None
     if question.answer_set.filter(author=user).count() > 0:
         logger.warning(f'User {user.username} already answered question, please update existing answer')
+        return None
+    # Protect creating answers on posts that do not accept answer
+    if not question.is_accepting_answers:
+        logger.warning(f'User {user.username} is trying to answer a post {question.id} that does not accept answer')
         return None
     a = models.Answer.objects.create(content=content, author=user, question=question)
     tags = a.question.tags.all()
@@ -306,9 +311,10 @@ def downvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.V
     return model_obj
 
 
-def accept_answer(answer: models.Answer):
+def accept_answer(answer: models.Answer) -> None:
     """Mark an answer as accepted answer.
-    :param answer: answer to mark
+    :param answer: Answer to mark
+    :returns: None
     """
     if answer is None:
         return
@@ -320,7 +326,7 @@ def accept_answer(answer: models.Answer):
 
 
 # Comment method
-def create_comment(content: str, user: AbstractUser, parent: models.UserInput) -> Union[models.Comment, None]:
+def create_comment(content: str, user: AbstractUser, parent: models.UserInput) -> Optional[models.Comment]:
     if content is None or content.strip() == '':
         logger.warning('Trying to create comment without content, ignoring')
         return None
@@ -339,7 +345,7 @@ def create_comment(content: str, user: AbstractUser, parent: models.UserInput) -
     return comment
 
 
-def delete_comment(comment: models.Comment):
+def delete_comment(comment: models.Comment) -> None:
     logger.debug(f'deleting {comment.pk}')
     follow_models.delete_follow_question(comment.get_question(), comment.author)
     comment.delete()
@@ -354,33 +360,44 @@ def upvote_comment(user: AbstractUser, comment: models.Comment) -> models.Commen
     return comment
 
 
-# QuestionFollow and TagFollow methods
-
-
-def get_user_followed_tags(user: AbstractUser):
+def get_user_followed_tags(user: AbstractUser) -> list[Tag]:
     follows = models.TagFollow.objects.filter(user=user)
     return [f.tag for f in follows]
 
 
 def create_invites_and_notify_invite_users_to_question(
-        inviter: AbstractUser, invitees: List[AbstractUser], question: models.Question):
-    # Generate invitees list
+        inviter: AbstractUser, invitees: List[AbstractUser], post: models.Question) -> int:
+    """Generate invitations for user to participate in a post.
+
+    Args:
+        inviter: User who invited
+        invitees: Collection of users to be invited
+        post: Post to invite to
+
+    Returns:
+        Number of invitations created
+
+    """
     invited_list = []
     for invitee in invitees:
         if inviter == invitee:
+            logger.debug(f'User {inviter.username} invited itself to post[{post.id}] => skipping')
             continue
-        logger.debug(f'User {inviter.username} invited {invitee.username} to answer question id: {question.id}')
         existing = PostInvitation.objects.filter(
-            question=question,
+            question=post,
             inviter=inviter,
             invitee=invitee,
         ).first()
+        if existing is not None:
+            logger.debug(f'User {inviter.username} invited {invitee.username} to'
+                         f' post[{post.id}] but user is already invited => skipping')
         if existing is None:
             PostInvitation.objects.create(
-                question=question,
+                question=post,
                 inviter=inviter,
                 invitee=invitee,
             )
             invited_list.append(invitee)
-    notifications.notify_invite_users_to_question(inviter, question, invited_list)
+    logger.debug(f'Created {len(invited_list)} invitations: [{invited_list}]')
+    notifications.notify_invite_users_to_question(inviter, post, invited_list)
     return len(invited_list)
