@@ -2,6 +2,7 @@ import os
 from unittest import mock
 
 from bs4 import BeautifulSoup
+from django.conf import settings
 from django.test.utils import override_settings
 from django.urls import reverse
 
@@ -127,7 +128,7 @@ class TestEditArticleView(ArticlesApiTestCase):
         # arrange
         self.client.login(self.username1, self.password)
         max_length = int(os.getenv('MAX_QUESTION_TITLE_LENGTH', 30000))
-        new_title = 'new_title_with_appropriate_length' + 'x' * max_length
+        new_title = 'new_title_with_appropriate_length' + 'x' * 255
         new_content = 'new content with good enough length'
         new_tags = ['tag1', 'tag2']
         # act
@@ -137,7 +138,7 @@ class TestEditArticleView(ArticlesApiTestCase):
                                             ','.join(new_tags))
         # assert
         self.article.refresh_from_db()
-        assert_message_in_response(res, 'Error: Title too long')
+        assert_message_in_response(res, 'Error: Title has 288 characters, must be between 10 and 255 characters.')
         self.assertEqual(self.article_content, self.article.content)
         self.assertEqual(set(self.tags), set(self.article.tag_words()))
         self.assertEqual(0, len(res.redirect_chain))

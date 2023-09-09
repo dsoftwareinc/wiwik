@@ -300,17 +300,13 @@ class TestArticleDetailView(ArticlesApiTestCase):
         for c in comment_list:
             self.assertEqual(comment_content, c.content)
 
-    def test_articles_detail_view_create_question_comment__non_existing_question(self):
+    def test_create_answer_for_article__should_fail(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         answer_content = 'answer------content'
         a = utils.create_answer(answer_content, self.users[0], self.article)
-        comment_content = 'comment------content'
-        # act
-        res = self.client.thread_add_comment(self.article.pk, 'answer', a.pk + 6, comment_content)
         # assert
-        self.assertEqual(200, res.status_code)
-        self.assertEqual(0, models.AnswerComment.objects.all().count())
+        self.assertIsNone(a)
 
     def test_articles_detail_view__links_should_have_target_attribute(self):
         # arrange
