@@ -30,7 +30,7 @@ def view_home(request):
             'meanwhile you can see all the questions in the forum')
         return redirect('forum:list')
     tag_words_user_follows = [t.tag_word for t in tag_user_follows]
-    main_query = main_query.filter(tags__tag_word__in=tag_words_user_follows).distinct()
+    main_query = main_query.filter(tags__tag_word__in=tag_words_user_follows).distinct().order_by('-last_activity')
     return render_questions(request, main_query, 'Home', {'tags_watched': tag_words_user_follows, })
 
 

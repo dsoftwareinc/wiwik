@@ -1,5 +1,7 @@
 from django.conf import settings
 
+from common.utils import TabEnum
+
 
 def env_context(request):
     """
@@ -14,4 +16,5 @@ def env_context(request):
     context['MAX_REPUTATION_ITEMS'] = settings.MAX_REPUTATION_ITEMS
     context['LATEX_SUPPORT_ENABLED'] = settings.LATEX_SUPPORT_ENABLED
     context['GOOGLE_ANALYTICS_KEY'] = settings.GOOGLE_ANALYTICS_KEY
+    context['TABS'] = TabEnum
     return context

@@ -84,7 +84,7 @@ class ForumUser(AbstractUser):
         help_text='Number of votes user casted')
 
     def display_name(self):
-        return self.name if self.name else self.username
+        return self.name if self.name else self.email
 
     @property
     def badges(self):

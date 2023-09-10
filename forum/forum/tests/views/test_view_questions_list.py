@@ -6,6 +6,7 @@ from django.test import override_settings
 from django.urls import reverse
 
 from common.test_utils import assert_url_in_chain, assert_message_in_response
+from common.utils import TabEnum
 from forum import models
 from forum.jobs.others import log_search
 from forum.tests.base import ForumApiTestCase
@@ -73,7 +74,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         user = self.users[0]
         utils.create_question(user, self.title, self.content, ','.join(self.tags))
         # act
-        res = self.client.questions_list(tab='latest')
+        res = self.client.questions_list(tab=TabEnum.LATEST.value)
         # assert
         self.assertContains(res, self.usernames[1])
         self.assertContains(res, 'All questions')
@@ -91,7 +92,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         user = self.users[0]
         utils.create_question(user, self.title, self.content, ','.join(self.tags))
         # act
-        res = self.client.questions_list(tab='mostviewed')
+        res = self.client.questions_list(tab=TabEnum.MOST_VIEWED.value)
         # assert
         self.assertContains(res, self.usernames[1])
         self.assertContains(res, 'All questions')
@@ -110,7 +111,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         user = self.users[0]
         utils.create_question(user, self.title, self.content, ','.join(self.tags))
         # act
-        res = self.client.questions_list(tab='unresolved')
+        res = self.client.questions_list(tab=TabEnum.UNRESOLVED.value)
         # assert
         self.assertContains(res, self.usernames[1])
         self.assertContains(res, 'All questions')
@@ -129,7 +130,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         user = self.users[0]
         utils.create_question(user, self.title, self.content, ','.join(self.tags))
         # act
-        res = self.client.questions_list(tab='unanswered')
+        res = self.client.questions_list(tab=TabEnum.UNANSWERED.value)
         # assert
         self.assertContains(res, self.usernames[1])
         self.assertContains(res, 'All questions')

@@ -24,11 +24,11 @@
                 <div class="row">
                     <nav>
                         <ul class="pagination pagination-md">
-                            <li class="page-item {% if tab == 'latest' %}active{% endif %}">
-                                <a class="page-link" href="?tab=latest">Latest</a>
+                            <li class="page-item {% if tab == TABS.LATEST.value %}active{% endif %}">
+                                <a class="page-link" href="?tab={{ TABS.LATEST.value }}">Latest</a>
                             </li>
-                            <li class="page-item {% if tab == 'mostviewed' %}active{% endif %}">
-                                <a class="page-link" href="?tab=mostviewed">Most viewed</a>
+                            <li class="page-item {% if tab == TABS.MOST_VIEWED.value %}active{% endif %}">
+                                <a class="page-link" href="?tab={{ TABS.MOST_VIEWED.value }}">Most viewed</a>
                             </li>
                         </ul>
                     </nav>

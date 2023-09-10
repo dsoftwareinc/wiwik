@@ -29,7 +29,7 @@ class UserAuthLoginTest(UserAuthTestCase):
         # assert
         assert res.status_code == 200
         assert_url_in_chain(res, reverse('forum:home'))
-        assert_message_in_response(res, f"You are logged in as <b>{self.usernames[0]}</b>")
+        assert_message_in_response(res, f"You are logged in as <b>{self.usernames[0]}@a.com</b>")
 
     def test_login__bad_password__should_fail(self):
         # act

@@ -104,34 +104,36 @@ class Question(VotableUserInput, Flaggable):
     """
     Class to represent a post in the forum
     """
-    POST_TYPE_ARTICLE = 'a'
-    POST_TYPE_QUESTION = 'q'
-    POST_TYPE_HOWTO = 'h'
-    POST_TYPES = [(POST_TYPE_QUESTION, 'Question'), (POST_TYPE_ARTICLE, 'Article'), (POST_TYPE_HOWTO, 'How to'), ]
-    POST_ARTICLE_TYPES = {POST_TYPE_ARTICLE, POST_TYPE_HOWTO, }
-    POST_TYPE_ACCEPTING_ANSWERS = {POST_TYPE_QUESTION, }
-    POST_STATUS = [
-        ('a', 'Open'),
-        ('t', 'Triaged'),
-        ('c', 'Closed'),
-        ('d', 'Duplicate'),
-        ('h', 'Hidden'),
-        ('O', 'Off Topic'),
-        ('N', 'Needs details or Clarity'),
-    ]
-    POST_STATUS_ACCEPTING_ANSWERS = {'a', 't'}
+
+    class PostType(models.TextChoices):
+        ARTICLE = 'a', 'Article'
+        QUESTION = 'q', 'Question'
+        HOWTO = 'h', 'How to'
+
+    class PostStatus(models.TextChoices):
+        OPEN = 'a', 'Open'
+        TRIAGED = 't', 'Triaged'
+        CLOSED = 'c', 'Closed'
+        DUPLICATE = 'd', 'Duplicate'
+        HIDDEN = 'h', 'Hidden'
+        OFF_TOPIC = 'O', 'Off Topic'
+        NEEDS_DETAILS = 'N', 'Needs details or Clarity'
+
+    POST_ARTICLE_TYPES = {PostType.ARTICLE, PostType.HOWTO, }
+    POST_TYPE_ACCEPTING_ANSWERS = {PostType.QUESTION, }
+    POST_STATUS_ACCEPTING_ANSWERS = {PostStatus.OPEN, PostStatus.TRIAGED}
     SOURCES = [
         ('slack', 'Slack'),
         ('teams', 'Microsoft Teams'),
     ]
     status = models.CharField(
-        max_length=2, choices=POST_STATUS,
-        default='a', help_text='Post status',
+        max_length=2, choices=PostStatus.choices,
+        default=PostStatus.OPEN, help_text='Post status',
     )
     status_updated_at = models.DateTimeField(blank=True, null=True)
     type = models.CharField(
-        max_length=2, choices=POST_TYPES,
-        default='q', help_text='Post type',
+        max_length=2, choices=PostType.choices,
+        default=PostType.QUESTION, help_text='Post type',
     )
     answers_count = models.IntegerField(
         default=0, help_text='Count number of answers', )
@@ -187,6 +189,9 @@ class Question(VotableUserInput, Flaggable):
     @property
     def is_article(self):
         return self.type in Question.POST_ARTICLE_TYPES
+    @property
+    def is_question(self):
+        return self.type == Question.PostType.QUESTION
 
     @property
     def duplicate_question_link(self):

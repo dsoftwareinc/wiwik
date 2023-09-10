@@ -7,6 +7,7 @@ from django.db.models import QuerySet
 from django.shortcuts import render
 
 from common import utils
+from common.utils import TabEnum
 from forum import jobs
 from forum.jobs.others import log_search
 from forum.models import Question
@@ -22,18 +23,18 @@ def _get_questions_queryset(
     start_time = time.time()
     if query is not None:
         qs = search.query_method(base_queryset, query)
-    elif tab == 'mostviewed':
+    elif tab == TabEnum.MOST_VIEWED.value:
         qs = base_queryset.all().order_by('-views')
-    elif tab == 'unresolved':
+    elif tab == TabEnum.UNRESOLVED.value:
         qs = (base_queryset
               .filter(type__in=Question.POST_TYPE_ACCEPTING_ANSWERS, has_accepted_answer=False)
               .order_by('-created_at'))
-    elif tab == 'unanswered':
+    elif tab == TabEnum.UNANSWERED.value:
         qs = (base_queryset
               .filter(type__in=Question.POST_TYPE_ACCEPTING_ANSWERS, answers_count=0)
               .order_by('-created_at'))
     else:
-        qs = base_queryset.all().order_by('-created_at')
+        qs = base_queryset.all().order_by('-type', '-created_at')
     if query and user:
         mstaken = int((time.time() - start_time) * 1000)
         first_five = list(qs.values_list('id', flat=True)[:5])

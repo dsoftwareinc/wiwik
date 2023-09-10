@@ -1,7 +1,16 @@
 import sys
+from enum import Enum
 from typing import Optional
 
 from django.http import HttpRequest
+
+
+class TabEnum(Enum):
+    do_not_call_in_templates = True
+    MOST_VIEWED = 'mostviewed'
+    UNANSWERED = 'unanswered'
+    LATEST = 'latest'
+    UNRESOLVED = 'unresolved'
 
 
 def _find_code_blocks(markdown_text_lines: list[str]) -> list[tuple[int, int], ...]:
@@ -53,4 +62,4 @@ def get_request_param(
 
 def get_request_tab(request: HttpRequest):
     res = get_request_param(request, 'tab', 'latest')
-    return res if res in {'mostviewed', 'unanswered', 'latest', 'unresolved', } else 'latest'
+    return res if res in {tab.value for tab in TabEnum} else TabEnum.LATEST

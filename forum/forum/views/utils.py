@@ -133,7 +133,7 @@ def _get_tag(tag_word: str, user: AbstractUser) -> Tag:
 
 def create_article(user: AbstractUser, title: str, content: str, tags: str, **kwargs) -> models.Question:
     if 'type' not in kwargs:
-        kwargs['type'] = models.Question.POST_TYPE_ARTICLE
+        kwargs['type'] = models.Question.PostType.ARTICLE
     return create_question(user, title, content, tags, **kwargs)
 
 

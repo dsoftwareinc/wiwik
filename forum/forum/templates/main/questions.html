@@ -27,17 +27,17 @@
                 <div class="row">
                     <nav>
                         <ul class="pagination pagination-md">
-                            <li class="page-item {% if tab == 'latest' %}active{% endif %}">
-                                <a class="page-link" href="?tab=latest">Latest</a>
+                            <li class="page-item {% if tab == TABS.LATEST.value %}active{% endif %}">
+                                <a class="page-link" href="?tab={{ TABS.LATEST.value }}">Latest</a>
                             </li>
-                            <li class="page-item {% if tab == 'mostviewed' %}active{% endif %}">
-                                <a class="page-link" href="?tab=mostviewed">Most viewed</a>
+                            <li class="page-item {% if tab == TABS.MOST_VIEWED.value %}active{% endif %}">
+                                <a class="page-link" href="?tab={{ TABS.MOST_VIEWED.value }}">Most viewed</a>
                             </li>
-                            <li class="page-item {% if tab == 'unanswered' %}active{% endif %}">
-                                <a class="page-link" href="?tab=unanswered">Unanswered</a>
+                            <li class="page-item {% if tab == TABS.UNANSWERED.value %}active{% endif %}">
+                                <a class="page-link" href="?tab={{ TABS.UNANSWERED.value }}">Unanswered</a>
                             </li>
-                            <li class="page-item {% if tab == 'unresolved' %}active{% endif %}">
-                                <a class="page-link" href="?tab=unresolved">Not resolved</a>
+                            <li class="page-item {% if tab == TABS.UNRESOLVED.value %}active{% endif %}">
+                                <a class="page-link" href="?tab={{ TABS.UNRESOLVED.value }}">Not resolved</a>
                             </li>
                         </ul>
                     </nav>
@@ -53,7 +53,7 @@
                     {% for q in all_questions %}
                         {% if q.is_article %}
                             {% include "articles/article-summary.partial.html" with q=q last=forloop.last %}
-                        {% elif q.type == 'q' %}
+                        {% elif q.is_question %}
                             {% include "main/includes/questions.single-question.template.html" with q=q last=forloop.last %}
                         {% endif %}
                     {% endfor %}

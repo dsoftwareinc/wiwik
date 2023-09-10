@@ -9,6 +9,7 @@ from articles.tests.base import ArticlesApiTestCase
 from badges.jobs import review_bagdes_event
 from badges.logic.utils import TRIGGER_EVENT_TYPES
 from common.test_utils import assert_url_in_chain
+from common.utils import TabEnum
 from forum import models, jobs
 from forum.integrations import slack_api
 from forum.jobs import add_meilisearch_document
@@ -387,7 +388,7 @@ class TestForumArticleListView(ArticlesApiTestCase):
         # arrange
         self.client.login(self.usernames[0], self.password)
         # act
-        res = self.client.articles_list(tab='mostviewed')
+        res = self.client.articles_list(tab=TabEnum.MOST_VIEWED.value)
         # assert
         self.assertContains(res, 'All articles')
         self.assertContains(res, 'Propose article')
