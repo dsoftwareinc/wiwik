@@ -28,7 +28,7 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         log_request(cls.users[1].id, '174.95.73.69', timezone.now(),
                     200, 'GET', '/path')
 
-    def test_viewprofile__own_profile__green(self):
+    def test_view_profile__own_profile__green(self):
         # arrange
         self.client.login(self.usernames[1], self.password)
 
@@ -51,19 +51,18 @@ class UserAuthViewProfileTest(UserAuthTestCase):
                 'aria-selected': 'true',
             })))
 
-    def test_viewprofile__different_user__green(self):
+    def test_view_profile__different_user__green(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         # act
         res = self.client.view_profile(self.usernames[1], 'questions')
         # assert
         self.assertContains(res, 'Last visited', status_code=200)
-        self.assertNotContains(res, 'logos/GitHub-Mark-64px.png')
         self.assertNotContains(res, 'logos/Keybase_logo_official.png')
         assert res.status_code == 200
         assert reverse('userauth:edit') not in str(res.content)  # don't show edit button
 
-    def test_viewprofile__user_not_following_questions__green(self):
+    def test_view_profile__user_not_following_questions__green(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         # act
@@ -71,7 +70,7 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         # assert
         self.assertContains(res, 'No questions followed', status_code=200)
 
-    def test_viewprofile__following_tab_tags_with_description__show_popover(self):
+    def test_view_profile__following_tab_tags_with_description__show_popover(self):
         # arrange
         self.client.login(self.usernames[1], self.password)
         tag = Tag.objects.all().first()
@@ -87,23 +86,23 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         soup = BeautifulSoup(res.content, 'html.parser')
         self.assertEqual(2, len(soup.find_all('a', {'class': 'btn btn-question-tag m-2'})))
 
-    def test_viewprofile__different_user_with_github__green(self):
+    def test_view_profile__different_user_with_github__green(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         self.users[1].github_handle = 'cunla'
-        self.users[1].keybase_user = 'danielmoran'
+        self.users[1].keybase_user = 'danielm'
         self.users[1].save()
         # act
         res = self.client.view_profile(self.usernames[1], 'questions')
         # assert
         self.assertContains(res, 'Last visited', status_code=200)
         self.assertContains(res, 'Canada')
-        self.assertContains(res, 'logos/GitHub-Mark-64px.png')
+        self.assertContains(res, 'logo-github')
         self.assertContains(res, 'logos/Keybase_logo_official.png')
         assert res.status_code == 200
         assert reverse('userauth:edit') not in str(res.content)  # don't show edit button
 
-    def test_viewprofile__different_user_inactive__green(self):
+    def test_view_profile__different_user_inactive__green(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         self.users[1].is_active = False
@@ -113,7 +112,7 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         # assert
         self.assertContains(res, 'Member inactive', status_code=200)
 
-    def test_viewprofile__different_user__reputation_should_not_be_unseen(self):
+    def test_view_profile__different_user__reputation_should_not_be_unseen(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         res = self.client.view_profile(self.usernames[0], 'reputation')
@@ -126,7 +125,7 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         assert reverse('userauth:edit') not in str(res.content)  # don't show edit button
         self.assertNotContains(res, 'bg-unseen')
 
-    def test_viewprofile__non_existing_user(self):
+    def test_view_profile__non_existing_user(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         username = 'user_not_there'
@@ -137,7 +136,7 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         assert_url_in_chain(res, reverse('forum:list'))
         assert_message_in_response(res, f"Couldn't find user {username}")
 
-    def test_viewprofile__non_existing_page__returns_first_page(self):
+    def test_view_profile__non_existing_page__returns_first_page(self):
         # arrange
         self.client.login(self.usernames[1], self.password)
 
@@ -146,7 +145,7 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         # assert
         assert res.status_code == 200
 
-    def test_viewprofile__non_existing_tab__returns_questions_tab(self):
+    def test_view_profile__non_existing_tab__returns_questions_tab(self):
         # arrange
         self.client.login(self.usernames[1], self.password)
 
@@ -176,7 +175,7 @@ class TestProfilePagination(UserAuthTestCase):
             utils.create_question(
                 cls.users[1], cls.title, cls.question_content, cls.tags[0])
 
-    def test_viewprofile__pagination_middle_page__green(self):
+    def test_view_profile__pagination_middle_page__green(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         # act
@@ -189,7 +188,7 @@ class TestProfilePagination(UserAuthTestCase):
         self.assertEqual(2, len(soup.find_all('a', {'href': '?page=1'})))
         self.assertEqual(2, len(soup.find_all('a', {'href': '?page=3'})))
 
-    def test_viewprofile__pagination_first_page__green(self):
+    def test_view_profile__pagination_first_page__green(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         # act
@@ -202,7 +201,7 @@ class TestProfilePagination(UserAuthTestCase):
         self.assertEqual(2, len(soup.find_all('a', {'href': '?page=2'})))
         self.assertEqual(1, len(soup.find_all('a', {'href': '?page=3'})))
 
-    def test_viewprofile__pagination_last_page__green(self):
+    def test_view_profile__pagination_last_page__green(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         # act

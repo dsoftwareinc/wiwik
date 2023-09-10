@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
+from forum.models import Question
 from forum.views.utils import create_question
 from userauth import models
 from userauth.models import ForumUser
@@ -149,6 +150,8 @@ class UserAuthClient():
 
 @override_settings(SKIP_USER_VISIT_LOG=True)
 class UserAuthTestCase(TestCase):
+    users: list[ForumUser]
+    question: Question
     usernames = ['myuname1', 'myuname2', 'diff_username', ]
     password = 'magicalPa$$w0rd'
     tabs = ('questions', 'answers', 'votes', 'reputation',
