@@ -1,61 +1,57 @@
 {% extends 'userauth-base.html' %}
-{% load crispy_forms_filters %}
-{% load socialaccount %}
-{% load static %}
+{% load crispy_forms_filters crispy_forms_tags socialaccount static %}
 
 {% block content %}
-    <body>
-    <div class="col-md-4 mb-0"></div>
-    {% load crispy_forms_tags %}
-    <div class="card container col-md-4 content-section p-4 mt-5">
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom"><strong>Login</strong></legend>
-                {{ form | crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-dark" type="submit">Login</button>
-                {% if google_login_allowed %}
-                    <a class="btn btn-outline-dark" role="button"
-                       href="{% provider_login_url 'google' %}"
-                       style="text-transform:none">
-                        Login with
-                        <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in"
-                             src="{% static 'logos/google.png' %}"/>
-                    </a>
-                {% endif %}
-                {% if facebook_login_allowed %}
-                    <a class="btn btn-outline-dark" role="button"
-                       href="{% provider_login_url 'facebook' %}"
-                       style="text-transform:none">
-                        Login with <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Facebook sign-in"
-                                        src="{% static 'logos/facebook.png' %}"/>
-                    </a>
-                {% endif %}
-                {% if okta_login_allowed %}
-                    <a class="btn btn-outline-dark" role="button"
-                       href="{% provider_login_url 'okta' %}"
-                       style="text-transform:none">
-                        Login with okta
-                    </a>
-                {% endif %}
+    <div class="container">
+        <div class="card col-md-6 offset-md-4 content-section p-4 mt-5">
+            <form method="POST">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    <legend class="border-bottom"><strong>Login</strong></legend>
+                    {{ form | crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-dark" type="submit">Login</button>
+                    {% if google_login_allowed %}
+                        <a class="btn btn-outline-dark" role="button"
+                           href="{% provider_login_url 'google' %}"
+                           style="text-transform:none">
+                            Login with
+                            <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in"
+                                 src="{% static 'logos/google.png' %}"/>
+                        </a>
+                    {% endif %}
+                    {% if facebook_login_allowed %}
+                        <a class="btn btn-outline-dark" role="button"
+                           href="{% provider_login_url 'facebook' %}"
+                           style="text-transform:none">
+                            Login with <img width="20px" style="margin-bottom:3px; margin-right:5px"
+                                            alt="Facebook sign-in"
+                                            src="{% static 'logos/facebook.png' %}"/>
+                        </a>
+                    {% endif %}
+                    {% if okta_login_allowed %}
+                        <a class="btn btn-outline-dark" role="button"
+                           href="{% provider_login_url 'okta' %}"
+                           style="text-transform:none">
+                            Login with okta
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+
+
+            <div class="border-top pt-3">
+                <small class="text-muted">
+                    Need An Account?
+                    <a class="ml-2" href="{% url 'userauth:signup' %}">Sign Up Now</a>
+                </small>
             </div>
-        </form>
-
-
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                Need An Account?
-                <a class="ml-2" href="{% url 'userauth:signup' %}">Sign Up Now</a>
-            </small>
-        </div>
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                <a class="ml-2" href="{% url 'account_reset_password' %}">Forgot your password?</a>
-            </small>
+            <div class="border-top pt-3">
+                <small class="text-muted">
+                    <a class="ml-2" href="{% url 'account_reset_password' %}">Forgot your password?</a>
+                </small>
+            </div>
         </div>
     </div>
-    <div class="col-md-4 mb-0"></div>
-
 {% endblock %}

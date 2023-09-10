@@ -52,13 +52,7 @@
                             {{ seeuser.display_name | default_if_none:seeuser.username }}
                             {% if seeuser.github_handle %}
                                 <a href="https://github.com/{{ seeuser.github_handle }}">
-                                    {% if seeuser.ui_mode == 'dark' %}
-                                        <img src="{% static 'logos/GitHub-Mark-Light-64px.png' %}"
-                                             style="height: 32px;"/>
-                                    {% else %}
-                                        <img src="{% static 'logos/GitHub-Mark-64px.png' %}"
-                                             style="height: 32px;"/>
-                                    {% endif %}
+                                    <span class="logo-github"></span>
                                 </a>
                             {% endif %}
                             {% if seeuser.keybase_user %}

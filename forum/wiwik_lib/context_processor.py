@@ -17,4 +17,5 @@ def env_context(request):
     context['LATEX_SUPPORT_ENABLED'] = settings.LATEX_SUPPORT_ENABLED
     context['GOOGLE_ANALYTICS_KEY'] = settings.GOOGLE_ANALYTICS_KEY
     context['TABS'] = TabEnum
+    context['SHOWCASE'] = settings.SHOWCASE_DEPLOYMENT
     return context

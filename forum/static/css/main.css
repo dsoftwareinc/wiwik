@@ -801,3 +801,11 @@ p {
     --bs-text-opacity: 1;
     color: var(--bs-gray-600) !important;
 }
+
+.logo-github:before {
+    background-size: 20px 20px;
+    display: inline-block;
+    min-width: 20px;
+    min-height: 20px;
+    content: "";
+}
