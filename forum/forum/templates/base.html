@@ -119,8 +119,9 @@
     </div>
 </div>
 
-
-{% include 'includes/messages.html' %}
+{% block messages %}
+    {% include 'includes/messages.html' %}
+{% endblock %}
 <div class="container-xxl" style="min-height: 100%;">
     <div class="row">
         {% if request.user.is_authenticated %}
