@@ -44,11 +44,11 @@ Instructions are for deployment to debian style server (ubuntu).
 flowchart LR
     subgraph server
         wiwik -- 5432 --> postgres[(postgres)]
+        wiwik -- 7700 --> meilisearch
+        wiwik -- 6379 cache --> redis0
         wiwik -- 6379 background tasks --> redis
-        redis -- 6379 --> wiwik-worker([wiwik-worker])
-        redis -- 6379 --> scheduler([scheduler])
+        redis -- 6379 --> wiwik-worker(["wiwik-worker(s)"])
         style wiwik-worker stroke-width:3px,stroke-dasharray: 5 5;
-        style scheduler stroke-width:3px,stroke-dasharray: 5 5;
         nginx -- wiwik.sock --> gunicorn
         nginx
         subgraph gunicorn
