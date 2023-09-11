@@ -17,7 +17,7 @@
             const skipautosave = ("{{ skipautosave }}" == "true");
             const elem = document.getElementById(elemName);
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            new EasyMDE({
+            let editor = new EasyMDE({
                 autoDownloadFontAwesome: false,
                 element: elem,
                 toolbar: ["bold", "italic", "heading", "|",
@@ -38,7 +38,7 @@
                 },
                 autosave: {
                     enabled: !skipautosave,
-                    uniqueId: window.location.pathname + 'AutoSavedValue',
+                    uniqueId: `${elemName}AutoSavedValue/${window.location.pathname}`,
                     delay: 1000,
                     submit_delay: 5000,
                     timeFormat: {
@@ -54,6 +54,10 @@
                 },
                 spellChecker: false,
                 status: false,
+            });
+            $(".submit-question-button").click(function () {
+                editor.toTextArea();
+                editor = null;
             });
         })();
     </script>

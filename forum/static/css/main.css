@@ -809,3 +809,7 @@ p {
     min-height: 20px;
     content: "";
 }
+
+.submit-question-button {
+    width: 100%;
+}
