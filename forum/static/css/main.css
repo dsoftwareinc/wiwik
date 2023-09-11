@@ -813,3 +813,7 @@ p {
 .submit-question-button {
     width: 100%;
 }
+
+#similar-questions {
+    max-height: 200px;
+}
