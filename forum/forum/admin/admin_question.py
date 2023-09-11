@@ -34,7 +34,7 @@ class AnswerInline(admin.TabularInline):
     readonly_fields = ('created_at',)
 
 
-class QuestionInviteToAnswerInline(admin.TabularInline):
+class PostInvitationInline(admin.TabularInline):
     extra = 0
     model = PostInvitation
     search_fields = ('invitee__username', 'invitee__email',)
@@ -70,7 +70,7 @@ class QuestionAdmin(NumericFilterModelAdmin):
     search_fields = ('title', 'author__username', 'content',)
     inlines = (
         AnswerInline, QuestionCommentInline,
-        QuestionFollowInline, QuestionInviteToAnswerInline,)
+        QuestionFollowInline, PostInvitationInline,)
     save_on_top = True
 
     @admin.display(description='#Bookmarks', )
@@ -87,7 +87,7 @@ class QuestionAdmin(NumericFilterModelAdmin):
 
 
 @admin.register(PostInvitation)
-class QuestionInviteToAnswerAdmin(admin.ModelAdmin):
+class PostInvitationAdmin(admin.ModelAdmin):
     list_display = ('question', 'invitee', 'inviter', 'created_at',)
     raw_id_fields = ('question', 'invitee', 'inviter',)
     list_filter = (('created_at', DateRangeFilter),)
