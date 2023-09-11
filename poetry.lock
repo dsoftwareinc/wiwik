@@ -785,13 +785,13 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-tasks-scheduler"
-version = "1.0.1"
+version = "1.0.2"
 description = "An async job scheduler for django using redis"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "django_tasks_scheduler-1.0.1-py3-none-any.whl", hash = "sha256:6653c61b1f4aa552b3bae27f322f3b4ba365cc2cdec7ee3525f52e610c05be52"},
-    {file = "django_tasks_scheduler-1.0.1.tar.gz", hash = "sha256:f981595ba7645c83875bda45a9e2197afb5678055a4fb7af61272f2b3e2fa6e2"},
+    {file = "django_tasks_scheduler-1.0.2-py3-none-any.whl", hash = "sha256:3416a3d63358bf9e89d3bba5ff4fcfeaa2969fd92538aca3bc8e51bae32ce70e"},
+    {file = "django_tasks_scheduler-1.0.2.tar.gz", hash = "sha256:4025384d93de0d188a785b7cc861f91bd488dfb8774efb1d228a60f76d1bfd0f"},
 ]
 
 [package.dependencies]
