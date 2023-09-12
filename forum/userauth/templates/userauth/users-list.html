@@ -4,30 +4,6 @@
 
 {% block content %}
     <h1>Users</h1>
-    <!-- Filter -->
-    <div class="row">
-        <nav>
-            <ul class="pagination pagination-md pull-right p-2">
-                {% if from_date %}
-                    <span class="navbar-brand">Sort by reputation since {{ from_date }} </span>
-                {% else %}
-                    <span class="navbar-brand">Sort by reputation for </span>
-                    <li class="page-item {% if tab == 'week' %}active{% endif %}">
-                        <a class="page-link" href="?tab=week">week</a>
-                    </li>
-                    <li class="page-item {% if tab == 'month' %}active{% endif %}">
-                        <a class="page-link" href="?tab=month">month</a>
-                    </li>
-                    <li class="page-item {% if tab == 'year' %}active{% endif %}">
-                        <a class="page-link" href="?tab=year">year</a>
-                    </li>
-                    <li class="page-item {% if tab == 'all' %}active{% endif %}">
-                        <a class="page-link" href="?tab=all">all</a>
-                    </li>
-                    </ul>
-                {% endif %}
-        </nav>
-    </div>
     <div class="mb-2 search">
         <i class="material-icons">search</i>
         <input class="form-control" type="search" placeholder="Search for a user"

@@ -2,18 +2,18 @@ import datetime
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Sum, F
+from django.db.models import Q, Sum, F, QuerySet
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
 from django.utils import timezone
 
-from wiwik_lib.utils import paginate_queryset
 from userauth.models import ForumUser
 from userauth.views.common import get_request_param
+from wiwik_lib.utils import paginate_queryset
 
 
-def calculate_start_date(tab: str, from_date: str) -> timezone.datetime:
+def _calculate_start_date(tab: str, from_date: str) -> timezone.datetime:
     if from_date is not None:
         res = datetime.datetime.strptime(from_date, "%Y-%m-%d")
         if settings.USE_TZ:
@@ -29,10 +29,20 @@ def calculate_start_date(tab: str, from_date: str) -> timezone.datetime:
     return today - timezone.timedelta(days=days)
 
 
+def _users_found_title(tab: str, queryset: QuerySet) -> str:
+    total = ForumUser.objects.filter(is_superuser=False, is_active=True).count()
+    if tab == 'all':
+        return f"{total} active users"
+    count = queryset.count()
+    return f"{count} out of {total} users in the last {tab}"
+
+
 def render_request(request):
     query_username = get_request_param(request, 'q', None)
     basic_query_set = ForumUser.objects.filter(is_superuser=False, is_active=True)
     tab = request.GET.get('tab', 'all')
+    if tab not in {'all', 'month', 'year', 'week', 'quarter'} or query_username is not None:
+        tab = 'all'
     from_date = request.GET.get('from_date', None)
     if query_username:
         basic_query_set = basic_query_set.filter(
@@ -45,7 +55,7 @@ def render_request(request):
                     .annotate(reputation=F('additional_data__reputation_score'))
                     )
     else:
-        start_date = calculate_start_date(tab, from_date)
+        start_date = _calculate_start_date(tab, from_date)
         queryset = (basic_query_set
                     .filter(reputation_votes__created_at__gte=start_date,
                             reputation_votes__reputation_change__isnull=False)
@@ -61,6 +71,7 @@ def render_request(request):
         'from_date': from_date,
         'query': query_username,
         'count': queryset.count(),
+        'title': _users_found_title(tab, queryset),
     })
 
 
