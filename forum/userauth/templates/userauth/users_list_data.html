@@ -6,7 +6,11 @@
                 {% include 'userauth/includes/users-list.usercard.template.html' with u=user %}
             </div>
         {% empty %}
-            <div>No results found for "{{ query }}"</div>
+            {% if query %}
+                <div>No results found for "{{ query }}"</div>
+            {% else %}
+                <div>No users to show</div>
+            {% endif %}
         {% endfor %}
     </div>
     {% include 'userauth/includes/pagination.template.html' with items_list=users %}
