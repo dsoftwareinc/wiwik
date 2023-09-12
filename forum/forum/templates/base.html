@@ -30,20 +30,22 @@
 <nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light pt-0 pb-1">
     <div class="container-xxl">
         <a class="navbar-brand" href="{% url 'forum:list' %}">wiwik</a>
-        <div class="d-none d-md-flex navbar-nav">
-            <form method="get" class="d-flex search" autocomplete="off"
-                  action="{% url 'forum:list' %}">
-                <i class="material-icons">search</i>
-                <input class="form-control" type="search"
-                       data-bs-toggle="popover"
-                       data-bs-trigger="focus"
-                       data-bs-placement="bottom"
-                       data-hide=0
-                       data-content-id="search-helper"
-                       placeholder="What I wish I knew"
-                       aria-label="What I wish I knew" name="q">
-            </form>
-        </div>
+        {% block searchbar %}
+            <div class="d-none d-md-flex navbar-nav">
+                <form method="get" class="d-flex search" autocomplete="off"
+                      action="{% url 'forum:list' %}">
+                    <i class="material-icons">search</i>
+                    <input class="form-control" type="search"
+                           data-bs-toggle="popover"
+                           data-bs-trigger="focus"
+                           data-bs-placement="bottom"
+                           data-hide=0
+                           data-content-id="search-helper"
+                           placeholder="What I wish I knew"
+                           aria-label="What I wish I knew" name="q">
+                </form>
+            </div>
+        {% endblock %}
         <div class="navbar-expand">
             <div class="navbar-nav">
                 {% include 'includes/user.navbar.html' %}
