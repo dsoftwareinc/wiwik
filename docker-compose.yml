@@ -39,7 +39,7 @@ services:
       - wiwik-network
 
   db:
-    image: postgres:14-alpine
+    image: postgres:14.9-bullseye
     volumes:
       - "./postgres_data/:/var/lib/postgresql/data/"
     ports:

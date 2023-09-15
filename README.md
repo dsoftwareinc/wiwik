@@ -44,6 +44,21 @@ General
 - Schedule some upfront question-and-answer seeding.
 - Ongoing moderation and management is mostly done by its active users.
 
+## What do people say?
+
+> As someone who leads a technical practice, I recommend wiwik as a comprehensive knowledge-sharing platform for any tech organization.
+>
+> Wiwik offers our team a secure and well-organized space to ask and answer technical queries pertaining to our company's projects and technologies. Our technical professionals can collaborate seamlessly, share best practices, and continually learn from each other.
+>
+> By leveraging wiwik, we created a private and secure workspace for our organization, enabling team members to swiftly find and access pertinent information without having to sift through long documentation, which is out-of-date at times. This translates into faster problem-solving, enhanced productivity, and more efficient utilization of our technical resources.
+>
+> In addition, the platform provides detailed analytics, offering valuable insights into our team's performance, areas of expertise, and knowledge gaps. Furthermore, D Software's immediate support promptly addresses security patches, integrations, and any additional analytics requirements we may have.
+>
+> Overall, wiwik is an indispensable resource for our organization, providing a secure and efficient platform for our technical professionals to collaborate, learn, and upskill. I wholeheartedly recommend this platform.
+>
+> Stephen Retchford, Technology Leader
+
+
 ## Development guidelines
 
 - [How to write commit messages](https://chris.beams.io/posts/git-commit/)

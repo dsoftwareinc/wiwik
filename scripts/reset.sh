@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BASE_DIR="$SCRIPT_DIR/.."
-INITIAL_DB="$BASE_DIR/private/db2023-08-25.sqlite3"
+INITIAL_DB="$BASE_DIR/private/db2023-09-14.sqlite3"
 echo "[reset.sh] Activating virtualenv"
 source "$BASE_DIR/env/bin/activate" || (echo "Couldn't activate virtualenv" && exit)
 cd $BASE_DIR || exit
