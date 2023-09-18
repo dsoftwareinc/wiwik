@@ -26,7 +26,7 @@ class ForumClient(Client):
         super(ForumClient, self).__init__()        
     
     def login(self, username: str, password: str):
-        return self.login(username=username, password=password)
+        return super().login(username=username, password=password)
 
     def questions_list(self, page=None, tab=None, query=None):
         url = reverse('forum:list') + '?'
