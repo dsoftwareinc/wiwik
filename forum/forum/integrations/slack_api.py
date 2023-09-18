@@ -241,14 +241,20 @@ def verify_request(request) -> bool:
 
 
 def questions_message(questions: List[Question]) -> List:
-    blocks = []
+    question_ids = [str(q.id) for q in questions]
+    logger.debug(f"Sending to slack question IDs ({','.join(question_ids)})")
+    blocks = list()
     for question in questions:
         question_url = get_model_url_with_base('question', question)
         blocks.append(
             HeaderBlock(text=question.title, ).to_dict()
         )
-        content = question.content
-        content = '\r\n'.join(content.split('\r\n')[:4]) + '...'
+        content = question.content[:3000]
+        content = content.split('\r\n')
+        num_lines = len(content)
+        content = '\r\n'.join(content[:4])
+        if len(question.content) > 3000 or num_lines > 4:
+            content += '...'
         blocks.append(
             SectionBlock(
                 text=TextObject(text=content, type='mrkdwn'),

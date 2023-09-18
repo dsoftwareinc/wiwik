@@ -5,7 +5,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 from forum.apps import logger
 from forum.integrations import slack_api
-from forum.integrations.slack_api import questions_message
 from forum.models import Question
 from forum.views import search
 from tags.views.view_tag_autocomplete import get_tags_matching
@@ -50,6 +49,6 @@ def search_from_slack(request):
     query = request.POST.get('text', None)
     results = list(search.query_method(Question.objects, query)
                    .order_by('-has_accepted_answer', '-votes', '-created_at')[:3])
-    res = {'blocks': questions_message(results)}
+    res = {'blocks': slack_api.questions_message(results)}
     logger.debug(res)
     return JsonResponse(data=res, status=200)
