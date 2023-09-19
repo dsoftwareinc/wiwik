@@ -119,7 +119,7 @@ class UserAuthLoginTest(UserAuthTestCase):
         # arrange
         adapter = CustomSocialAccountAdapter()
         sociallogin = SocialLogin(user=self.user1)
-        request = self.client.client.get('/customer/details').wsgi_request
+        request = self.client.get('/customer/details').wsgi_request
         # act
         adapter.pre_social_login(request, sociallogin)
         # assert
@@ -129,7 +129,7 @@ class UserAuthLoginTest(UserAuthTestCase):
         # arrange
         adapter = CustomSocialAccountAdapter()
         sociallogin = SocialLogin(user=self.user1)
-        request = self.client.client.get('/customer/details').wsgi_request
+        request = self.client.get('/customer/details').wsgi_request
         # act
         try:
             adapter.pre_social_login(request, sociallogin)
@@ -143,7 +143,7 @@ class UserAuthLoginTest(UserAuthTestCase):
         # arrange
         adapter = CustomSocialAccountAdapter()
         sociallogin = SocialLogin(user=self.user1)
-        request = self.client.client.get('/customer/details').wsgi_request
+        request = self.client.get('/customer/details').wsgi_request
         # act
         try:
             adapter.pre_social_login(request, sociallogin)

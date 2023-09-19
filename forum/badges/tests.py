@@ -29,29 +29,27 @@ def like(string):
     return re.compile(regex, flags=re.DOTALL)
 
 
-class BadgesClient:
-    def __init__(self):
-        self.client = Client()
+class BadgesClient(Client):
 
     def login(self, username: str, password: str):
-        return self.client.login(username=username, password=password)
+        return super().login(username=username, password=password)
 
     def badges_list(self):
-        return self.client.get(reverse('badges:list'), follow=True)
+        return self.get(reverse('badges:list'), follow=True)
 
     def single_badge_users_list(self, badge_id: int):
         url = reverse('badges:detail', args=[badge_id, ])
-        return self.client.get(url, follow=True)
+        return self.get(url, follow=True)
 
     def admin_changelist(self, model: str, query: str = None):
         url = reverse(f'admin:badges_{model}_changelist')
         if query is not None:
             url += f'?{query}'
-        return self.client.get(url, follow=True)
+        return self.get(url, follow=True)
 
     def admin_change(self, model: str, pk: int):
         url = reverse(f'admin:badges_{model}_change', args=[pk, ])
-        return self.client.get(url, follow=True)
+        return self.get(url, follow=True)
 
 
 @override_settings(SKIP_USER_VISIT_LOG=True)

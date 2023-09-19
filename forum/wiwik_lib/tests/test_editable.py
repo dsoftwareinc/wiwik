@@ -12,27 +12,22 @@ from wiwik_lib.models import EditedResource
 
 
 class EditableClient(ForumClient):
-    def __init__(self):
-        self.client = Client()
-
-    def login(self, username: str, password: str):
-        return self.client.login(username=username, password=password)
 
     def admin_changelist(self, model: str, query: str = None):
         url = reverse(f'admin:wiwik_lib_{model}_changelist')
         if query is not None:
             url += f'?{query}'
-        return self.client.get(url, follow=True)
+        return self.get(url, follow=True)
 
     def admin_change(self, model: str, pk: int):
         url = reverse(f'admin:wiwik_lib_{model}_change', args=[pk, ])
-        return self.client.get(url, follow=True)
+        return self.get(url, follow=True)
 
     def edit_tag_get(self, tag_word: str):
-        return self.client.get(reverse('tags:edit', args=[tag_word, ]), follow=True)
+        return self.get(reverse('tags:edit', args=[tag_word, ]), follow=True)
 
     def edit_tag_post(self, tag_word: str, description: str, wiki: str, summary: str):
-        return self.client.post(
+        return self.post(
             reverse('tags:edit', args=[tag_word, ]),
             {'description': description, 'wiki': wiki, 'summary': summary, },
             follow=True, )

@@ -6,22 +6,20 @@ from django.urls import reverse
 from userauth.models import ForumUser
 
 
-class SpaceClient:
-    def __init__(self):
-        self.client = Client()
-
+class SpaceClient(Client):
+    
     def login(self, username: str, password: str):
-        return self.client.login(username=username, password=password)
+        return super().login(username=username, password=password)
 
     def admin_changelist(self, model: str, query: str = None):
         url = reverse(f'admin:spaces_{model}_changelist')
         if query is not None:
             url += f'?{query}'
-        return self.client.get(url, follow=True)
+        return self.get(url, follow=True)
 
     def admin_change(self, model: str, pk):
         url = reverse(f'admin:spaces_{model}_change', args=[pk, ])
-        return self.client.get(url, follow=True)
+        return self.get(url, follow=True)
 
 
 class SpacesApiTestCase(TestCase):
