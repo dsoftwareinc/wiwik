@@ -25,7 +25,7 @@ x-depends-on-defaults: &depends-on-defaults
 
 services:
   searchdb:
-    image: getmeili/meilisearch:v1.3.2
+    image: getmeili/meilisearch:v1.3.4
     ports:
       - "7700:7700"
     environment:
@@ -39,7 +39,7 @@ services:
       - wiwik-network
 
   db:
-    image: postgres:14.9-bullseye
+    image: postgres:15-alpine
     volumes:
       - "./postgres_data/:/var/lib/postgresql/data/"
     ports:
