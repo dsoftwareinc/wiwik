@@ -6,6 +6,8 @@ After=network.target
 User=ubuntu
 Group=www-data
 SyslogIdentifier=rqworker
+StandardOutput=append:/home/style/gunicorn.log
+StandardError=append:/home/style/gunicorn.log
 WorkingDirectory=/home/ubuntu/projects/devbb
 Environment=OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 Environment=LC_ALL=en_US.UTF-8

@@ -5,6 +5,8 @@ After=network.target
 [Service]
 User=style
 Group=www-data
+StandardOutput=append:/home/style/gunicorn.log
+StandardError=append:/home/style/gunicorn.log
 WorkingDirectory=/home/style/projects/devbb/forum
 ExecStart=/home/style/projects/devbb/env/bin/gunicorn --access-logfile - --workers 3 --bind unix:/home/style/projects/devbb/devbb.sock main.wsgi:application
 

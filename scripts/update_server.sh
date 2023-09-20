@@ -41,8 +41,6 @@ sudo cp $BASE_DIR/config/$CONTEXT/gunicorn.service /etc/systemd/system/gunicorn.
 echo "[update_server.sh] Updating rqworker service"
 sudo cp $BASE_DIR/config/$CONTEXT/rqworker@.service /etc/systemd/system/rqworker@.service
 sudo systemctl daemon-reload
-echo "[update_server.sh] restarting rsyslog service"
-sudo systemctl restart rsyslog
 echo "[update_server.sh] restarting gunicorn service"
 sudo systemctl restart gunicorn
 echo "[update_server.sh] stopping rqworker service 1"
