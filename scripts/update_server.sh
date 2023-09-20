@@ -32,14 +32,10 @@ touch ~/gunicorn.log
 sudo chown syslog:adm ~/rqworker.log
 sudo chown syslog:adm ~/gunicorn.log
 
-echo "[update_server.sh] Updating rsyslog settings"
-sudo cp $BASE_DIR/config/$CONTEXT/rsyslog.gunicorn.conf /etc/rsyslog.d/gunicorn.conf
-sudo cp $BASE_DIR/config/$CONTEXT/rsyslog.rqworker.conf /etc/rsyslog.d/rqworker.conf
-
 echo "[update_server.sh] Updating gunicorn service"
-sudo cp $BASE_DIR/config/$CONTEXT/gunicorn.service /etc/systemd/system/gunicorn.service
+sudo cp "$BASE_DIR/config/$CONTEXT/gunicorn.service" /etc/systemd/system/gunicorn.service
 echo "[update_server.sh] Updating rqworker service"
-sudo cp $BASE_DIR/config/$CONTEXT/rqworker@.service /etc/systemd/system/rqworker@.service
+sudo cp "$BASE_DIR/config/$CONTEXT/rqworker@.service" /etc/systemd/system/rqworker@.service
 sudo systemctl daemon-reload
 echo "[update_server.sh] restarting gunicorn service"
 sudo systemctl restart gunicorn
