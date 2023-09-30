@@ -11,7 +11,6 @@ __vectorizer: Optional[TfidfVectorizer] = None
 
 def initialize_tfidf():
     logger.info("Initializing NLTK...")
-    global __vectorizer
     try:
         nltk.data.find('tokenizers/punkt')
     except LookupError:
@@ -26,21 +25,20 @@ def initialize_tfidf():
     def normalize(text):
         return stem_tokens(nltk.word_tokenize(text.lower().translate(remove_punctuation_map)))
 
-    __vectorizer = TfidfVectorizer(tokenizer=normalize, stop_words='english')
+    return TfidfVectorizer(tokenizer=normalize, stop_words='english')
 
 
-initialize_tfidf()
-
-
-def cosine_sim(text1, text2):
+def calc_tfidf_pair(text1: str, text2: str) -> float:
+    global __vectorizer
     if not __vectorizer:
-        raise EnvironmentError('nltk not initialized')
+        __vectorizer = initialize_tfidf()
     tfidf = __vectorizer.fit_transform([text1, text2])
-    return ((tfidf * tfidf.T).A)[0, 1]
+    return (tfidf * tfidf.T).A[0, 1]
 
 
-def calc_tfidf(docs: list[str]):
+def calc_tfidf_multiple_documents(docs: list[str]) -> list[list[float]]:
+    global __vectorizer
     if not __vectorizer:
-        raise EnvironmentError('nltk not initialized')
+        __vectorizer = initialize_tfidf()
     tfidf = __vectorizer.fit_transform(docs)
     return (tfidf * tfidf.T).A

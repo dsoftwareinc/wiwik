@@ -7,7 +7,7 @@ from forum.models import Question
 from forum.views import thread_markdown_bytesio
 from similarity import algo
 from similarity import models
-from similarity.algo.tfidf import cosine_sim, calc_tfidf
+from similarity.algo.tfidf import calc_tfidf_pair, calc_tfidf_multiple_documents
 from similarity.apps import logger
 
 KNOWN_SIMILARITIES = {'postgres_rank', 'postgres_trigram_rank', 'tfidf_rank'}
@@ -61,7 +61,7 @@ def calculate_tfidf():
         q_doc = thread_markdown_bytesio(q, include_authors=False).getvalue().decode('utf8')
         docs.append(q_doc)
         question_ids.append(q.id)
-    res = calc_tfidf(docs)
+    res = calc_tfidf_multiple_documents(docs)
     for i in range(len(question_ids)):
         for j in range(i, len(question_ids)):
             if i == j:
@@ -81,14 +81,19 @@ def calculate_similarity_for_question(q: Question):
 
 
 @job
-def calculate_similarity_for_pair(q1: Question, q2: Question) -> None:
-    q1, q2 = (q1, q2) if q1.id < q2.id else (q2, q1)
-    if q1 == q2:
+def calculate_similarity_for_pair(post1_id: Question, post2_id: Question) -> None:
+    if post1_id == post2_id:
         logger.debug('Not calculating similarity for same question')
+        return
+    post1_id, post2_id = (post1_id,post2_id) if post1_id<post2_id else (post2_id, post1_id)
+    q1 = Question.objects.filter(id=post1_id).first()
+    q2 = Question.objects.filter(id=post2_id).first()
+    if q1 is None or q2 is None:
+        logger.debug(f'Could not find posts with IDs {post1_id}/{post2_id}.')
         return
     q1_str = thread_markdown_bytesio(q1).getvalue().decode('utf8')
     q2_str = thread_markdown_bytesio(q2).getvalue().decode('utf8')
-    tfidf = cosine_sim(q1_str, q2_str)
+    tfidf = calc_tfidf_pair(q1_str, q2_str)
     fts_rank, trigram_rank = None, None
     if settings.DATABASES['default']['ENGINE'] == "django.db.backends.postgresql":
         fts_rank = algo.postgres_search_rank(q1.title, q2)
