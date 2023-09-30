@@ -17,7 +17,7 @@ from wiwik_lib.utils import paginate_queryset
 
 
 def get_questions_queryset(
-        base_queryset: QuerySet, tab: str, query: str, user: Optional[AbstractUser],
+        base_queryset: QuerySet, tab: Optional[str], query: Optional[str], user: Optional[AbstractUser],
 ) -> QuerySet:
     base_queryset = base_queryset.select_related('author', ).defer(*user_model_defer_fields('author'))
     start_time = time.time()
@@ -48,7 +48,7 @@ def render_questions(request, base_qs: QuerySet, header: str, extra: dict = None
     all_questions_qs = get_questions_queryset(
         base_qs.exclude(space__restricted=True), tab, q, request.user)
     all_questions_qs = all_questions_qs.prefetch_related('tags', )
-    page_number = utils.get_request_param(request, 'page', 1)
+    page_number = int(utils.get_request_param(request, 'page', '1'))
     page_qs = paginate_queryset(all_questions_qs, page_number, settings.QUESTIONS_PER_PAGE)
     context = {
         'all_questions': page_qs,

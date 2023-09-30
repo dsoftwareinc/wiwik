@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import cast
 
 from django.conf import settings
 from django.contrib import messages
@@ -137,7 +138,7 @@ def view_single_question(request, pk):
              .get(pk=pk))
     q.num_bookmarks = attrs.num_bookmarks
 
-    user: ForumUser = request.user
+    user: ForumUser = cast(ForumUser, request.user)
     show_follow = not q.user_follows
     show_accept_button = (q.author == user or user.can_edit or user.is_staff)
     show_edit_button = (q.author == user or user.can_edit)

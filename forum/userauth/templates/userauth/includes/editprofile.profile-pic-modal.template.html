@@ -11,7 +11,7 @@
                   action="{% url 'userauth:profile_pic' %}">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <img id="profile-pic-croppie" src="{{ user.profile_pic.url }}"/>
+                    <img id="profile-pic-croppie" src="{{ user.profile_pic.url }}" alt=""/>
                 </div>
                 <div class="modal-footer">
                     <div class="my-2">

@@ -1,9 +1,9 @@
 ---
 markdown_extensions:
 
-- toc:
-  permalink: True
-  toc_depth: 4
+    -   toc:
+        permalink: True
+        toc_depth: 4
 
 ---
 
@@ -20,15 +20,15 @@ answer.
 
 - <details>
     <summary>Homepage for user</summary>
-    <img src="/media/wiwik-home-short.jpg"></img>
+    <img src="/media/wiwik-home-short.jpg" alt=""/>
   </details>
 - <details>
     <summary>Post view</summary>
-    <img src="/media/wiwik-thread.jpg"></img>
+    <img src="/media/wiwik-thread.jpg" alt=""/>
   </details>
 - <details>
     <summary>Post with charts and LaTeX</summary>
-    <img src="/media/wiwik-post-mermaidjs.jpg"></img>
+    <img src="/media/wiwik-post-mermaidjs.jpg" alt=""/>
   </details>
 
 - [Search existing posts.](./search.md)
@@ -72,11 +72,11 @@ answer.
 - Screenshots
     - <details>
           <summary>List of users</summary>
-          <img src="/media/wiwik-users.jpg"></img>
+          <img src="/media/wiwik-users.jpg" alt=""/>
       </details>
     - <details>
           <summary>User profile</summary>
-          <img src="/media/wiwik-profile.jpg"></img>
+          <img src="/media/wiwik-profile.jpg" alt=""/>
       </details>
 
 ### Tags
@@ -87,11 +87,11 @@ answer.
 * Screenshots
     - <details>
         <summary>List of tags</summary>
-        <img src="/media/wiwik-tags.jpg"></img>
+        <img src="/media/wiwik-tags.jpg" alt=""/>
       </details>
     - <details>
         <summary>Tag info view</summary>
-        <img src="/media/wiwik-tag-info.jpg"></img>
+        <img src="/media/wiwik-tag-info.jpg" alt=""/>
       </details>
 
 ### [Questions similarity (Related questions)](./similarity.md)
@@ -109,11 +109,11 @@ answer.
 - Screenshots
     - <details>
           <summary>List of badges</summary>
-          <img src="/media/wiwik-badges.jpg"></img>
+          <img src="/media/wiwik-badges.jpg" alt=""/>
       </details>
     - <details>
           <summary>Single badge info</summary>
-          <img src="/media/wiwik-badge-single.jpg"></img>
+          <img src="/media/wiwik-badge-single.jpg" alt=""/>
       </details>
 
 ### RSS feed

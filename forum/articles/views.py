@@ -1,3 +1,5 @@
+from typing import cast
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -138,7 +140,7 @@ def view_article_edit(request, pk: int):
     article = get_object_or_404(Article, pk=pk)
     if not article.is_article:
         return redirect('forum:thread', pk=pk)
-    user: ForumUser = request.user
+    user: ForumUser = cast(ForumUser, request.user)
     if article.author != user and not user.can_edit:  # TODO change edit user permissions
         messages.error(request, 'You can not edit this article', 'danger')
         return redirect('articles:detail', pk=pk)

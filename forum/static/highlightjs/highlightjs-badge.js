@@ -108,13 +108,13 @@ function highlightJsBadge(opt) {
         loadDelay: 0,
 
         // CSS class(es) used to render the copy icon.
-        copyIconClass: "material-icons",
+        copyIconClass: "fa fa-copy",
         // optional content for icons class (<i class="fa fa-copy"></i> or <i class="material-icons">file_copy</i>)
-        copyIconContent: "content_copy",
+        copyIconContent: "",
 
         // CSS class(es) used to render the done icon.
-        checkIconClass: "material-icons text-success",
-        checkIconContent: "check",
+        checkIconClass: "fa fa-check text-success",
+        checkIconContent: "",
 
         // function called before code is placed on clipboard
         // Passed in text and returns back text function(text, codeElement) { return text; }

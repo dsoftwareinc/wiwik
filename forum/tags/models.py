@@ -77,9 +77,8 @@ class TagEdit(models.Model):
 
 
 class Synonym(models.Model):
-    """
-    class represents a synonym for a tag.
-    a different name for a tag, for example angular-routes and ng-routes.
+    """class represents a synonym for a tag.
+    e.g., `angular-routes` and `ng-routes`.
     """
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     author = models.ForeignKey(

@@ -17,7 +17,7 @@
                         <img id="profile_pic" class="user-profile-img"
                              data-bs-toggle="modal" data-bs-target="#profile-pic-modal"
                              onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"
-                             src="{{ user.profile_pic.url }}">
+                             src="{{ user.profile_pic.url }}" alt=""/>
                     </div>
                 </div>
                 <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
@@ -70,7 +70,7 @@
                         </div>
                         <div class="col-6">
                             <label>
-                                <img src="{% static 'logos/Keybase_logo_official.png' %}" style="height: 20px;"/>
+                                <img src="{% static 'logos/Keybase_logo_official.png' %}" style="height: 20px;" alt=""/>
                                 Keybase user
                             </label>
                             <input name='keybase_user' class="form-control"

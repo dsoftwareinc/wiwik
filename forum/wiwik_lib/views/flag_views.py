@@ -2,7 +2,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Model
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.template import loader
@@ -18,7 +17,7 @@ from wiwik_lib.utils import CURRENT_SITE
 
 
 def notify_moderators_new_flag(
-        originator: ForumUser,
+        originator: AbstractUser,
         model,
         model_name: str,
 ) -> None:
@@ -33,7 +32,7 @@ def notify_moderators_new_flag(
         None
 
     """
-    subject = f'New content flagged by {originator.display_name()} on a {model_name.split("_")[0]}'
+    subject = f'New content flagged by {originator.email} on a {model_name.split("_")[0]}'
     model_url = get_model_url_with_base(model_name, model)
     context = {
         'link': model_url,

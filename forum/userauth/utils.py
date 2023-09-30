@@ -10,8 +10,6 @@ from wiwik_lib.utils import CURRENT_SITE
 
 
 def unsubscribe_link_with_base(u: ForumUser) -> str:
-    if u is None:
-        return None
     uid = urlsafe_base64_encode(force_bytes(u.pk))
     token = account_activation_token.make_token(u)
     return CURRENT_SITE + reverse('userauth:unsubscribe', args=[uid, token])

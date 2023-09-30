@@ -29,7 +29,7 @@
                 {% for u in tag.experts_list %}
                     <a href="{% url 'userauth:profile' u.username 'questions' %}"
                        style="margin-left: 5px;">
-                        <img src="{{ u.profile_pic.url }}"
+                        <img src="{{ u.profile_pic.url }}" alt=""
                              onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"
                              height="16" width="16"/>
                         {{ u.display_name }}
@@ -43,7 +43,7 @@
                 {% for u in tag.stars_list %}
                     <a href="{% url 'userauth:profile' u.username 'questions' %}"
                        style="margin-left: 5px;">
-                        <img src="{{ u.profile_pic.url }}"
+                        <img src="{{ u.profile_pic.url }}" alt=""
                              onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"
                              height="16" width="16"/>
                         {{ u.display_name }}

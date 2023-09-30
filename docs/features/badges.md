@@ -42,9 +42,9 @@ Out of the box badges:
 
 <details>
   <summary>List of badges</summary>
-  <img src="/media/wiwik-badges.jpg"></img>
+  <img src="/media/wiwik-badges.jpg" alt=""/>
 </details>
 <details>
   <summary>Single badge info</summary>
-  <img src="/media/wiwik-badge-single.jpg"></img>
+  <img src="/media/wiwik-badge-single.jpg" alt=""/>
 </details>
