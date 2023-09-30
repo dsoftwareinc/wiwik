@@ -6,7 +6,7 @@ from common.utils import TabEnum
 def env_context(request):
     """
     This context dictionary is added to every response.
-    It adds number of reputation items and number of bookmarks to display in the top nav-bar
+    It adds the number of reputation items and the number of bookmarks to display in the top nav-bar
     as well as a favicon url.
     """
     context = dict()
