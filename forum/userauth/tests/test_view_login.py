@@ -61,7 +61,7 @@ class UserAuthLoginTest(UserAuthTestCase):
 
     def test_login__bad_next__go_to_home(self):
         # act
-        res = self.client.login_post(self.usernames[0], self.password, next='javascript/alert(1)')
+        res = self.client.login_post(self.usernames[0], self.password, next_url='javascript/alert(1)')
         # assert
         self.assertEqual(200, res.status_code)
         assert_url_in_chain(res, reverse('forum:home'))
