@@ -98,6 +98,6 @@ class TestDedent(ForumApiTestCase):
         except FileNotFoundError:
             return
         for filename in filenames:
-            markdown_text = Path(os.path.join(directory, filename)).read_text()
+            _markdown_text = Path(os.path.join(directory, filename)).read_text()
 
-            self.assertEqual(dedent_code(markdown_text), markdown_text, f'File {filename} is not dedented')
+            self.assertEqual(dedent_code(_markdown_text), _markdown_text, f'File {filename} is not dedented')

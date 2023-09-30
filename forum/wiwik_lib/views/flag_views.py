@@ -13,7 +13,7 @@ from forum.views import utils
 from forum.views.common import get_model_url, get_model_url_with_base
 from userauth.models import ForumUser
 from wiwik_lib.apps import logger
-from wiwik_lib.models import Flag, FLAG_CHOICES
+from wiwik_lib.models import Flag, FLAG_CHOICES, Flaggable
 from wiwik_lib.utils import CURRENT_SITE
 
 
@@ -52,7 +52,7 @@ def notify_moderators_new_flag(
         jobs.start_job(slack_api.slack_post_im_message_to_email, activity_str, moderator.email)
 
 
-def flag_model(user: AbstractUser, target: Model, flag_type: str, extra: str = None) -> Flag:
+def flag_model(user: AbstractUser, target: Flaggable, flag_type: str, extra: str = None) -> Flag:
     content_type = ContentType.objects.get_for_model(target)
     logger.debug(f'User {user.username} flagging {content_type}:{target.id} of as {flag_type}')
     flag = Flag.objects.create(

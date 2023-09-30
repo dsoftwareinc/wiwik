@@ -16,7 +16,7 @@ from wiwik_lib.models import user_model_defer_fields
 from wiwik_lib.utils import paginate_queryset
 
 
-def _get_questions_queryset(
+def get_questions_queryset(
         base_queryset: QuerySet, tab: str, query: str, user: Optional[AbstractUser],
 ) -> QuerySet:
     base_queryset = base_queryset.select_related('author', ).defer(*user_model_defer_fields('author'))
@@ -45,7 +45,7 @@ def _get_questions_queryset(
 def render_questions(request, base_qs: QuerySet, header: str, extra: dict = None):
     tab = utils.get_request_tab(request)
     q = utils.get_request_param(request, 'q', None)
-    all_questions_qs = _get_questions_queryset(
+    all_questions_qs = get_questions_queryset(
         base_qs.exclude(space__restricted=True), tab, q, request.user)
     all_questions_qs = all_questions_qs.prefetch_related('tags', )
     page_number = utils.get_request_param(request, 'page', 1)

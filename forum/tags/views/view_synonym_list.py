@@ -69,10 +69,7 @@ def view_synonym_list(request):
     order_by, order_by_num = _get_order_by_from_request(request)
     basic_query_set = basic_query_set.order_by(order_by)
     paginator = Paginator(basic_query_set, ITEMS_PER_PAGE)
-    try:
-        items = paginator.page(page)
-    except Exception as e:  # noqa:F841
-        items = paginator.page(1)
+    items = paginator.get_page(page)
 
     return render(request, 'tags/synonym_list.html', {
         'items': items,

@@ -14,7 +14,7 @@ def view_login(request):
         next_url = request.GET['next'] if 'next' in request.GET else reverse('forum:home')
         try:
             resolve(next_url)
-        except Exception:
+        except Resolver404:
             logger.warning(f'Bad redirect url: {next_url}')
             next_url = reverse('forum:home')
         form = AuthenticationForm(request, data=request.POST)

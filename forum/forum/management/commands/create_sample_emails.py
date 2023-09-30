@@ -4,10 +4,10 @@ from django.conf import settings
 from django.core.management.base import CommandParser
 
 from wiwik_lib.utils import ManagementCommand
-from flags.views import notify_moderators_new_flag
 from forum import models
 from forum.views import notifications
 from userauth.models import ForumUser
+from wiwik_lib.views.flag_views import notify_moderators_new_flag
 
 
 class Command(ManagementCommand):

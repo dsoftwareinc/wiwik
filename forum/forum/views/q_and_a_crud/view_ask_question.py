@@ -8,7 +8,7 @@ from forum import models
 from forum.apps import logger
 from forum.models import Question
 from forum.views import utils
-from forum.views.helpers import _get_questions_queryset
+from forum.views.helpers import get_questions_queryset
 from userauth.models import ForumUser
 
 
@@ -50,7 +50,7 @@ def view_similar_questions(request):
         return render(request, 'main/askquestion.similar-questions.template.html', {
             'similar_questions': [],
         })
-    all_questions_qs = _get_questions_queryset(main_query, None, q, None)
+    all_questions_qs = get_questions_queryset(main_query, None, q, None)
     all_questions_qs = all_questions_qs[:5]
     return render(request, 'main/askquestion.similar-questions.template.html', {
         'similar_questions': all_questions_qs,

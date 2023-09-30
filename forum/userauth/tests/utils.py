@@ -13,7 +13,7 @@ from userauth.views.tokens import account_activation_token
 
 
 class UserAuthClient(Client):
-    
+
     def signup_and_login(self, username, fullname, email, password):
         self.signup_post(username, fullname, email, password)
         user = models.ForumUser.objects.get(username=username)
@@ -27,12 +27,12 @@ class UserAuthClient(Client):
 
     def signup_post(self, username: str, name: str, email: str, password: str, password2: str = None):
         return self.post(reverse('userauth:signup'),
-                                data={'username': username,
-                                      'name': name,
-                                      'email': email,
-                                      'password1': password,
-                                      'password2': password2 if password2 is not None else password, },
-                                follow=True)
+                         data={'username': username,
+                               'name': name,
+                               'email': email,
+                               'password1': password,
+                               'password2': password2 if password2 is not None else password, },
+                         follow=True)
 
     def login(self, username: str, password: str):
         return super().login(username=username, password=password)
@@ -40,17 +40,17 @@ class UserAuthClient(Client):
     def login_get(self):
         return self.get(reverse('userauth:login'), follow=True)
 
-    def login_post(self, username: str, password: str, next: str = None):
+    def login_post(self, username: str, password: str, next_url: str = None):
         url = reverse('userauth:login') + '?'
-        if next:
-            url += f'next={next}&'
+        if next_url:
+            url += f'next={next_url}&'
         return self.post(url,
-                                data={'username': username, 'password': password, },
-                                follow=True)
+                         data={'username': username, 'password': password, },
+                         follow=True)
 
     def logout_get(self):
         return self.get(reverse('userauth:logout'),
-                               follow=True)
+                        follow=True)
 
     def activate_user(self, user_id_base64, activation_key):
         return self.get(
@@ -95,7 +95,7 @@ class UserAuthClient(Client):
 
     def profile_pic_post(self, image_data: str):
         return self.post(reverse('userauth:profile_pic'),
-                                data={'cropped-profile-pic': image_data})
+                         data={'cropped-profile-pic': image_data})
 
     def profile_pic_get(self):
         return self.get(reverse('userauth:profile_pic'))

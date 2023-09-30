@@ -10,7 +10,7 @@ from common import utils as common_utils
 from forum import jobs
 from forum.models import QuestionFollow, QuestionBookmark, VoteActivity
 from forum.views import utils
-from forum.views.helpers import _get_questions_queryset
+from forum.views.helpers import get_questions_queryset
 from forum.views.q_and_a_crud.view_thread import view_thread_background_tasks
 from userauth.models import ForumUser
 from wiwik_lib.models import user_model_defer_fields
@@ -27,7 +27,7 @@ def view_article_list(request):
     base_qs = Article.objects.filter(type__in=Article.POST_ARTICLE_TYPES)
     tab = common_utils.get_request_tab(request)
     q = utils.get_request_param(request, 'q', None)
-    all_questions_qs = _get_questions_queryset(
+    all_questions_qs = get_questions_queryset(
         base_qs.filter(space__isnull=True), tab, q, request.user)
     all_questions_qs = all_questions_qs.prefetch_related('tags', )
     page_number = request.GET.get('page', 1)

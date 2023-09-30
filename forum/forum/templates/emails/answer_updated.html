@@ -1,10 +1,10 @@
 {% extends 'emails/base.html' %}
 {% load wiwik_template_tags %}
-<!-- Visually Hidden Preview Text : BEGIN -->
-<div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
+<!-- Visually Hidden Preview Text: BEGIN -->
+<div style="display: none; font-size: 1px; line-height: 1px; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
     Answer to {{ a.question.title }} by {{ a.author.display_name }} was updated.
 </div>
-<!-- Visually Hidden Preview Text : END -->
+<!-- Visually Hidden Preview Text: END -->
 {% block content %}
     <h1 style="font-weight: bold; font-size: 20px; line-height: 20px; color: #0C0D0E; margin: 0 0 15px 0;">
         Answer by

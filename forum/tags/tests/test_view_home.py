@@ -43,7 +43,7 @@ class TestHomeView(TagsApiTestCase):
 
     def test_home_template__forum_app_not_installed__should_return_empty_watch_list(self):
         self.client.login(self.username, self.password)
-        prev_INSTALLED_APPS = list(settings.INSTALLED_APPS)
+        prev_installed_apps = list(settings.INSTALLED_APPS)
         settings.INSTALLED_APPS.remove('forum')
         # act
         res = self.client.home()
@@ -56,7 +56,7 @@ class TestHomeView(TagsApiTestCase):
         for tag in self.tags:
             self.assertIn(reverse('forum:tag', args=[tag.tag_word, ]), tag_links)
         # restore
-        settings.INSTALLED_APPS = prev_INSTALLED_APPS
+        settings.INSTALLED_APPS = prev_installed_apps
 
     def test_home_template__non_existing_page__should_send_first_page(self):
         self.client.login(self.username, self.password)

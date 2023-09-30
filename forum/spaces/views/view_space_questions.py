@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render
 
 from common import utils
 from forum.models import Question
-from forum.views.helpers import _get_questions_queryset
+from forum.views.helpers import get_questions_queryset
 from spaces.models import Space, SpaceMember
 from spaces.views.access import validate_space_access
 from wiwik_lib.utils import paginate_queryset
@@ -44,7 +44,7 @@ def view_user_spaces_latest_questions(request):
     spaces_base_qs = Question.objects.filter(space__in=user_spaces, space__restricted=True)
     if tag_word:
         spaces_base_qs = spaces_base_qs.filter(Q(tags__tag_word__iexact=tag_word))
-    spaces_questions_qs = _get_questions_queryset(spaces_base_qs, tab, q, None)
+    spaces_questions_qs = get_questions_queryset(spaces_base_qs, tab, q, None)
     spaces_questions_qs = spaces_questions_qs[:5]
 
     context = {
