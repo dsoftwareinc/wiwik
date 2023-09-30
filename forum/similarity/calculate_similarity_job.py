@@ -72,7 +72,7 @@ def calculate_tfidf():
 
 
 @job
-def calculate_similarity_for_question(q: Question):
+def calculate_similarity_for_question(q: Question) -> None:
     if settings.DATABASES['default']['ENGINE'] != "django.db.backends.postgresql":
         return
     question_qs = Question.objects.exclude(id=q.id)
@@ -81,16 +81,11 @@ def calculate_similarity_for_question(q: Question):
 
 
 @job
-def calculate_similarity_for_pair(post1_id: Question, post2_id: Question) -> None:
-    if post1_id == post2_id:
+def calculate_similarity_for_pair(q1: Question, q2: Question) -> None:
+    if q1 == q2:
         logger.debug('Not calculating similarity for same question')
         return
-    post1_id, post2_id = (post1_id,post2_id) if post1_id<post2_id else (post2_id, post1_id)
-    q1 = Question.objects.filter(id=post1_id).first()
-    q2 = Question.objects.filter(id=post2_id).first()
-    if q1 is None or q2 is None:
-        logger.debug(f'Could not find posts with IDs {post1_id}/{post2_id}.')
-        return
+    q1, q1 = (q1, q2) if q1.id < q2.id else (q2, q1)
     q1_str = thread_markdown_bytesio(q1).getvalue().decode('utf8')
     q2_str = thread_markdown_bytesio(q2).getvalue().decode('utf8')
     tfidf = calc_tfidf_pair(q1_str, q2_str)
