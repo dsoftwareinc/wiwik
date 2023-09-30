@@ -50,25 +50,25 @@ class Command(ManagementCommand):
         return reports_list
 
     def handle(
-            self, emails: List[str], file: str, from_date: date, reports: List[str],
+            self, emails: List[str], file: str, fromdate: date, reports: List[str],
             *args, **options):
         """
 
         Args:
             emails (List[str]): emails to send report to
             file (str): filename to save to (if emails are empty)
-            from_date (date): date to check data from
+            fromdate (date): date to check data from
             reports (List[str]): reports to include
         """
-        from_date = datetime.combine(from_date, datetime.min.time(), )
-        if settings.USE_TZ and timezone.is_naive(from_date):
-            from_date = timezone.make_aware(from_date)
+        fromdate = datetime.combine(fromdate, datetime.min.time(), )
+        if settings.USE_TZ and timezone.is_naive(fromdate):
+            fromdate = timezone.make_aware(fromdate)
         try:
-            reports_list = self.generate_reports(from_date, reports)
+            reports_list = self.generate_reports(fromdate, reports)
         except ValueError:
             return
         html = generate_report_html(
-            f' Since you you last visited at {from_date.date()}',
+            f' Since you you last visited at {fromdate.date()}',
             reports_list,
             None,
         )
@@ -78,6 +78,6 @@ class Command(ManagementCommand):
             f.write(html)
             f.close()
         if emails:
-            email = EmailMultiAlternatives(f'Activity on wiwik since {from_date.date()}', '', to=emails)
+            email = EmailMultiAlternatives(f'Activity on wiwik since {fromdate.date()}', '', to=emails)
             email.attach_alternative(html, "text/html")
             email.send()
