@@ -1,4 +1,4 @@
-let autocomplete = autocomplete || (function () {
+var autocomplete = autocomplete || (function () {
     const properties = [
         'direction',
         'boxSizing',
