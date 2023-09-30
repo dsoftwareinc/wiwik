@@ -1,4 +1,4 @@
-var autocomplete = autocomplete || (function () {
+let autocomplete = autocomplete || (function () {
     const properties = [
         'direction',
         'boxSizing',
@@ -132,12 +132,11 @@ var autocomplete = autocomplete || (function () {
 
         selectItem(active) {
             return () => {
-                const preMention = this.ref.value.substr(0, this.triggerIdx);
+                const preMention = this.ref.value.substring(0, this.triggerIdx);
                 const option = this.options[active];
                 const mention = this.replaceFn(option, this.ref.value[this.triggerIdx]);
-                const postMention = this.ref.value.substr(this.ref.selectionStart);
-                const newValue = `${preMention}${mention}${postMention}`;
-                this.ref.value = newValue;
+                const postMention = this.ref.value.substring(this.ref.selectionStart);
+                this.ref.value = `${preMention}${mention}${postMention}`;
                 const caretPosition = this.ref.value.length - postMention.length;
                 this.ref.setSelectionRange(caretPosition, caretPosition);
                 this.closeMenu();

@@ -66,8 +66,8 @@
     {% compress js %}
         <script>
             (function () {
-                var inputElm = document.getElementById('tagId');
-                var tagify = new Tagify(inputElm, {
+                const inputElm = document.getElementById('tagId');
+                const tagify = new Tagify(inputElm, {
                     enforceWhitelist: true,
                     maxTags: 1,
                     autocomplete: {rightKey: true,},

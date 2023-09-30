@@ -325,13 +325,13 @@ $.extend( $.validator, {
 			// Insert      => 45
 			// Num lock    => 144
 			// AltGr key   => 225
-			var excludedKeys = [
+			let excludedKeys = [
 				16, 17, 18, 20, 35, 36, 37,
 				38, 39, 40, 45, 144, 225
 			];
 
 			if ( event.which === 9 && this.elementValue( element ) === "" || $.inArray( event.keyCode, excludedKeys ) !== -1 ) {
-				return;
+
 			} else if ( element.name in this.submitted || element.name in this.invalid ) {
 				this.element( element );
 			}
@@ -508,11 +508,7 @@ $.extend( $.validator, {
 
 				rs = this.check( checkElement ) !== false;
 				result = result && rs;
-				if ( rs ) {
-					this.invalid[ checkElement.name ] = false;
-				} else {
-					this.invalid[ checkElement.name ] = true;
-				}
+				this.invalid[checkElement.name] = !rs;
 
 				if ( !this.numberOfInvalids() ) {
 
