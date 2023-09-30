@@ -114,7 +114,7 @@ def tag_experts(tag: Tag) -> List[TagFollow]:
     """
     Returns list of three users with most reputation on the tag.
 
-    The reason to use this method and not tag.experts property is because this
+    The reason to use this method and not `tag.experts` property is because this
     method returns the TagFollow objects which have the user reputation for the tag.
 
     Args:
