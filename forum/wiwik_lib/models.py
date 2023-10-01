@@ -148,4 +148,4 @@ class Followable(models.Model):
     class Meta:
         abstract = True
 
-    flags = GenericRelation(Follow)
+    follows = GenericRelation(Follow)
