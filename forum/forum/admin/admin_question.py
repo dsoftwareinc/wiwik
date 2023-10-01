@@ -3,16 +3,7 @@ from django.contrib import admin
 from rangefilter.filters import DateRangeFilter
 
 from forum.admin.input_filter import UserFilter
-from forum.models import Question, Answer, QuestionComment, QuestionFollow, \
-    PostInvitation
-
-
-class QuestionFollowInline(admin.TabularInline):
-    extra = 0
-    model = QuestionFollow
-    readonly_fields = ('created_at', 'user')
-    search_fields = ('user__username', 'user__email')
-    autocomplete_fields = ('user',)
+from forum.models import Question, Answer, QuestionComment, PostInvitation
 
 
 class QuestionCommentInline(admin.TabularInline):
@@ -68,9 +59,7 @@ class QuestionAdmin(NumericFilterModelAdmin):
         'status',
         'has_accepted_answer', 'is_anonymous',)
     search_fields = ('title', 'author__username', 'content',)
-    inlines = (
-        AnswerInline, QuestionCommentInline,
-        QuestionFollowInline, PostInvitationInline,)
+    inlines = (AnswerInline, QuestionCommentInline, PostInvitationInline,)
     save_on_top = True
 
     @admin.display(description='#Bookmarks', )
@@ -79,7 +68,7 @@ class QuestionAdmin(NumericFilterModelAdmin):
 
     @admin.display(description='#Followers', )
     def followers_count(self, o: Question):
-        return QuestionFollow.objects.filter(question=o).count()
+        return o.follows.count()
 
     @admin.display(description='Tags List', )
     def tags_list(self, o: Question):

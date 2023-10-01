@@ -33,10 +33,7 @@ def notify_slack_channel(msg: str, channel: str) -> None:
 def _notify_question_followers(
         originator: AbstractUser, question: models.Question,
         subject: str, activity: str, html: str, important: bool) -> list[ForumUser]:
-    follows = list(models.QuestionFollow.objects
-                   .filter(~Q(user=originator),
-                           user__is_active=True,
-                           question=question, ))
+    follows = question.follows.filter(~Q(user=originator), user__is_active=True)
     users = [follow.user for follow in follows]
     logger.debug(f"Notifying {len(follows)} followers of question {question.id} "
                  f"activity by {originator.username}, len: {len(activity)}")

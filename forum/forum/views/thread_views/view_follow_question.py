@@ -24,8 +24,7 @@ def view_unfollow_question(request, pk: int):
     if q is None:
         logger.warning(f'user {user.username} trying to unfollow question {pk} which does not exist')
         return redirect('forum:list')
-
-    follow = models.QuestionFollow.objects.filter(user=user, question=q).first()
+    follow = q.follows.filter(user=user).first()
     if follow is None:
         logger.warning(f'user {user.username} asked to unfollow question {pk} even '
                        f'though they are not currently following it')

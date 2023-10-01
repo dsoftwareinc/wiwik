@@ -16,7 +16,7 @@ class TestAdmin(ForumApiTestCase):
     comment_content = 'comment---content'
     tags = ['my_first_tag', 'my_second_tag', 'my_third_tag']
 
-    MODELS_WITHOUT_ADMIN = {'questionview', 'questionadditionaldata'}
+    MODELS_WITHOUT_ADMIN = {'questionview', 'questionadditionaldata', 'questionfollow'}
 
     @classmethod
     def setUpClass(cls):

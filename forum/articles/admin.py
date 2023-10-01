@@ -5,7 +5,6 @@ from rangefilter.filters import DateRangeFilter
 
 from articles.models import Article
 from forum.admin.input_filter import UserFilter
-from forum.models import QuestionFollow
 from wiwik_lib.models import Follow
 
 
