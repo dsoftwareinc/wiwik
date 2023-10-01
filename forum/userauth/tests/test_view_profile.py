@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from common.test_utils import assert_message_in_response, assert_url_in_chain
-from forum.models import TagFollow, QuestionBookmark
+from forum.models import UserTagStats, QuestionBookmark
 from forum.views import utils
 from tags.models import Tag
 from userauth.jobs import log_request
@@ -78,7 +78,7 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         tag.experts = self.users[0].username
         tag.stars = self.users[0].username
         tag.save()
-        TagFollow.objects.filter(user=self.users[0]).update(reputation=10)
+        UserTagStats.objects.filter(user=self.users[0]).update(reputation=10)
         # act
         res = self.client.view_profile(self.usernames[0], 'following')
         # assert

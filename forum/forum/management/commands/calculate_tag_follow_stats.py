@@ -1,6 +1,6 @@
 from wiwik_lib.utils import ManagementCommand
-from forum.jobs import recalculate_tag_follow_stats
-from forum.models import TagFollow
+from forum.jobs import recalculate_user_tag_stats
+from forum.models import UserTagStats
 
 
 class Command(ManagementCommand):
@@ -15,6 +15,6 @@ class Command(ManagementCommand):
         # answer_qs = Answer.objects.all()
         # for answer in answer_qs:
         #     update_tag_follow_stats(answer)
-        tag_follow_qs = TagFollow.objects.all()
-        for tag_follow in tag_follow_qs:
-            recalculate_tag_follow_stats(tag_follow)
+        user_tag_stats_list = UserTagStats.objects.all()
+        for user_tag_stats in user_tag_stats_list:
+            recalculate_user_tag_stats(user_tag_stats)

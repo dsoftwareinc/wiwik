@@ -3,7 +3,7 @@ from django.db.models import Q
 from rangefilter.filters import DateRangeFilter
 
 from forum.admin.input_filter import InputFilter, QuestionFilter, QuestionFollowUserFilter
-from forum.models import TagFollow, QuestionFollow
+from forum.models import UserTagStats, QuestionFollow
 
 
 class TagNameFilter(InputFilter):
@@ -19,8 +19,8 @@ class TagNameFilter(InputFilter):
             )
 
 
-@admin.register(TagFollow)
-class TagFollowAdmin(admin.ModelAdmin):
+@admin.register(UserTagStats)
+class UserTagStatsAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'tag_word', 'created_at', 'updated_at',
                     'questions_by_user', 'answers_by_user', 'reputation',
                     'reputation_last_month',)

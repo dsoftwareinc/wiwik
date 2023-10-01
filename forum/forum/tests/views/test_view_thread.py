@@ -11,7 +11,7 @@ from common.test_utils import assert_url_in_chain
 from forum import models, jobs
 from forum.integrations import slack_api
 from forum.jobs import add_meilisearch_document
-from forum.models import PostInvitation, TagFollow
+from forum.models import PostInvitation, UserTagStats
 from forum.tests.base import ForumApiTestCase
 from forum.views import utils, notifications
 from forum.views.q_and_a_crud.view_thread import view_thread_background_tasks
@@ -316,7 +316,7 @@ class TestThreadView(ForumApiTestCase):
         self.assertEqual(answer_content, answer.content)
         self.assertEqual(self.users[1], answer.author)
         self.assertContains(res, answer_content)
-        self.assertEqual(len(self.question.tags.all()), TagFollow.objects.filter(user=self.users[1]).count())
+        self.assertEqual(len(self.question.tags.all()), UserTagStats.objects.filter(user=self.users[1]).count())
         notifications._notify_question_followers.assert_called_once()
         jobs.start_job.assert_has_calls([
             mock.call(jobs.update_tag_follow_stats, answer.get_question().id, answer.author_id),

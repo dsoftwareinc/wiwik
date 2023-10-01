@@ -1,36 +1,36 @@
 {% load wiwik_template_tags %}
-{% if follow.tag.description %}
+{% if tagstats.tag.description %}
     <a class="btn btn-question-tag m-2"
        data-bs-toggle="popover"
        data-bs-trigger="hover focus"
        data-bs-placement="bottom"
-       data-content-id="popover-{{ follow.tag.tag_word }}"
-       href="{% url 'forum:tag' follow.tag.tag_word %}">
-        {{ follow.tag.tag_word }}
-        {% if follow.reputation > 0 %}
-            <small class="text-muted">x{{ follow.reputation }}</small>
+       data-content-id="popover-{{ tagstats.tag.tag_word }}"
+       href="{% url 'forum:tag' tagstats.tag.tag_word %}">
+        {{ tagstats.tag.tag_word }}
+        {% if tagstats.reputation > 0 %}
+            <small class="text-muted">x{{ tagstats.reputation }}</small>
         {% endif %}
     </a>
-    <div style="display: none;" id="popover-{{ follow.tag.tag_word }}">
+    <div style="display: none;" id="popover-{{ tagstats.tag.tag_word }}">
         <div class="tag-popover popover" role="tooltip">
             <div class="popover-arrow"></div>
 
             <div class="popover-body p-2">
                 <div class="card-subtitle text-muted">
-                    <span class="orange-color">{{ follow.tag.number_followers | humanize_number }} watchers</span>
-                    {{ follow.tag.number_of_questions | humanize_number }} questions
+                    <span class="orange-color">{{ tagstats.tag.number_followers | humanize_number }} watchers</span>
+                    {{ tagstats.tag.number_of_questions | humanize_number }} questions
                 </div>
                 <div class="card-text pb-2 text-dark">
-                    {{ follow.tag.description }}
-                    <a href="{% url 'forum:tag' follow.tag.tag_word %}"
+                    {{ tagstats.tag.description }}
+                    <a href="{% url 'forum:tag' tagstats.tag.tag_word %}"
                        class="text-primary">
                         View tag
                     </a>
                 </div>
-                {% if follow.tag.experts_list %}
+                {% if tagstats.tag.experts_list %}
                     <div class="card-subtitle text-muted">
                         Leaders:
-                        {% for u in follow.tag.experts_list %}
+                        {% for u in tagstats.tag.experts_list %}
                             <a href="{% url 'userauth:profile' u.username 'questions' %}"
                                style="margin-left: 5px;">
                                 <img src="{{ u.profile_pic.url }}"
@@ -40,10 +40,10 @@
                         {% endfor %}
                     </div>
                 {% endif %}
-                {% if follow.tag.stars_list %}
+                {% if tagstats.tag.stars_list %}
                     <div class="card-subtitle text-muted">
                         Rising stars:
-                        {% for u in follow.tag.stars_list %}
+                        {% for u in tagstats.tag.stars_list %}
                             <a href="{% url 'userauth:profile' u.username 'questions' %}"
                                style="margin-left: 5px;">
                                 <img src="{{ u.profile_pic.url }}"
@@ -54,7 +54,7 @@
                     </div>
                 {% endif %}
                 <div class="pull-right mb-2 mt-2">
-                    <a href="{% url 'tags:info' follow.tag.tag_word %}"
+                    <a href="{% url 'tags:info' tagstats.tag.tag_word %}"
                        class="btn btn-sm btn-outline-primary">
                         Tag info
                     </a>
@@ -77,10 +77,10 @@
     </div>
 {% else %}
     <a class="btn btn-question-tag m-2"
-       href="{% url 'forum:tag' follow.tag.tag_word %}">
-        {{ follow.tag.tag_word }}
-        {% if follow.reputation > 0 %}
-            <small class="text-muted">x{{ follow.reputation }}</small>
+       href="{% url 'forum:tag' tagstats.tag.tag_word %}">
+        {{ tagstats.tag.tag_word }}
+        {% if tagstats.reputation > 0 %}
+            <small class="text-muted">x{{ tagstats.reputation }}</small>
         {% endif %}
     </a>
 {% endif %}

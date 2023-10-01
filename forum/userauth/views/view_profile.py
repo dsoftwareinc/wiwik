@@ -4,7 +4,7 @@ from django.db.models import F, Count
 from django.shortcuts import render, redirect
 
 from wiwik_lib.utils import paginate_queryset
-from forum.models import QuestionFollow, QuestionBookmark, VoteActivity, TagFollow, Question, Answer
+from forum.models import QuestionFollow, QuestionBookmark, VoteActivity, UserTagStats, Question, Answer
 from userauth.models import ForumUser, UserVisit
 from userauth.views.common import get_request_param
 
@@ -92,14 +92,14 @@ def view_profile(request, username: str, tab: str):
         'counters': counters,
         'title': f'wiwik - User {seeuser.display_name()}',
         'last_badge': last_badge,
-        'user_top_tags': (TagFollow.objects
+        'user_top_tags': (UserTagStats.objects
                           .filter(user=seeuser, reputation__gt=0)
                           .order_by('-reputation')
                           .prefetch_related('tag')[:3]),
     }
 
     if tab == 'following':
-        context['user_tagfollows'] = (TagFollow.objects
+        context['user_tag_stats'] = (UserTagStats.objects
                                       .filter(user=seeuser)
                                       .order_by('-reputation')
                                       .prefetch_related('tag'))

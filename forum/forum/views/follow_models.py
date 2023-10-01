@@ -18,18 +18,18 @@ def delete_follow_question(question: models.Question, user: AbstractUser):
     models.QuestionFollow.objects.filter(question=question, user=user).delete()
 
 
-def create_follow_tag(tag: Tag, user: AbstractUser) -> models.TagFollow:
-    tag_follow = models.TagFollow.objects.filter(tag=tag, user=user).first()
+def create_follow_tag(tag: Tag, user: AbstractUser) -> models.UserTagStats:
+    tag_follow = models.UserTagStats.objects.filter(tag=tag, user=user).first()
     if tag_follow is not None:
         logger.debug(f'user {user.username} trying to follow tag {tag.tag_word} which they already follow')
         return tag_follow
     logger.debug(f'Adding {user.username} to tag {tag.tag_word} followers')
-    tag_follow = models.TagFollow.objects.create(tag=tag, user=user)
+    tag_follow = models.UserTagStats.objects.create(tag=tag, user=user)
     return tag_follow
 
 
 def delete_follow_tag(tag: Tag, user: AbstractUser):
-    follow = models.TagFollow.objects.filter(tag=tag, user=user).first()
+    follow = models.UserTagStats.objects.filter(tag=tag, user=user).first()
     if follow is None:
         logger.debug(f'user {user.username} trying to unfollow tag {tag.tag_word} which they do not follow')
         return

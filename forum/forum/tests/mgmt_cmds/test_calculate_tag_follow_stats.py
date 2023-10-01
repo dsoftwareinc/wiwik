@@ -7,7 +7,7 @@ from tags.models import Tag
 
 
 @tag('management_command')
-class CalculateTagFollowStatsTest(TestCase):
+class CalculateUserTagStatsCmdTest(TestCase):
     def call_command(self, *args, **kwargs):
         out = StringIO()
         call_command(

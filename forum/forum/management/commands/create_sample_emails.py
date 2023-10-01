@@ -48,7 +48,7 @@ class Command(ManagementCommand):
 
     def notify_tag_followers_new_question(self):
         settings.EMAIL_FILE_PATH = os.path.join(self.base_dir, 'new_question')
-        tag_follow = models.TagFollow.objects.filter(questions_by_user__gt=0).first()
+        tag_follow = models.UserTagStats.objects.filter(questions_by_user__gt=0).first()
         if tag_follow is None:
             self.error_print('No tag with followers, leaving notify_tag_followers_new_question')
             return

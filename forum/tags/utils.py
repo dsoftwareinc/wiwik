@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db.models import Sum
 from django.utils import timezone
 
-from forum.models import Question, TagFollow, VoteActivity
+from forum.models import Question, UserTagStats, VoteActivity
 from tags.apps import logger
 from tags.models import Tag
 
@@ -54,7 +54,7 @@ def update_tag_stats_for_tag(tag: Tag):
                                       created_at__gte=begining_of_day)
                               .count())
 
-    tag.number_followers = (TagFollow.objects.filter(tag=tag).count())
+    tag.number_followers = (UserTagStats.objects.filter(tag=tag).count())
 
     experts_usernames = users_with_most_reputation_since(tag, count=settings.NUMBER_OF_TAG_EXPERTS)
     tag.experts = ','.join(experts_usernames) if len(experts_usernames) > 0 else None

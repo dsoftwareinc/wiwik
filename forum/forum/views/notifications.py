@@ -70,7 +70,7 @@ def notify_tag_followers_new_question(
     notify_slack_channel(slack_msg, settings.SLACK_NOTIFICATIONS_CHANNEL)
     emails_dict = dict()
     for tag_word in tag_words:
-        follows = list(models.TagFollow.objects
+        follows = list(models.UserTagStats.objects
                        .filter(~Q(user=originator),
                                user__is_active=True,
                                tag__tag_word=tag_word))

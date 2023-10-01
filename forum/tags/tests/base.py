@@ -2,7 +2,7 @@ from django.test import Client, TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 
-from forum.models import TagFollow
+from forum.models import UserTagStats
 from tags.models import Tag
 from userauth.models import ForumUser
 
@@ -90,7 +90,7 @@ class TagsApiTestCase(TestCase):
         super().setUpClass()
         cls.user = ForumUser.objects.create_user(cls.username, f'{cls.username}@a.com', cls.password)
         cls.tags = [Tag.objects.create(tag_word=f'tag{i}', description=f'tag{i}_desc') for i in range(3)]
-        TagFollow.objects.create(tag=cls.tags[0], user=cls.user)
+        UserTagStats.objects.create(tag=cls.tags[0], user=cls.user)
 
     def setUp(self):
         self.client = TagsClient()

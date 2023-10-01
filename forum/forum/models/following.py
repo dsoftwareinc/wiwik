@@ -16,7 +16,7 @@ class QuestionFollow(models.Model):
         return f'QuestionFollow[user={self.user}, question={self.question.id}, created_at={self.created_at}]'
 
 
-class TagFollow(models.Model):
+class UserTagStats(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     tag = models.ForeignKey("tags.Tag", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -42,6 +42,6 @@ class TagFollow(models.Model):
         select_related=('user', 'tag',), deferred_fields=user_model_defer_fields('user'), )
 
     def __str__(self):
-        return (f'TagFollow[{self.user.username} - {self.tag.tag_word}] '
+        return (f'UserTagStats[{self.user.username} - {self.tag.tag_word}] '
                 f'#q={self.questions_by_user}, #a={self.answers_by_user}, '
                 f'rep={self.reputation}, rep_month={self.reputation_last_month}')

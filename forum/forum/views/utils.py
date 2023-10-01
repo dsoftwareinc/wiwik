@@ -363,7 +363,7 @@ def upvote_comment(user: AbstractUser, comment: models.Comment) -> models.Commen
 
 
 def get_user_followed_tags(user: AbstractUser) -> list[Tag]:
-    follows = models.TagFollow.objects.filter(user=user)
+    follows = models.UserTagStats.objects.filter(user=user)
     return [f.tag for f in follows]
 
 
