@@ -39,10 +39,10 @@ def recalculate_user_tag_stats(user_tag_stats: models.UserTagStats):
 
 
 @job
-def update_tag_follow_stats(post_id: int, user_id: int):
+def update_user_tag_stats(post_id: int, user_id: int):
     post = Question.objects.get(id=post_id)
     user = ForumUser.objects.get(id=user_id)
     tags_to_update = post.tags.all()
     for tag in tags_to_update:
-        tag_follow = models.UserTagStats.objects.filter(tag=tag, user=user).first()
-        recalculate_user_tag_stats(tag_follow)
+        user_tag_stats = models.UserTagStats.objects.filter(tag=tag, user=user).first()
+        recalculate_user_tag_stats(user_tag_stats)

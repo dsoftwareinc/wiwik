@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from forum import models
 from forum.apps import logger
 from tags.models import Tag
+from wiwik_lib.views.follow_views import create_follow, delete_follow
 
 
 def create_follow_question(question: models.Question, user: AbstractUser):
@@ -11,11 +12,13 @@ def create_follow_question(question: models.Question, user: AbstractUser):
         return
     logger.debug(f'Adding {user.username} to question {question.id} followers')
     models.QuestionFollow.objects.create(question=question, user=user)
+    create_follow(question, user)
 
 
-def delete_follow_question(question: models.Question, user: AbstractUser):
+def delete_follow_question(question: models.Question, user: AbstractUser)->None:
     logger.debug('Deleting follower')
     models.QuestionFollow.objects.filter(question=question, user=user).delete()
+    delete_follow(question, user)
 
 
 def create_follow_tag(tag: Tag, user: AbstractUser) -> models.UserTagStats:

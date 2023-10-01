@@ -164,7 +164,7 @@ def create_question(user: AbstractUser, title: str, content: str, tags: str,
     q.save()
     if send_notifications:
         notifications.notify_tag_followers_new_question(user, tags_to_add, q, )
-    jobs.start_job(jobs.update_tag_follow_stats, q.id, user.id)
+    jobs.start_job(jobs.update_user_tag_stats, q.id, user.id)
     jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Create post'])
     return q
 
@@ -202,7 +202,7 @@ def update_question(user: AbstractUser, q: models.Question, title: str, content:
         tag = _get_tag(tag_word, user)
         q.tags.add(tag)
         follow_models.create_follow_tag(tag, q.author)
-    jobs.start_job(jobs.update_tag_follow_stats, q.id, q.author.id)
+    jobs.start_job(jobs.update_user_tag_stats, q.id, q.author.id)
     q.last_activity = timezone.now()
     q.save()
     follow_models.create_follow_question(q, user)
@@ -244,7 +244,8 @@ def create_answer(content: str, user: AbstractUser, question: models.Question,
     tags = a.question.tags.all()
     for tag in tags:
         follow_models.create_follow_tag(tag, user)
-    jobs.start_job(jobs.update_tag_follow_stats, a.question_id, user.id)
+    jobs.start_job(jobs.update_user_tag_stats, a.question_id, user.id)
+    follow_models.create_follow_question(question, user)
     if send_notifications:
         notifications.notify_new_answer(user, a)
     jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Create post'])

@@ -14,7 +14,6 @@ from forum import models, jobs
 from forum.apps import logger
 from forum.integrations import slack_api
 from forum.views.common import get_model_url_with_base
-from forum.views.follow_models import create_follow_question
 from userauth.models import ForumUser
 from userauth.utils import unsubscribe_link_with_base
 from wiwik_lib.utils import CURRENT_SITE
@@ -34,7 +33,6 @@ def notify_slack_channel(msg: str, channel: str) -> None:
 def _notify_question_followers(
         originator: AbstractUser, question: models.Question,
         subject: str, activity: str, html: str, important: bool) -> list[ForumUser]:
-    create_follow_question(question, originator)
     follows = list(models.QuestionFollow.objects
                    .filter(~Q(user=originator),
                            user__is_active=True,

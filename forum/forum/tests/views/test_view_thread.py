@@ -319,7 +319,7 @@ class TestThreadView(ForumApiTestCase):
         self.assertEqual(len(self.question.tags.all()), UserTagStats.objects.filter(user=self.users[1]).count())
         notifications._notify_question_followers.assert_called_once()
         jobs.start_job.assert_has_calls([
-            mock.call(jobs.update_tag_follow_stats, answer.get_question().id, answer.author_id),
+            mock.call(jobs.update_user_tag_stats, answer.get_question().id, answer.author_id),
             mock.call(slack_api.slack_post_im_message_to_email, mock.ANY, self.users[0].email),
         ])
         self.question.refresh_from_db()
