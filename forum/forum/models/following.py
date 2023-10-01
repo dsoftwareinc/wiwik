@@ -4,9 +4,6 @@ from django.db import models
 from wiwik_lib.models import AdvancedModelManager, user_model_defer_fields
 
 
-# Todo: Create Followable model, similar to Flagable, Votable, etc.
-
-
 class QuestionFollow(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     question = models.ForeignKey("forum.Question", on_delete=models.CASCADE)

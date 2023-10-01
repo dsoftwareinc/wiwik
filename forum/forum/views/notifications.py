@@ -10,7 +10,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import Q
 from django.template import loader
 
-from wiwik_lib.utils import CURRENT_SITE
 from forum import models, jobs
 from forum.apps import logger
 from forum.integrations import slack_api
@@ -18,6 +17,7 @@ from forum.views.common import get_model_url_with_base
 from forum.views.follow_models import create_follow_question
 from userauth.models import ForumUser
 from userauth.utils import unsubscribe_link_with_base
+from wiwik_lib.utils import CURRENT_SITE
 
 
 def _get_user_display_name(user: AbstractUser) -> str:

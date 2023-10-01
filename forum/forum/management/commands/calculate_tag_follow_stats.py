@@ -8,7 +8,7 @@ class Command(ManagementCommand):
 
     def handle(self, *args, **options):
         # Version 1:
-        # TagFollow.objects.all().update(questions_by_user=0, answers_by_user=0)
+        # UserTagStats.objects.all().update(questions_by_user=0, answers_by_user=0)
         # question_qs = Question.objects.all()
         # for question in question_qs:
         #     update_tag_follow_stats(question)

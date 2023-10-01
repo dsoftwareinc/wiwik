@@ -270,7 +270,7 @@ class TestHomeView(ForumApiTestCase):
         self.assertContains(res, 'Home')
         self.assertNotContains(res, self.content)
 
-    def test_home__no_tag_follows_for_user(self):
+    def test_home__no_user_tag_stats_for_user(self):
         # arrange
         self.client.login(self.usernames[1], self.password)
         # act
