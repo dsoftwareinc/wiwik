@@ -306,18 +306,21 @@ class TestHomeView(ForumApiTestCase):
         tag_description = 'my tag description with many things'
         self.client.login(self.usernames[1], self.password)
         user = self.users[1]
+        tags_list = list()
         for i in range(3):
             tag = models.Tag.objects.create(
                 tag_word=f'tag{i}', description=tag_description if i > 0 else None)
             follow_models.create_follow_tag(tag, user)
+            tags_list.append(tag)
+        tag_str = ','.join([f'tag{i}' for i in range(3)])
+        utils.create_question(user, self.title, self.content, tag_str)
+        for tag in tags_list:
             tag.experts = self.usernames[2]
             tag.stars = self.usernames[2]
             tag.save()
-        tag_str = ','.join([f'tag{i}' for i in range(3)])
-        utils.create_question(user, self.title, self.content, tag_str)
         # act
         res = self.client.questions_list()
         # assert
-        self.assertContains(res, self.usernames[2])
         self.assertContains(res, 'Leaders:')
         self.assertContains(res, 'Rising stars:')
+        self.assertContains(res, self.usernames[2])
