@@ -6,18 +6,11 @@ from tags.models import Tag
 from wiwik_lib.views.follow_views import create_follow, delete_follow
 
 
-def create_follow_question(question: models.Question, user: AbstractUser):
-    if models.QuestionFollow.objects.filter(question=question, user=user).count() > 0:
-        logger.debug(f'user {user.username} trying to follow question {question.pk} which they already follow')
-        return
-    logger.debug(f'Adding {user.username} to question {question.id} followers')
-    models.QuestionFollow.objects.create(question=question, user=user)
+def create_follow_question(question: models.Question, user: AbstractUser) -> None:
     create_follow(question, user)
 
 
-def delete_follow_question(question: models.Question, user: AbstractUser)->None:
-    logger.debug('Deleting follower')
-    models.QuestionFollow.objects.filter(question=question, user=user).delete()
+def delete_follow_question(question: models.Question, user: AbstractUser) -> None:
     delete_follow(question, user)
 
 

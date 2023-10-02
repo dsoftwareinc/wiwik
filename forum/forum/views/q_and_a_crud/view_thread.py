@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Exists, OuterRef, Value
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from scheduler import job
 
@@ -79,11 +79,10 @@ def _create_comment(request, model_name: str, model_pk: int, content: str):
 
 
 def _do_single_question_post_action(request, question_pk: int):
-    """
-    Create new answer or new comment in a question thread.
+    """Create new answer or new comment in a question thread.
 
     :param request:
-    :param question_pk: question pk, for redirecting back to main thread view.
+    :param question_pk: Question pk, for redirecting back to the main thread view.
     :return:
     """
     params = request.POST.dict()
