@@ -3,6 +3,7 @@ from django.urls import reverse
 from common.test_utils import assert_url_in_chain
 from forum import models
 from forum.tests.base import ForumApiTestCase
+from wiwik_lib.views.follow_views import create_follow
 
 
 class TestFollowTagView(ForumApiTestCase):
@@ -17,8 +18,8 @@ class TestFollowTagView(ForumApiTestCase):
         # act
         res = self.client.follow_tag(self.tag_word)
         # assert
-        models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count()
-        self.assertEqual(1, models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count())
+        self.assertEqual(0, models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count())
+        self.assertEqual(1, self.tag.follows.count())
         assert_url_in_chain(res, reverse('forum:tag', args=[self.tag_word, ]))
         self.assertContains(res, 'Watched tags')
 
@@ -34,12 +35,11 @@ class TestFollowTagView(ForumApiTestCase):
 
     def test_follow_tag__already_following__should_do_nothing(self):
         self.client.login(self.usernames[0], self.password)
-        models.UserTagStats.objects.create(user=self.users[0], tag=self.tag)
+        create_follow(self.tag, self.users[0])
         # act
         res = self.client.follow_tag(self.tag_word)
         # assert
-        models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count()
-        self.assertEqual(1, models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count())
+        self.assertEqual(1, self.tag.follows.count())
         assert_url_in_chain(res, reverse('forum:tag', args=[self.tag_word, ]))
         self.assertContains(res, 'Watched tags')
 

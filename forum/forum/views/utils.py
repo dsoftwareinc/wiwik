@@ -2,6 +2,7 @@ from typing import Union, List
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Sum
 from django.utils import timezone
 
@@ -16,6 +17,7 @@ from forum.views import notifications, follow_models
 from tags import jobs as tag_jobs
 from tags.models import Tag, Synonym
 from userauth.models import ForumUser
+from wiwik_lib.models import Follow
 from wiwik_lib.views.follow_views import delete_follow, create_follow
 
 
@@ -365,8 +367,9 @@ def upvote_comment(user: AbstractUser, comment: models.Comment) -> models.Commen
 
 
 def get_user_followed_tags(user: AbstractUser) -> list[Tag]:
-    follows = models.UserTagStats.objects.filter(user=user)
-    return [f.tag for f in follows]
+    tag_type = ContentType.objects.get(app_label='tags', model='tag')
+    follows = Follow.objects.filter(user=user, content_type=tag_type)
+    return [f.content_object for f in follows]
 
 
 def create_invites_and_notify_invite_users_to_question(

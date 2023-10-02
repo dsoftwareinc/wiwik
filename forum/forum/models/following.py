@@ -9,9 +9,6 @@ class QuestionFollow(models.Model):
     question = models.ForeignKey("forum.Question", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
-    def __str__(self):
-        return f'QuestionFollow[user={self.user}, question={self.question.id}, created_at={self.created_at}]'
-
 
 class UserTagStats(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

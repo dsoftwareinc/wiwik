@@ -316,7 +316,8 @@ class TestThreadView(ForumApiTestCase):
         self.assertEqual(answer_content, answer.content)
         self.assertEqual(self.users[1], answer.author)
         self.assertContains(res, answer_content)
-        self.assertEqual(len(self.question.tags.all()), UserTagStats.objects.filter(user=self.users[1]).count())
+        self.assertEqual(self.question.tags.count(), UserTagStats.objects.filter(user=self.users[1]).count())
+        self.assertEqual(self.question.tags.count() + 1, self.question.follows.count())
         notifications._notify_question_followers.assert_called_once()
         jobs.start_job.assert_has_calls([
             mock.call(jobs.update_user_tag_stats, answer.get_question().id, answer.author_id),

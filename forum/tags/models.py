@@ -2,13 +2,12 @@ from django.conf import settings
 from django.db import models
 
 from userauth.models import ForumUser
-from wiwik_lib.models import Flaggable, Editable
+from wiwik_lib.models import Flaggable, Editable, Followable
 
 
-class Tag(Flaggable, Editable):
-    """
-    Class to represent a tag.
-    A question can be tagged with multiple tags.
+class Tag(Flaggable, Editable, Followable):
+    """Class to represent a tag.
+    A post can be tagged with multiple tags.
     User can follow tags.
     """
     tag_word = models.CharField(max_length=25, unique=True)
