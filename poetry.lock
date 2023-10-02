@@ -789,13 +789,13 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-tasks-scheduler"
-version = "1.0.3"
+version = "1.1.0"
 description = "An async job scheduler for django using redis"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "django_tasks_scheduler-1.0.3-py3-none-any.whl", hash = "sha256:d3319c089ad7f6d3b9dcb56e44377adfcbd416807d8c4dba66f1ea1a41f64755"},
-    {file = "django_tasks_scheduler-1.0.3.tar.gz", hash = "sha256:7bff361c792fe88081a2b0c3bc64c52d7c742d8799397d566d023e0acd24a123"},
+    {file = "django_tasks_scheduler-1.1.0-py3-none-any.whl", hash = "sha256:2e19afaba165e0fb3550291e66353c44eb4aa0fc7bc52cfb05fc618faf886f83"},
+    {file = "django_tasks_scheduler-1.1.0.tar.gz", hash = "sha256:f9fcb5eb840171f8cbbccf0776e5a1a512355cab970884751b8714d8694bcebc"},
 ]
 
 [package.dependencies]
@@ -2491,4 +2491,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "f89bc297d25e097636d687f93b4192693a251f4b6d137e887273d691afd9dc5d"
+content-hash = "d168746e49f1efb1961636fe07d72ce2ae2572f650b23d08645a4aa1f43b414e"
