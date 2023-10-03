@@ -1,5 +1,5 @@
 from .base import *
 from .comments import *
-from .following import *
+from .stats import *
 from .question_addins import *
 from .voting import VoteActivity, SearchRecord
