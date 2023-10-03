@@ -10,7 +10,7 @@ from django.utils.safestring import mark_safe
 from markdown import Markdown
 from pymdownx import superfences
 
-from forum.models import TagFollow
+from forum.models import UserTagStats
 from tags.models import Tag
 from userauth.models import ForumUser
 from userauth.utils import user_most_active_tags
@@ -110,21 +110,21 @@ def humanize_number(value: int):
 
 
 @register.filter(is_safe=True)
-def tag_experts(tag: Tag) -> List[TagFollow]:
+def tag_experts(tag: Tag) -> List[UserTagStats]:
     """
     Returns list of three users with most reputation on the tag.
 
     The reason to use this method and not `tag.experts` property is because this
-    method returns the TagFollow objects which have the user reputation for the tag.
+    method returns the UserTagStats objects which have the user reputation for the tag.
 
     Args:
         tag (Tag): tag to search experts for
 
     Returns:
-        List of up to 3 TagFollow objects with the most reputation.
+        List of up to 3 UserTagStats objects with the most reputation.
 
     """
-    return tag.tagfollow_set.filter(reputation__gt=0).order_by('-reputation')[:3]
+    return tag.usertagstats_set.filter(reputation__gt=0).order_by('-reputation')[:3]
 
 
 @register.filter(is_safe=True)

@@ -125,3 +125,27 @@ class Editable(models.Model):
 
     def is_edited(self) -> bool:
         return self.current_editors.exists()
+
+
+class Follow(models.Model):
+    """A class to represent a follow to a model object (Post/Tag)."""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,
+                             blank=False, related_name='followers')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    def __str__(self):
+        return f'Follow[{self.user.username}:{self.content_type}:{self.object_id}]'
+
+
+class Followable(models.Model):
+    """An abstract class to represent a followable object."""
+
+    class Meta:
+        abstract = True
+
+    follows = GenericRelation(Follow)

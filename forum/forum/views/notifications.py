@@ -10,14 +10,13 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import Q
 from django.template import loader
 
-from wiwik_lib.utils import CURRENT_SITE
 from forum import models, jobs
 from forum.apps import logger
 from forum.integrations import slack_api
 from forum.views.common import get_model_url_with_base
-from forum.views.follow_models import create_follow_question
 from userauth.models import ForumUser
 from userauth.utils import unsubscribe_link_with_base
+from wiwik_lib.utils import CURRENT_SITE
 
 
 def _get_user_display_name(user: AbstractUser) -> str:
@@ -34,11 +33,7 @@ def notify_slack_channel(msg: str, channel: str) -> None:
 def _notify_question_followers(
         originator: AbstractUser, question: models.Question,
         subject: str, activity: str, html: str, important: bool) -> list[ForumUser]:
-    create_follow_question(question, originator)
-    follows = list(models.QuestionFollow.objects
-                   .filter(~Q(user=originator),
-                           user__is_active=True,
-                           question=question, ))
+    follows = question.follows.filter(~Q(user=originator), user__is_active=True)
     users = [follow.user for follow in follows]
     logger.debug(f"Notifying {len(follows)} followers of question {question.id} "
                  f"activity by {originator.username}, len: {len(activity)}")
@@ -70,7 +65,7 @@ def notify_tag_followers_new_question(
     notify_slack_channel(slack_msg, settings.SLACK_NOTIFICATIONS_CHANNEL)
     emails_dict = dict()
     for tag_word in tag_words:
-        follows = list(models.TagFollow.objects
+        follows = list(models.UserTagStats.objects
                        .filter(~Q(user=originator),
                                user__is_active=True,
                                tag__tag_word=tag_word))

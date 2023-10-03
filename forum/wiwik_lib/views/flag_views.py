@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AbstractUser
@@ -51,8 +53,11 @@ def notify_moderators_new_flag(
         jobs.start_job(slack_api.slack_post_im_message_to_email, activity_str, moderator.email)
 
 
-def flag_model(user: AbstractUser, target: Flaggable, flag_type: str, extra: str = None) -> Flag:
+def flag_model(user: AbstractUser, target: Flaggable, flag_type: str, extra: str = None) -> Optional[Flag]:
     content_type = ContentType.objects.get_for_model(target)
+    if Flag.objects.filter(user=user,content_type=content_type, object_id=target.id).exists():
+        logger.debug(f'User {user.username} already flagged {content_type}:{target.id} - ignoring')
+        return None
     logger.debug(f'User {user.username} flagging {content_type}:{target.id} of as {flag_type}')
     flag = Flag.objects.create(
         user=user, flag_type=flag_type, extra=extra,

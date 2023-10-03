@@ -4,7 +4,7 @@ from typing import cast
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Exists, OuterRef
+from django.db.models import Count, Exists, OuterRef, Value
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from scheduler import job
@@ -12,7 +12,7 @@ from scheduler import job
 from common import utils as common_utils
 from forum import jobs
 from forum.apps import logger
-from forum.models import Question, VoteActivity, QuestionView, QuestionFollow, QuestionBookmark, Answer
+from forum.models import Question, VoteActivity, QuestionView, QuestionBookmark, Answer
 from forum.views import utils
 from userauth.models import ForumUser
 from wiwik_lib.models import user_model_defer_fields
@@ -79,11 +79,10 @@ def _create_comment(request, model_name: str, model_pk: int, content: str):
 
 
 def _do_single_question_post_action(request, question_pk: int):
-    """
-    Create new answer or new comment in a question thread.
+    """Create new answer or new comment in a question thread.
 
     :param request:
-    :param question_pk: question pk, for redirecting back to main thread view.
+    :param question_pk: Question pk, for redirecting back to the main thread view.
     :return:
     """
     params = request.POST.dict()
@@ -118,12 +117,13 @@ def view_single_question(request, pk):
     if request.method == 'POST':
         return _do_single_question_post_action(request, pk)
     try:
+        q = Question.objects.get(pk=pk)
         user_upvoted = Exists(VoteActivity.objects.filter(
             question_id=pk, answer_id__isnull=True, source=request.user, reputation_change=settings.UPVOTE_CHANGE))
         user_downvoted = Exists(VoteActivity.objects.filter(
             question_id=pk, source=request.user, reputation_change=settings.DOWNVOTE_CHANGE))
         q = (Question.objects
-             .annotate(user_follows=Exists(QuestionFollow.objects.filter(question_id=pk, user=request.user)))
+             .annotate(user_follows=Value(q.follows.filter(user=request.user).exists()))
              .annotate(user_bookmarked=Exists(QuestionBookmark.objects.filter(user=request.user, question_id=pk)))
              .annotate(user_answered=Exists(Answer.objects.filter(author=request.user, question_id=pk)))
              .annotate(user_upvoted=user_upvoted)

@@ -7,14 +7,14 @@ from django.shortcuts import render
 from django.template import loader
 
 from wiwik_lib.utils import paginate_queryset
-from forum.models import TagFollow
+from forum.models import UserTagStats
 from tags import models
 
 
 def get_user_followed_tags(user: AbstractUser):
     if 'forum' not in settings.INSTALLED_APPS:
         return []
-    follows = TagFollow.objects.filter(user=user)
+    follows = UserTagStats.objects.filter(user=user)
     return [f.tag.tag_word for f in follows]
 
 

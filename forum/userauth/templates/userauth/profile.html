@@ -111,7 +111,7 @@
                 {% elif tab == 'answers' %}
                     {% include 'userauth/includes/profile.answers.template.html' with user_answers=items %}
                 {% elif tab == 'following' %}
-                    {% include 'userauth/includes/profile.following.template.html' with tagfollows=user_tagfollows questions=items %}
+                    {% include 'userauth/includes/profile.following.template.html' with stats=user_tag_stats questions=items %}
                 {% elif tab == 'votes' %}
                     {% include 'userauth/includes/profile.votes.template.html' with user_votes=items %}
                 {% elif tab == 'reputation' %}

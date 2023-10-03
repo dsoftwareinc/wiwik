@@ -2,6 +2,7 @@ from typing import Union, List
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Sum
 from django.utils import timezone
 
@@ -16,6 +17,8 @@ from forum.views import notifications, follow_models
 from tags import jobs as tag_jobs
 from tags.models import Tag, Synonym
 from userauth.models import ForumUser
+from wiwik_lib.models import Follow
+from wiwik_lib.views.follow_views import delete_follow, create_follow
 
 
 def recalculate_user_reputation(user: AbstractUser):
@@ -153,7 +156,7 @@ def create_question(user: AbstractUser, title: str, content: str, tags: str,
     """
     q = models.Question.objects.create(
         title=title, content=content, author=user, **kwargs)
-    follow_models.create_follow_question(q, user)
+    create_follow(q, user)
     tags_to_add = set(tags.replace(' ', '').lower().split(','))
     if '' in tags_to_add:
         tags_to_add.remove('')
@@ -164,7 +167,7 @@ def create_question(user: AbstractUser, title: str, content: str, tags: str,
     q.save()
     if send_notifications:
         notifications.notify_tag_followers_new_question(user, tags_to_add, q, )
-    jobs.start_job(jobs.update_tag_follow_stats, q.id, user.id)
+    jobs.start_job(jobs.update_user_tag_stats, q.id, user.id)
     jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Create post'])
     return q
 
@@ -202,10 +205,10 @@ def update_question(user: AbstractUser, q: models.Question, title: str, content:
         tag = _get_tag(tag_word, user)
         q.tags.add(tag)
         follow_models.create_follow_tag(tag, q.author)
-    jobs.start_job(jobs.update_tag_follow_stats, q.id, q.author.id)
+    jobs.start_job(jobs.update_user_tag_stats, q.id, q.author.id)
     q.last_activity = timezone.now()
     q.save()
-    follow_models.create_follow_question(q, user)
+    create_follow(q, user)
     notifications.notify_question_changes(user, q, old_title, old_content)
     jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Update post'])
     return q
@@ -244,7 +247,8 @@ def create_answer(content: str, user: AbstractUser, question: models.Question,
     tags = a.question.tags.all()
     for tag in tags:
         follow_models.create_follow_tag(tag, user)
-    jobs.start_job(jobs.update_tag_follow_stats, a.question_id, user.id)
+    jobs.start_job(jobs.update_user_tag_stats, a.question_id, user.id)
+    create_follow(question, user)
     if send_notifications:
         notifications.notify_new_answer(user, a)
     jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Create post'])
@@ -295,7 +299,7 @@ def upvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.Vot
 
     model_obj.users_upvoted.add(user)
     model_obj.save()
-    follow_models.create_follow_question(model_obj.get_question(), user)
+    create_follow(model_obj.get_question(), user)
     create_activity(user, model_obj.author, model_obj, settings.UPVOTE_CHANGE)
     jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Upvote'])
     return model_obj
@@ -308,7 +312,7 @@ def downvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.V
 
     model_obj.users_downvoted.add(user)
     model_obj.save()
-    follow_models.create_follow_question(model_obj.get_question(), user)
+    create_follow(model_obj.get_question(), user)
     create_activity(user, model_obj.author, model_obj, settings.DOWNVOTE_CHANGE)
     return model_obj
 
@@ -342,14 +346,14 @@ def create_comment(content: str, user: AbstractUser, parent: models.UserInput) -
     comment.save()
     q = comment.get_question()
     notifications.notify_new_comment(user, parent, comment)
-    follow_models.create_follow_question(q, user)
+    create_follow(q, user)
     jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Create comment'])
     return comment
 
 
 def delete_comment(comment: models.Comment) -> None:
     logger.debug(f'deleting {comment.pk}')
-    follow_models.delete_follow_question(comment.get_question(), comment.author)
+    delete_follow(comment.get_question(), comment.author)
     comment.delete()
 
 
@@ -363,8 +367,9 @@ def upvote_comment(user: AbstractUser, comment: models.Comment) -> models.Commen
 
 
 def get_user_followed_tags(user: AbstractUser) -> list[Tag]:
-    follows = models.TagFollow.objects.filter(user=user)
-    return [f.tag for f in follows]
+    tag_type = ContentType.objects.get(app_label='tags', model='tag')
+    follows = Follow.objects.filter(user=user, content_type=tag_type)
+    return [f.content_object for f in follows]
 
 
 def create_invites_and_notify_invite_users_to_question(

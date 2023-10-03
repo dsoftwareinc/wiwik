@@ -9,8 +9,8 @@ from django.views.generic import FormView
 from pymdownx import superfences
 
 from forum.jobs.moderator_check import grant_moderator
-from forum.models import QuestionFollow
 from userauth.models import ForumUser, UserVisit
+from wiwik_lib.models import Follow
 
 MARKDOWN_EXTENSIONS = [
     'pymdownx.magiclink',
@@ -77,7 +77,7 @@ class SendUserEmails(FormView):
 @admin.action(description='Deactivate selected users')
 def deactivate_users(self, request, queryset):
     for u in queryset:
-        QuestionFollow.objects.filter(user=u).delete()
+        Follow.objects.filter(user=u).delete()
     queryset.update(is_active=False)
 
 

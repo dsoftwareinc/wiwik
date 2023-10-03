@@ -3,14 +3,14 @@ from typing import cast
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Exists
+from django.db.models import Exists, Value
 from django.shortcuts import get_object_or_404, redirect, render
 
 from articles.apps import logger
 from articles.models import Article
 from common import utils as common_utils
 from forum import jobs
-from forum.models import QuestionFollow, QuestionBookmark, VoteActivity
+from forum.models import QuestionBookmark, VoteActivity
 from forum.views import utils
 from forum.views.helpers import get_questions_queryset
 from forum.views.q_and_a_crud.view_thread import view_thread_background_tasks
@@ -82,7 +82,7 @@ def view_article_detail(request, pk: int):
     user_downvoted = Exists(VoteActivity.objects.filter(
         question_id=pk, source=request.user, reputation_change=settings.DOWNVOTE_CHANGE))
     article = (Article.objects
-               .annotate(user_follows=Exists(QuestionFollow.objects.filter(question_id=pk, user=request.user)))
+               .annotate(user_follows=Value(article.follows.filter(user=request.user).exists()))
                .annotate(user_bookmarked=Exists(QuestionBookmark.objects.filter(user=request.user, question_id=pk)))
                .annotate(user_upvoted=user_upvoted)
                .annotate(user_downvoted=user_downvoted)

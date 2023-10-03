@@ -1,10 +1,11 @@
 from django.urls import reverse
 
 from common.test_utils import assert_url_in_chain
-from forum import models
 from forum.tests.base import ForumApiTestCase
 from forum.views import utils
 from userauth.models import ForumUser
+from wiwik_lib.models import Follow
+from wiwik_lib.views.follow_views import create_follow
 
 
 class TestFollowQuestionView(ForumApiTestCase):
@@ -30,19 +31,21 @@ class TestFollowQuestionView(ForumApiTestCase):
 
     def test_follow_question__green(self):
         self.client.login(self.username2, self.password)
+        self.assertEqual(1, self.question.follows.count())
         # act
         res = self.client.follow_question(self.question.pk)
         # assert
-        self.assertEqual(2, models.QuestionFollow.objects.all().count())
+        self.assertEqual(2, self.question.follows.count())
         self.assertContains(res, 'Unfollow')
 
     def test_follow_question__when_already_following__should_do_nothing(self):
-        models.QuestionFollow.objects.create(question=self.question, user=self.user2)
+        create_follow(self.question, self.user2)
         self.client.login(self.username2, self.password)
+        self.assertEqual(2, self.question.follows.count())
         # act
         res = self.client.follow_question(self.question.pk)
         # assert
-        self.assertEqual(2, models.QuestionFollow.objects.all().count())
+        self.assertEqual(2, self.question.follows.count())
         self.assertContains(res, 'Unfollow')
 
     def test_follow_question__not_existing_question__should_do_nothing(self):
@@ -50,7 +53,7 @@ class TestFollowQuestionView(ForumApiTestCase):
         # act
         res = self.client.follow_question(self.question.pk + 5)
         # assert
-        self.assertEqual(1, models.QuestionFollow.objects.all().count())
+        self.assertEqual(1, self.question.follows.count())
         assert_url_in_chain(res, reverse('forum:list'))
 
 
@@ -76,7 +79,7 @@ class TestUnfollowQuestionView(ForumApiTestCase):
         # act
         res = self.client.unfollow_question(self.question.pk)
         # assert
-        self.assertEqual(0, models.QuestionFollow.objects.all().count())
+        self.assertEqual(0, self.question.follows.count())
         self.assertContains(res, 'Follow')
 
     def test_unfollow_question__when_already_not_following__should_do_nothing(self):
@@ -84,7 +87,7 @@ class TestUnfollowQuestionView(ForumApiTestCase):
         # act
         res = self.client.unfollow_question(self.question.pk)
         # assert
-        self.assertEqual(1, models.QuestionFollow.objects.all().count())
+        self.assertEqual(1, self.question.follows.count())
         self.assertContains(res, 'Follow')
 
     def test_unfollow_question__not_existing_question__should_do_nothing(self):
@@ -92,5 +95,5 @@ class TestUnfollowQuestionView(ForumApiTestCase):
         # act
         res = self.client.unfollow_question(self.question.pk + 5)
         # assert
-        self.assertEqual(1, models.QuestionFollow.objects.all().count())
+        self.assertEqual(1, self.question.follows.count())
         assert_url_in_chain(res, reverse('forum:list'))

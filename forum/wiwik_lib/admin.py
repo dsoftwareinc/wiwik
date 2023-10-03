@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
-from wiwik_lib.models import Flag, EditedResource
+from wiwik_lib.models import Flag, EditedResource, Follow
 
 
 class ExtendableAdmin(admin.ModelAdmin):
@@ -30,6 +30,14 @@ class EditedResourceAdmin(ExtendableAdmin):
     list_display = ('id', 'user',
                     'created_at', 'last_ping_at',
                     'content_type', 'object_id', 'content_object_url',)
+    search_fields = ('user__username', 'user__email',)
+    autocomplete_fields = ('user',)
+    readonly_fields = ('content_object', 'content_author',)
+
+
+@admin.register(Follow)
+class FollowAdmin(ExtendableAdmin):
+    list_display = ('id', 'user', 'created_at', 'content_type', 'object_id', 'content_object_url',)
     search_fields = ('user__username', 'user__email',)
     autocomplete_fields = ('user',)
     readonly_fields = ('content_object', 'content_author',)

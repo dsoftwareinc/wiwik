@@ -16,7 +16,7 @@ class TestAdmin(ForumApiTestCase):
     comment_content = 'comment---content'
     tags = ['my_first_tag', 'my_second_tag', 'my_third_tag']
 
-    MODELS_WITHOUT_ADMIN = {'questionview', 'questionadditionaldata'}
+    MODELS_WITHOUT_ADMIN = {'questionview', 'questionadditionaldata', 'questionfollow'}
 
     @classmethod
     def setUpClass(cls):
@@ -77,10 +77,10 @@ class TestAdmin(ForumApiTestCase):
         res = self.client.admin_changelist('answer', query=f'author__username={self.usernames[0]}')
         self.assertEqual(200, res.status_code)
 
-    def test_admin_tagfollow_changelist__tagname_filter__green(self):
+    def test_admin_usertagstats_changelist__tagname_filter__green(self):
         self.client.login(self.superuser_name, self.password)
 
-        res = self.client.admin_changelist('tagfollow', query=f'tag__tag_word={self.tags[0]}')
+        res = self.client.admin_changelist('usertagstats', query=f'tag__tag_word={self.tags[0]}')
         self.assertEqual(200, res.status_code)
 
     def test_admin_tag_changelist__merge_tags__green(self):

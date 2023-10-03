@@ -1,12 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import F, Count
 from django.shortcuts import render, redirect
 
-from wiwik_lib.utils import paginate_queryset
-from forum.models import QuestionFollow, QuestionBookmark, VoteActivity, TagFollow, Question, Answer
+from forum.models import QuestionBookmark, VoteActivity, UserTagStats, Question, Answer
 from userauth.models import ForumUser, UserVisit
 from userauth.views.common import get_request_param
+from wiwik_lib.models import Follow
+from wiwik_lib.utils import paginate_queryset
 
 ITEMS_PER_PAGE = 20
 TABS = (
@@ -17,11 +19,12 @@ TABS = (
 
 def get_user_forum_data(seeuser: ForumUser, tab: str, page_number: int):
     items = []
+    question_content_type = ContentType.objects.get(app_label='forum', model='question')
     counters = {
         'questions': Question.objects.filter(author=seeuser).count(),
         'answers': Answer.objects.filter(author=seeuser).count(),
         'votes': VoteActivity.objects.filter(source=seeuser).count(),
-        'following': QuestionFollow.objects.filter(user=seeuser).count(),
+        'following': Follow.objects.filter(user=seeuser, content_type=question_content_type).count(),
         'reputation': (VoteActivity.objects
                        .filter(target=seeuser, reputation_change__isnull=False)
                        .count()),
@@ -54,10 +57,9 @@ def get_user_forum_data(seeuser: ForumUser, tab: str, page_number: int):
                  .annotate(count=Count('name'))
                  .order_by('name'))
     if tab == 'following':
-        items = [follow.question
-                 for follow in QuestionFollow.objects
-                 .filter(user=seeuser)
-                 .prefetch_related('question')
+        items = [follow.content_object
+                 for follow in Follow.objects
+                 .filter(user=seeuser, content_type=question_content_type)
                  .order_by('-created_at')
                  ]
     if tab == 'bookmarks':
@@ -92,15 +94,15 @@ def view_profile(request, username: str, tab: str):
         'counters': counters,
         'title': f'wiwik - User {seeuser.display_name()}',
         'last_badge': last_badge,
-        'user_top_tags': (TagFollow.objects
+        'user_top_tags': (UserTagStats.objects
                           .filter(user=seeuser, reputation__gt=0)
                           .order_by('-reputation')
                           .prefetch_related('tag')[:3]),
     }
 
     if tab == 'following':
-        context['user_tagfollows'] = (TagFollow.objects
-                                      .filter(user=seeuser)
-                                      .order_by('-reputation')
-                                      .prefetch_related('tag'))
+        context['user_tag_stats'] = (UserTagStats.objects
+                                     .filter(user=seeuser)
+                                     .order_by('-reputation')
+                                     .prefetch_related('tag'))
     return render(request, 'userauth/profile.html', context)

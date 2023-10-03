@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from forum.apps import logger
-from forum.models import TagFollow
+from forum.models import UserTagStats
 from tags.admin import TagAdmin
 from tags.models import Tag
 
@@ -19,7 +19,7 @@ def merge_tags(self, request, queryset):
             q.tags.remove(tag)
             q.tags.add(target_tag)
             q.save()
-        qs = tag.tagfollow_set.all()
+        qs = tag.usertagstats_set.all()
         for follow in qs:
             follow.tag = target_tag
             follow.save()
@@ -39,9 +39,9 @@ def merge_tags(self, request, queryset):
 admin.site.unregister(Tag)
 
 
-class TagFollowInlineAdmin(admin.TabularInline):
+class UserTagStatsInlineAdmin(admin.TabularInline):
     extra = 0
-    model = TagFollow
+    model = UserTagStats
     can_delete = True
     ordering = ('-created_at',)
     fields = ('tag', 'user', 'created_at')
@@ -54,4 +54,4 @@ class ForumTagAdmin(TagAdmin):
     actions = [
         merge_tags,
     ]
-    inlines = TagAdmin.inlines + [TagFollowInlineAdmin, ]
+    inlines = TagAdmin.inlines + [UserTagStatsInlineAdmin, ]

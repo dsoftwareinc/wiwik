@@ -72,7 +72,7 @@ class TestEditArticleView(ArticlesApiTestCase):
         assert_message_in_response(res, 'Article updated successfully')
         assert_url_in_chain(res, reverse('articles:detail', args=[self.article.pk]))
         start_job.assert_has_calls([
-            mock.call(jobs.update_tag_follow_stats, self.article.id, self.user1.id),
+            mock.call(jobs.update_user_tag_stats, self.article.id, self.user1.id),
         ])  # No notification should be sent if author edited.
 
     def test_edit_article_post__no_changes(self):
@@ -117,7 +117,7 @@ class TestEditArticleView(ArticlesApiTestCase):
         admin_user.refresh_from_db()
         self.assertEqual(2, admin_user.reputation_score)
         start_job.assert_has_calls([
-            mock.call(jobs.update_tag_follow_stats, self.article.id, self.article.author_id),
+            mock.call(jobs.update_user_tag_stats, self.article.id, self.article.author_id),
             mock.call(add_meilisearch_document, self.article.id),
             mock.call(jobs.notify_user_email, self.article.author, mock.ANY, mock.ANY, mock.ANY, False),
             mock.call(review_bagdes_event, mock.ANY),

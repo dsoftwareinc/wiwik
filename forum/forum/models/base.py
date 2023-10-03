@@ -17,7 +17,7 @@ from common.utils import dedent_code
 from forum.apps import logger
 from spaces.models import Space
 from tags.models import Tag
-from wiwik_lib.models import Flaggable, Editable
+from wiwik_lib.models import Flaggable, Editable, Followable
 from wiwik_lib.utils import CURRENT_SITE
 
 
@@ -100,7 +100,7 @@ class QuestionManager(models.Manager):
         return super(QuestionManager, self).get_queryset().annotate(document=vector)
 
 
-class Question(VotableUserInput, Flaggable):
+class Question(VotableUserInput, Flaggable, Followable):
     """
     Class to represent a post in the forum
     """

@@ -3,8 +3,8 @@
     <div>
         <h4>Watched tags</h4>
         <hr/>
-        {% for follow in tagfollows %}
-            {% include 'userauth/includes/tag-popover-userdata.template.html' with follow=follow %}
+        {% for tagstats in stats %}
+            {% include 'userauth/includes/tag-popover-userdata.template.html' with tagstats=tagstats %}
         {% empty %}
             No tags watched
         {% endfor %}

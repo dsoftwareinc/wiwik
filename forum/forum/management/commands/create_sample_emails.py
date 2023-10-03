@@ -1,12 +1,14 @@
 import os
 
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import CommandParser
 
-from wiwik_lib.utils import ManagementCommand
 from forum import models
 from forum.views import notifications
 from userauth.models import ForumUser
+from wiwik_lib.models import Follow
+from wiwik_lib.utils import ManagementCommand
 from wiwik_lib.views.flag_views import notify_moderators_new_flag
 
 
@@ -42,13 +44,14 @@ class Command(ManagementCommand):
 
     def notify_question_changes(self):
         settings.EMAIL_FILE_PATH = os.path.join(self.base_dir, 'question_changes')
-        question = models.QuestionFollow.objects.all()[0].question
+        content_type = ContentType.objects.get(app_label='forum', model='question')
+        question = Follow.objects.filter(content_type=content_type)[0].content_object
         notifications.notify_question_changes(
             self.originator, question, 'Old title', 'Old content')
 
     def notify_tag_followers_new_question(self):
         settings.EMAIL_FILE_PATH = os.path.join(self.base_dir, 'new_question')
-        tag_follow = models.TagFollow.objects.filter(questions_by_user__gt=0).first()
+        tag_follow = models.UserTagStats.objects.filter(questions_by_user__gt=0).first()
         if tag_follow is None:
             self.error_print('No tag with followers, leaving notify_tag_followers_new_question')
             return

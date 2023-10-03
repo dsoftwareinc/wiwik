@@ -1,10 +1,11 @@
 from admin_numeric_filter.admin import NumericFilterModelAdmin, SliderNumericFilter
 from django.contrib import admin
+from django.contrib.contenttypes.models import ContentType
 from rangefilter.filters import DateRangeFilter
 
 from articles.models import Article
 from forum.admin.input_filter import UserFilter
-from forum.models import QuestionFollow
+from wiwik_lib.models import Follow
 
 
 @admin.register(Article)
@@ -35,7 +36,10 @@ class ArticleAdmin(NumericFilterModelAdmin):
 
     @admin.display(description='#Followers', )
     def followers_count(self, o: Article):
-        return QuestionFollow.objects.filter(question=o).count()
+        return Follow.objects.filter(
+            content_type=ContentType.objects.get_for_model(o),
+            object_id=o.id
+        ).count()
 
     @admin.display(description='Tags List', )
     def tags_list(self, o: Article):
