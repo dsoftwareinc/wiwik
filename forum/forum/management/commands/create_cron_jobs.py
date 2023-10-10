@@ -1,4 +1,4 @@
-from scheduler.models import CronJob
+from scheduler.models import CronTask
 
 from wiwik_lib.utils import ManagementCommand
 
@@ -8,11 +8,11 @@ class Command(ManagementCommand):
 
     def create_job(self, name: str, callable_method: str, cron_str: str):
         self.print(f'Creating CronJob: {name}')
-        exists = CronJob.objects.filter(callable=callable_method).first()
+        exists = CronTask.objects.filter(callable=callable_method).first()
         if exists is not None:
             self.error_print(f'Job with callable {callable_method} exists, skipping')
             return
-        CronJob.objects.create(
+        CronTask.objects.create(
             name=name,
             callable=callable_method,
             queue='cron',
