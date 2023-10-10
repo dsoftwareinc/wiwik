@@ -44,9 +44,37 @@ def view_article_list(request):
     return render(request, 'articles/articles-list.html', context)
 
 
+def _create_comment(request, model_name: str, model_pk: int, content: str):
+    parent = utils.get_model(model_name, model_pk)
+    if not (settings.MIN_COMMENT_LENGTH <= len(content) <= settings.MAX_COMMENT_LENGTH):
+        logger.warning(f'user {request.user} trying to create a comment '
+                       f'on {model_name}:{model_pk} with bad length ({len(content)})')
+        messages.error(request, f'Can not create comment with length {len(content)}', 'danger')
+        return None
+    if parent is None:
+        logger.warning(f'Trying to comment on {model_name}:{model_pk} which could not be fetched')
+        return None
+    if parent.comments.count() >= settings.MAX_COMMENTS:
+        logger.warning(f'User {request.user} tries to create comment for {model_name}:{model_pk} '
+                       f'when it already reached max number of comments')
+        return None
+    utils.create_comment(content, request.user, parent)
+
+
 def _do_article_create_post_action(request, pk):
-    # TODO
-    pass
+    """Create new answer or new comment in a question thread.
+
+    :param request:
+    :param pk: Article pk, for redirecting back to the main thread view.
+    :return:
+    """
+    params = request.POST.dict()
+    action = params.get('action')
+    if action == 'create_comment':  # Handle adding comment
+        _create_comment(request, params.get('model'), params.get('model_pk'), params.get('comment'))
+    else:
+        logger.warning(f'{request.user} tried to perform an unknown action "{action}"')
+    return redirect('article:detail', pk=pk)
 
 
 class ArticleValidationError(Exception):
