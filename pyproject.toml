@@ -24,7 +24,7 @@ django-admin-rangefilter = "^0.11" # Django-admin filters
 django-model-utils = "^4.3" # Django-admin filters
 django-ipware = "^5.0" # For identifying IP location
 geoip2 = "^4.7" # For identifying IP location
-pillow = "^10.0" # For image field
+pillow = "^10.1" # For image field
 scikit-learn = "^1.3" # For similarity TF-IDF
 
 # Running configuration
