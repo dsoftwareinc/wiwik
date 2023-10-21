@@ -1,13 +1,58 @@
 version: '3.9'
 x-common-variables: &common-variables
+  # Database settings
   SQL_ENGINE: django.db.backends.postgresql
   SQL_DATABASE: devbb
   SQL_USER: devbb
   SQL_PASSWORD: devbb
   SQL_HOST: db
   SQL_PORT: 5432
+
+  # Redis settings (pubsub / cache)
   REDIS_HOST: redis
+  REDIS_CACHE_URL: redis://redis:6389/0
+
   MEDIA_ROOT: /media
+  MEILISEARCH_ENABLED: TRUE
+  MEILISEARCH_SERVER_ADDRESS: http://searchdb:7700
+  MEILISEARCH_MASTERKEY: masterKey
+
+  # Django settings
+  SECRET_KEY:
+  DJANGO_ALLOWED_HOSTS: "localhost 127.0.0.1 [::1] *" # Django settings ALLOWED_HOSTS
+  CSRF_TRUSTED_ORIGINS: "http://localhost"
+  DEBUG: TRUE
+  RUN_ASYNC_JOBS_SYNC: FALSE
+  DJANGO_LOG_LEVEL: DEBUG
+
+  # OAuth settings
+  OKTA_BASE_URL:
+  OKTA_CLIENT_ID:
+  OKTA_SECRET_KEY:
+  GOOGLE_CLIENT_ID:
+  GOOGLE_SECRET_KEY:
+  FACEBOOK_CLIENT_ID:
+  FACEBOOK_SECRET_KEY:
+
+  # EMAIL SETTINGS
+  SEND_EMAILS: FALSE
+  #EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+  EMAIL_HOST: smtp.gmail.com
+  EMAIL_PORT: 587
+  EMAIL_HOST_USER:
+  DEFAULT_FROM_EMAIL:
+  EMAIL_HOST_PASSWORD:
+  DEBUG_EMAIL_TO:
+
+  # Forum settings
+  MIN_QUESTION_CONTENT_LENGTH: 20
+  MAX_QUESTION_CONTENT_LENGTH: 20000
+  MIN_QUESTION_TITLE_LENGTH: 15
+  MAX_QUESTION_TITLE_LENGTH: 150
+  MAX_ANSWERS_ON_QUESTION: 3
+  QUESTIONS_PER_PAGE: 20
+  ALLOW_ANONYMOUS_QUESTION: 0
+  MAX_SIZE_KB_IMAGE_UPLOAD: 512
 
 x-healthcheck-defaults: &healthcheck-defaults
   interval: 10s
@@ -29,7 +74,7 @@ services:
     ports:
       - "7700:7700"
     environment:
-      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-masterKey}
+      - MEILI_MASTER_KEY=${MEILISEARCH_MASTERKEY:-masterKey}
       - MEILI_NO_ANALYTICS=${MEILI_NO_ANALYTICS:-true}
       - MEILI_ENV=${MEILI_ENV:-development}
       - MEILI_DB_PATH=${MEILI_DB_PATH:-/data.ms}
@@ -98,6 +143,7 @@ services:
       <<: *common-variables
     depends_on:
       - wiwik_migrate
+      - searchdb
 
   wiwik_web:
     image: wiwik_image
