@@ -77,7 +77,7 @@ jobs:
           poetry run coverage json
           echo "COVERAGE=$(jq '.totals.percent_covered_display|tonumber' coverage.json)" >> $GITHUB_ENV
       - name: Create Awesome Badge
-        uses: schneegans/dynamic-badges-action@v1.6.0
+        uses: schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
           gistID: ${{ secrets.COVERAGE_GIST_ID }}
