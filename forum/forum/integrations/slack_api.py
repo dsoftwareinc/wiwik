@@ -249,7 +249,7 @@ def questions_message(questions: List[Question]) -> List:
         blocks.append(
             HeaderBlock(text=question.title, ).to_dict()
         )
-        content = question.content[:3000]
+        content = question.content[:2000]
         content = content.split('\r\n')
         num_lines = len(content)
         content = '\r\n'.join(content[:4])
