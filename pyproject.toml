@@ -24,7 +24,7 @@ django-admin-rangefilter = "^0.11" # Django-admin filters
 django-model-utils = "^4.3" # Django-admin filters
 django-ipware = "^5.0" # For identifying IP location
 geoip2 = "^4.7" # For identifying IP location
-pillow = "^10.0" # For image field
+pillow = "^10.1" # For image field
 scikit-learn = "^1.3" # For similarity TF-IDF
 
 # Running configuration
@@ -33,11 +33,11 @@ python-dotenv = "^1.0"
 
 # Frontend related
 django-compressor = "^4.3"
-django-crispy-forms = "^2.0"
+django-crispy-forms = "^2.1"
 crispy-bootstrap5 = "^0.7"
 markdown = "^3.4"
 bleach = "^6.0"
-pymdown-extensions = "^10.3"
+pymdown-extensions = "^10.3.1"
 
 # 3rd party integrations
 slack-sdk = "^3.21"
