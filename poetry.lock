@@ -671,12 +671,12 @@ files = [
 
 [[package]]
 name = "django-allauth"
-version = "0.57.0"
+version = "0.58.1"
 description = "Integrated set of Django applications addressing authentication, registration, account management as well as 3rd party (social) account authentication."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "django-allauth-0.57.0.tar.gz", hash = "sha256:a095ef0db7de305d9175772c78e765ebd5fceb004ae61c1383d7fc1af0f7c5b1"},
+    {file = "django-allauth-0.58.1.tar.gz", hash = "sha256:485db513f1794f5636ae38a78e9414e8818ce076770b75a6f8a003ab3a32b8fa"},
 ]
 
 [package.dependencies]
@@ -2533,4 +2533,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.13"
-content-hash = "72e4174bf08c3573a24500e7094feeea5ff52cb48b7503600259b3d4b67bb853"
+content-hash = "831687af4accfdd4fa7ab1eaa9b6d12ca91846d4b7b4ff628c5c1e7134668784"
