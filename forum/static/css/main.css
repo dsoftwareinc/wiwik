@@ -170,18 +170,18 @@ pre {
     float: none;
     font-size: 90%;
     transform: translateY(-1px);
-    border: 1px solid;
     border-radius: 3px;
+    background-color: var(--bs-gray-200);
+    color: var(--bs-dark);
 }
 
 .votes-frame {
     color: var(--accepted-color);
-
 }
 
 .has-accepted-answer {
     background: var(--accepted-color);
-    color: white;
+    color: var(--bs-black);
     border: none !important;
 }
 
