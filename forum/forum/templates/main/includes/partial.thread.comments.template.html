@@ -3,7 +3,7 @@
 {% load compress %}
 {% if num_comments > 0 %}
     <hr/>
-    {% for comment in item.comments.all %}
+    {% for comment in comments %}
         {% include 'main/includes/flag-comment-modal.template.html' with model_name="comment_"|add:model model_pk=comment.pk model_name_for_user="comment" %}
         <div class="row comment-content">
             <div class="col-1">

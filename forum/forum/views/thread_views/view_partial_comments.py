@@ -22,5 +22,6 @@ def view_partial_post_comments(request, post_type: str, post_pk: int):
          'num_comments': num_comments,
          'max_comments': settings.MAX_COMMENTS,
          'model': post_type,
+         'comments': item.comments.all(),
          }
     )

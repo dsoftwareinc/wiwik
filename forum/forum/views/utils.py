@@ -340,10 +340,9 @@ def create_comment(content: str, user: AbstractUser, parent: models.UserInput) -
         logger.warning('Trying to create comment without parent, ignoring')
         return None
     if isinstance(parent, models.Question):
-        comment = models.QuestionComment(content=content, author=user, question=parent)
+        comment = models.QuestionComment.objects.create(content=content, author=user, question=parent)
     else:  # isinstance(parent,models.Answer)
-        comment = models.AnswerComment(content=content, author=user, answer=parent)
-    comment.save()
+        comment = models.AnswerComment.objects.create(content=content, author=user, answer=parent)
     q = comment.get_question()
     notifications.notify_new_comment(user, parent, comment)
     create_follow(q, user)
