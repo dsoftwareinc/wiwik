@@ -290,7 +290,7 @@ pre {
 }
 
 .upvote-comment {
-    font-size: 25px !important;
+    font-size: 20px !important;
     color: var(--gray);
 }
 
@@ -300,6 +300,8 @@ pre {
 
 .flag-model-icon {
     font-size: 16px !important;
+    margin-left: 2px;
+    margin-right: 2px;
     color: var(--gray);
 }
 

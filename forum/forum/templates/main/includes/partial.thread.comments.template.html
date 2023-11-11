@@ -18,14 +18,14 @@
                     <div class="col-5">
                         {% if comment.author_id != user.id %}
                             <a href="{% url 'forum:comment_upvote'  item.pk model comment.pk %}">
-                                <i class="upvote-comment fa fa-caret-up"></i>
+                                <i class="upvote-comment material-icons">exposure_plus_1</i>
                             </a>
 
                             <i data-comment-pk="{{ comment.pk }}"
-                               class="flag-model-icon flag-comment fa fa-flag"
+                               class="flag-model-icon material-icons"
                                data-bs-toggle="modal"
                                data-bs-target="#flag-comment-modal-comment_{{ model }}"
-                               style="cursor: pointer">
+                               style="cursor: pointer">flag
                             </i>
                         {% endif %}
                     </div>
