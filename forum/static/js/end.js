@@ -13,9 +13,10 @@
         if (popoverId) {
             const contentEl = $(`#${popoverId.value}`).html();
             const config = {
+                container: 'body',
                 content: contentEl,
                 html: true,
-                delay: {show: 300, hide: 200},
+                delay: {show: 300, hide: 1000},
             };
             return new bootstrap.Popover(popoverTriggerEl, config);
         } else {
