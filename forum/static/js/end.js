@@ -7,7 +7,7 @@
     </div>
 </div>`;
 
-    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
     popoverTriggerList.map(function (popoverTriggerEl) {
         const popoverId = popoverTriggerEl.attributes['data-content-id'];
         if (popoverId) {
