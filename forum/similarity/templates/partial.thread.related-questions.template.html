@@ -6,9 +6,16 @@
             <a href="{% url 'forum:thread' item.pk %}">
                 <div class="row mb-1">
                     <div class="col col-2">
-                        <div class="related-votes {% if item.has_accepted_answer %}has-accepted-answer{% elif item.num_answers > 0 %}votes-frame{% endif %}">
-                            {{ item.votes }}
-                        </div>
+                        {% if item.is_article or item.has_accepted_answer %}
+                            <div class="related-votes has-accepted-answer">
+                                {{ item.votes }}
+                            </div>
+                        {% elif item.num_answers > 0 %}
+                            votes-frame
+                            <div class="related-votes votes-frame">
+                                {{ item.votes }}
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="col col-10">
                         {{ item.title | markdownify }}
