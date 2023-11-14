@@ -60,8 +60,8 @@ class TestArticleDetailView(ArticlesApiTestCase):
         # todo
         header = soup.find('div', {'id': f'question_{self.article.pk}'})
         self.assertIsNotNone(header)
-        self.assertContains("Knowledge article", header.text)
-        self.assertContains(self.article.title, header.text)
+        self.assertIn("Knowledge article", header.text)
+        self.assertIn(self.article.title, header.text)
 
     def test_articles_detail_view__inactive_user__green(self):
         self.client.login(self.usernames[0], self.password)
