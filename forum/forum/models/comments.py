@@ -5,8 +5,7 @@ It does not (and should not) contain logic on these models.
 from django.conf import settings
 from django.db import models
 
-from wiwik_lib.models import AdvancedModelManager, user_model_defer_fields
-from . import Flaggable
+from wiwik_lib.models import AdvancedModelManager, user_model_defer_fields, Flaggable
 from .base import Answer, Question
 
 
