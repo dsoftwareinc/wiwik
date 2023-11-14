@@ -44,15 +44,24 @@ class TestArticleDetailView(ArticlesApiTestCase):
         # assert
         self.assertEqual(404, res.status_code)
 
+    def test_article_create_answer__should_fail(self):
+        res = utils.create_answer(self.answer_content, self.users[0], self.article)
+        self.assertIsNone(res)
+        self.article.refresh_from_db()
+        self.assertEqual(0, self.article.answer_set.count())
+
     def test_articles_detail_view__green(self):
         self.client.login(self.usernames[0], self.password)
-        utils.create_answer(self.answer_content, self.users[0], self.article)
         # act
         res = self.client.view_article_detail_get(self.article.pk, )
         # assert
         self.assertEqual(200, res.status_code)
         soup = BeautifulSoup(res.content, 'html.parser')  # noqa: F841
         # todo
+        header = soup.find('div', {'id': f'question_{self.article.pk}'})
+        self.assertIsNotNone(header)
+        self.assertContains("Knowledge article", header.text)
+        self.assertContains(self.article.title, header.text)
 
     def test_articles_detail_view__inactive_user__green(self):
         self.client.login(self.usernames[0], self.password)
