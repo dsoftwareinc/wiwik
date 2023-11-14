@@ -62,7 +62,9 @@ def _create_comment(request, model_name: str, model_pk: int, content: str):
 
 
 def _do_article_create_post_action(request, pk):
-    """Create new answer or new comment in a question thread.
+    """Article details POST actions.
+
+    Create new comment in an article.
 
     :param request:
     :param pk: Article pk, for redirecting back to the main thread view.
@@ -73,8 +75,8 @@ def _do_article_create_post_action(request, pk):
     if action == 'create_comment':  # Handle adding comment
         _create_comment(request, params.get('model'), params.get('model_pk'), params.get('comment'))
     else:
-        logger.warning(f'{request.user} tried to perform an unknown action "{action}"')
-    return redirect('article:detail', pk=pk)
+        logger.warning(f'{request.user} tried to perform an unknown action "{action}" on article:{pk}')
+    return redirect('articles:detail', pk=pk)
 
 
 class ArticleValidationError(Exception):

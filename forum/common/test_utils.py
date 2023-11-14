@@ -23,8 +23,8 @@ def assert_not_called_with(self, *args, **kwargs):
 
 class ForumClient(Client):
     def __init__(self):
-        super(ForumClient, self).__init__()        
-    
+        super(ForumClient, self).__init__()
+
     def login(self, username: str, password: str):
         return super().login(username=username, password=password)
 
@@ -78,11 +78,11 @@ class ForumClient(Client):
     def edit_question_post(self, question_pk: int, title: str, content: str, tags: str):
         url = reverse('forum:question_edit', args=[question_pk, ])
         return self.post(url,
-                                {'title': title,
-                                 'queseditor': content,
-                                 'tags': tags,
-                                 },
-                                follow=True)
+                         {'title': title,
+                          'queseditor': content,
+                          'tags': tags,
+                          },
+                         follow=True)
 
     def edit_answer_get(self, answer_pk: int):
         url = reverse('forum:answer_edit', args=[answer_pk, ])
@@ -104,22 +104,31 @@ class ForumClient(Client):
 
     def thread_add_comment(self, question_pk, model, model_pk, comment_content):
         return self.post(reverse('forum:thread', args=[question_pk, ]),
-                                {'action': 'create_comment',
-                                 'model': model,
-                                 'model_pk': model_pk,
-                                 'comment': comment_content,
-                                 },
-                                follow=True)
+                         {'action': 'create_comment',
+                          'model': model,
+                          'model_pk': model_pk,
+                          'comment': comment_content,
+                          },
+                         follow=True)
+
+    def article_add_comment(self, question_pk, model, model_pk, comment_content):
+        return self.post(reverse('articles:detail', args=[question_pk, ]),
+                         {'action': 'create_comment',
+                          'model': model,
+                          'model_pk': model_pk,
+                          'comment': comment_content,
+                          },
+                         follow=True)
 
     def thread_add_answer(self, question_pk, answer_content):
         return self.post(reverse('forum:thread', args=[question_pk, ]),
-                                {'action': 'create_answer', 'editor1': answer_content, },
-                                follow=True)
+                         {'action': 'create_answer', 'editor1': answer_content, },
+                         follow=True)
 
     def thread_unknown_post_action(self, question_pk, **kwargs):
         return self.post(reverse('forum:thread', args=[question_pk, ]),
-                                {'action': 'unknown_post_action', **kwargs},
-                                follow=True)
+                         {'action': 'unknown_post_action', **kwargs},
+                         follow=True)
 
     def upvote(self, question_pk, model, model_pk):
         return self.get(

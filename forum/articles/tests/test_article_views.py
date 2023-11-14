@@ -111,13 +111,13 @@ class TestArticleDetailView(ArticlesApiTestCase):
         self.assertContains(res2, self.usernames[1])
 
     @mock.patch('forum.jobs.start_job')
-    def test_articles_detail_view_create_question_comment_green(self, start_job: mock.MagicMock):
+    def test_articles_detail_view_create_comment_green(self, start_job: mock.MagicMock):
         # arrange
         self.client.login(self.usernames[0], self.password)
         comment_content = 'comment------content'
         notifications._notify_question_followers = mock.MagicMock()
         # act
-        res = self.client.thread_add_comment(self.article.pk, 'question', self.article.pk, comment_content)
+        res = self.client.article_add_comment(self.article.pk, 'question', self.article.pk, comment_content)
         # assert
         comment = models.QuestionComment.objects.filter(question=self.article).first()
         self.assertEqual(comment_content, comment.content)
@@ -134,13 +134,13 @@ class TestArticleDetailView(ArticlesApiTestCase):
 
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch('forum.jobs.start_job')
-    def test_articles_detail_view_create_question_comment__with_mention__green(self, start_job: mock.MagicMock):
+    def test_articles_detail_view_create_comment__with_mention__green(self, start_job: mock.MagicMock):
         # arrange
         self.client.login(self.usernames[0], self.password)
         comment_content = f'comment mentions @{self.usernames[1]}'
         notifications._notify_question_followers = mock.MagicMock()
         # act
-        res = self.client.thread_add_comment(self.article.pk, 'question', self.article.pk, comment_content)
+        res = self.client.article_add_comment(self.article.pk, 'question', self.article.pk, comment_content)
         # assert
         comment = models.QuestionComment.objects.filter(question=self.article).first()
         self.assertEqual(comment_content, comment.content)
@@ -164,14 +164,14 @@ class TestArticleDetailView(ArticlesApiTestCase):
 
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch('forum.jobs.start_job')
-    def test_articles_detail_view_create_question_comment__with_mention_user_does_not_exists__should_not_notify(
+    def test_articles_detail_view_create_comment__with_mention_user_does_not_exists__should_not_notify(
             self, start_job: mock.MagicMock):
         # arrange
         self.client.login(self.usernames[0], self.password)
         comment_content = f'comment mentions @{self.usernames[1]}xx'
         notifications._notify_question_followers = mock.MagicMock()
         # act
-        res = self.client.thread_add_comment(self.article.pk, 'question', self.article.pk, comment_content)
+        res = self.client.article_add_comment(self.article.pk, 'question', self.article.pk, comment_content)
         # assert
         comment = models.QuestionComment.objects.filter(question=self.article).first()
         self.assertEqual(comment_content, comment.content)
@@ -189,14 +189,14 @@ class TestArticleDetailView(ArticlesApiTestCase):
 
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch('forum.jobs.start_job')
-    def test_articles_detail_view_create_question_comment__with_mention_user_bad_quotes__should_handle_bad_quotes(
+    def test_articles_detail_view_create_comment__with_mention_user_bad_quotes__should_handle_bad_quotes(
             self, start_job: mock.MagicMock):
         # arrange
         self.client.login(self.usernames[0], self.password)
         comment_content = f'comment mentions @{self.usernames[1]}xx "quote'
         notifications._notify_question_followers = mock.MagicMock()
         # act
-        res = self.client.thread_add_comment(self.article.pk, 'question', self.article.pk, comment_content)
+        res = self.client.article_add_comment(self.article.pk, 'question', self.article.pk, comment_content)
         # assert
         comment = models.QuestionComment.objects.filter(question=self.article).first()
         self.assertEqual(comment_content, comment.content)
@@ -212,12 +212,12 @@ class TestArticleDetailView(ArticlesApiTestCase):
         ], any_order=True)
         self.assertEqual(4, start_job.call_count)
 
-    def test_articles_detail_view_create_question_comment__bad_question(self):
+    def test_articles_detail_view_create_comment__bad_question(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         comment_content = '***comment------content***'
         # act
-        res = self.client.thread_add_comment(self.article.pk, 'question', self.article.pk + 1, comment_content)
+        res = self.client.article_add_comment(self.article.pk, 'question', self.article.pk + 1, comment_content)
         # assert
         comment_count = models.QuestionComment.objects.filter(question_id=self.article.pk + 1).count()
         self.assertEqual(0, comment_count)
@@ -265,12 +265,12 @@ class TestArticleDetailView(ArticlesApiTestCase):
         # assert
         self.assertNotContains(res, new_answer_content)
 
-    def test_articles_detail_view_create_question_comment__empty_comment_should_not_add(self):
+    def test_articles_detail_view_create_comment__empty_comment_should_not_add(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         comment_content = '   '
         # act
-        res = self.client.thread_add_comment(self.article.pk, 'question', self.article.pk, comment_content)
+        res = self.client.article_add_comment(self.article.pk, 'question', self.article.pk, comment_content)
         # assert
         self.assertEqual(200, res.status_code)
         self.assertEqual(0, models.QuestionComment.objects.filter(question=self.article).count())
@@ -285,15 +285,15 @@ class TestArticleDetailView(ArticlesApiTestCase):
         self.assertEqual(200, res.status_code)
         self.assertEqual(0, models.Answer.objects.filter(question=self.article).count())
 
-    def test_articles_detail_view_create_question_comment__max_comments_reached(self):
+    def test_articles_detail_view_create_comment__max_comments_reached(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         comment_content = 'comment------content'
         another_comment_content = 'comment------content$$%%@@##'
         for _ in range(settings.MAX_COMMENTS):
-            self.client.thread_add_comment(self.article.pk, 'question', self.article.pk, comment_content)
+            self.client.article_add_comment(self.article.pk, 'question', self.article.pk, comment_content)
         # act
-        res = self.client.thread_add_comment(self.article.pk, 'question', self.article.pk, another_comment_content)
+        res = self.client.article_add_comment(self.article.pk, 'question', self.article.pk, another_comment_content)
         # assert
         self.assertEqual(200, res.status_code)
         self.assertEqual(settings.MAX_COMMENTS, models.QuestionComment.objects.filter(question=self.article).count())
