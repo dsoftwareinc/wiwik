@@ -21,6 +21,10 @@ class Article(Question):
         proxy = True
         verbose_name = "Article"
 
+    def save(self, *args, **kwargs):
+        self.has_accepted_answer = True
+        super(Article, self).save(*args, **kwargs)
+
 
 @receiver(post_save, sender=Article)
 def create_meilisearch_doc(sender, instance, created, **kwargs):
