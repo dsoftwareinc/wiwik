@@ -30,6 +30,8 @@ def user_answer_not_accepted_higher_score(user: ForumUser) -> BadgeCalculation:
     for answer in answer_qs:
         # find accepted answer
         accepted_answer = answer.question.answer_set.filter(is_accepted=True).first()
+        if accepted_answer is None:
+            continue
         if answer.votes > accepted_answer.votes + 5:
             count += 1
     return count, 0
