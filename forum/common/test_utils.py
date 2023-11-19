@@ -198,6 +198,9 @@ class ForumClient(Client):
     def users_list(self):
         return self.get(reverse('userauth:list'), follow=True)
 
+    def user_navbar(self):
+        return self.get(reverse('forum:user_navbar'), follow=True)
+
     def users_autocomplete(self, query: str):
         url = reverse('forum:users_autocomplete') + '?'
         if query is not None:
