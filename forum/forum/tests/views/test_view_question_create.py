@@ -10,9 +10,6 @@ from forum.views import notifications
 
 
 class TestAddQuestion(ForumApiTestCase):
-    title = 'my_question_title'
-    question_content = 'my_question_content'
-    tags = ['my_first_tag', ]
 
     def test_post_question_get__with_anonymous_allowed__green(self):
         # arrange

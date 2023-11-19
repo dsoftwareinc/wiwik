@@ -5,10 +5,6 @@ from forum.views import utils
 
 
 class TestUsersAutocompleteView(ForumApiTestCase):
-    title = 'my_question_title'
-    question_content = 'my_question_content'
-    answer_content = 'answer---content'
-    tags = ['my_first_tag', ]
 
     @classmethod
     def setUpClass(cls):

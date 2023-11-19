@@ -7,11 +7,6 @@ from forum.views import utils
 
 
 class TestUpvoteCommentView(ForumApiTestCase):
-    title = 'my_question_title'
-    question_content = 'my_question_content'
-    answer_content = 'answer---content'
-    comment_content = 'comment---content'
-    tags = ['my_first_tag', ]
 
     @classmethod
     def setUpClass(cls):

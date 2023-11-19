@@ -19,15 +19,11 @@ from userauth.models import ForumUser
 
 
 class TestThreadView(ForumApiTestCase):
-    title = 'my_question_title'
-    content = 'my_question_content'
-    tags = ['my_first_tag', ]
-    answer_content = 'answer------content'
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(cls.users[0], cls.title, cls.content, ','.join(cls.tags))
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ','.join(cls.tags))
         settings.MAX_ANSWERS = 3
         settings.MAX_COMMENTS = 3
 
@@ -147,7 +143,7 @@ class TestThreadView(ForumApiTestCase):
     def test_thread_view_anonymous_question__should_not_show_user(self):
         # arrange
         self.client.login(self.usernames[1], self.password)
-        q = utils.create_question(self.users[0], self.title, self.content, ','.join(self.tags), is_anonymous=True)
+        q = utils.create_question(self.users[0], self.title, self.question_content, ','.join(self.tags), is_anonymous=True)
         # act
         res = self.client.view_thread_get(q.pk)
         # assert
@@ -354,7 +350,7 @@ class TestThreadView(ForumApiTestCase):
                                                email=f'{self.usernames[0]}{i}@use.com'
                                                )
                  for i in range(settings.MAX_ANSWERS + 1)]
-        q = utils.create_question(users[settings.MAX_ANSWERS], self.title, self.content, ','.join(self.tags))
+        q = utils.create_question(users[settings.MAX_ANSWERS], self.title, self.question_content, ','.join(self.tags))
         answer_content = 'answer------content'
         for i in range(settings.MAX_ANSWERS):
             utils.create_answer(answer_content, users[i], q)

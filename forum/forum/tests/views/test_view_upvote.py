@@ -8,14 +8,11 @@ from forum.views import utils
 
 
 class TestUpvoteView(ForumApiTestCase):
-    title = 'my_question_title'
-    content = 'my_question_content'
-    tags = ['my_first_tag', ]
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(cls.users[0], cls.title, cls.content, ','.join(cls.tags))
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ','.join(cls.tags))
         cls.answer_same_user = utils.create_answer('answer---content', cls.users[0], cls.question)
         cls.answer_diff_user = utils.create_answer('answer---content', cls.users[1], cls.question)
         cls.prev_last_activity = cls.question.last_activity

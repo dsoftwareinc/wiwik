@@ -15,8 +15,6 @@ from userauth.models import ForumUser
 
 
 class TestForumQuestionsListView(ForumApiTestCase):
-    title = 'my_question_title'
-    content = 'my_question_content'
     tags = ['my_first_tag', 'my_second_tag']
 
     @classmethod
@@ -24,7 +22,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         super().setUpClass()
         num_users = len(cls.users)
         for i in range(settings.QUESTIONS_PER_PAGE + 2):
-            utils.create_question(cls.users[i % num_users], cls.title, cls.content, ','.join(cls.tags))
+            utils.create_question(cls.users[i % num_users], cls.title, cls.question_content, ','.join(cls.tags))
 
     def test_questions_list__empty_list_user_not_loggedin_default_tab(self):
         # act
@@ -56,13 +54,13 @@ class TestForumQuestionsListView(ForumApiTestCase):
         self.assertContains(res, self.title)
         for tag_word in self.tags:
             self.assertContains(res, tag_word)
-        self.assertNotContains(res, self.content)
+        self.assertNotContains(res, self.question_content)
 
     def test_questions_list__anonymous_question__should_not_show_user(self):
         # arrange
         self.client.login(self.usernames[1], self.password)
         user = self.users[0]
-        utils.create_question(user, self.title, self.content, ','.join(self.tags), is_anonymous=True)
+        utils.create_question(user, self.title, self.question_content, ','.join(self.tags), is_anonymous=True)
         # act
         res = self.client.questions_list()
         # assert
@@ -72,7 +70,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[1], self.password)
         user = self.users[0]
-        utils.create_question(user, self.title, self.content, ','.join(self.tags))
+        utils.create_question(user, self.title, self.question_content, ','.join(self.tags))
         # act
         res = self.client.questions_list(tab=TabEnum.LATEST.value)
         # assert
@@ -84,13 +82,13 @@ class TestForumQuestionsListView(ForumApiTestCase):
         assert 'active' in soup.find(text='Latest').parent.parent.get('class')
         for tag_word in self.tags:
             self.assertContains(res, tag_word)
-        self.assertNotContains(res, self.content)
+        self.assertNotContains(res, self.question_content)
 
     def test_questions_list__mostviewed_tab(self):
         # arrange
         self.client.login(self.usernames[1], self.password)
         user = self.users[0]
-        utils.create_question(user, self.title, self.content, ','.join(self.tags))
+        utils.create_question(user, self.title, self.question_content, ','.join(self.tags))
         # act
         res = self.client.questions_list(tab=TabEnum.MOST_VIEWED.value)
         # assert
@@ -103,13 +101,13 @@ class TestForumQuestionsListView(ForumApiTestCase):
         assert 'active' in soup.find(text='Most viewed').parent.parent.get('class')
         for tag_word in self.tags:
             self.assertContains(res, tag_word)
-        self.assertNotContains(res, self.content)
+        self.assertNotContains(res, self.question_content)
 
     def test_questions_list__unresolved_tab(self):
         # arrange
         self.client.login(self.usernames[1], self.password)
         user = self.users[0]
-        utils.create_question(user, self.title, self.content, ','.join(self.tags))
+        utils.create_question(user, self.title, self.question_content, ','.join(self.tags))
         # act
         res = self.client.questions_list(tab=TabEnum.UNRESOLVED.value)
         # assert
@@ -122,13 +120,13 @@ class TestForumQuestionsListView(ForumApiTestCase):
         assert 'active' in soup.find(text='Not resolved').parent.parent.get('class')
         for tag_word in self.tags:
             self.assertContains(res, tag_word)
-        self.assertNotContains(res, self.content)
+        self.assertNotContains(res, self.question_content)
 
     def test_questions_list__unanswered_tab(self):
         # arrange
         self.client.login(self.usernames[1], self.password)
         user = self.users[0]
-        utils.create_question(user, self.title, self.content, ','.join(self.tags))
+        utils.create_question(user, self.title, self.question_content, ','.join(self.tags))
         # act
         res = self.client.questions_list(tab=TabEnum.UNANSWERED.value)
         # assert
@@ -140,7 +138,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         assert 'active' in soup.find(text='Unanswered').parent.parent.get('class')
         for tag_word in self.tags:
             self.assertContains(res, tag_word)
-        self.assertNotContains(res, self.content)
+        self.assertNotContains(res, self.question_content)
 
     def test_questions_list__non_existing_page(self):
         # arrange
@@ -155,7 +153,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         self.assertContains(res, self.title)
         for tag_word in self.tags:
             self.assertContains(res, tag_word)
-        self.assertNotContains(res, self.content)
+        self.assertNotContains(res, self.question_content)
 
     def test_questions_list__existing_page(self):
         # arrange
@@ -170,7 +168,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         self.assertContains(res, self.title)
         for tag_word in self.tags:
             self.assertContains(res, tag_word)
-        self.assertNotContains(res, self.content)
+        self.assertNotContains(res, self.question_content)
 
     @override_settings(
         MEILISEARCH_ENABLED=False,
@@ -182,7 +180,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         title_to_file = 'unique title'
         self.client.login(self.usernames[1], self.password)
         # prev_search_count = self.users[0].search_count
-        utils.create_question(self.users[0], title_to_file, self.content, ','.join(self.tags))
+        utils.create_question(self.users[0], title_to_file, self.question_content, ','.join(self.tags))
         # act
         res = self.client.questions_list(query=title_to_file)
         # assert
@@ -190,7 +188,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         self.assertContains(res, 'Search results')
         self.assertContains(res, 'Ask Question')
         self.assertContains(res, title_to_file)
-        self.assertNotContains(res, self.content)
+        self.assertNotContains(res, self.question_content)
         start_job.assert_has_calls([
             mock.call(log_search, self.users[1], title_to_file, mock.ANY, mock.ANY),
         ], any_order=True)
@@ -198,16 +196,12 @@ class TestForumQuestionsListView(ForumApiTestCase):
 
 class TestForumQuestionsForTag(ForumApiTestCase):
     username = 'myusername'
-    title = 'my_question_title'
-    content = 'my_question_content'
-    password = '1111'
     tag_word = 'my_first_tag'
     tag_description = 'my tag description with many things'
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = ForumUser.objects.create_user(cls.username, f'{cls.username}@a.com', cls.password)
         cls.tag = models.Tag.objects.create(tag_word=cls.tag_word, description=cls.tag_description)
         cls.tag.experts = cls.username
         cls.tag.stars = cls.username
@@ -217,7 +211,7 @@ class TestForumQuestionsForTag(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[1], self.password)
         user = ForumUser.objects.get(username=self.usernames[1])
-        utils.create_question(user, self.title, self.content, self.tag_word)
+        utils.create_question(user, self.title, self.question_content, self.tag_word)
         # act
         res = self.client.questions_list_for_tag(self.tag_word)
         # assert
@@ -227,7 +221,7 @@ class TestForumQuestionsForTag(ForumApiTestCase):
         self.assertContains(res, self.tag_word)
         self.assertContains(res, self.tag_description)
         self.assertNotContains(res, '<h2><b>All questions')
-        self.assertNotContains(res, self.content)
+        self.assertNotContains(res, self.question_content)
 
     def test_questions_tag__bad_tag_name(self):
         # arrange
@@ -242,13 +236,6 @@ class TestForumQuestionsForTag(ForumApiTestCase):
 
 
 class TestHomeView(ForumApiTestCase):
-    password = '1111'
-    title = 'my_question_title'
-    content = 'my_question_content'
-
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
 
     def test_home__user_loggedin(self):
         # arrange
@@ -258,7 +245,7 @@ class TestHomeView(ForumApiTestCase):
         user = self.users[1]
         tag = models.Tag.objects.create(tag_word='my_first_tag', description=tag_description)
         follow_models.create_follow_tag(tag, user)
-        utils.create_question(user, self.title, self.content, tag_word)
+        utils.create_question(user, self.title, self.question_content, tag_word)
         # act
         res = self.client.home()
         # assert
@@ -268,7 +255,7 @@ class TestHomeView(ForumApiTestCase):
         self.assertContains(res, tag_word)
         self.assertContains(res, tag_description)
         self.assertContains(res, 'Home')
-        self.assertNotContains(res, self.content)
+        self.assertNotContains(res, self.question_content)
 
     def test_home__no_user_tag_stats_for_user(self):
         # arrange
@@ -291,7 +278,7 @@ class TestHomeView(ForumApiTestCase):
             tag = models.Tag.objects.create(tag_word=f'tag{i}', description=tag_description)
             follow_models.create_follow_tag(tag, user)
         tag_str = ','.join([f'tag{i}' for i in range(3)])
-        utils.create_question(user, self.title, self.content, tag_str)
+        utils.create_question(user, self.title, self.question_content, tag_str)
         # act
         res = self.client.home()
         # assert
@@ -313,7 +300,7 @@ class TestHomeView(ForumApiTestCase):
             follow_models.create_follow_tag(tag, user)
             tags_list.append(tag)
         tag_str = ','.join([f'tag{i}' for i in range(3)])
-        utils.create_question(user, self.title, self.content, tag_str)
+        utils.create_question(user, self.title, self.question_content, tag_str)
         for tag in tags_list:
             tag.experts = self.usernames[2]
             tag.stars = self.usernames[2]
