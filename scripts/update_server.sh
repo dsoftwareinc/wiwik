@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BASE_DIR="$SCRIPT_DIR/.."
-
+git pull
 if [[ "$CONTEXT" != "" ]]; then
   echo "context is $CONTEXT"
 else
