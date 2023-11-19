@@ -7,33 +7,21 @@ from userauth.models import ForumUser
 
 
 class TestDeleteCommentView(ForumApiTestCase):
-    username1 = 'myusername1'
-    username2 = 'myusername2'
-    username3 = 'myusername3'
-    password = 'magicalPa$$w0rd'
-    title = 'my_question_title'
-    comment_content = 'comment_content_yada_ddd'
-    question_content = 'my_question_content'
-    answer_content = 'answer---content'
-    tags = ['my_first_tag', ]
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user1 = ForumUser.objects.create_user(cls.username1, f'{cls.username1}@a.com', cls.password)
-        cls.user2 = ForumUser.objects.create_user(cls.username2, f'{cls.username2}@a.com', cls.password)
-        cls.user3 = ForumUser.objects.create_user(cls.username3, f'{cls.username3}@a.com', cls.password)
-        q = utils.create_question(cls.user1, cls.title, cls.question_content, ','.join(cls.tags))
-        a = utils.create_answer(cls.answer_content, cls.user3, q)
+        q = utils.create_question(cls.users[0], cls.title, cls.question_content, ','.join(cls.tags))
+        a = utils.create_answer(cls.answer_content, cls.users[2], q)
         cls.question = q
         cls.answer = a
 
     def setUp(self):
         super().setUp()
-        utils.create_comment(self.comment_content, self.user2, self.question)
-        utils.create_comment(self.comment_content, self.user2, self.answer)
-        utils.create_comment(self.comment_content, self.user1, self.question)
-        utils.create_comment(self.comment_content, self.user1, self.answer)
+        utils.create_comment(self.comment_content, self.users[1], self.question)
+        utils.create_comment(self.comment_content, self.users[1], self.answer)
+        utils.create_comment(self.comment_content, self.users[0], self.question)
+        utils.create_comment(self.comment_content, self.users[0], self.answer)
 
     def test_delete_question_comment__green(self):
         # arrange
@@ -78,8 +66,8 @@ class TestDeleteCommentView(ForumApiTestCase):
     def test_delete_comment__comment_owned_by_different_user(self):
         # arrange
         previous_count = self.answer.comments.count()
-        comment = self.answer.comments.filter(author_id=self.user1.pk).first()
-        self.client.login(self.username2, self.password)
+        comment = self.answer.comments.filter(author_id=self.users[0].pk).first()
+        self.client.login(self.usernames[1], self.password)
         # act
         res = self.client.delete_comment(self.question.pk, 'answer', comment.pk)
         # assert
@@ -90,8 +78,8 @@ class TestDeleteCommentView(ForumApiTestCase):
     def test_delete_comment__comment_does_not_exist(self):
         # arrange
         previous_count = self.answer.comments.count()
-        comment = self.answer.comments.filter(author_id=self.user1.pk).first()
-        self.client.login(self.username2, self.password)
+        comment = self.answer.comments.filter(author_id=self.users[0].pk).first()
+        self.client.login(self.usernames[1], self.password)
         # act
         res = self.client.delete_comment(self.question.pk, 'answer', comment.pk + 4)
         # assert

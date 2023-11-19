@@ -14,6 +14,7 @@ class ForumApiTestCase(TestCase):
     question_content = 'my_question_content_with more than 20 chars'
     tags = ['my_first_tag', ]
     answer_content = 'answer------content'
+    comment_content = 'comment_content_yada_ddd'
     users: list[ForumUser]
 
     @classmethod
