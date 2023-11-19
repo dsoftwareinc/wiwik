@@ -86,14 +86,7 @@
     <ul class="dropdown-menu dropdown-menu-end"
         style="width: 363px;"
         aria-labelledby="navbarDropdownBookmarks">
-        {% if user.bookmarks %}
-            <li class="dropdown-item disabled">
-                No bookmarks
-                <div>
-                    Bookmark posts so you can access them faster from here
-                </div>
-            </li>
-        {% else %}
+        {% if user.bookmarks_count %}
             <li class="dropdown-item disabled">Bookmarks</li>
             {% for bookmark in user|latest_bookmarks %}
                 <a class="text-wrap list-group-item dropdown-item"
@@ -116,6 +109,13 @@
                     Show more...
                 </a>
             {% endif %}
+        {% else %}
+            <li class="dropdown-item disabled">
+                No bookmarks
+                <div>
+                    Bookmark posts so you can access them faster from here
+                </div>
+            </li>
         {% endif %}
     </ul>
 </div>

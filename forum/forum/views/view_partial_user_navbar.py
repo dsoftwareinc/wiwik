@@ -6,5 +6,5 @@ from django.shortcuts import render
 def view_partial_user_navbar(request):
     return render(
         request,
-        'includes/partial.user.navbar.html',
+        'partial.user.navbar.html',
     )
