@@ -4,9 +4,6 @@ from forum.views import utils
 
 
 class TestBookmarkQuestionView(ForumApiTestCase):
-    title = 'my_question_title'
-    question_content = 'my_question_content_with more than 20 chars'
-    tags = ['my_first_tag', ]
 
     @classmethod
     def setUpClass(cls):

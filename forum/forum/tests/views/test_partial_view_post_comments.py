@@ -6,15 +6,12 @@ from forum.views import utils
 
 
 class TestPostCommentsPartialView(ForumApiTestCase):
-    title = 'my_question_title'
-    content = 'my_question_content'
-    tags = ['my_first_tag', ]
-    answer_content = 'answer------content'
+
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(cls.users[0], cls.title, cls.content, ','.join(cls.tags))
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ','.join(cls.tags))
         cls.answer = utils.create_answer(cls.answer_content, cls.users[1], cls.question, False)
 
     def test_comments_partial_view__question_max_comments_reached(self):

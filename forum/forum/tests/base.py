@@ -10,6 +10,11 @@ from userauth.models import ForumUser
 class ForumApiTestCase(TestCase):
     usernames = ['myuser_name1', 'myuser_name2', 'myuser_name3', ]
     password = 'magicalPa$$w0rd'
+    title = 'my_question_title'
+    question_content = 'my_question_content_with more than 20 chars'
+    tags = ['my_first_tag', ]
+    answer_content = 'answer------content'
+    users: list[ForumUser]
 
     @classmethod
     def setUpClass(cls):
