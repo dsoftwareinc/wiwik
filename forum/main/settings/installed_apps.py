@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'compressor',  # minify js/css
     'similarity',  # app for question similarity calculations
     'spaces',  # app for associating posts with spaces
+    'behave_django',  # BDD testing
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
