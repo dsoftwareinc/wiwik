@@ -9,13 +9,6 @@ from forum.models import Question
 from spaces.models import Space
 from spaces.views.access import validate_space_access
 
-
-class SpaceUpdateView(UpdateView):
-    model = Space
-    fields = ['name', 'page', 'start_date', 'end_date', 'properties', 'logo', ]
-    template_name = 'spaces/space-edit2.html'
-
-
 @login_required
 def view_space_edit(request, space_id: int):
     space = get_object_or_404(Space, id=space_id)

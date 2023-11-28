@@ -1,13 +1,11 @@
 from django.urls import path
 
 from . import views
-from .views.view_space_edit import SpaceUpdateView
 
 urlpatterns = [
     path('user-spaces', views.view_side_menu_user_spaces, name='user-spaces'),
     path('<str:space_id>/info', views.view_space_info, name='detail'),
     path('<int:space_id>/edit', views.view_space_edit, name='edit'),
-    path('<int:pk>/edit2', SpaceUpdateView.as_view(), name='edit2'),
     path('<str:space_id>/leave', views.view_space_leave, name='leave'),
     path('<str:space_id>/join', views.view_space_join, name='join'),
     path('<str:space_id>/questions', views.view_space_questions, name='questions'),
