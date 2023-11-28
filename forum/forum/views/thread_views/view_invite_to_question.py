@@ -34,7 +34,7 @@ def view_users_autocomplete(request):
 @login_required
 def view_invite_to_question(request, question_pk: int):
     if request.method != "POST":
-        logger.warning("Someone is trying to make a request not through the app")
+        logger.warning(f"{request.user} is trying to make a request not through the app")
         return redirect('forum:thread', pk=question_pk)
     inviter = request.user
     invitee_usernames = request.POST.dict()['usernames']
