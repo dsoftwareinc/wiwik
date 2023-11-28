@@ -51,6 +51,7 @@ urlpatterns += [
 
 urlpatterns += [
     path('users-autocomplete/', views.view_users_autocomplete, name='users_autocomplete'),
+    path('users-get/', views.view_get_users_data, name='users-get'),
     path('image-upload/', views.view_image_upload, name='image_upload'),
 ]
 # Slack

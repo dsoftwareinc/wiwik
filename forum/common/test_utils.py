@@ -201,10 +201,18 @@ class ForumClient(Client):
     def user_navbar(self):
         return self.get(reverse('forum:user_navbar'), follow=True)
 
-    def users_autocomplete(self, query: str):
+    def users_autocomplete(self, query: str, selected: str = None):
         url = reverse('forum:users_autocomplete') + '?'
         if query is not None:
-            url += f'q={query}'
+            url += f'q={query}&'
+        if selected is not None:
+            url += f'selected={selected}&'
+        return self.get(url, follow=True)
+
+    def users_get(self, query: str):
+        url = reverse('forum:users-get') + '?'
+        if query is not None:
+            url += f'q={query}&'
         return self.get(url, follow=True)
 
     def invite_to_question_post(self, question_pk: int, invitee_usernames: str):

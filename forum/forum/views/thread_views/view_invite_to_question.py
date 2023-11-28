@@ -15,19 +15,42 @@ from userauth.models import ForumUser
 def view_users_autocomplete(request):
     if request.method != 'GET':
         raise Http404()
-    qs = ForumUser.objects.all()
     query = request.GET.get('q', None)
-    selected = request.GET.get('selected', None)
-    selected = selected.split(',') if selected is not None else []
+    selected = request.GET.get('selected', "")
+    selected = selected.split(',')
+    qs = ForumUser.objects.all()
     if query is not None:
-        qs = qs.filter(Q(username__icontains=query) | Q(name__icontains=query) | Q(email__icontains=query)) \
-            .exclude(username=request.user, username__in=selected, is_superuser=True, is_active=False)
-    results = list(qs.values('username', 'name', 'email', 'profile_pic'))[:(10 + len(selected))]
+        qs = (qs
+              .filter(Q(username__icontains=query)
+                      | Q(name__icontains=query)
+                      | Q(email__icontains=query))
+              .exclude(username=request.user.username)
+              .exclude(username__in=selected)
+              .exclude(is_staff=True)
+              .exclude(is_active=False))
+    results = list(qs.values('username', 'name', 'email', 'profile_pic'))[:10]
     for result in results:
         if result['profile_pic'][0] != '/':
             result['profile_pic'] = '/' + result['profile_pic']
         result['value'] = result['username']
-    results = results[:10]
+    return JsonResponse({'results': results})
+
+
+@login_required
+def view_get_users_data(request):
+    if request.method != 'GET':
+        raise Http404()
+    query = request.GET.get('q', "")
+    usernames = query.split(',')
+    qs = (ForumUser.objects.all()
+          .filter(Q(username__in=usernames))
+          .exclude(is_staff=True)
+          .exclude(is_active=False))
+    results = list(qs.values('username', 'name', 'email', 'profile_pic'))[:10]
+    for result in results:
+        if result['profile_pic'][0] != '/':
+            result['profile_pic'] = '/' + result['profile_pic']
+        result['value'] = result['username']
     return JsonResponse({'results': results})
 
 
