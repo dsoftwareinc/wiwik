@@ -1,14 +1,18 @@
 {% extends 'base.html' %}
-{% load static %}
-{% load wiwik_template_tags crispy_forms_tags %}
+{% load static compress wiwik_template_tags crispy_forms_tags %}
 {% block extrastyle %}
     {{ block.super }}
     <link rel="stylesheet" href="{% tool_url 'easymde-css' %}">
     <link rel="stylesheet" href="{% tool_url 'bootstrap-datepicker-css' %}">
+    <link href="{% static 'css/tagify.tags.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'css/tagify-customization.css' %}" rel="stylesheet" type="text/css"/>
+
 {% endblock %}
 
 {% block extrahead %}
     {#    <script src="{% static 'js/jquery.validate.min.js' %}"></script>#}
+    <script src="{% tool_url 'tagify-js' %}"></script>
+    <script src="{% tool_url 'tagify-polyfills-js' %}"></script>
     <script src="{% tool_url 'easymde-js' %}"></script>
     <script src="{% tool_url 'bootstrap-datepicker-js' %}"></script>
 {% endblock %}
@@ -51,6 +55,15 @@
                         </div>
 
                     </div>
+
+                    <div>
+                        <input id="usersList" class="users-list" name="members" style="width:100%"
+                               value="{{ member_usernames }}">
+                        {% compress js %}
+                            <script src="{% static 'js/user-select-list.js' %}"></script>
+                        {% endcompress %}
+                    </div>
+
                     <textarea id="spacepage"
                               name="page">{{ space.page | default_if_none:"" }}</textarea>
                     {% include 'main/includes/easymde.template.html' with msg="Space info" el='spacepage' %}

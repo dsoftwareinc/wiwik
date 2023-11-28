@@ -7,33 +7,34 @@
 {% compress css %}
     <link href="{% static 'css/tagify.tags.css' %}" rel="stylesheet" type="text/css"/>
 {% endcompress %}
-<script>
-    (function () {
-        var inputElm = document.getElementById('tagsEdit');
-        var tagify = new Tagify(inputElm, {
-            maxTags: 5,
-            autocomplete: {rightKey: true,},
-            dropdown: {
-                enabled: 1,
-                closeOnSelect: true,
-                highlightFirst: true,
-            },
-            originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
-        });
-        tagify.on('input', onInput);
+{% compress js %}
+    <script>
+        (function () {
+            var inputElm = document.getElementById('tagsEdit');
+            var tagify = new Tagify(inputElm, {
+                maxTags: 5,
+                autocomplete: {rightKey: true,},
+                dropdown: {
+                    enabled: 1,
+                    closeOnSelect: true,
+                    highlightFirst: true,
+                },
+                originalInputValueFormat: valuesArr => valuesArr.map(item => item.value).join(','),
+            });
+            tagify.on('input', onInput);
 
-        function onInput(e) {
-            tagify.settings.whitelist = null;
-            tagify.loading(true);
-            tagify.loading(true).dropdown.hide();
-            fetch('/tags/tags-autocomplete/?q=' + e.detail.value)
-                .then(RES => RES.json())
-                .then(function (res) {
-                    tagify.settings.whitelist = res['results']; // update inwhitelist Array in-place
-                    tagify.loading(false).dropdown.show(e.detail.value); // render the suggestions dropdown
-                })
-                .catch(err => tagify.dropdown.hide());
-        }
-    })();
-
-</script>
+            function onInput(e) {
+                tagify.settings.whitelist = null;
+                tagify.loading(true);
+                tagify.loading(true).dropdown.hide();
+                fetch('/tags/tags-autocomplete/?q=' + e.detail.value)
+                    .then(RES => RES.json())
+                    .then(function (res) {
+                        tagify.settings.whitelist = res['results']; // update inwhitelist Array in-place
+                        tagify.loading(false).dropdown.show(e.detail.value); // render the suggestions dropdown
+                    })
+                    .catch(err => tagify.dropdown.hide());
+            }
+        })();
+    </script>
+{% endcompress %}

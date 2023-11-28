@@ -7,6 +7,7 @@ from forum.models import Question
 from spaces.apps import logger
 from spaces.models import Space
 from spaces.views.access import validate_space_access
+from userauth.models import ForumUser
 
 
 @login_required
@@ -15,13 +16,13 @@ def view_space_edit(request, space_id: int):
     validate_space_access(space, request.user)
     is_member = space.spacemember_set.filter(user=request.user).exists()
     if request.method == 'GET':
-        members = space.spacemember_set.all()
+        member_usernames = ','.join(space.spacemember_set.all().values_list('user__username', flat=True))
         latest_posts = Question.objects.filter(space=space).order_by('-created_at')[:5]
 
         return render(request, 'spaces/space-edit.html', {
             'space': space,
             'is_member': is_member,
-            'members': members,
+            'member_usernames': member_usernames,
             'latest_posts': latest_posts,
         })
     if request.method != 'POST':
@@ -41,6 +42,15 @@ def view_space_edit(request, space_id: int):
             space.end_date = end_date
         except ValueError:
             pass
+    members = data.get('members')
+    if members:
+        member_usernames = members.split(',')
+        space.spacemember_set.exclude(user__username__in=member_usernames).delete()
+        for username in member_usernames:
+            user = ForumUser.objects.filter(username=username).first()
+            if user is None:
+                continue
+            space.spacemember_set.get_or_create(user=user)
     space.page = data.get('page') or space.page
     space.save()
     return redirect('spaces:detail', space_id=space_id)
