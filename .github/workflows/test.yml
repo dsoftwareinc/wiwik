@@ -76,7 +76,8 @@ jobs:
         run: |
           poetry run coverage json
           echo "COVERAGE=$(jq '.totals.percent_covered_display|tonumber' coverage.json)" >> $GITHUB_ENV
-      - name: Create Awesome Badge
+      - if: ${{ github.event_name == 'push' }}
+        name: Create Awesome Badge
         uses: schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
