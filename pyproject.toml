@@ -40,7 +40,7 @@ bleach = "^6.0"
 pymdown-extensions = "^10.4"
 
 # 3rd party integrations
-slack-sdk = "^3.21"
+slack-sdk = "^3.26"
 meilisearch = "^0.28" # meilisearch driver
 psycopg2-binary = "^2.9" # Postgres driver
 redis = "^5.0" # Redis driver, for redis-cache
