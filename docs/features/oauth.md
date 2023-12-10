@@ -4,14 +4,14 @@
 
 ### OAuth
 
-wiwik can integrate with various external oauth parties such as google,
+wiwik can integrate with various external oauth parties such as Google,
 facebook, okta, etc.
 
-In order to do this, most third party requires some setup on their side to
+To do this, most third parties require some setup on their side to
 identify wiwik as a new app authenticating using oauth and wiwik requires some
 settings on the environment variables.
 
-### Self authentication management
+### Self-authentication management
 
 wiwik can also allow maintaining its own authentication database. This is a
 valid use-case when wiwik is being tried out by a small group as it enables
@@ -25,9 +25,9 @@ specific space, i.e., posts that are public.
 Users can be associated with spaces (become space members), and gain access to
 posts available only on these spaces.
 
-User can be associated with one or more team.
+Users can be associated with one or more team.
 
-User/Team access to post new posts can be managed via the admin views.
+User/Team access to create new posts can be managed via the admin views.
 
 User/Team access to edit/delete exiting posts (moderation) can be managed via
 the admin views, however, based on users' feedback, it is good to grant this

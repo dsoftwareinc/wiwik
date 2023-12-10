@@ -21,8 +21,8 @@ def postgres_search_rank(text: str, q: models.Question) -> float:
 
 def postgres_trigram_rank(text: str, q: models.Question) -> float:
     """
-    Calculate postgres trigram rank between text and question title+content.
-    rank is calculated as 1-distance, i.e., higher rank => better match.
+    Calculate postgres trigram rank between the text and question title+content.
+    Rank is calculated as 1-distance, i.e., higher rank => better match.
     """
     title_weight = settings.POSTGRES_SEARCH['weights']['title']
     content_weight = settings.POSTGRES_SEARCH['weights']['content']

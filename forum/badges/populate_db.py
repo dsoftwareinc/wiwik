@@ -8,7 +8,7 @@ BADGE_LOGIC = dict()
 
 def upsert_badges_in_db() -> None:
     """
-    Check that badges exist in database and update them based on map values.
+    Check that badges exist in the database and update them based on map values.
     This method should run during app loading.
 
     :returns: None
