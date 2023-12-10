@@ -35,7 +35,7 @@
 - `DAYS_FOR_QUESTION_TO_BECOME_OLD`
   Number of days for a question to become "old".
   Old unanswered questions are promoted to be answered.
-  In order to disable the feature, set this to None.
+  To disable the feature, set this to None.
   Default: `None`.
 - `ALLOW_ANONYMOUS_QUESTION`
   Should anonymous questions be allowed.
@@ -53,7 +53,6 @@
   Number of rising stars (users with most reputation on tag in the last month)
   allowed on a tag. Default: 2.
 
-
 ### Django settings
 
 #### `SECRET_KEY`
@@ -68,7 +67,7 @@ Log level, `DEBUG` by default.
 
 #### `DJANGO_ALLOWED_HOSTS`
 
-Django setting ALLOWED_HOSTS - see more
+Django setting `ALLOWED_HOSTS` - see more
 info [here](https://docs.djangoproject.com/en/4.1/ref/settings/#allowed-hosts)
 
 ### `GOOGLE_ANALYTICS_KEY`
@@ -116,7 +115,7 @@ Notice running in the background requires redis and a worker on.
 
 #### `SQL_ENGINE`, `SQL_DATABASE`, `SQL_USER`, `SQL_PASSWORD`, `SQL_HOST`, `SQL_PORT`
 
-by default sqlite3 will be used if these variables are not set.
+by default, sqlite3 will be used if these variables are not set.
 When `SQL_ENGINE` is set to `django.db.backends.postgresql`, postgres backend
 will be used
 connecting to the host/port/db using the user/password.
@@ -164,7 +163,7 @@ By default, `localhost` if values are not set.
 #### `SLACK_VERIFICATION_TOKEN`
 
 Used to verify requests from Slack to wiwik, requests from Slack are not
-going through regular authentication process.
+going through the regular authentication process.
 
 #### `SLACK_BOT_TOKEN`
 
