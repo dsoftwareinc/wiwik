@@ -93,6 +93,9 @@ class Flaggable(models.Model):
 
     flags = GenericRelation(Flag)
 
+    def get_author(self) -> settings.AUTH_USER_MODEL:
+        raise NotImplementedError
+
 
 class EditedResource(models.Model):
     """

@@ -38,6 +38,6 @@ def paginate_queryset(qs: QuerySet, page: int, per_page: int):
 try:
     CURRENT_SITE = str(Site.objects.get_current())
     if not CURRENT_SITE.startswith('http'):
-        CURRENT_SITE = 'http://' + CURRENT_SITE
+        CURRENT_SITE = 'https://' + CURRENT_SITE
 except Exception:
     CURRENT_SITE = 'http://localhost:8000'

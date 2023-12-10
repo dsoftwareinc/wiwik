@@ -13,6 +13,8 @@ from wiwik_lib.views.flag_views import notify_moderators_new_flag
 
 
 class Command(ManagementCommand):
+    base_dir: str
+    originator: ForumUser
     """
     Generate sample emails in a directory
     """

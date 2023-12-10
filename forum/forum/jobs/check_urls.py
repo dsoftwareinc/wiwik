@@ -48,7 +48,7 @@ def _content_links() -> dict[int, list[str]]:
 def _media_uploads() -> Set[str]:
     fss = FileSystemStorage()
     _, files = fss.listdir(os.path.join(settings.MEDIA_ROOT, 'uploads'))
-    links = {os.path.join(settings.MEDIA_URL, 'uploads', filename)
+    links = {str(os.path.join(settings.MEDIA_URL, 'uploads', filename))
              for filename in files}
     return links
 

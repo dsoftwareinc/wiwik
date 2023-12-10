@@ -1,4 +1,4 @@
-from typing import Union, List
+from typing import Union, List, Optional
 
 from django.conf import settings
 from scheduler import job
@@ -9,12 +9,12 @@ from slack_sdk.models.blocks import InputBlock, PlainTextInputElement, ExternalD
 from slack_sdk.models.views import View
 from slack_sdk.signature import SignatureVerifier
 
-from wiwik_lib.utils import CURRENT_SITE
 from forum.apps import logger
 from forum.models import Question
 from forum.views import utils
 from forum.views.common import get_model_url_with_base
 from userauth.models import ForumUser
+from wiwik_lib.utils import CURRENT_SITE
 
 
 def configure_slack_client():
@@ -183,7 +183,10 @@ def _slack_view(payload: dict) -> View:
 
 
 def post_from_slack(payload: dict) -> None:
-    originator_slack_id = payload.get('user', {}).get('id', None)
+    originator_slack_id: Optional[str] = payload.get('user', {}).get('id', None)
+    if originator_slack_id is None:
+        logger.warning(f"Couldn't find slack user id in payload {payload}")
+        return
     originator = _get_forumuser_by_slack_userid(originator_slack_id)
     if originator is None:
         blocks = [SectionBlock(text=TextObject(

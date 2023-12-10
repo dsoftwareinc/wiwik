@@ -13,8 +13,8 @@ class TabEnum(Enum):
     UNRESOLVED = 'unresolved'
 
 
-def _find_code_blocks(markdown_text_lines: list[str]) -> list[tuple[int, int], ...]:
-    res = list()
+def _find_code_blocks(markdown_text_lines: list[str]) -> list[tuple[int, int]]:
+    res: list[tuple[int, int]] = list()
     start = None
     for i, line in enumerate(markdown_text_lines):
         if '```' in line:

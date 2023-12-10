@@ -27,13 +27,13 @@ class Tag(Flaggable, Editable, Followable):
         default=0, help_text='Number of followers for tag, calculated async', )
     experts = models.CharField(
         max_length=100, default='', blank=True, null=True,
-        help_text='Comma separated list of usernames that are considered experts',)
+        help_text='Comma separated list of usernames that are considered experts', )
     stars = models.CharField(
         max_length=100, default='', blank=True, null=True,
-        help_text='Comma separated list of usernames that are considered stars',)
+        help_text='Comma separated list of usernames that are considered stars', )
     related = models.CharField(
         max_length=100, default='', blank=True, null=True,
-        help_text='Comma separated list of related tags',)
+        help_text='Comma separated list of related tags', )
 
     def __str__(self):
         return (f'Tag[{self.tag_word};'
@@ -52,6 +52,9 @@ class Tag(Flaggable, Editable, Followable):
 
     def related_tags(self):
         return self.related.split(',') if self.related else None
+
+    def get_author(self) -> settings.AUTH_USER_MODEL:
+        return self.author
 
 
 class TagEdit(models.Model):

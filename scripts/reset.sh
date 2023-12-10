@@ -4,7 +4,7 @@ BASE_DIR="$SCRIPT_DIR/.."
 INITIAL_DB="$BASE_DIR/private/db2023-10-18.sqlite3"
 echo "[reset.sh] Activating virtualenv"
 source "$BASE_DIR/env/bin/activate" || (echo "Couldn't activate virtualenv" && exit)
-cd $BASE_DIR || exit
+cd "$BASE_DIR" || exit
 
 echo "[reset.sh] Checking if there is a need to update requirements"
 pip install poetry
@@ -14,7 +14,7 @@ echo "[reset.sh] Removing previous database if exists"
 rm "$BASE_DIR/forum/db.sqlite3"
 echo "[reset.sh] Reseting to sample database"
 cp "$INITIAL_DB" "$BASE_DIR/forum/db.sqlite3"
-cd "$BASE_DIR/forum"
+cd "$BASE_DIR/forum" || exit
 python manage.py makemigrations wiwik_lib badges forum similarity spaces tags userauth
 python manage.py migrate
 
@@ -29,4 +29,4 @@ python manage.py reset_users
 #echo "[reset.sh] Creating sample data for the forum"
 #python manage.py load_json ../data.json
 
-cd "$BASE_DIR"
+cd "$BASE_DIR" || exit

@@ -10,7 +10,7 @@ from tags.models import Tag, Synonym, TagEdit
 class QuestionInline(admin.TabularInline):
     extra = 0
     can_delete = True
-    model = Tag.question_set.through
+    model = Tag.question_set.through  # type: ignore
     ordering = ('question__id',)
     fields = ('question',)
     raw_id_fields = ('question',)

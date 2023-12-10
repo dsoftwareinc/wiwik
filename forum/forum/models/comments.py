@@ -42,6 +42,8 @@ class Comment(Flaggable):
             q.last_activity = self.created_at
             q.save()
 
+    def get_author(self) -> settings.AUTH_USER_MODEL:
+        return self.author
 
 class AnswerComment(Comment):
     """A class representing a comment to an answer.

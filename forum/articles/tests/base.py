@@ -14,6 +14,7 @@ from userauth.models import ForumUser
     MAX_ARTICLE_CONTENT_LENGTH=200,
 )
 class ArticlesApiTestCase(TestCase):
+    prev_channel: str
     usernames = ['myuser_name1', 'myuser_name2', 'myuser_name3', ]
     password = 'magicalPa$$w0rd'
 

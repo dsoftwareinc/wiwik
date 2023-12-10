@@ -62,7 +62,7 @@ def flag_model(user: AbstractUser, target: Flaggable, flag_type: str, extra: str
     flag = Flag.objects.create(
         user=user, flag_type=flag_type, extra=extra,
         content_type=content_type, object_id=target.id,
-        content_author=target.author)
+        content_author=target.get_author())
     return flag
 
 

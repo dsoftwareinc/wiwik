@@ -39,4 +39,4 @@ class BadgeAdmin(admin.ModelAdmin):
 
     @admin.display(ordering='activity_count')
     def users_earned(self, o: Badge) -> int:
-        return o.activity_count
+        return o.activity_count  # type: ignore

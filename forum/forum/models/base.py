@@ -22,9 +22,7 @@ from wiwik_lib.utils import CURRENT_SITE
 
 
 class Votable(models.Model):
-    """
-    Abstract class to represent votable objects
-    """
+    """Abstract class to represent votable objects"""
 
     class Meta:
         abstract = True
@@ -35,9 +33,7 @@ class Votable(models.Model):
 
 
 class UserInput(Editable):
-    """
-    Abstract class to represent 'main' user input, i.e., question and answers (but not comment).
-    """
+    """Abstract class to represent 'main' user input, i.e., question and answers (but not comment)."""
 
     class Meta:
         abstract = True
@@ -52,16 +48,21 @@ class UserInput(Editable):
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
         blank=True, null=True, related_name='+')
 
-    def get_model(self):
+    def get_model(self) -> str:
         raise NotImplementedError
 
-    def get_question(self):
+    def get_question(self) -> 'Question':
         raise NotImplementedError
 
-    def get_answer(self):
+    def get_answer(self) -> Optional['Answer']:
+        """Used for `Activity` model.
+        For question userinput, returns None
+        For answer userinput, returns self.
+        :returns: None
+        """
         raise NotImplementedError
 
-    def share_link(self):
+    def share_link(self) -> str:
         raise NotImplementedError
 
     @property
@@ -181,6 +182,9 @@ class Question(VotableUserInput, Flaggable, Followable):
     def post_accepts_answers(self):
         return self.type in Question.POST_TYPE_ACCEPTING_ANSWERS
 
+    def get_author(self) -> settings.AUTH_USER_MODEL:
+        return self.author
+
     @property
     def is_accepting_answers(self):
         return (self.type in Question.POST_TYPE_ACCEPTING_ANSWERS
@@ -189,6 +193,7 @@ class Question(VotableUserInput, Flaggable, Followable):
     @property
     def is_article(self):
         return self.type in Question.POST_ARTICLE_TYPES
+
     @property
     def is_question(self):
         return self.type == Question.PostType.QUESTION
@@ -210,19 +215,16 @@ class Question(VotableUserInput, Flaggable, Followable):
     def get_question(self):
         return self
 
-    def share_link(self):
+    def share_link(self) -> str:
         return f"{CURRENT_SITE}{reverse('forum:thread', args=[self.pk])}#question_{self.pk}"
 
-    def get_model(self):
+    def get_model(self) -> str:
         return 'question'
 
     def get_answer(self):
-        """Used for activity model, for question userinput, this returns None
-        :returns: None
-        """
         return None
 
-    def tag_words(self):
+    def tag_words(self) -> list[str]:
         return [t.tag_word for t in self.tags.all()]
 
     def save(self, *args, **kwargs):
@@ -230,7 +232,7 @@ class Question(VotableUserInput, Flaggable, Followable):
         additional_data, _ = QuestionAdditionalData.objects.get_or_create(question=self)
         additional_data.save()
 
-    def user_can_delete(self, user):
+    def user_can_delete(self, user) -> bool:
         return (self.author == user
                 or user.is_staff
                 or user.is_moderator)
@@ -281,6 +283,9 @@ class Answer(VotableUserInput, Flaggable):
 
     def get_model(self):
         return 'answer'
+
+    def get_author(self) -> settings.AUTH_USER_MODEL:
+        return self.author
 
     def share_link(self):
         return f"{CURRENT_SITE}{reverse('forum:thread', args=[self.question.pk])}#answer_{self.pk}"

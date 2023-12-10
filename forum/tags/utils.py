@@ -2,14 +2,12 @@ from collections import Counter
 from typing import List
 
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Sum
 from django.utils import timezone
 
-from forum.models import Question, UserTagStats, VoteActivity
+from forum.models import Question, VoteActivity
 from tags.apps import logger
 from tags.models import Tag
-from wiwik_lib.models import Follow
 
 
 def day_beginning(dt=None) -> timezone.datetime:
@@ -19,12 +17,16 @@ def day_beginning(dt=None) -> timezone.datetime:
 
 
 def users_with_most_reputation_since(
-        tag: Tag, count: int = 3, since: timezone.datetime = None,
-        exclude_usernames: List[str] = None) -> List[str]:
+        tag: Tag,
+        count: int = 3,
+        since: timezone.datetime = None,
+        exclude_usernames: List[str] = None
+) -> List[str]:
     """Get users with most votes on tag since date
     :param tag: tag to check
     :param count: max number of usernames to return
-    :param since: reputation since what date?
+    :param since: What date to start counting user's reputation from
+    :param exclude_usernames: users to exclude from the result
     """
     if since is None:
         since = timezone.datetime.min

@@ -84,7 +84,7 @@ class ForumUserAdmin(UserAdmin):
 
     @admin.display(description='Last visit', ordering='last_visit_date')
     def last_visit_date(self, o: ForumUser) -> datetime:
-        return o.last_visit_date
+        return o.last_visit_date  # type: ignore
 
 
 @admin.register(UserVisit)

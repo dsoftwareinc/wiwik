@@ -8,7 +8,7 @@ from userauth.models import ForumUser
 
 
 def get_random_filename(path):
-    filenames = os.listdir(os.path.join(settings.MEDIA_ROOT, path))
+    filenames = os.listdir(str(os.path.join(settings.MEDIA_ROOT, path)))
     return os.path.join(path, random.choice(filenames))
 
 

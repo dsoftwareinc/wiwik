@@ -18,7 +18,7 @@ pip install -r requirements.txt
 rm requirements.txt
 
 echo "[update_server.sh] Updating django data"
-cd "$BASE_DIR/forum"
+cd "$BASE_DIR/forum" || exit
 python manage.py migrate
 python manage.py collectstatic --noinput
 python manage.py calculate_tag_stats
@@ -52,4 +52,4 @@ echo "[update_server.sh] Updating nginx"
 sudo cp "$BASE_DIR/config/$CONTEXT/nginx.django_site.conf" "/etc/nginx/conf.d/django_site.conf"
 sudo service nginx restart
 
-cd "$BASE_DIR"
+cd "$BASE_DIR" || exit
