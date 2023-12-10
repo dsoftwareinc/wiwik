@@ -10,8 +10,8 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.13"
-Django = "^4.2"
+python = ">=3.10,<3.13"
+Django = "^5.0"
 django-allauth = "^0.58"
 
 pyparsing = "^3.0"

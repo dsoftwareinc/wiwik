@@ -1,11 +1,10 @@
-from datetime import date
+from datetime import date, datetime
 from typing import List
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.core.management.base import CommandParser
 from django.utils import timezone
-from django.utils.datetime_safe import datetime
 
 from wiwik_lib.utils import ManagementCommand
 from forum.management.tools import EmailType
