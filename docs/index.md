@@ -27,7 +27,7 @@ the part relevant to their specific work is not realistic.
 
 For developers, an environment with stack overflow look & feel, with:
 
-- Easy to search and find concise answers (unlike documentation) ranked by developers like them.
+- Search and find concise answers (unlike documentation) ranked by developers like them.
 - No answering the same question twice.
 - Recognition for sharing knowledge, i.e., answering questions, which private messages do
   not offer.

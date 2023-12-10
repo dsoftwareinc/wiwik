@@ -7,11 +7,6 @@
     }
 }
 
-.heart {
-    animation: heart 1000ms infinite;
-    color: #e91e63;
-}
-
 .tabbed-block code {
     max-height: 300px;
 }

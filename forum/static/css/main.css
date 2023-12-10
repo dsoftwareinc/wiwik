@@ -48,10 +48,6 @@ blockquote {
     color: var(--accepted-color);
 }
 
-a i.fa:hover {
-    color: var(--link-color) !important;
-}
-
 .dropdown-menu {
     color: var(--bs-dark);
     background-color: var(--bs-light);
@@ -89,10 +85,6 @@ a:hover {
 
 pre {
     max-height: 300px;
-}
-
-.bg-animation {
-    transition: 2s;
 }
 
 .btn-space-property {

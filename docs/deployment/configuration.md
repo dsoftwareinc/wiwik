@@ -44,7 +44,7 @@ Defaults: 15 & 200.
 
 Number of days for a question to become "old".
 Old unanswered questions are promoted to be answered.
-In order to disable the feature, set this to None.
+To disable the feature, set this to None.
 Default: `None`.
 
 ### `ALLOW_ANONYMOUS_QUESTION`
