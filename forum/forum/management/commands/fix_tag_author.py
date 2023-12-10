@@ -1,11 +1,9 @@
-from wiwik_lib.utils import ManagementCommand
 from tags.models import Tag
+from wiwik_lib.utils import ManagementCommand
 
 
 class Command(ManagementCommand):
-    """
-    This command should be ran once.
-    """
+    """This command should be run once."""
     help = 'Fix tag author to be the author of the first question with the tag'
 
     def handle(self, *args, **options):

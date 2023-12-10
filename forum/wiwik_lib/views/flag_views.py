@@ -20,11 +20,11 @@ from wiwik_lib.utils import CURRENT_SITE
 
 def notify_moderators_new_flag(
         originator: AbstractUser,
-        model,
+        model: Flaggable,
         model_name: str,
 ) -> None:
     """
-    Send a notification to moderators about new flag.
+    Send a notification to moderators about the new flag.
     Args:
         originator: Who created the flag
         model: the model that was flagged (Question, Answer, QuestionComment, AnswerComment)
@@ -55,7 +55,7 @@ def notify_moderators_new_flag(
 
 def flag_model(user: AbstractUser, target: Flaggable, flag_type: str, extra: str = None) -> Optional[Flag]:
     content_type = ContentType.objects.get_for_model(target)
-    if Flag.objects.filter(user=user,content_type=content_type, object_id=target.id).exists():
+    if Flag.objects.filter(user=user, content_type=content_type, object_id=target.id).exists():
         logger.debug(f'User {user.username} already flagged {content_type}:{target.id} - ignoring')
         return None
     logger.debug(f'User {user.username} flagging {content_type}:{target.id} of as {flag_type}')

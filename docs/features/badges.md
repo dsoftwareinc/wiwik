@@ -1,9 +1,9 @@
 # Badges
 
-User can gain badges based on actions they are taking such as posting new
+Users can gain badges based on actions they are taking, such as posting new
 questions, answering posts, voting, or editing posts.
 
-When an activity happen on wiwik, an event is triggered to determine whether
+When an activity happens on wiwik, an event is triggered to determine whether
 users are entitled to badges associated with the activity.
 
 Out of the box badges:
@@ -32,7 +32,7 @@ Out of the box badges:
 - <kbd>Commuter</kbd> Visit the site from multiple cities (in the same country)
 - <kbd>Traveller</kbd> Visit the site from more than 1 country
 - <kbd>Digital Nomad</kbd> Visit the site from 5 countries or more
-- <kbd>Synonymizer</kbd> Suggest a synonym that is accepted
+- <kbd>Synonymizer</kbd> Suggests a synonym that is accepted
 - <kbd>Meticulous</kbd> Suggest 10 accepted synonyms
 - <kbd>Tag Editor</kbd> First tag edit
 - <kbd>Taxonomist</kbd> Create a tag used by 20 questions

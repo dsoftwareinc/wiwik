@@ -278,22 +278,19 @@ class Answer(VotableUserInput, Flaggable):
         recent_answer_date = timezone.now() - timedelta(days=settings.ANSWER_IS_RECENT_DAYS)
         return self.created_at >= recent_answer_date
 
-    def get_question(self):
+    def get_question(self) -> Question:
         return self.question
 
-    def get_model(self):
+    def get_model(self) -> str:
         return 'answer'
 
     def get_author(self) -> settings.AUTH_USER_MODEL:
         return self.author
 
-    def share_link(self):
+    def share_link(self) -> str:
         return f"{CURRENT_SITE}{reverse('forum:thread', args=[self.question.pk])}#answer_{self.pk}"
 
     def get_answer(self) -> Optional['Answer']:
-        """Used for Activity model, for answer userinput, this returns self.
-        :return: Current model
-        """
         return self
 
     def save(self, *args, **kwargs) -> None:

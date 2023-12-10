@@ -30,7 +30,7 @@ def ask_to_edit_resource(user: AbstractUser, resource: Editable) -> bool:
     :param user: user asking to edit resource.
     :param resource: resource to be edited.
 
-    :returns: if user can edit the resource (it is not edited by another user in the past 5 minutes)
+    :returns: whether the user can edit the resource (it is not edited by another user in the past 5 minutes)
     """
     # Purge stale data in table
 
