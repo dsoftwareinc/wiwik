@@ -130,7 +130,7 @@ connecting to the host/port/db using the user/password.
 
 The redis server host, port, password and redis-database to configure
 django-queues (See more details
-about [django-rq-scheduler](https://django-rq-scheduler.readthedocs.io/en/latest/)
+about [django-tasks-scheduler](https://django-tasks-scheduler.readthedocs.io/en/latest/)
 here.)
 
 By default, `localhost` if values are not set.

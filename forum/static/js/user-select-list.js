@@ -37,7 +37,7 @@
     `
     }
 
-    let tagsEl = document.getElementById('usersList');
+    const tagsEl = document.getElementById('usersList');
     let tagify = new Tagify(tagsEl, {
             id: 'usersListTagify',
             tagTextProp: 'name',
@@ -58,6 +58,15 @@
             autoComplete: {rightKey: true,},
         }),
         controller; // for aborting the call;
+    const originalValue = tagsEl.getAttribute('value');
+
+    fetch(`/users-get/?q=${originalValue}`)
+        .then(res => res.json())
+        .then(function (res) {
+            console.log(res);
+            tagify.loadOriginalValues(res['results']);
+        });
+
     tagify.on('input', onInput);
 
     function onInput(e) {
