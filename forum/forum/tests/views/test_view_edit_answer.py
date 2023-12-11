@@ -15,10 +15,9 @@ from userauth.models import ForumUser
 
 class TestEditAnswerView(ForumApiTestCase):
 
-
     @classmethod
     def setUpClass(cls):
-        super().setUpClass()        
+        super().setUpClass()
         cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ','.join(cls.tags))
         cls.answer = utils.create_answer(cls.answer_content, cls.users[1], cls.question)
         cls.answer_url = reverse('forum:thread', args=[cls.question.pk]) + f'#answer_{cls.answer.pk}'

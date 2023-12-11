@@ -1,4 +1,4 @@
-from typing import Union, List
+from typing import Union, List, Optional
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser

@@ -7,7 +7,6 @@ from forum.views import utils
 
 class TestPostCommentsPartialView(ForumApiTestCase):
 
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

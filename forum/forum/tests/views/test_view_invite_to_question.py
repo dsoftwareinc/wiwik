@@ -4,14 +4,13 @@ from common.test_utils import assert_url_in_chain, assert_message_in_response
 from forum.models import PostInvitation
 from forum.tests.base import ForumApiTestCase
 from forum.views import utils
-from userauth.models import ForumUser
 
 
 class TestInviteToQuestionView(ForumApiTestCase):
- 
+
     @classmethod
     def setUpClass(cls):
-        super().setUpClass()        
+        super().setUpClass()
         cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ','.join(cls.tags))
 
     def test_invite_to_question__non_existing_user__green(self):

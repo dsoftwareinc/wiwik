@@ -1,5 +1,5 @@
-from django.test import TestCase
 from django.test import Client
+from django.test import TestCase
 from django.urls import reverse
 
 # Create your tests here.
@@ -7,7 +7,7 @@ from userauth.models import ForumUser
 
 
 class SpaceClient(Client):
-    
+
     def login(self, username: str, password: str):
         return super().login(username=username, password=password)
 

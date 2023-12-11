@@ -162,10 +162,12 @@ _3RD_PARTY_URLS = {
         'katex-autorender-js': f'https://cdn.jsdelivr.net/npm/katex@{_VER_KATEX}/dist/contrib/auto-render.min.js',
         'katex-mjs': f'https://cdn.jsdelivr.net/npm/katex@{_VER_KATEX}/dist/katex.mjs',
         'bootstrap-datepicker-js':
-            f'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/{_VER_BOOTSTRAP_DATEPICKER}/js/bootstrap-datepicker.min.js',
+            f'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/'
+            f'{_VER_BOOTSTRAP_DATEPICKER}/js/bootstrap-datepicker.min.js',
         # noqa: E501
         'bootstrap-datepicker-css':
-            f'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/{_VER_BOOTSTRAP_DATEPICKER}/css/bootstrap-datepicker.standalone.min.css',
+            f'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/'
+            f'{_VER_BOOTSTRAP_DATEPICKER}/css/bootstrap-datepicker.standalone.min.css',
         # noqa: E501
     },
     'STATIC': {
@@ -180,8 +182,8 @@ _3RD_PARTY_URLS = {
         'tagify-js': 'tagify/tagify.js',
         'tagify-polyfills-js': 'tagify/tagify.polyfills.min.js',
         'mermaidjs': 'mermaidjs/dist/mermaid.esm.min.mjs',
-        'katex-autorender-mjs': f'katex/auto-render.mjs',
-        'katex-autorender-js': f'katex/auto-render.min.js',
+        'katex-autorender-mjs': 'katex/auto-render.mjs',
+        'katex-autorender-js': 'katex/auto-render.min.js',
         'katex-mjs': 'katex/katex.mjs',
         'katex-js': 'katex/katex.min.js',
         'katex-css': 'katex/katex.min.css',

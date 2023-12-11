@@ -95,7 +95,7 @@ class TestAdmin(ForumApiTestCase):
             '_selected_action': [tag.pk, target_tag.pk, ]
         }
         # act
-        res = self.client.admin_tag_changelist_post('tag', data=data)
+        self.client.admin_tag_changelist_post('tag', data=data)
 
         # assert
         tag_refreshed = Tag.objects.filter(tag_word='tag-merge').first()

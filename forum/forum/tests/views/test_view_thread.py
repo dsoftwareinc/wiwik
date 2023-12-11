@@ -143,7 +143,8 @@ class TestThreadView(ForumApiTestCase):
     def test_thread_view_anonymous_question__should_not_show_user(self):
         # arrange
         self.client.login(self.usernames[1], self.password)
-        q = utils.create_question(self.users[0], self.title, self.question_content, ','.join(self.tags), is_anonymous=True)
+        q = utils.create_question(self.users[0], self.title, self.question_content, ','.join(self.tags),
+                                  is_anonymous=True)
         # act
         res = self.client.view_thread_get(q.pk)
         # assert

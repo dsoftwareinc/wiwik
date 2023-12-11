@@ -101,7 +101,7 @@ class TestAddArticle(ArticlesApiTestCase):
         # assert
         self.assertEqual(0, models.Question.objects.count())
         assert_message_in_response(
-            res, f'Error: Content length is 5 characters, should be between 10 and 200 characters')
+            res, 'Error: Content length is 5 characters, should be between 10 and 200 characters')
         self.assertContains(res, title)
         self.assertContains(res, content)
 

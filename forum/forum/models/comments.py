@@ -45,9 +45,9 @@ class Comment(Flaggable):
     def get_author(self) -> settings.AUTH_USER_MODEL:
         return self.author
 
+
 class AnswerComment(Comment):
-    """A class representing a comment to an answer.
-    """
+    """A class representing a comment to an answer."""
     objects = AdvancedModelManager(select_related=('author',), deferred_fields=user_model_defer_fields('author'))
 
     class Meta:

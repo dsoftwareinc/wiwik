@@ -9,7 +9,8 @@ def create_users(context):
     context.default_user_password = 'magicalPa$$w0rd'
     context.usernames = ['myuser_name1', 'myuser_name2', 'myuser_name3', ]
     context.users = [
-        ForumUser.objects.create_user(username=username, email=f'{username}@a.com', password=context.default_user_password)
+        ForumUser.objects.create_user(username=username, email=f'{username}@a.com',
+                                      password=context.default_user_password)
         for username in context.usernames
     ]
 

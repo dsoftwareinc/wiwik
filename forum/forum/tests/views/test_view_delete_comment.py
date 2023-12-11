@@ -3,7 +3,6 @@ from django.urls import reverse
 from common.test_utils import assert_url_in_chain
 from forum.tests.base import ForumApiTestCase
 from forum.views import utils
-from userauth.models import ForumUser
 
 
 class TestDeleteCommentView(ForumApiTestCase):

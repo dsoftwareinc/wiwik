@@ -1,11 +1,10 @@
 import time
 from datetime import timedelta
 
-from django.test import Client, override_settings, TestCase
+from django.test import override_settings, TestCase
 from django.urls import reverse
 
 from common.test_utils import ForumClient, assert_message_in_response, assert_url_in_chain
-
 from forum.views import utils
 from userauth.models import ForumUser
 from wiwik_lib.models import EditedResource

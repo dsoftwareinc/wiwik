@@ -3,7 +3,6 @@ from django.shortcuts import redirect
 
 from forum import models
 from forum.apps import logger
-from forum.views import follow_models
 from wiwik_lib.views.follow_views import delete_follow, create_follow
 
 

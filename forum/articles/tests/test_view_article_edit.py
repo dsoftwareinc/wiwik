@@ -1,8 +1,6 @@
-import os
 from unittest import mock
 
 from bs4 import BeautifulSoup
-from django.conf import settings
 from django.test.utils import override_settings
 from django.urls import reverse
 
