@@ -48,6 +48,7 @@ behave-django = "^1.4.0"
 
 
 [tool.poetry.dev-dependencies]
+poetry = "^1.7.1"
 fakeredis = "^2.20"
 coverage = "^7.2"
 django-coverage-plugin = "^3.0"

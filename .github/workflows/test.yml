@@ -35,21 +35,16 @@ jobs:
   build:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [ '3.11' ]
-        poetry-version: [ '1.6.1' ]
     name: Build and test ${{ matrix.python-version }}
     permissions:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - name: "Setup Python, Poetry and Dependencies"
-        uses: packetcoders/action-setup-cache-python-poetry@main
+        uses: dsoftwareinc/setup-python-poetry-action@v1
         with:
-          python-version: ${{ matrix.python-version }}
-          poetry-version: ${{ matrix.poetry-version }}
+          python-version: '3.11'
+          poetry-version: '1.7.1'
       - name: Run Tests
         run: |
           cd forum
