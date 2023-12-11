@@ -11,7 +11,7 @@
         <div class="col-8">
             <h2 class="border-bottom pb-2">
                 <strong>{{ tag.tag_word }}</strong> tag info
-                <div class="pull-right">
+                <span class="pull-right">
                     {% if tag.tag_word in tags_watched %}
                         <a href="{% url 'forum:unwatch_tag' tag.tag_word %}"
                            class="btn btn-sm btn-outline-secondary">
@@ -32,7 +32,7 @@
                             Edit tag info
                         </a>
                     {% endif %}
-                </div>
+                </span>
             </h2>
 
             <h5>Usage guidance (excerpt)</h5>

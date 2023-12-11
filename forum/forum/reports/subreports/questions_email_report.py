@@ -52,15 +52,15 @@ def recent_questions_email_report(from_date: date,
                                   skip_if_empty: bool = True) -> str:
     """
     Generate a report with all the questions that were created from :from_date and
-    have tags from :tags_list. If :tags_list is empty, then sends all questions that were
-    created from from_date on all tags.
-    If there are no questions in the report, then based on :skip_if_empty value it
+    have tags from :tags_list. If :tags_list is empty, then send all questions
+    created from :from_date on all tags.
+    If there are no questions in the report, then based on :skip_if_empty 's value it
     can either generate an empty report or return an empty string.
 
     Args:
         from_date: Date to query questions from
         tags_list: list of tags to query questions with, if empty/None, ignore this parameter
-        skip_if_empty: if report has no questions, should it be skipped (i.e., return empty string)
+        skip_if_empty: if the report has no questions, should it be skipped (i.e., return empty string)
 
     Returns:
         A report as string to be joined with other reports in generate_report_html

@@ -8,7 +8,7 @@ from forum import models
 def postgres_search_rank(text: str, q: models.Question) -> float:
     """
     Calculate postgres full text search rank between text and question search vector.
-    higher rank => better match.
+    Higher rank => better match.
     """
     search_query = SearchQuery(text)
     search_rank = SearchRank(F('additional_data__search_vector'), search_query)

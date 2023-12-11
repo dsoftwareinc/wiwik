@@ -152,7 +152,9 @@ EOF
 ```
 
 <Capsule intent="tip">
-For more information on Meilisearch security and API keys see the [security docs](/learn/security/master_api_keys). You can check our [quick start](/learn/getting_started/quick_start#setup-and-installation) guide for more information on how to get Meilisearch up and running.
+For more information on Meilisearch security and API keys see the [security docs](/learn/security/master_api_keys).
+You can check our [quick start](/learn/getting_started/quick_start#setup-and-installation) guide for more information
+on how to get Meilisearch up and running.
 </Capsule>
 
 As for now, it is not time yet to expose your Meilisearch instance to the external world. To keep running it safely

@@ -4,7 +4,7 @@
 
 - python3.10 or above: (`brew install python3.10` on Mac)
 - virtualenv  (`sudo pip install virtualenv` on mac)
-- redis (in order to run with async workers)—this can be provided as a docker container
+- redis (to run with async workers)—this can be provided as a docker container
 - postgresql (for full-text-search capability)
     - PostgresSQL can be provided as docker container
     - This is an optional requirement, and can be replaced with sqlite for most development purposes.
@@ -58,7 +58,7 @@ running locally:
 
      A sample `.env` file is provided.
 
-5. In order to use search functionality, your database should be postgres. You can run a local container with
+5. To use search functionality, your database should be postgres. You can run a local container with
    postgres: `docker-compose up db`, it will create a local directory from where
    you run it with postgres data. Postgres can be replaced with SQLite3 in `.env` file (comment `SQL_*` variables)
 
@@ -76,7 +76,7 @@ running locally:
    python manage.py runserver
    ```
 
-8. In order to test background worker and scheduler as well, redis should be setup
+8. To test background worker and scheduler as well, redis should be setup
    and worker should be run. To run redis docker, you can use the docker-compose
    command: `docker-compose up redis db` (this will run both redis and
    postgres).
@@ -88,7 +88,7 @@ running locally:
    Alternatively, you can use the scripts `rqworker.sh` and `rqscheduler.sh` to
    start these.
 
-9. In order to enable google auth, replace the `GOOGLE_CLIENT_ID`
+9. To enable google auth, replace the `GOOGLE_CLIENT_ID`
    and `GOOGLE_SECRET_KEY` in `.env` file with your Google app oauth client ID.
    For more details how, you can follow
    [this tutorial](https://whizzoe.medium.com/in-5-mins-set-up-google-login-to-sign-up-users-on-django-e71d5c38f5d5)

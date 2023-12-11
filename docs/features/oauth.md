@@ -15,7 +15,7 @@ settings on the environment variables.
 
 wiwik can also allow maintaining its own authentication database. This is a
 valid use-case when wiwik is being tried out by a small group as it enables
-quick deployment without the need of configuration of any 3rd party.
+quick deployment without the need to configure any third party.
 
 ## Authorization
 

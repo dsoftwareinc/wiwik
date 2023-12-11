@@ -12,6 +12,8 @@ from forum.views import utils
 
 
 class TestAcceptAnswerView(ForumApiTestCase):
+    question: models.Question
+    answer: models.Answer
 
     @classmethod
     def setUpClass(cls):

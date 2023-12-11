@@ -14,7 +14,7 @@
             <div class="border-bottom pb-2">
                 <h2>
                     <strong>{{ space.name }}</strong> space page
-                    <div class="pull-right">
+                    <span class="pull-right">
                         {% if is_member %}
                             <a href="{% url 'spaces:edit' space.id %}"
                                class="btn btn-sm btn-outline-primary">
@@ -22,7 +22,7 @@
                                 Edit space info
                             </a>
                         {% endif %}
-                    </div>
+                    </span>
                 </h2>
                 <div class="pb-2">
                     {% if space.end_date %}
@@ -69,7 +69,7 @@
                 {% if members %}
                     <h5>
                         Members
-                        <div class="pull-right">
+                        <span class="pull-right">
                             {% if is_member %}
                                 <a href="{% url 'spaces:leave' space.id %}"
                                    class="btn btn-sm btn-outline-danger">
@@ -83,7 +83,7 @@
                                     Join space
                                 </a>
                             {% endif %}
-                        </div>
+                        </span>
                     </h5>
 
                     <div class="row">

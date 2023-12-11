@@ -28,7 +28,7 @@ Additionally, any issues you experience will be prioritized.
 
 ## How to become a sponsor
 
-Thanks for your interest in sponsoring! In order to become an eligible sponsor
+Thanks for your interest in sponsoring! To become an eligible sponsor
 with your GitHub account, visit [cunla's sponsor profile](https://github.com/sponsors/cunla), and complete
 a sponsorship of __$15 a month or more__. You can use your individual or
 organization GitHub account for sponsoring.
@@ -57,8 +57,8 @@ organizations.
 If you cancel your sponsorship, GitHub schedules a cancellation request
 which will become effective at the end of the billing cycle. This means
 that even though you cancel your sponsorship, you will keep your access to
-Insiders as long as your cancellation isn't effective. All charges are
-processed by GitHub through Stripe. As we don't receive any information
+Insiders as long as your cancellation isn't effective.
+GitHub processes all charges through Stripe. As we don't receive any information
 regarding your payment, and GitHub doesn't offer refunds, sponsorships are
 non-refundable.
 
@@ -71,6 +71,7 @@ non-refundable.
 - [x] **Spaces**: Enable sub-spaces in wiwik.
 
 ### $2,000/month
+
 - [x] **Documentation scanner**: A crawler of your documentation,
 
 ## Terms
@@ -85,6 +86,5 @@ which are given by the MIT license. However, we kindly ask you to respect our fa
   strategy.
 
 - If you cancel your subscription, you're automatically removed as a collaborator and will miss out on all future
-  updates of Insiders. However, you may use the latest version that's available to you as long as you like. Just
-  remember
-  that [GitHub deletes private forks](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-access-to-your-personal-repositories/removing-a-collaborator-from-a-personal-repository).
+  updates of Insiders. However, you may use the latest version that's available to you as long as you like.
+  remember that [GitHub deletes private forks](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-access-to-your-personal-repositories/removing-a-collaborator-from-a-personal-repository).

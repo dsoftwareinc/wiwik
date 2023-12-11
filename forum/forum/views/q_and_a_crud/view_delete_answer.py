@@ -1,14 +1,17 @@
+from typing import cast
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
 from forum.apps import logger
 from forum.views import utils
+from userauth.models import ForumUser
 
 
 @login_required
 def view_delete_answer(request, question_pk: int, answer_pk: int):
-    user = request.user
+    user: ForumUser = cast(ForumUser, request.user)
     question = utils.get_model('question', question_pk)
     answer = utils.get_model('answer', answer_pk)
     if answer is None:

@@ -7,6 +7,8 @@ from django.core.paginator import Paginator
 from django.db.models import QuerySet
 from django.shortcuts import render
 
+from forum.apps import logger
+
 
 class ManagementCommand(BaseCommand, ABC):
 
@@ -22,7 +24,7 @@ def under_construction_response(request):
 
 
 def is_email_allowed(email_address: str) -> bool:
-    """Is email address valid in the site settings"""
+    """Return whether email address has a domain that is allowed to register"""
     if not settings.ALLOWED_REGISTRATION_EMAIL_DOMAINS:
         return True
     user_email_domain = email_address.split('@')[1]
@@ -39,5 +41,6 @@ try:
     CURRENT_SITE = str(Site.objects.get_current())
     if not CURRENT_SITE.startswith('http'):
         CURRENT_SITE = 'https://' + CURRENT_SITE
-except Exception:
+except Exception as e:
+    logger.warning(f'Could not get current site: {e}')
     CURRENT_SITE = 'http://localhost:8000'

@@ -4,7 +4,7 @@
 
 - python3.10 or above: (`brew install python3.10` on mac)
 - virtualenv  (`sudo pip install virtualenv` on mac)
-- redis/docker (in order to run with async workers)
+- redis/docker (to run with async workers)
 - postgres (for full-text-search capability)
 
 ## Components diagram
@@ -214,7 +214,7 @@ running locally:
 
     ```
 
-5. In order to use search functionality, your database should be postgres. You
+5. To use search functionality, your database should be postgres. You
    can run a local container with
    postgres: `docker-compose up db`, it will create a local directory from where
    you run it with postgres data. Postgres
@@ -234,26 +234,23 @@ running locally:
    python manage.py runserver
    ```
 
-8. In order test background worker and scheduler as well, redis should be setup
-   and worker should be run. To run redis docker, you can use the docker-compose
-   command: `docker-compose up redis db` (this will run both redis and
+8. To test background worker and scheduler as well, redis should be setup and worker should be run. To run redis docker,
+   you can use the docker-compose command: `docker-compose up redis db` (this will run both redis and
    postgres).
    Then you can run another process with a worker:
    ```shell
    cd forum/
    python manage.py rqworker
    ```
-   Alternatively, you can use the scripts `rqworker.sh` and `rqscheduler.sh` to
-   start these.
+   Alternatively, you can use the scripts `rqworker.sh` and `rqscheduler.sh` to start these.
 
-9. In order to enable google auth, replace the `GOOGLE_CLIENT_ID`
+9. To enable google auth, replace the `GOOGLE_CLIENT_ID`
    and `GOOGLE_SECRET_KEY` in `.env` file with your google app oauth client ID.
-   For more details how, you can follow
-   [this tutorial](https://whizzoe.medium.com/in-5-mins-set-up-google-login-to-sign-up-users-on-django-e71d5c38f5d5)
+   For more details how, you can
+   follow [this tutorial](https://whizzoe.medium.com/in-5-mins-set-up-google-login-to-sign-up-users-on-django-e71d5c38f5d5)
    Only step 7 is required.
 
-   Run a management command to create social apps in the database after setting
-   environment variables:
+   Run a management command to create social apps in the database after setting environment variables:
    ```
    python manage.py create_social_apps
    ```

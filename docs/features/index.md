@@ -49,8 +49,8 @@ answer.
 - Articles
     - New posts as articles, good for summarizing repetitive issues.
 - Drafts (Roadmap)
-    - Create new posts (Both Q&A) as drafts to be reviewed by moderators
-      before they show up in wiwik. Drafts can be created by crawlers.
+    - Create new posts (Both Q&A) as drafts to be reviewed by moderators before they show up in wiwik.
+      Crawlers can generate drafts as well.
 
 ### Notifications (emails)
 

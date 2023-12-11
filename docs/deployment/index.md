@@ -212,7 +212,7 @@ Under `config/template/nginx.django_site.conf` you can find the default settings
 for nginx site. Create a copy of this file (preferably create a new context
 under `config` directory and put all configuration there) and edit it.
 
-Notice nginx should perform 2 main functions:
+Notice nginx should perform two main functions:
 
 1. Serve static files calls (`/media` or `/static`) directly.
 2. Refer to gunicorn for all other calls.

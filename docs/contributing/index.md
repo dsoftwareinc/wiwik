@@ -13,7 +13,7 @@ looks forward to your contributions. 🎉
 
 > And if you like the project, but just don't have time to contribute, that's
 > fine. There are other easy ways to support the project and show your
-> appreciation, which we would also be very happy about:
+> appreciation, which we would also be thrilled about:
 > - Star the project
 > - Tweet about it
 > - Refer this project in your project's readme
@@ -163,10 +163,9 @@ the community to understand your suggestion and find related suggestions.
   enhancement has already been suggested. If it has, add a comment to the
   existing issue instead of opening a new one.
 - Find out whether your idea fits with the scope and aims of the project. It's
-  up to you to make a strong case to convince the project's developers of the
-  merits of this feature. Keep in mind that we want features that will be useful
-  to the majority of our users and not just a small subset. If you're just
-  targeting a minority of users, consider writing an add-on/plugin library.
+  up to you to make a strong case to convince the project's developers of this feature's merits.
+  Keep in mind that we want features that will be useful to the majority of our users and not just a small subset.
+  If you're just targeting a minority of users, consider writing an add-on/plugin library.
 
 <!-- omit in toc -->
 
