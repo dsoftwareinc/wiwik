@@ -12,7 +12,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
 Django = "^5.0"
-django-allauth = "^0.58"
+django-allauth = "^0.59"
 
 pyparsing = "^3.0"
 python-dateutil = "^2.8"
