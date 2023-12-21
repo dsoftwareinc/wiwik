@@ -102,14 +102,13 @@ class QuestionManager(models.Manager):
 
 
 class Question(VotableUserInput, Flaggable, Followable):
-    """
-    Class to represent a post in the forum
-    """
+    """Class to represent a post in the forum"""
 
     class PostType(models.TextChoices):
         ARTICLE = 'a', 'Article'
         QUESTION = 'q', 'Question'
         HOWTO = 'h', 'How to'
+        DISCUSSION = 'd', 'Discussion'
 
     class PostStatus(models.TextChoices):
         OPEN = 'a', 'Open'
@@ -121,7 +120,7 @@ class Question(VotableUserInput, Flaggable, Followable):
         NEEDS_DETAILS = 'N', 'Needs details or Clarity'
 
     POST_ARTICLE_TYPES = {PostType.ARTICLE, PostType.HOWTO, }
-    POST_TYPE_ACCEPTING_ANSWERS = {PostType.QUESTION, }
+    POST_TYPE_ACCEPTING_ANSWERS = {PostType.QUESTION, PostType.DISCUSSION}
     POST_STATUS_ACCEPTING_ANSWERS = {PostStatus.OPEN, PostStatus.TRIAGED}
     SOURCES = [
         ('slack', 'Slack'),
