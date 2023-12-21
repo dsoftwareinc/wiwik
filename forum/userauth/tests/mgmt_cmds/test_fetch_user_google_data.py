@@ -9,7 +9,7 @@ class FetchGoogleDataTest(TestCase):
         out = StringIO()
         management.call_command(
             "fetch_user_google_data",
-            '--no-color',
+            "--no-color",
             *args,
             **kwargs,
             stdout=out,

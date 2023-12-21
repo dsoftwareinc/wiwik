@@ -14,7 +14,7 @@ def update_has_accepted_answer(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('articles', '0002_alter_article_options'),
+        ("articles", "0002_alter_article_options"),
     ]
 
     operations = [

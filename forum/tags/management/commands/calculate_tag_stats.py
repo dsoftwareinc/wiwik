@@ -3,7 +3,7 @@ from tags.jobs import update_tag_stats
 
 
 class Command(ManagementCommand):
-    help = 'Calculate tag follows statistics and tags-statistics'
+    help = "Calculate tag follows statistics and tags-statistics"
 
     def handle(self, *args, **options):
         update_tag_stats()

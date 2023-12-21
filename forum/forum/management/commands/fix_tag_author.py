@@ -4,16 +4,19 @@ from wiwik_lib.utils import ManagementCommand
 
 class Command(ManagementCommand):
     """This command should be run once."""
-    help = 'Fix tag author to be the author of the first question with the tag'
+
+    help = "Fix tag author to be the author of the first question with the tag"
 
     def handle(self, *args, **options):
         tag_qs = Tag.objects.all()
         count = 0
         for tag in tag_qs:
             if tag.author is not None:
-                self.print(f"Tag {tag.tag_word} already has author set to {tag.author.username}, skipping")
+                self.print(
+                    f"Tag {tag.tag_word} already has author set to {tag.author.username}, skipping"
+                )
                 continue
-            first_question = tag.question_set.all().order_by('created_at').first()
+            first_question = tag.question_set.all().order_by("created_at").first()
             if first_question is None:
                 self.print(f"Tag {tag.tag_word} does not have questions...")
                 continue

@@ -14,7 +14,7 @@ class CreateCronJobsTest(TestCase):
         out = StringIO()
         call_command(
             "create_cron_jobs",
-            '--no-color',
+            "--no-color",
             *args,
             **kwargs,
             stdout=out,
@@ -22,7 +22,7 @@ class CreateCronJobsTest(TestCase):
         )
         return out.getvalue()
 
-    @mock.patch('redis.Redis', return_value=fakeredis.FakeStrictRedis())
+    @mock.patch("redis.Redis", return_value=fakeredis.FakeStrictRedis())
     def test__green(self, conn):
         prev_count = CronTask.objects.count()
         conn.info.side_effect = ResponseError()
@@ -31,11 +31,15 @@ class CreateCronJobsTest(TestCase):
         # assert
         self.assertEqual(prev_count + 6, CronTask.objects.count())
         self.assertEqual(
-            textwrap.dedent('''\
+            textwrap.dedent(
+                """\
             Creating CronJob: Daily activity report for admins
             Creating CronJob: Send users weekly digest
             Creating CronJob: Warn moderators about loosing status
             Creating CronJob: Moderator revoke/grant
             Creating CronJob: Calculate users impact
             Creating CronJob: Calculate badges for users
-            '''), out)
+            """
+            ),
+            out,
+        )

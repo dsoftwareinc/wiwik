@@ -4,15 +4,18 @@ from forum.views import utils
 
 
 class TestAcceptAnswerView(ForumApiTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ','.join(cls.tags))
-        cls.activity = VoteActivity.objects.create(source=None,
-                                                   target=cls.users[0],
-                                                   reputation_change=10,
-                                                   question=cls.question)
+        cls.question = utils.create_question(
+            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
+        )
+        cls.activity = VoteActivity.objects.create(
+            source=None,
+            target=cls.users[0],
+            reputation_change=10,
+            question=cls.question,
+        )
 
     def test_view_all_mark_as_seen__green(self):
         self.client.login(self.usernames[0], self.password)

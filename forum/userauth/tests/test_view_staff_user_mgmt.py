@@ -3,14 +3,17 @@ from userauth.tests.utils import UserAuthTestCase
 
 
 class UserAuthViewStaffDeactivateUser(UserAuthTestCase):
-    staff_username = 'staff_member'
+    staff_username = "staff_member"
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         ForumUser.objects.create_user(
-            cls.staff_username, f'{cls.staff_username}@a.com',
-            cls.password, is_staff=True)
+            cls.staff_username,
+            f"{cls.staff_username}@a.com",
+            cls.password,
+            is_staff=True,
+        )
 
     def test_view_staff_deactivate_user__green(self):
         # arrange
@@ -41,21 +44,24 @@ class UserAuthViewStaffDeactivateUser(UserAuthTestCase):
         self.client.login(self.staff_username, self.password)
 
         # act
-        res = self.client.staff_deactivate_user(self.usernames[0] + 'sss')
+        res = self.client.staff_deactivate_user(self.usernames[0] + "sss")
 
         # assert
         self.assertEqual(404, res.status_code)
 
 
 class UserAuthViewStaffActivateUser(UserAuthTestCase):
-    staff_username = 'staff_member'
+    staff_username = "staff_member"
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         ForumUser.objects.create_user(
-            cls.staff_username, f'{cls.staff_username}@a.com',
-            cls.password, is_staff=True)
+            cls.staff_username,
+            f"{cls.staff_username}@a.com",
+            cls.password,
+            is_staff=True,
+        )
         cls.users[0].is_active = False
         cls.users[0].save()
 
@@ -88,7 +94,7 @@ class UserAuthViewStaffActivateUser(UserAuthTestCase):
         self.client.login(self.staff_username, self.password)
 
         # act
-        res = self.client.staff_activate_user(self.usernames[0] + 'sss')
+        res = self.client.staff_activate_user(self.usernames[0] + "sss")
 
         # assert
         self.assertEqual(404, res.status_code)

@@ -15,8 +15,12 @@ from userauth.models import ForumUser
 )
 class ArticlesApiTestCase(TestCase):
     prev_channel: str
-    usernames = ['myuser_name1', 'myuser_name2', 'myuser_name3', ]
-    password = 'magicalPa$$w0rd'
+    usernames = [
+        "myuser_name1",
+        "myuser_name2",
+        "myuser_name3",
+    ]
+    password = "magicalPa$$w0rd"
 
     @classmethod
     def setUpClass(cls):
@@ -25,8 +29,12 @@ class ArticlesApiTestCase(TestCase):
         settings.SLACK_NOTIFICATIONS_CHANNEL = None
         cls.users = [
             ForumUser.objects.create_user(
-                username, f'{username}@a.com', cls.password,
-            ) for username in cls.usernames]
+                username,
+                f"{username}@a.com",
+                cls.password,
+            )
+            for username in cls.usernames
+        ]
 
     def setUp(self):
         self.client = ForumClient()

@@ -8,30 +8,71 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('forum', '0001_squashed_0007_question_space'),
+        ("forum", "0001_squashed_0007_question_space"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PostSimilarity',
+            name="PostSimilarity",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True, null=True)),
-                ('postgres_rank',
-                 models.DecimalField(decimal_places=4, help_text='Postgres full text search rank', max_digits=5)),
-                ('postgres_trigram_rank',
-                 models.DecimalField(decimal_places=4, help_text='Reverse of distance based on trigram similarity',
-                                     max_digits=5)),
-                ('tfidf_rank', models.DecimalField(decimal_places=4, help_text='TF-IDF similarity', max_digits=5)),
-                ('rank', models.DecimalField(decimal_places=4, help_text='Calculated rank', max_digits=5)),
-                ('question1',
-                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='forum.question')),
-                ('question2',
-                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='forum.question')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True, null=True)),
+                (
+                    "postgres_rank",
+                    models.DecimalField(
+                        decimal_places=4,
+                        help_text="Postgres full text search rank",
+                        max_digits=5,
+                    ),
+                ),
+                (
+                    "postgres_trigram_rank",
+                    models.DecimalField(
+                        decimal_places=4,
+                        help_text="Reverse of distance based on trigram similarity",
+                        max_digits=5,
+                    ),
+                ),
+                (
+                    "tfidf_rank",
+                    models.DecimalField(
+                        decimal_places=4, help_text="TF-IDF similarity", max_digits=5
+                    ),
+                ),
+                (
+                    "rank",
+                    models.DecimalField(
+                        decimal_places=4, help_text="Calculated rank", max_digits=5
+                    ),
+                ),
+                (
+                    "question1",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="+",
+                        to="forum.question",
+                    ),
+                ),
+                (
+                    "question2",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="+",
+                        to="forum.question",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Similar Questions',
+                "verbose_name_plural": "Similar Questions",
             },
         ),
     ]

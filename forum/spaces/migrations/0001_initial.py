@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -15,50 +14,131 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Space',
+            name="Space",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('short_name', models.CharField(max_length=10, unique=True)),
-                ('name', models.CharField(max_length=100, unique=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('page', models.TextField(blank=True, default='')),
-                ('start_date', models.DateField(blank=True, null=True)),
-                ('end_date', models.DateField(blank=True, null=True)),
-                ('logo', models.ImageField(blank=True, default='space_pics/default_logo.jpg', null=True, upload_to='space_pics')),
-                ('restricted', models.BooleanField(default=False)),
-                ('author', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("short_name", models.CharField(max_length=10, unique=True)),
+                ("name", models.CharField(max_length=100, unique=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("page", models.TextField(blank=True, default="")),
+                ("start_date", models.DateField(blank=True, null=True)),
+                ("end_date", models.DateField(blank=True, null=True)),
+                (
+                    "logo",
+                    models.ImageField(
+                        blank=True,
+                        default="space_pics/default_logo.jpg",
+                        null=True,
+                        upload_to="space_pics",
+                    ),
+                ),
+                ("restricted", models.BooleanField(default=False)),
+                (
+                    "author",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='SpaceProperty',
+            name="SpaceProperty",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('author', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, unique=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "author",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Space properties',
+                "verbose_name_plural": "Space properties",
             },
         ),
         migrations.CreateModel(
-            name='SpaceToProperty',
+            name="SpaceToProperty",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('property', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='space_property_rel', to='spaces.spaceproperty')),
-                ('space', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='space_property_rel', to='spaces.space')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "property",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="space_property_rel",
+                        to="spaces.spaceproperty",
+                    ),
+                ),
+                (
+                    "space",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="space_property_rel",
+                        to="spaces.space",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='SpaceMember',
+            name="SpaceMember",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('space', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='spaces.space')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                (
+                    "space",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="spaces.space"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'space')},
+                "unique_together": {("user", "space")},
             },
         ),
     ]

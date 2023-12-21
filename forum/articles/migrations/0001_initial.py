@@ -4,24 +4,22 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('forum', '0008_alter_question_answers_count_and_more'),
+        ("forum", "0008_alter_question_answers_count_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Article',
-            fields=[
-            ],
+            name="Article",
+            fields=[],
             options={
-                'verbose_name': 'Articles',
-                'proxy': True,
-                'indexes': [],
-                'constraints': [],
+                "verbose_name": "Articles",
+                "proxy": True,
+                "indexes": [],
+                "constraints": [],
             },
-            bases=('forum.question',),
+            bases=("forum.question",),
         ),
     ]

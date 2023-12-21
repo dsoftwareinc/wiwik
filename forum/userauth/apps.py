@@ -6,4 +6,4 @@ logger = logging.getLogger(__package__)
 
 
 class UserauthConfig(AppConfig):
-    name = 'userauth'
+    name = "userauth"

@@ -12,24 +12,45 @@ admin.site.login = login_required(admin.site.login)
 class AnswerCommentInline(admin.TabularInline):
     extra = 0
     model = AnswerComment
-    search_fields = ('author__username', 'author__email',)
-    autocomplete_fields = ('author',)
-    raw_id_fields = ('users_upvoted',)
+    search_fields = (
+        "author__username",
+        "author__email",
+    )
+    autocomplete_fields = ("author",)
+    raw_id_fields = ("users_upvoted",)
 
 
 @admin.register(Answer)
 class AnswerAdmin(NumericFilterModelAdmin):
-    list_display = ('id', 'question', 'author', 'is_accepted', 'votes', 'created_at',)
-    fields = ('question', 'content', 'author',
-              'is_accepted',
-              ('users_upvoted', 'users_downvoted',),
-              )
-    search_fields = ('author__username', 'content', 'question__title')
-    autocomplete_fields = ('author', 'question',)
-    raw_id_fields = ('users_upvoted', 'users_downvoted')
+    list_display = (
+        "id",
+        "question",
+        "author",
+        "is_accepted",
+        "votes",
+        "created_at",
+    )
+    fields = (
+        "question",
+        "content",
+        "author",
+        "is_accepted",
+        (
+            "users_upvoted",
+            "users_downvoted",
+        ),
+    )
+    search_fields = ("author__username", "content", "question__title")
+    autocomplete_fields = (
+        "author",
+        "question",
+    )
+    raw_id_fields = ("users_upvoted", "users_downvoted")
     inlines = (AnswerCommentInline,)
     list_filter = (
-        UserFilter, QuestionFilter,
-        ('created_at', DateRangeFilter),
-        ('votes', SliderNumericFilter),
-        'is_accepted',)
+        UserFilter,
+        QuestionFilter,
+        ("created_at", DateRangeFilter),
+        ("votes", SliderNumericFilter),
+        "is_accepted",
+    )

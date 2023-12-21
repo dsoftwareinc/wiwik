@@ -11,28 +11,32 @@ from wiwik_lib.views.follow_views import create_follow, delete_follow
 
 
 def handle_user_tag_stats(tag: Tag, user: AbstractUser) -> None:
-    questions_by_user = (models.Question.objects
-                         .filter(author=user, tags=tag)
-                         .count())
-    answers_by_user = (models.Answer.objects
-                       .filter(author=user, question__tags=tag)
-                       .count())
-    reputation = (models.VoteActivity.objects
-                  .filter(target=user, question__tags=tag)
-                  .aggregate(rep=Sum('reputation_change'))
-                  .get('rep') or 0
-                  )
+    questions_by_user = models.Question.objects.filter(author=user, tags=tag).count()
+    answers_by_user = models.Answer.objects.filter(
+        author=user, question__tags=tag
+    ).count()
+    reputation = (
+        models.VoteActivity.objects.filter(target=user, question__tags=tag)
+        .aggregate(rep=Sum("reputation_change"))
+        .get("rep")
+        or 0
+    )
     last_month = timezone.now() - timedelta(days=30)
-    reputation_last_month = (models.VoteActivity.objects
-                             .filter(target=user,
-                                     question__tags=tag,
-                                     created_at__gte=last_month, )
-                             .aggregate(rep=Sum('reputation_change'))
-                             .get('rep') or 0
-                             )
+    reputation_last_month = (
+        models.VoteActivity.objects.filter(
+            target=user,
+            question__tags=tag,
+            created_at__gte=last_month,
+        )
+        .aggregate(rep=Sum("reputation_change"))
+        .get("rep")
+        or 0
+    )
 
     # Only if any number is bigger than 0, then stats object should be created
-    should_have_stats = any((questions_by_user, answers_by_user, reputation, reputation_last_month))
+    should_have_stats = any(
+        (questions_by_user, answers_by_user, reputation, reputation_last_month)
+    )
 
     if not should_have_stats:
         models.UserTagStats.objects.filter(tag=tag, user=user).delete()

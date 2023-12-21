@@ -14,13 +14,13 @@ from urllib3.exceptions import MaxRetryError
 from forum.apps import logger
 from forum.models import Question
 
-INLINE_LINK_RE = re.compile(r'\[([^\]]+)\]\(([^)]+)\)')
-FOOTNOTE_LINK_TEXT_RE = re.compile(r'\[([^\]]+)\]\[(\d+)\]')
-FOOTNOTE_LINK_URL_RE = re.compile(r'\[(\d+)\]:\s+(\S+)')
+INLINE_LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
+FOOTNOTE_LINK_TEXT_RE = re.compile(r"\[([^\]]+)\]\[(\d+)\]")
+FOOTNOTE_LINK_URL_RE = re.compile(r"\[(\d+)\]:\s+(\S+)")
 
 
 def _find_md_links(md):
-    """ Return dict of links in markdown """
+    """Return dict of links in markdown"""
 
     links = dict(INLINE_LINK_RE.findall(md))
     footnote_links = dict(FOOTNOTE_LINK_TEXT_RE.findall(md))
@@ -34,7 +34,7 @@ def _find_md_links(md):
 
 
 def _content_links() -> dict[int, list[str]]:
-    questions = Question.objects.all().order_by('-created_at')
+    questions = Question.objects.all().order_by("-created_at")
     results = dict()
     for q in questions:
         links = list(_find_md_links(q.content).values())
@@ -47,9 +47,10 @@ def _content_links() -> dict[int, list[str]]:
 
 def _media_uploads() -> Set[str]:
     fss = FileSystemStorage()
-    _, files = fss.listdir(os.path.join(settings.MEDIA_ROOT, 'uploads'))
-    links = {str(os.path.join(settings.MEDIA_URL, 'uploads', filename))
-             for filename in files}
+    _, files = fss.listdir(os.path.join(settings.MEDIA_ROOT, "uploads"))
+    links = {
+        str(os.path.join(settings.MEDIA_URL, "uploads", filename)) for filename in files
+    }
     return links
 
 
@@ -69,7 +70,7 @@ def check_urls():
         for link in q_links[q]:
             if not _test_link(link):
                 res.setdefault(q, list()).append(link)
-                logger.debug(f'Q{q} Link {link} does not work')
+                logger.debug(f"Q{q} Link {link} does not work")
     return res
 
 
@@ -83,5 +84,6 @@ def scan_media_links_usage():
     unused_media_uploads = uploads.difference(all_links)
     if len(unused_media_uploads) > 0:
         django.core.mail.mail_admins(
-            f'Report - media files not used in any post {datetime.date.today()}',
-            '\n'.join(unused_media_uploads))
+            f"Report - media files not used in any post {datetime.date.today()}",
+            "\n".join(unused_media_uploads),
+        )

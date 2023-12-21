@@ -24,20 +24,24 @@ from wiwik_lib.views.follow_views import delete_follow, create_follow
 def recalculate_user_reputation(user: AbstractUser) -> None:
     """Calculate a user reputation based on VoteActivity"""
     if user is None or not isinstance(user, ForumUser):
-        logger.warning(f'User {user} is not a ForumUser, skipping reputation recalculation')
+        logger.warning(
+            f"User {user} is not a ForumUser, skipping reputation recalculation"
+        )
         return
-    reputation_qs = (models.VoteActivity.objects
-                     .filter(target=user)
-                     .aggregate(rep=Sum('reputation_change')))
-    reputation = reputation_qs.get('rep', 0)
+    reputation_qs = models.VoteActivity.objects.filter(target=user).aggregate(
+        rep=Sum("reputation_change")
+    )
+    reputation = reputation_qs.get("rep", 0)
     user.reputation_score = reputation
     user.save()
 
 
-def create_activity(source: Union[AbstractUser, None],
-                    target: AbstractUser,
-                    userinput: models.UserInput,
-                    rep_change: int) -> models.VoteActivity:
+def create_activity(
+    source: Union[AbstractUser, None],
+    target: AbstractUser,
+    userinput: models.UserInput,
+    rep_change: int,
+) -> models.VoteActivity:
     """Create VoteActivity if it does not exist.
     :param source: Originator of VoteActivity (upvoter, downvoter, ...) - can be None
     :param target: Target of VoteActivity who will earn the rep-points - can NOT be None
@@ -46,62 +50,71 @@ def create_activity(source: Union[AbstractUser, None],
     :returns: Created VoteActivity
     """
     source_username = source.username if source else None
-    logger.debug(f'Create activity by {source_username}: '
-                 f'{rep_change} for {target.username} on {userinput.get_model()} {userinput.id}')
+    logger.debug(
+        f"Create activity by {source_username}: "
+        f"{rep_change} for {target.username} on {userinput.get_model()} {userinput.id}"
+    )
 
-    exist = (models.VoteActivity.objects
-             .filter(source=source,
-                     target=target,
-                     question=userinput.get_question(),
-                     answer=userinput.get_answer(),
-                     reputation_change=rep_change)
-             .first())
+    exist = models.VoteActivity.objects.filter(
+        source=source,
+        target=target,
+        question=userinput.get_question(),
+        answer=userinput.get_answer(),
+        reputation_change=rep_change,
+    ).first()
     if exist is not None:
-        logger.warning('Activity already exist, exiting')
+        logger.warning("Activity already exist, exiting")
         return exist
     activity = models.VoteActivity.objects.create(
         source=source,
         target=target,
         question=userinput.get_question(),
         answer=userinput.get_answer(),
-        reputation_change=rep_change)
+        reputation_change=rep_change,
+    )
     recalculate_user_reputation(target)
     return activity
 
 
 def delete_activity(
-        source: AbstractUser,
-        target: AbstractUser,
-        userinput: models.UserInput,
-        rep_change: int) -> None:
+    source: AbstractUser,
+    target: AbstractUser,
+    userinput: models.UserInput,
+    rep_change: int,
+) -> None:
     """Find an activity with parameters and delete it
     :param source: Originator of VoteActivity (upvoter, downvoter, ...)
     :param target: Target of VoteActivity who will earn the rep-points
     :param userinput: Input the VoteActivity is on (can be Question or Answer)
     :param rep_change: Value of VoteActivity
     """
-    activity = (models.VoteActivity.objects
-                .filter(source=source, target=target,
-                        question=userinput.get_question(), answer=userinput.get_answer(),
-                        reputation_change=rep_change)
-                .first())
+    activity = models.VoteActivity.objects.filter(
+        source=source,
+        target=target,
+        question=userinput.get_question(),
+        answer=userinput.get_answer(),
+        reputation_change=rep_change,
+    ).first()
     if activity is None:
         logger.warning(
-            f'Tried deleting activity by {source.username} with {rep_change}pts for {target.username} '
-            f'on {userinput.get_model()} {userinput.id} but could not find such activity')
+            f"Tried deleting activity by {source.username} with {rep_change}pts for {target.username} "
+            f"on {userinput.get_model()} {userinput.id} but could not find such activity"
+        )
         return
 
-    logger.debug(f'Delete activity by {source.username}: '
-                 f'{rep_change} for {target.username} on {userinput.get_model()} {userinput.id}')
+    logger.debug(
+        f"Delete activity by {source.username}: "
+        f"{rep_change} for {target.username} on {userinput.get_model()} {userinput.id}"
+    )
     activity.delete()
     recalculate_user_reputation(target)
 
 
 MODELS_MAP = {
-    'question': models.Question,
-    'answer': models.Answer,
-    'comment_answer': models.AnswerComment,
-    'comment_question': models.QuestionComment,
+    "question": models.Question,
+    "answer": models.Answer,
+    "comment_answer": models.AnswerComment,
+    "comment_question": models.QuestionComment,
 }
 
 
@@ -123,6 +136,7 @@ def get_model(model_name: str, pk: int) -> Optional[Model]:
 
 # ======== Question methods ================
 
+
 def _get_tag(tag_word: str, user: AbstractUser) -> Tag:
     """
     Get tag with tag_word.
@@ -139,15 +153,22 @@ def _get_tag(tag_word: str, user: AbstractUser) -> Tag:
     return tag
 
 
-def create_article(user: AbstractUser, title: str, content: str, tags: str, **kwargs) -> models.Question:
-    if 'type' not in kwargs:
-        kwargs['type'] = models.Question.PostType.ARTICLE
+def create_article(
+    user: AbstractUser, title: str, content: str, tags: str, **kwargs
+) -> models.Question:
+    if "type" not in kwargs:
+        kwargs["type"] = models.Question.PostType.ARTICLE
     return create_question(user, title, content, tags, **kwargs)
 
 
-def create_question(user: AbstractUser, title: str, content: str, tags: str,
-                    send_notifications: bool = True,
-                    **kwargs) -> models.Question:
+def create_question(
+    user: AbstractUser,
+    title: str,
+    content: str,
+    tags: str,
+    send_notifications: bool = True,
+    **kwargs,
+) -> models.Question:
     """Create a question in the DB, add tags to the question and notify tag followers about new question.
     :param user: Question author
     :param title: question title
@@ -159,24 +180,32 @@ def create_question(user: AbstractUser, title: str, content: str, tags: str,
         e.g., anonymous flag
     :return: the question created.
     """
-    q = models.Question.objects.create(title=title, content=content, author=user, **kwargs)
+    q = models.Question.objects.create(
+        title=title, content=content, author=user, **kwargs
+    )
     create_follow(q, user)
-    question_tag_words = set(tags.replace(' ', '').lower().split(','))
-    if '' in question_tag_words:
-        question_tag_words.remove('')
+    question_tag_words = set(tags.replace(" ", "").lower().split(","))
+    if "" in question_tag_words:
+        question_tag_words.remove("")
     for tag_word in question_tag_words:
         tag: Tag = _get_tag(tag_word, user)
         q.tags.add(tag)
         follow_models.create_follow_tag(tag, user)
     q.save()
     if send_notifications:
-        notifications.notify_tag_followers_new_question(user, question_tag_words, q, )
+        notifications.notify_tag_followers_new_question(
+            user,
+            question_tag_words,
+            q,
+        )
     jobs.start_job(jobs.update_user_tag_stats, q.id, user.id)
-    jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Create post'])
+    jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES["Create post"])
     return q
 
 
-def update_question(user: AbstractUser, q: models.Question, title: str, content: str, tags: str) -> models.Question:
+def update_question(
+    user: AbstractUser, q: models.Question, title: str, content: str, tags: str
+) -> models.Question:
     """Update question content if there are changes
     :param user: User who is updating the post model
     :param q: Question to be updated
@@ -186,11 +215,11 @@ def update_question(user: AbstractUser, q: models.Question, title: str, content:
     :returns: the updated Question
     """
     curr_tag_words = set(q.tag_words())
-    new_tag_words = set(tags.replace(' ', '').lower().split(','))
-    if '' in new_tag_words:
-        new_tag_words.remove('')
+    new_tag_words = set(tags.replace(" ", "").lower().split(","))
+    if "" in new_tag_words:
+        new_tag_words.remove("")
     if q.title == title and q.content == content and curr_tag_words == new_tag_words:
-        logger.info(f'No changes when updating question {q.id}, returning')
+        logger.info(f"No changes when updating question {q.id}, returning")
         return q
     old_title = q.title
     old_content = q.content
@@ -214,12 +243,12 @@ def update_question(user: AbstractUser, q: models.Question, title: str, content:
     q.save()
     create_follow(q, user)
     notifications.notify_question_changes(user, q, old_title, old_content)
-    jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Update post'])
+    jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES["Update post"])
     return q
 
 
 def delete_question(question: models.Question) -> None:
-    answers_list = list(question.answer_set.all().using('default'))
+    answers_list = list(question.answer_set.all().using("default"))
     for answer in answers_list:
         delete_answer(answer)
     jobs.start_job(tag_jobs.update_tag_stats)
@@ -232,20 +261,29 @@ def delete_question(question: models.Question) -> None:
 
 # Answers method
 
-def create_answer(content: str, user: AbstractUser, question: models.Question,
-                  send_notifications: bool = True) -> Optional[models.Answer]:
-    if content is None or content.strip() == '':
-        logger.warning('Trying to create answer without content, ignoring')
+
+def create_answer(
+    content: str,
+    user: AbstractUser,
+    question: models.Question,
+    send_notifications: bool = True,
+) -> Optional[models.Answer]:
+    if content is None or content.strip() == "":
+        logger.warning("Trying to create answer without content, ignoring")
         return None
     if question is None:  # Should not happen since it is tested in view
-        logger.warning('Trying to create answer without question, ignoring')
+        logger.warning("Trying to create answer without question, ignoring")
         return None
     if question.answer_set.filter(author=user).count() > 0:
-        logger.warning(f'User {user.username} already answered question, please update existing answer')
+        logger.warning(
+            f"User {user.username} already answered question, please update existing answer"
+        )
         return None
     # Protect creating answers on posts that do not accept answer
     if not question.is_accepting_answers:
-        logger.warning(f'User {user.username} is trying to answer a post {question.id} that does not accept answer')
+        logger.warning(
+            f"User {user.username} is trying to answer a post {question.id} that does not accept answer"
+        )
         return None
     a = models.Answer.objects.create(content=content, author=user, question=question)
     tags = a.question.tags.all()
@@ -255,13 +293,15 @@ def create_answer(content: str, user: AbstractUser, question: models.Question,
     create_follow(question, user)
     if send_notifications:
         notifications.notify_new_answer(user, a)
-    jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Create post'])
+    jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES["Create post"])
     return a
 
 
-def update_answer(user: AbstractUser, answer: models.Answer, content: str) -> models.Answer:
+def update_answer(
+    user: AbstractUser, answer: models.Answer, content: str
+) -> models.Answer:
     if content == answer.content:
-        logger.info('no changes when updating answer, ignoring')
+        logger.info("no changes when updating answer, ignoring")
         return answer
     old_content = answer.content
     answer.content = content
@@ -270,7 +310,7 @@ def update_answer(user: AbstractUser, answer: models.Answer, content: str) -> mo
         create_activity(None, user, answer, 2)
     answer.save()
     notifications.notify_answer_changes(user, answer, old_content)
-    jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Update post'])
+    jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES["Update post"])
     return answer
 
 
@@ -282,36 +322,48 @@ def delete_answer(answer: models.Answer):
     recalculate_user_reputation(editor)
 
 
-def undo_upvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.VotableUserInput:
+def undo_upvote(
+    user: AbstractUser, model_obj: models.VotableUserInput
+) -> models.VotableUserInput:
     model_obj.users_upvoted.remove(user)
     model_obj.save()
     delete_activity(user, model_obj.author, model_obj, settings.UPVOTE_CHANGE)
     return model_obj
 
 
-def undo_downvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.VotableUserInput:
+def undo_downvote(
+    user: AbstractUser, model_obj: models.VotableUserInput
+) -> models.VotableUserInput:
     model_obj.users_downvoted.remove(user)
     model_obj.save()
     delete_activity(user, model_obj.author, model_obj, settings.DOWNVOTE_CHANGE)
     return model_obj
 
 
-def upvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.VotableUserInput:
+def upvote(
+    user: AbstractUser, model_obj: models.VotableUserInput
+) -> models.VotableUserInput:
     if model_obj.users_downvoted.filter(id=user.id).count() > 0:
-        logger.debug(f'User {user.username} previously downvoted, removing downvote first')
+        logger.debug(
+            f"User {user.username} previously downvoted, removing downvote first"
+        )
         undo_downvote(user, model_obj)
 
     model_obj.users_upvoted.add(user)
     model_obj.save()
     create_follow(model_obj.get_question(), user)
     create_activity(user, model_obj.author, model_obj, settings.UPVOTE_CHANGE)
-    jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Upvote'])
+    jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES["Upvote"])
     return model_obj
 
 
-def downvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.VotableUserInput:
+def downvote(
+    user: AbstractUser, model_obj: models.VotableUserInput
+) -> models.VotableUserInput:
     if model_obj.users_upvoted.filter(id=user.id).count() > 0:
-        logger.info(f'User {user.username} previously downvoted, removing downvote first')
+        logger.info(
+            f"User {user.username} previously downvoted, removing downvote first"
+        )
         undo_upvote(user, model_obj)
 
     model_obj.users_downvoted.add(user)
@@ -332,30 +384,38 @@ def accept_answer(answer: models.Answer) -> None:
     answer.question.has_accepted_answer = True
     answer.is_accepted = True
     answer.save()
-    logger.info(f"Answer {answer.id} marked as accepted for question {answer.question_id}")
+    logger.info(
+        f"Answer {answer.id} marked as accepted for question {answer.question_id}"
+    )
 
 
 # Comment method
-def create_comment(content: str, user: AbstractUser, parent: models.UserInput) -> Optional[models.Comment]:
-    if content is None or content.strip() == '':
-        logger.warning('Trying to create comment without content, ignoring')
+def create_comment(
+    content: str, user: AbstractUser, parent: models.UserInput
+) -> Optional[models.Comment]:
+    if content is None or content.strip() == "":
+        logger.warning("Trying to create comment without content, ignoring")
         return None
     if parent is None:  # should never happen
-        logger.warning('Trying to create comment without parent, ignoring')
+        logger.warning("Trying to create comment without parent, ignoring")
         return None
     if isinstance(parent, models.Question):
-        comment = models.QuestionComment.objects.create(content=content, author=user, question=parent)
+        comment = models.QuestionComment.objects.create(
+            content=content, author=user, question=parent
+        )
     else:  # isinstance(parent,models.Answer)
-        comment = models.AnswerComment.objects.create(content=content, author=user, answer=parent)
+        comment = models.AnswerComment.objects.create(
+            content=content, author=user, answer=parent
+        )
     q = comment.get_question()
     notifications.notify_new_comment(user, parent, comment)
     create_follow(q, user)
-    jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Create comment'])
+    jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES["Create comment"])
     return comment
 
 
 def delete_comment(comment: models.Comment) -> None:
-    logger.debug(f'deleting {comment.pk}')
+    logger.debug(f"deleting {comment.pk}")
     delete_follow(comment.get_question(), comment.author)
     comment.delete()
 
@@ -370,13 +430,14 @@ def upvote_comment(user: AbstractUser, comment: models.Comment) -> models.Commen
 
 
 def get_user_followed_tags(user: AbstractUser) -> list[Tag]:
-    tag_type = ContentType.objects.get(app_label='tags', model='tag')
+    tag_type = ContentType.objects.get(app_label="tags", model="tag")
     follows = Follow.objects.filter(user=user, content_type=tag_type)
     return [f.content_object for f in follows]
 
 
 def create_invites_and_notify_invite_users_to_question(
-        inviter: AbstractUser, invitees: List[AbstractUser], post: models.Question) -> int:
+    inviter: AbstractUser, invitees: List[AbstractUser], post: models.Question
+) -> int:
     """Generate invitations for user to participate in a post.
 
     Args:
@@ -391,7 +452,9 @@ def create_invites_and_notify_invite_users_to_question(
     invited_list = []
     for invitee in invitees:
         if inviter == invitee:
-            logger.debug(f'User {inviter.username} invited itself to post[{post.id}] => skipping')
+            logger.debug(
+                f"User {inviter.username} invited itself to post[{post.id}] => skipping"
+            )
             continue
         existing = PostInvitation.objects.filter(
             question=post,
@@ -399,8 +462,10 @@ def create_invites_and_notify_invite_users_to_question(
             invitee=invitee,
         ).first()
         if existing is not None:
-            logger.debug(f'User {inviter.username} invited {invitee.username} to'
-                         f' post[{post.id}] but user is already invited => skipping')
+            logger.debug(
+                f"User {inviter.username} invited {invitee.username} to"
+                f" post[{post.id}] but user is already invited => skipping"
+            )
         if existing is None:
             PostInvitation.objects.create(
                 question=post,
@@ -408,6 +473,6 @@ def create_invites_and_notify_invite_users_to_question(
                 invitee=invitee,
             )
             invited_list.append(invitee)
-    logger.debug(f'Created {len(invited_list)} invitations: [{invited_list}]')
+    logger.debug(f"Created {len(invited_list)} invitations: [{invited_list}]")
     notifications.notify_invite_users_to_question(inviter, post, invited_list)
     return len(invited_list)

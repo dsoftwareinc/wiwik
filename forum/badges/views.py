@@ -12,29 +12,48 @@ from forum.models import VoteActivity
 def view_single_badge(request, badge_id: int):
     badge = get_object_or_404(Badge, pk=badge_id)
 
-    query_set = (VoteActivity.objects
-                 .filter(badge=badge, target__is_active=True)
-                 .order_by('-created_at'))
-    page = request.GET.get('page', 1)
+    query_set = VoteActivity.objects.filter(
+        badge=badge, target__is_active=True
+    ).order_by("-created_at")
+    page = request.GET.get("page", 1)
     items = paginate_queryset(query_set, page, 50)
-    return render(request, "badges/badges.single.template.html", {
-        'badge': badge,
-        'items': items,
-    })
+    return render(
+        request,
+        "badges/badges.single.template.html",
+        {
+            "badge": badge,
+            "items": items,
+        },
+    )
 
 
 @login_required
 def view_badges(request):
-    items = list(Badge.objects.all()
-                 .annotate(users=Count('voteactivity', filter=Q(voteactivity__target__is_active=True)))
-                 .annotate(level=Case(When(type=BadgeType.BRONZE, then=Value(0)),
-                                      When(type=BadgeType.SILVER, then=Value(1)),
-                                      When(type=BadgeType.GOLD, then=Value(2)),
-                                      ))
-                 .annotate(earned=Count('voteactivity', filter=Q(voteactivity__target=request.user)))
-                 .order_by('section', 'group', 'level'))
-    recent_awards = VoteActivity.objects.filter(badge__isnull=False).order_by('-created_at')[:20]
-    return render(request, "badges/badges.list.template.html", {
-        'items': items,
-        'recent': recent_awards,
-    })
+    items = list(
+        Badge.objects.all()
+        .annotate(
+            users=Count("voteactivity", filter=Q(voteactivity__target__is_active=True))
+        )
+        .annotate(
+            level=Case(
+                When(type=BadgeType.BRONZE, then=Value(0)),
+                When(type=BadgeType.SILVER, then=Value(1)),
+                When(type=BadgeType.GOLD, then=Value(2)),
+            )
+        )
+        .annotate(
+            earned=Count("voteactivity", filter=Q(voteactivity__target=request.user))
+        )
+        .order_by("section", "group", "level")
+    )
+    recent_awards = VoteActivity.objects.filter(badge__isnull=False).order_by(
+        "-created_at"
+    )[:20]
+    return render(
+        request,
+        "badges/badges.list.template.html",
+        {
+            "items": items,
+            "recent": recent_awards,
+        },
+    )

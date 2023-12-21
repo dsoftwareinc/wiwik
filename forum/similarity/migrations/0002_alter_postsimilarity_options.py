@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('similarity', '0001_initial'),
+        ("similarity", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='postsimilarity',
-            options={'verbose_name_plural': 'Similar Posts'},
+            name="postsimilarity",
+            options={"verbose_name_plural": "Similar Posts"},
         ),
     ]

@@ -5,36 +5,40 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('forum', '0003_remove_questionadditionaldata_views'),
+        ("forum", "0003_remove_questionadditionaldata_views"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='questionadditionaldata',
-            name='link',
+            model_name="questionadditionaldata",
+            name="link",
         ),
         migrations.RemoveField(
-            model_name='questionadditionaldata',
-            name='source',
+            model_name="questionadditionaldata",
+            name="source",
         ),
         migrations.RemoveField(
-            model_name='questionadditionaldata',
-            name='source_id',
+            model_name="questionadditionaldata",
+            name="source_id",
         ),
         migrations.AddField(
-            model_name='question',
-            name='link',
+            model_name="question",
+            name="link",
             field=models.URLField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='question',
-            name='source',
-            field=models.CharField(blank=True, choices=[('slack', 'Slack'), ('teams', 'Microsoft Teams')],
-                                   max_length=10, null=True),
+            model_name="question",
+            name="source",
+            field=models.CharField(
+                blank=True,
+                choices=[("slack", "Slack"), ("teams", "Microsoft Teams")],
+                max_length=10,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='question',
-            name='source_id',
+            model_name="question",
+            name="source_id",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
     ]

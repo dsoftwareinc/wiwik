@@ -10,9 +10,13 @@ from wiwik_lib.utils import is_email_allowed
 
 def inform_admins_bad_registration(email: str, request) -> None:
     from forum.views.notifications import notify_slack_channel
+
     site = get_current_site(request)
-    subject = f'{email} tried to register to {site.domain}'
-    django.core.mail.mail_admins(subject, subject, )
+    subject = f"{email} tried to register to {site.domain}"
+    django.core.mail.mail_admins(
+        subject,
+        subject,
+    )
     notify_slack_channel(subject, settings.SLACK_ADMIN_NOTIFICATIONS_CHANNEL)
 
 
@@ -21,9 +25,13 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         u = sociallogin.user
         allowed = is_email_allowed(u.email)
         if not allowed:
-            messages.error(request,
-                           f"Only emails from {'; '.join(settings.ALLOWED_REGISTRATION_EMAIL_DOMAINS)} are allowed",
-                           'danger')
+            messages.error(
+                request,
+                f"Only emails from {'; '.join(settings.ALLOWED_REGISTRATION_EMAIL_DOMAINS)} are allowed",
+                "danger",
+            )
             inform_admins_bad_registration(u.email, request)
-            user_email_domain = u.email.split('@')[1]
-            raise PermissionDenied(f'login failed with email from  @{user_email_domain} domain')
+            user_email_domain = u.email.split("@")[1]
+            raise PermissionDenied(
+                f"login failed with email from  @{user_email_domain} domain"
+            )

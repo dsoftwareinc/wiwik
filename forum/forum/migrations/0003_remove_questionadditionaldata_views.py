@@ -5,12 +5,12 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('forum', '0002_question_answers_count_question_type_question_views'),
+        ("forum", "0002_question_answers_count_question_type_question_views"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='questionadditionaldata',
-            name='views',
+            model_name="questionadditionaldata",
+            name="views",
         ),
     ]

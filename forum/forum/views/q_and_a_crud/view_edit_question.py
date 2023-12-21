@@ -13,32 +13,36 @@ def view_editquestion(request, pk):
     user = request.user
     q = get_object_or_404(Question, pk=pk)
     if q.author != user and not user.can_edit:  # TODO change edit user permissions
-        messages.error(request, 'You can not edit this question', 'danger')
-        return redirect('forum:thread', pk=pk)
+        messages.error(request, "You can not edit this question", "danger")
+        return redirect("forum:thread", pk=pk)
     if not ask_to_edit_resource(request.user, q):
-        messages.warning(request, 'Question is currently edited by a different user')
-        return redirect('forum:thread', pk=pk)
+        messages.warning(request, "Question is currently edited by a different user")
+        return redirect("forum:thread", pk=pk)
     title = q.title
     content = q.content
-    tags = ','.join(q.tag_words())
+    tags = ",".join(q.tag_words())
     # Update question
-    if request.method == 'POST':
+    if request.method == "POST":
         questiontaken = request.POST.dict()
-        title = questiontaken.get('title')
-        content = questiontaken.get('queseditor')
-        tags = questiontaken.get('tags') or ''
+        title = questiontaken.get("title")
+        content = questiontaken.get("queseditor")
+        tags = questiontaken.get("tags") or ""
         try:
             validate_question_data(title, content)
             finish_edit_resource(q)
             utils.update_question(user, q, title, content, tags)
-            messages.success(request, 'Question updated successfully')
-            return redirect('forum:thread', pk=pk)
+            messages.success(request, "Question updated successfully")
+            return redirect("forum:thread", pk=pk)
         except QuestionError as e:
-            messages.warning(request, f'Error: {e}')
+            messages.warning(request, f"Error: {e}")
     # Request to edit
-    return render(request, 'main/editquestion.html', {
-        'title': title,
-        'content': content,
-        'tags': tags,
-        'question_pk': pk,
-    })
+    return render(
+        request,
+        "main/editquestion.html",
+        {
+            "title": title,
+            "content": content,
+            "tags": tags,
+            "question_pk": pk,
+        },
+    )

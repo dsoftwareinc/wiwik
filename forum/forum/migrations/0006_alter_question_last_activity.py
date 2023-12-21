@@ -6,13 +6,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('forum', '0005_question_last_activity'),
+        ("forum", "0005_question_last_activity"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='question',
-            name='last_activity',
+            model_name="question",
+            name="last_activity",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
     ]

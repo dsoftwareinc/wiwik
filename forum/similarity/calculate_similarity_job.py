@@ -10,7 +10,7 @@ from similarity import models
 from similarity.algo.tfidf import calc_tfidf_pair, calc_tfidf_multiple_documents
 from similarity.apps import logger
 
-KNOWN_SIMILARITIES = {'postgres_rank', 'postgres_trigram_rank', 'tfidf_rank'}
+KNOWN_SIMILARITIES = {"postgres_rank", "postgres_trigram_rank", "tfidf_rank"}
 SIMILARITY_THRESHOLD = 0.2
 
 
@@ -20,33 +20,39 @@ def _upsert_similarity(q1: Question, q2: Question, **kwargs):
     """
     similarities = kwargs
     if len(similarities.keys()) == 0:
-        logger.warning("No similarities were given, give one of " + ', '.join(KNOWN_SIMILARITIES))
+        logger.warning(
+            "No similarities were given, give one of " + ", ".join(KNOWN_SIMILARITIES)
+        )
         return
     remove_keys = []
     for k, v in similarities.items():
         if v is None:
             remove_keys.append(k)
         if k not in KNOWN_SIMILARITIES:
-            logger.warning(f"{k} not in known similarities ({', '.join(KNOWN_SIMILARITIES)})")
+            logger.warning(
+                f"{k} not in known similarities ({', '.join(KNOWN_SIMILARITIES)})"
+            )
             return
     for k in remove_keys:
         similarities.pop(k)
-    sim = (models.PostSimilarity.objects
-           .filter(Q(question1=q1, question2=q2) | Q(question1=q2, question2=q1))
-           .first())
+    sim = models.PostSimilarity.objects.filter(
+        Q(question1=q1, question2=q2) | Q(question1=q2, question2=q1)
+    ).first()
     if sim is None:
-        sim = models.PostSimilarity.objects.create(question1=q1,
-                                                   question2=q2,
-                                                   rank=0,
-                                                   tfidf_rank=0,
-                                                   postgres_rank=0,
-                                                   postgres_trigram_rank=0)
+        sim = models.PostSimilarity.objects.create(
+            question1=q1,
+            question2=q2,
+            rank=0,
+            tfidf_rank=0,
+            postgres_rank=0,
+            postgres_trigram_rank=0,
+        )
     for k, v in similarities.items():
-        logger.debug(f'Updating similarity {q1.id} <> {q2.id}: {k}={v:5.4}')
+        logger.debug(f"Updating similarity {q1.id} <> {q2.id}: {k}={v:5.4}")
         setattr(sim, k, v)
     sim.rank = (float(sim.tfidf_rank) + float(sim.postgres_rank)) / 2
     if sim.rank < SIMILARITY_THRESHOLD:
-        logger.info('Deleting low similarity')
+        logger.info("Deleting low similarity")
         sim.delete()
         return
     sim.updated_at = timezone.now()
@@ -58,7 +64,9 @@ def calculate_tfidf():
     question_ids = list()
     question_qs = Question.objects.all()
     for q in question_qs:
-        q_doc = thread_markdown_bytesio(q, include_authors=False).getvalue().decode('utf8')
+        q_doc = (
+            thread_markdown_bytesio(q, include_authors=False).getvalue().decode("utf8")
+        )
         docs.append(q_doc)
         question_ids.append(q.id)
     res = calc_tfidf_multiple_documents(docs)
@@ -73,7 +81,7 @@ def calculate_tfidf():
 
 @job
 def calculate_similarity_for_question(q: Question) -> None:
-    if settings.DATABASES['default']['ENGINE'] != "django.db.backends.postgresql":
+    if settings.DATABASES["default"]["ENGINE"] != "django.db.backends.postgresql":
         return
     question_qs = Question.objects.exclude(id=q.id)
     for q2 in question_qs:
@@ -83,15 +91,21 @@ def calculate_similarity_for_question(q: Question) -> None:
 @job
 def calculate_similarity_for_pair(q1: Question, q2: Question) -> None:
     if q1 == q2:
-        logger.debug('Not calculating similarity for same question')
+        logger.debug("Not calculating similarity for same question")
         return
     q1, q1 = (q1, q2) if q1.id < q2.id else (q2, q1)
-    q1_str = thread_markdown_bytesio(q1).getvalue().decode('utf8')
-    q2_str = thread_markdown_bytesio(q2).getvalue().decode('utf8')
+    q1_str = thread_markdown_bytesio(q1).getvalue().decode("utf8")
+    q2_str = thread_markdown_bytesio(q2).getvalue().decode("utf8")
     tfidf = calc_tfidf_pair(q1_str, q2_str)
     fts_rank, trigram_rank = None, None
-    if settings.DATABASES['default']['ENGINE'] == "django.db.backends.postgresql":
+    if settings.DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
         fts_rank = algo.postgres_search_rank(q1.title, q2)
         trigram_rank = algo.postgres_trigram_rank(q1.title, q2)
 
-    _upsert_similarity(q1, q2, postgres_rank=fts_rank, postgres_trigram_rank=trigram_rank, tfidf_rank=tfidf)
+    _upsert_similarity(
+        q1,
+        q2,
+        postgres_rank=fts_rank,
+        postgres_trigram_rank=trigram_rank,
+        tfidf_rank=tfidf,
+    )

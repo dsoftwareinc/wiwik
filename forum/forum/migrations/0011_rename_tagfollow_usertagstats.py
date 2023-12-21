@@ -5,16 +5,15 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tags', '0001_initial'),
-        ('forum', '0010_alter_question_type'),
+        ("tags", "0001_initial"),
+        ("forum", "0010_alter_question_type"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='TagFollow',
-            new_name='UserTagStats',
+            old_name="TagFollow",
+            new_name="UserTagStats",
         ),
     ]

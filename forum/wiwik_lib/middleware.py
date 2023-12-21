@@ -28,15 +28,19 @@ class UserVisitMiddleware:
         response = self.get_response(request)
         duration = int((time.time() - start_time) * 1000)
 
-        if hasattr(request, 'user') and request.user.is_authenticated:
+        if hasattr(request, "user") and request.user.is_authenticated:
             client_ip, is_routable = get_client_ip(request)
             try:
-                log_request.delay(request.user.id, client_ip,
-                                  timezone.now(), duration,
-                                  request.method, request.path,
-                                  )
+                log_request.delay(
+                    request.user.id,
+                    client_ip,
+                    timezone.now(),
+                    duration,
+                    request.method,
+                    request.path,
+                )
             except redis.exceptions.ConnectionError as e:  # noqa: F841
-                logger.warning('Could not publish log_request job to redis')
+                logger.warning("Could not publish log_request job to redis")
 
         response["X-Page-Generation-Duration-ms"] = duration
 

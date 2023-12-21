@@ -5,10 +5,10 @@ from similarity.calculate_similarity_job import calculate_similarity_for_pair
 
 
 class Command(BaseCommand):
-    help = 'Calculate similarities between all different questions'
+    help = "Calculate similarities between all different questions"
 
     def handle(self, *args, **options):
-        question_qs = Question.objects.all().order_by('id')
+        question_qs = Question.objects.all().order_by("id")
         # calculate_tfidf()
         for q1 in question_qs:
             newer_questions_qs = Question.objects.filter(id__gt=q1.id)

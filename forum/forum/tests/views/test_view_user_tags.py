@@ -7,7 +7,7 @@ from wiwik_lib.views.follow_views import create_follow
 
 
 class TestFollowTagView(ForumApiTestCase):
-    tag_word = 'my_first_tag'
+    tag_word = "my_first_tag"
 
     def setUp(self):
         super().setUp()
@@ -18,20 +18,46 @@ class TestFollowTagView(ForumApiTestCase):
         # act
         res = self.client.follow_tag(self.tag_word)
         # assert
-        self.assertEqual(0, models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count())
+        self.assertEqual(
+            0,
+            models.UserTagStats.objects.filter(
+                user=self.users[0], tag=self.tag
+            ).count(),
+        )
         self.assertEqual(1, self.tag.follows.count())
-        assert_url_in_chain(res, reverse('forum:tag', args=[self.tag_word, ]))
-        self.assertContains(res, 'Watched tags')
+        assert_url_in_chain(
+            res,
+            reverse(
+                "forum:tag",
+                args=[
+                    self.tag_word,
+                ],
+            ),
+        )
+        self.assertContains(res, "Watched tags")
 
     def test_follow_tag__non_existing_tag__should_do_nothing(self):
         self.client.login(self.usernames[0], self.password)
         # act
-        res = self.client.follow_tag(self.tag_word + 'aa')
+        res = self.client.follow_tag(self.tag_word + "aa")
         # assert
         models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count()
-        self.assertEqual(0, models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count())
-        assert_url_in_chain(res, reverse('forum:tag', args=[self.tag_word + 'aa', ]))
-        self.assertNotContains(res, 'Watched tags')
+        self.assertEqual(
+            0,
+            models.UserTagStats.objects.filter(
+                user=self.users[0], tag=self.tag
+            ).count(),
+        )
+        assert_url_in_chain(
+            res,
+            reverse(
+                "forum:tag",
+                args=[
+                    self.tag_word + "aa",
+                ],
+            ),
+        )
+        self.assertNotContains(res, "Watched tags")
 
     def test_follow_tag__already_following__should_do_nothing(self):
         self.client.login(self.usernames[0], self.password)
@@ -40,12 +66,20 @@ class TestFollowTagView(ForumApiTestCase):
         res = self.client.follow_tag(self.tag_word)
         # assert
         self.assertEqual(1, self.tag.follows.count())
-        assert_url_in_chain(res, reverse('forum:tag', args=[self.tag_word, ]))
-        self.assertContains(res, 'Watched tags')
+        assert_url_in_chain(
+            res,
+            reverse(
+                "forum:tag",
+                args=[
+                    self.tag_word,
+                ],
+            ),
+        )
+        self.assertContains(res, "Watched tags")
 
 
 class TestUnfollowTagView(ForumApiTestCase):
-    tag_word = 'my_first_tag'
+    tag_word = "my_first_tag"
 
     def setUp(self):
         super().setUp()
@@ -57,24 +91,63 @@ class TestUnfollowTagView(ForumApiTestCase):
         # act
         res = self.client.unfollow_tag(self.tag_word)
         # assert
-        self.assertEqual(0, models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count())
-        assert_url_in_chain(res, reverse('forum:tag', args=[self.tag_word, ]))
-        self.assertNotContains(res, 'Watched tags')
+        self.assertEqual(
+            0,
+            models.UserTagStats.objects.filter(
+                user=self.users[0], tag=self.tag
+            ).count(),
+        )
+        assert_url_in_chain(
+            res,
+            reverse(
+                "forum:tag",
+                args=[
+                    self.tag_word,
+                ],
+            ),
+        )
+        self.assertNotContains(res, "Watched tags")
 
     def test_unfollow_tag__user_not_following__should_do_nothing(self):
         self.client.login(self.usernames[0], self.password)
         # act
         res = self.client.unfollow_tag(self.tag_word)
         # assert
-        self.assertEqual(0, models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count())
-        assert_url_in_chain(res, reverse('forum:tag', args=[self.tag_word, ]))
-        self.assertNotContains(res, 'Watched tags')
+        self.assertEqual(
+            0,
+            models.UserTagStats.objects.filter(
+                user=self.users[0], tag=self.tag
+            ).count(),
+        )
+        assert_url_in_chain(
+            res,
+            reverse(
+                "forum:tag",
+                args=[
+                    self.tag_word,
+                ],
+            ),
+        )
+        self.assertNotContains(res, "Watched tags")
 
     def test_unfollow_tag__non_existing_tag__should_do_nothing(self):
         self.client.login(self.usernames[0], self.password)
         # act
-        res = self.client.unfollow_tag(self.tag_word + 'aaa')
+        res = self.client.unfollow_tag(self.tag_word + "aaa")
         # assert
-        self.assertEqual(0, models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count())
-        assert_url_in_chain(res, reverse('forum:tag', args=[self.tag_word + 'aaa', ]))
-        self.assertNotContains(res, 'Watched tags')
+        self.assertEqual(
+            0,
+            models.UserTagStats.objects.filter(
+                user=self.users[0], tag=self.tag
+            ).count(),
+        )
+        assert_url_in_chain(
+            res,
+            reverse(
+                "forum:tag",
+                args=[
+                    self.tag_word + "aaa",
+                ],
+            ),
+        )
+        self.assertNotContains(res, "Watched tags")

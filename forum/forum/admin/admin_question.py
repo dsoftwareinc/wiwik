@@ -9,76 +9,186 @@ from forum.models import Question, Answer, QuestionComment, PostInvitation
 class QuestionCommentInline(admin.TabularInline):
     extra = 0
     model = QuestionComment
-    readonly_fields = ('created_at',)
-    search_fields = ('author__username', 'author__email')
-    autocomplete_fields = ('author',)
-    raw_id_fields = ('users_upvoted',)
+    readonly_fields = ("created_at",)
+    search_fields = ("author__username", "author__email")
+    autocomplete_fields = ("author",)
+    raw_id_fields = ("users_upvoted",)
 
 
 class AnswerInline(admin.TabularInline):
     extra = 0
     model = Answer
-    fields = ('created_at', 'author', 'editor', 'content', 'is_accepted', 'users_upvoted', 'users_downvoted',)
-    search_fields = ('author__username', 'author__email',)
-    autocomplete_fields = ('author', 'editor',)
-    raw_id_fields = ('users_upvoted', 'users_downvoted',)
-    readonly_fields = ('created_at',)
+    fields = (
+        "created_at",
+        "author",
+        "editor",
+        "content",
+        "is_accepted",
+        "users_upvoted",
+        "users_downvoted",
+    )
+    search_fields = (
+        "author__username",
+        "author__email",
+    )
+    autocomplete_fields = (
+        "author",
+        "editor",
+    )
+    raw_id_fields = (
+        "users_upvoted",
+        "users_downvoted",
+    )
+    readonly_fields = ("created_at",)
 
 
 class PostInvitationInline(admin.TabularInline):
     extra = 0
     model = PostInvitation
-    search_fields = ('invitee__username', 'invitee__email',)
-    autocomplete_fields = ('invitee', 'inviter', 'question',)
-    fields = ('created_at', 'question', 'invitee', 'inviter',)
-    readonly_fields = ('created_at',)
+    search_fields = (
+        "invitee__username",
+        "invitee__email",
+    )
+    autocomplete_fields = (
+        "invitee",
+        "inviter",
+        "question",
+    )
+    fields = (
+        "created_at",
+        "question",
+        "invitee",
+        "inviter",
+    )
+    readonly_fields = ("created_at",)
 
 
 @admin.register(Question)
 class QuestionAdmin(NumericFilterModelAdmin):
-    list_display = ('id', 'type', 'status', 'title', 'author', 'views', 'votes',
-                    'bookmarks_count', 'answers_count', 'followers_count',
-                    'has_accepted_answer', 'is_anonymous', 'space',
-                    'last_activity', 'created_at', 'updated_at', 'status_updated_at',
-                    'tags_list',)
-    fields = ('type', 'title',
-              'content',
-              ('author', 'editor', 'tags', 'space',),
-              ('has_accepted_answer', 'is_anonymous',),
-              ('status', 'status_updated_at'),
-              ('views', 'source', 'source_id', 'link',),
-              ('users_upvoted', 'users_downvoted',),
-              ('last_activity', 'created_at', 'updated_at', 'bookmarks_count',),)
-    readonly_fields = ('last_activity', 'created_at', 'updated_at', 'bookmarks_count',)
-    raw_id_fields = ('author', 'tags', 'users_upvoted', 'users_downvoted', 'space',)
+    list_display = (
+        "id",
+        "type",
+        "status",
+        "title",
+        "author",
+        "views",
+        "votes",
+        "bookmarks_count",
+        "answers_count",
+        "followers_count",
+        "has_accepted_answer",
+        "is_anonymous",
+        "space",
+        "last_activity",
+        "created_at",
+        "updated_at",
+        "status_updated_at",
+        "tags_list",
+    )
+    fields = (
+        "type",
+        "title",
+        "content",
+        (
+            "author",
+            "editor",
+            "tags",
+            "space",
+        ),
+        (
+            "has_accepted_answer",
+            "is_anonymous",
+        ),
+        ("status", "status_updated_at"),
+        (
+            "views",
+            "source",
+            "source_id",
+            "link",
+        ),
+        (
+            "users_upvoted",
+            "users_downvoted",
+        ),
+        (
+            "last_activity",
+            "created_at",
+            "updated_at",
+            "bookmarks_count",
+        ),
+    )
+    readonly_fields = (
+        "last_activity",
+        "created_at",
+        "updated_at",
+        "bookmarks_count",
+    )
+    raw_id_fields = (
+        "author",
+        "tags",
+        "users_upvoted",
+        "users_downvoted",
+        "space",
+    )
     list_filter = (
-        'type',
+        "type",
         UserFilter,
-        ('created_at', DateRangeFilter),
-        ('votes', SliderNumericFilter),
-        'status',
-        'has_accepted_answer', 'is_anonymous',)
-    search_fields = ('title', 'author__username', 'content',)
-    inlines = (AnswerInline, QuestionCommentInline, PostInvitationInline,)
+        ("created_at", DateRangeFilter),
+        ("votes", SliderNumericFilter),
+        "status",
+        "has_accepted_answer",
+        "is_anonymous",
+    )
+    search_fields = (
+        "title",
+        "author__username",
+        "content",
+    )
+    inlines = (
+        AnswerInline,
+        QuestionCommentInline,
+        PostInvitationInline,
+    )
     save_on_top = True
 
-    @admin.display(description='#Bookmarks', )
+    @admin.display(
+        description="#Bookmarks",
+    )
     def bookmarks_count(self, o: Question):
         return o.bookmarks.count()
 
-    @admin.display(description='#Followers', )
+    @admin.display(
+        description="#Followers",
+    )
     def followers_count(self, o: Question):
         return o.follows.count()
 
-    @admin.display(description='Tags List', )
+    @admin.display(
+        description="Tags List",
+    )
     def tags_list(self, o: Question):
-        return u", ".join(o.tag_words())
+        return ", ".join(o.tag_words())
 
 
 @admin.register(PostInvitation)
 class PostInvitationAdmin(admin.ModelAdmin):
-    list_display = ('question', 'invitee', 'inviter', 'created_at',)
-    raw_id_fields = ('question', 'invitee', 'inviter',)
-    list_filter = (('created_at', DateRangeFilter),)
-    search_fields = ('question__title', 'question__id', 'invitee__username',
-                     'invitee__email', 'inviter__username', 'inviter__email',)
+    list_display = (
+        "question",
+        "invitee",
+        "inviter",
+        "created_at",
+    )
+    raw_id_fields = (
+        "question",
+        "invitee",
+        "inviter",
+    )
+    list_filter = (("created_at", DateRangeFilter),)
+    search_fields = (
+        "question__title",
+        "question__id",
+        "invitee__username",
+        "invitee__email",
+        "inviter__username",
+        "inviter__email",
+    )

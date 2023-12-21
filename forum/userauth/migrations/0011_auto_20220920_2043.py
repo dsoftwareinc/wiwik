@@ -4,7 +4,7 @@ from django.db import migrations
 
 
 def update_additional_data_fields(apps, schema_editor):
-    ForumUser = apps.get_model('userauth', 'ForumUser')
+    ForumUser = apps.get_model("userauth", "ForumUser")
     for user in ForumUser.objects.all():
         user.bookmarks_count = user.additional_data.bookmarks_count
         user.bronze_badges = user.additional_data.bronze_badges
@@ -21,10 +21,9 @@ def update_additional_data_fields(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('userauth', '0010_forumuser_bookmarks_count_forumuser_bronze_badges_and_more'),
+        ("userauth", "0010_forumuser_bookmarks_count_forumuser_bronze_badges_and_more"),
     ]
 
     operations = [
         migrations.RunPython(update_additional_data_fields),
-
     ]

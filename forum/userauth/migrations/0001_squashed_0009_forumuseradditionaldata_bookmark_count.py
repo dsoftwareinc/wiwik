@@ -15,22 +15,24 @@ import userauth.models
 # userauth.migrations.0003_auto_20211209_1610
 # userauth.migrations.0009_forumuseradditionaldata_bookmark_count
 
+
 def forwards(apps, schema_editor):
-    UserVisit = apps.get_model('userauth', 'uservisit')
-    User = apps.get_model('userauth', 'forumuser')
+    UserVisit = apps.get_model("userauth", "uservisit")
+    User = apps.get_model("userauth", "forumuser")
     user_qs = User.objects.all()
     for user in user_qs:
         total_days = UserVisit.objects.filter(user=user).count()
         if total_days == 0:
             continue
-        last_visit = UserVisit.objects.filter(user=user).order_by('-visit_date').first()
+        last_visit = UserVisit.objects.filter(user=user).order_by("-visit_date").first()
         last_visit.total_days = total_days
 
-        max_consecutive_days = (UserVisit.objects
-                                .filter(user=user)
-                                .order_by('-consecutive_days')
-                                .first()
-                                .consecutive_days)
+        max_consecutive_days = (
+            UserVisit.objects.filter(user=user)
+            .order_by("-consecutive_days")
+            .first()
+            .consecutive_days
+        )
         last_visit.max_consecutive_days = max_consecutive_days
 
         last_visit.save()
@@ -41,15 +43,15 @@ def backwards(apps, schema_editor):
 
 
 def forwards_user_bookmarks_count(apps, schema_editor):
-    UserAdditionalData = apps.get_model('userauth', 'forumuseradditionaldata')
+    UserAdditionalData = apps.get_model("userauth", "forumuseradditionaldata")
     try:
-        Bookmark = apps.get_model('forum', 'questionbookmark')
+        Bookmark = apps.get_model("forum", "questionbookmark")
         user_qs = UserAdditionalData.objects.all()
         for user in user_qs:
             user.bookmarks_count = Bookmark.objects.filter(user_id=user.user_id).count()
             user.save()
     except LookupError:
-        print('No forum app installed, skipping forwards_user_bookmarks_count')
+        print("No forum app installed, skipping forwards_user_bookmarks_count")
 
 
 def backwards_user_bookmarks_count(apps, schema_editor):
@@ -57,110 +59,279 @@ def backwards_user_bookmarks_count(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-    replaces = [('userauth', '0001_squashed_0004_auto_20211101_0023'), ('userauth', '0002_auto_20211124_2142'),
-                ('userauth', '0003_auto_20211209_1610'), ('userauth', '0004_auto_20211214_0348'),
-                ('userauth', '0005_forumuseradditionaldata_next_badge'), ('userauth', '0006_alter_forumuser_managers'),
-                ('userauth', '0007_alter_forumuseradditionaldata_next_badge_and_more'),
-                ('userauth', '0008_forumuser_github_handle_forumuser_keybase_user'),
-                ('userauth', '0009_forumuseradditionaldata_bookmark_count')]
+    replaces = [
+        ("userauth", "0001_squashed_0004_auto_20211101_0023"),
+        ("userauth", "0002_auto_20211124_2142"),
+        ("userauth", "0003_auto_20211209_1610"),
+        ("userauth", "0004_auto_20211214_0348"),
+        ("userauth", "0005_forumuseradditionaldata_next_badge"),
+        ("userauth", "0006_alter_forumuser_managers"),
+        ("userauth", "0007_alter_forumuseradditionaldata_next_badge_and_more"),
+        ("userauth", "0008_forumuser_github_handle_forumuser_keybase_user"),
+        ("userauth", "0009_forumuseradditionaldata_bookmark_count"),
+    ]
 
     initial = True
 
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
-        ('badges', '0001_squashed_0003_auto_20211211_1535'),
+        ("auth", "0012_alter_user_first_name_max_length"),
+        ("badges", "0001_squashed_0003_auto_20211211_1535"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ForumUser',
+            name="ForumUser",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('is_superuser', models.BooleanField(default=False,
-                                                     help_text='Designates that this user has all permissions without explicitly assigning them.',
-                                                     verbose_name='superuser status')),
-                ('username', models.CharField(error_messages={'unique': 'A user with that username already exists.'},
-                                              help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.',
-                                              max_length=150, unique=True,
-                                              validators=[django.contrib.auth.validators.UnicodeUsernameValidator()],
-                                              verbose_name='username')),
-                ('first_name', models.CharField(blank=True, max_length=150, verbose_name='first name')),
-                ('last_name', models.CharField(blank=True, max_length=150, verbose_name='last name')),
-                ('is_staff', models.BooleanField(default=False,
-                                                 help_text='Designates whether the user can log into this admin site.',
-                                                 verbose_name='staff status')),
-                ('is_active', models.BooleanField(default=True,
-                                                  help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.',
-                                                  verbose_name='active')),
-                ('email', models.EmailField(max_length=255, unique=True, verbose_name='email address')),
-                ('name', models.CharField(blank=True, help_text='User displayed name', max_length=100, null=True)),
-                ('title',
-                 models.CharField(blank=True, default='', help_text='Title of user at work, etc.', max_length=100,
-                                  null=True)),
-                ('about_me', models.TextField(blank=True, default=None, null=True)),
-                ('profile_pic', models.ImageField(
-                    blank=True, default='default_pics/default_image.jpg', null=True, upload_to='user_pics')),
-                ('date_joined', models.DateTimeField(default=django.utils.timezone.now)),
-                ('groups', models.ManyToManyField(blank=True,
-                                                  help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
-                                                  related_name='user_set', related_query_name='user', to='auth.group',
-                                                  verbose_name='groups')),
-                ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.',
-                                                            related_name='user_set', related_query_name='user',
-                                                            to='auth.permission', verbose_name='user permissions')),
-                ('is_moderator', models.BooleanField(default=False,
-                                                     help_text='Designates whether the user can moderate other user Q&A.',
-                                                     verbose_name='moderator status')),
-                ('slack_userid',
-                 models.CharField(blank=True, default=None, help_text='Slack user id', max_length=25, null=True)),
-                ('email_notifications', models.BooleanField(default=True, help_text='email notifications enabled?')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "last_login",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="last login"
+                    ),
+                ),
+                (
+                    "is_superuser",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates that this user has all permissions without explicitly assigning them.",
+                        verbose_name="superuser status",
+                    ),
+                ),
+                (
+                    "username",
+                    models.CharField(
+                        error_messages={
+                            "unique": "A user with that username already exists."
+                        },
+                        help_text="Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                        max_length=150,
+                        unique=True,
+                        validators=[
+                            django.contrib.auth.validators.UnicodeUsernameValidator()
+                        ],
+                        verbose_name="username",
+                    ),
+                ),
+                (
+                    "first_name",
+                    models.CharField(
+                        blank=True, max_length=150, verbose_name="first name"
+                    ),
+                ),
+                (
+                    "last_name",
+                    models.CharField(
+                        blank=True, max_length=150, verbose_name="last name"
+                    ),
+                ),
+                (
+                    "is_staff",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates whether the user can log into this admin site.",
+                        verbose_name="staff status",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Designates whether this user should be treated as active. Unselect this instead of deleting accounts.",
+                        verbose_name="active",
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        max_length=255, unique=True, verbose_name="email address"
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        blank=True,
+                        help_text="User displayed name",
+                        max_length=100,
+                        null=True,
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text="Title of user at work, etc.",
+                        max_length=100,
+                        null=True,
+                    ),
+                ),
+                ("about_me", models.TextField(blank=True, default=None, null=True)),
+                (
+                    "profile_pic",
+                    models.ImageField(
+                        blank=True,
+                        default="default_pics/default_image.jpg",
+                        null=True,
+                        upload_to="user_pics",
+                    ),
+                ),
+                (
+                    "date_joined",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "groups",
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text="The groups this user belongs to. A user will get all permissions granted to each of their groups.",
+                        related_name="user_set",
+                        related_query_name="user",
+                        to="auth.group",
+                        verbose_name="groups",
+                    ),
+                ),
+                (
+                    "user_permissions",
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text="Specific permissions for this user.",
+                        related_name="user_set",
+                        related_query_name="user",
+                        to="auth.permission",
+                        verbose_name="user permissions",
+                    ),
+                ),
+                (
+                    "is_moderator",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates whether the user can moderate other user Q&A.",
+                        verbose_name="moderator status",
+                    ),
+                ),
+                (
+                    "slack_userid",
+                    models.CharField(
+                        blank=True,
+                        default=None,
+                        help_text="Slack user id",
+                        max_length=25,
+                        null=True,
+                    ),
+                ),
+                (
+                    "email_notifications",
+                    models.BooleanField(
+                        default=True, help_text="email notifications enabled?"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'user',
-                'verbose_name_plural': 'users',
-                'abstract': False,
+                "verbose_name": "user",
+                "verbose_name_plural": "users",
+                "abstract": False,
             },
             managers=[
-                ('objects', django.contrib.auth.models.UserManager()),
+                ("objects", django.contrib.auth.models.UserManager()),
             ],
         ),
         migrations.CreateModel(
-            name='ForumUserAdditionalData',
+            name="ForumUserAdditionalData",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('reputation_score', models.IntegerField(default=0)),
-                ('user',
-                 models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='additional_data',
-                                      to=settings.AUTH_USER_MODEL)),
-                ('last_email_datetime',
-                 models.DateTimeField(blank=True, help_text='Date+Time of email sent to user', null=True)),
-                ('search_count', models.IntegerField(default=0, help_text='Number of searches user made')),
-                ('bronze_badges', models.IntegerField(default=0, help_text='Number of bronze badges the user has')),
-                ('gold_badges', models.IntegerField(default=0, help_text='Number of gold badges the user has')),
-                ('silver_badges', models.IntegerField(default=0, help_text='Number of silver badges the user has')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("reputation_score", models.IntegerField(default=0)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="additional_data",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "last_email_datetime",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="Date+Time of email sent to user",
+                        null=True,
+                    ),
+                ),
+                (
+                    "search_count",
+                    models.IntegerField(
+                        default=0, help_text="Number of searches user made"
+                    ),
+                ),
+                (
+                    "bronze_badges",
+                    models.IntegerField(
+                        default=0, help_text="Number of bronze badges the user has"
+                    ),
+                ),
+                (
+                    "gold_badges",
+                    models.IntegerField(
+                        default=0, help_text="Number of gold badges the user has"
+                    ),
+                ),
+                (
+                    "silver_badges",
+                    models.IntegerField(
+                        default=0, help_text="Number of silver badges the user has"
+                    ),
+                ),
             ],
             options={
-                'default_related_name': 'additional_data',
+                "default_related_name": "additional_data",
             },
         ),
         migrations.CreateModel(
-            name='UserVisit',
+            name="UserVisit",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('visit_date', models.DateField()),
-                ('ip_addr', models.CharField(blank=True, max_length=30, null=True)),
-                ('country', models.CharField(blank=True, max_length=40, null=True)),
-                ('city', models.CharField(blank=True, max_length=40, null=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('consecutive_days', models.IntegerField(default=1)),
-                ('total_days', models.IntegerField(default=1)),
-                ('max_consecutive_days', models.IntegerField(default=1)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("visit_date", models.DateField()),
+                ("ip_addr", models.CharField(blank=True, max_length=30, null=True)),
+                ("country", models.CharField(blank=True, max_length=40, null=True)),
+                ("city", models.CharField(blank=True, max_length=40, null=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                ("consecutive_days", models.IntegerField(default=1)),
+                ("total_days", models.IntegerField(default=1)),
+                ("max_consecutive_days", models.IntegerField(default=1)),
             ],
             options={
-                'verbose_name_plural': 'User visits',
-                'unique_together': {('user', 'visit_date', 'ip_addr')},
+                "verbose_name_plural": "User visits",
+                "unique_together": {("user", "visit_date", "ip_addr")},
             },
         ),
         migrations.RunPython(
@@ -168,57 +339,90 @@ class Migration(migrations.Migration):
             reverse_code=backwards,
         ),
         migrations.AlterField(
-            model_name='forumuser',
-            name='slack_userid',
-            field=models.CharField(blank=True, default=None, help_text='Slack user id', max_length=25, null=True,
-                                   unique=True),
+            model_name="forumuser",
+            name="slack_userid",
+            field=models.CharField(
+                blank=True,
+                default=None,
+                help_text="Slack user id",
+                max_length=25,
+                null=True,
+                unique=True,
+            ),
         ),
         migrations.AddField(
-            model_name='forumuseradditionaldata',
-            name='people_reached',
-            field=models.IntegerField(default=0, help_text='Number of views posts user created had'),
+            model_name="forumuseradditionaldata",
+            name="people_reached",
+            field=models.IntegerField(
+                default=0, help_text="Number of views posts user created had"
+            ),
         ),
         migrations.AddField(
-            model_name='forumuseradditionaldata',
-            name='posts_edited',
-            field=models.IntegerField(default=0, help_text='Number of posts user edited'),
+            model_name="forumuseradditionaldata",
+            name="posts_edited",
+            field=models.IntegerField(
+                default=0, help_text="Number of posts user edited"
+            ),
         ),
         migrations.AddField(
-            model_name='forumuseradditionaldata',
-            name='votes',
-            field=models.IntegerField(default=0, help_text='Number of votes user casted'),
+            model_name="forumuseradditionaldata",
+            name="votes",
+            field=models.IntegerField(
+                default=0, help_text="Number of votes user casted"
+            ),
         ),
         migrations.AlterModelManagers(
-            name='forumuser',
+            name="forumuser",
             managers=[
-                ('objects', userauth.models.ForumUserManager()),
+                ("objects", userauth.models.ForumUserManager()),
             ],
         ),
         migrations.AddField(
-            model_name='forumuseradditionaldata',
-            name='next_badge',
-            field=models.ForeignKey(blank=True, help_text='Next badge recommended for user', null=True,
-                                    on_delete=django.db.models.deletion.SET_NULL, to='badges.badge'),
+            model_name="forumuseradditionaldata",
+            name="next_badge",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Next badge recommended for user",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="badges.badge",
+            ),
         ),
         migrations.AlterField(
-            model_name='forumuseradditionaldata',
-            name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="forumuseradditionaldata",
+            name="user",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='forumuser',
-            name='github_handle',
-            field=models.CharField(blank=True, default=None, help_text='User github handle', max_length=39, null=True),
+            model_name="forumuser",
+            name="github_handle",
+            field=models.CharField(
+                blank=True,
+                default=None,
+                help_text="User github handle",
+                max_length=39,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='forumuser',
-            name='keybase_user',
-            field=models.CharField(blank=True, default=None, help_text='User github handle', max_length=16, null=True),
+            model_name="forumuser",
+            name="keybase_user",
+            field=models.CharField(
+                blank=True,
+                default=None,
+                help_text="User github handle",
+                max_length=16,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='forumuseradditionaldata',
-            name='bookmarks_count',
-            field=models.IntegerField(default=0, help_text='Number of bookmarks user have'),
+            model_name="forumuseradditionaldata",
+            name="bookmarks_count",
+            field=models.IntegerField(
+                default=0, help_text="Number of bookmarks user have"
+            ),
         ),
         migrations.RunPython(
             code=forwards_user_bookmarks_count,

@@ -4,7 +4,7 @@ from pathlib import Path
 from common.utils import dedent_code
 from forum.tests.base import ForumApiTestCase
 
-markdown_text = '''
+markdown_text = """
 ```mermaid
 graph LR
     subgraph localhost
@@ -43,9 +43,9 @@ running locally:
     ```
         pip install -r requirements.txt
     ```
-'''
+"""
 
-dedented_text = '''
+dedented_text = """
 ```mermaid
 graph LR
     subgraph localhost
@@ -84,7 +84,7 @@ running locally:
     ```
     pip install -r requirements.txt
     ```
-'''
+"""
 
 
 class TestDedent(ForumApiTestCase):
@@ -92,7 +92,7 @@ class TestDedent(ForumApiTestCase):
         assert dedent_code(markdown_text) == dedented_text
 
     def test_dedent_existing_markdown_files(self):
-        directory = '../private/export'
+        directory = "../private/export"
         try:
             filenames = sorted(os.listdir(directory))
         except FileNotFoundError:
@@ -100,4 +100,8 @@ class TestDedent(ForumApiTestCase):
         for filename in filenames:
             _markdown_text = Path(os.path.join(directory, filename)).read_text()
 
-            self.assertEqual(dedent_code(_markdown_text), _markdown_text, f'File {filename} is not dedented')
+            self.assertEqual(
+                dedent_code(_markdown_text),
+                _markdown_text,
+                f"File {filename} is not dedented",
+            )

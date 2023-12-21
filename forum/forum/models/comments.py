@@ -10,8 +10,7 @@ from .base import Answer, Question
 
 
 class Comment(Flaggable):
-    """An abstract class to represent a comment to a user input.
-    """
+    """An abstract class to represent a comment to a user input."""
 
     class Meta:
         abstract = True
@@ -21,9 +20,13 @@ class Comment(Flaggable):
     votes = models.IntegerField(default=0)
     content = models.TextField(max_length=300)
 
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False)
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False
+    )
     created_at = models.DateTimeField(auto_now_add=True)
-    users_upvoted = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='+')
+    users_upvoted = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, related_name="+"
+    )
 
     def get_model(self) -> str:
         raise NotImplementedError
@@ -32,7 +35,7 @@ class Comment(Flaggable):
         raise NotImplementedError
 
     def __str__(self):
-        return f'({self.author}) {self.content}'
+        return f"({self.author}) {self.content}"
 
     def save(self, *args, **kwargs):
         update_last_activity = self.id is None
@@ -48,39 +51,51 @@ class Comment(Flaggable):
 
 class AnswerComment(Comment):
     """A class representing a comment to an answer."""
-    objects = AdvancedModelManager(select_related=('author',), deferred_fields=user_model_defer_fields('author'))
+
+    objects = AdvancedModelManager(
+        select_related=("author",), deferred_fields=user_model_defer_fields("author")
+    )
 
     class Meta:
-        ordering = ['created_at']
-        verbose_name = 'Answer Comment'
-        verbose_name_plural = 'Answer Comments'
+        ordering = ["created_at"]
+        verbose_name = "Answer Comment"
+        verbose_name_plural = "Answer Comments"
 
-    answer = models.ForeignKey(Answer,
-                               on_delete=models.CASCADE,
-                               blank=False,
-                               related_name='comments', )
+    answer = models.ForeignKey(
+        Answer,
+        on_delete=models.CASCADE,
+        blank=False,
+        related_name="comments",
+    )
 
     def get_model(self):
-        return 'comment_answer'
+        return "comment_answer"
 
     def get_question(self) -> Question:
         return self.answer.get_question()
 
 
 class QuestionComment(Comment):
-    """A class representing a comment to a question.
-    """
-    objects = AdvancedModelManager(select_related=('author',), deferred_fields=user_model_defer_fields('author'))
+    """A class representing a comment to a question."""
+
+    objects = AdvancedModelManager(
+        select_related=("author",), deferred_fields=user_model_defer_fields("author")
+    )
 
     class Meta:
-        ordering = ['created_at']
-        verbose_name = 'Question Comment'
-        verbose_name_plural = 'Question Comments'
+        ordering = ["created_at"]
+        verbose_name = "Question Comment"
+        verbose_name_plural = "Question Comments"
 
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, blank=False, related_name='comments', )
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        blank=False,
+        related_name="comments",
+    )
 
     def get_model(self):
-        return 'comment_question'
+        return "comment_question"
 
     def get_question(self):
         return self.question

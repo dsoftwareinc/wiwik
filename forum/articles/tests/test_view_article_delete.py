@@ -10,14 +10,18 @@ from userauth.models import ForumUser
 
 class TestDeleteArticleView(ArticlesApiTestCase):
     users: list[ForumUser]
-    title = 'My article title'
-    article_content = 'My article content'
-    tags = ['my_first_tag', ]
+    title = "My article title"
+    article_content = "My article content"
+    tags = [
+        "my_first_tag",
+    ]
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.article = utils.create_article(cls.users[0], cls.title, cls.article_content, ','.join(cls.tags))
+        cls.article = utils.create_article(
+            cls.users[0], cls.title, cls.article_content, ",".join(cls.tags)
+        )
 
     def test_get_delete_article_confirmation_page__green(self):
         # arrange
@@ -26,7 +30,15 @@ class TestDeleteArticleView(ArticlesApiTestCase):
         res = self.client.delete_article_get(self.article.pk)
         # assert
         self.assertEqual(1, Article.objects.all().count())
-        self.assertEqual(reverse('articles:delete', args=[self.article.pk, ]), res.request['PATH_INFO'])
+        self.assertEqual(
+            reverse(
+                "articles:delete",
+                args=[
+                    self.article.pk,
+                ],
+            ),
+            res.request["PATH_INFO"],
+        )
 
     def test_delete_article__green(self):
         # arrange
@@ -39,8 +51,10 @@ class TestDeleteArticleView(ArticlesApiTestCase):
         # assert
         self.assertEqual(0, Article.objects.all().count())
         self.users[0].refresh_from_db()
-        self.assertEqual(question_user_previous_reputation - 20, self.users[0].reputation_score)
-        assert_url_in_chain(res, reverse('articles:list'))
+        self.assertEqual(
+            question_user_previous_reputation - 20, self.users[0].reputation_score
+        )
+        assert_url_in_chain(res, reverse("articles:list"))
 
     def test_delete_article__user_not_logged_in(self):
         # arrange
@@ -48,9 +62,17 @@ class TestDeleteArticleView(ArticlesApiTestCase):
         res = self.client.delete_article(self.article.pk)
         # assert
         self.assertTrue(Article.objects.filter(pk=self.article.pk).exists())
-        assert_url_in_chain(res,
-                            reverse('userauth:login') + '?next=' +
-                            reverse('articles:delete', args=[self.article.pk, ]))
+        assert_url_in_chain(
+            res,
+            reverse("userauth:login")
+            + "?next="
+            + reverse(
+                "articles:delete",
+                args=[
+                    self.article.pk,
+                ],
+            ),
+        )
 
     def test_delete_article__article_owned_by_different_user(self):
         # arrange
@@ -58,7 +80,7 @@ class TestDeleteArticleView(ArticlesApiTestCase):
         # act
         res = self.client.delete_article(self.article.pk)
         # assert
-        assert_url_in_chain(res, reverse('articles:detail', args=[self.article.pk]))
+        assert_url_in_chain(res, reverse("articles:detail", args=[self.article.pk]))
 
     def test_delete_article__article_does_not_exist(self):
         # arrange
@@ -71,7 +93,14 @@ class TestDeleteArticleView(ArticlesApiTestCase):
     def test_delete_article__article_has_invites__should_delete_invites(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
-        self.client.invite_to_question_post(self.article.pk, ','.join([self.usernames[2], ]))
+        self.client.invite_to_question_post(
+            self.article.pk,
+            ",".join(
+                [
+                    self.usernames[2],
+                ]
+            ),
+        )
         pk = self.article.pk
         # act
         res = self.client.delete_article(self.article.pk)

@@ -5,16 +5,15 @@ from forum.integrations import slack_api
 
 
 class Command(ManagementCommand):
-    help = 'Send slack message'
+    help = "Send slack message"
 
     def add_arguments(self, parser: CommandParser):
-        parser.add_argument('-t', '--text', type=str, required=True,
-                            help='Text to post to channel')
+        parser.add_argument(
+            "-t", "--text", type=str, required=True, help="Text to post to channel"
+        )
         group = parser.add_mutually_exclusive_group(required=True)
-        group.add_argument('-c', '--channel', type=str,
-                           help='Channel to post msg to')
-        group.add_argument('-e', '--email', type=str,
-                           help='email to post msg to')
+        group.add_argument("-c", "--channel", type=str, help="Channel to post msg to")
+        group.add_argument("-e", "--email", type=str, help="email to post msg to")
 
     def handle(self, text: str, channel: str, email: str, *args, **options):
         if email:

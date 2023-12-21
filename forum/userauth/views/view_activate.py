@@ -20,11 +20,13 @@ def view_activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        messages.success(request,
-                         'Account activated successfully. '
-                         'Thank you for your email confirmation. '
-                         'Now you can login your account.')
-        return redirect('userauth:login')
+        messages.success(
+            request,
+            "Account activated successfully. "
+            "Thank you for your email confirmation. "
+            "Now you can login your account.",
+        )
+        return redirect("userauth:login")
     else:
-        messages.error(request, 'Activation link is invalid!', 'danger')
-        return redirect('userauth:login')
+        messages.error(request, "Activation link is invalid!", "danger")
+        return redirect("userauth:login")

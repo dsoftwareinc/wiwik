@@ -4,7 +4,7 @@ from django.db import migrations, models
 
 
 def move_views_field(apps, schema_editor):
-    Question = apps.get_model('forum', 'Question')
+    Question = apps.get_model("forum", "Question")
     for q in Question.objects.all():
         q.views = q.additional_data.views
         q.answers_count = q.answer_set.count()
@@ -17,24 +17,28 @@ def do_nothing(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('forum', '0001_squashed_0007_question_space'),
+        ("forum", "0001_squashed_0007_question_space"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='question',
-            name='answers_count',
+            model_name="question",
+            name="answers_count",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='question',
-            name='type',
-            field=models.CharField(choices=[('q', 'Question'), ('a', 'Article')], default='q', help_text='Post type',
-                                   max_length=2),
+            model_name="question",
+            name="type",
+            field=models.CharField(
+                choices=[("q", "Question"), ("a", "Article")],
+                default="q",
+                help_text="Post type",
+                max_length=2,
+            ),
         ),
         migrations.AddField(
-            model_name='question',
-            name='views',
+            model_name="question",
+            name="views",
             field=models.IntegerField(default=0),
         ),
         migrations.RunPython(move_views_field, do_nothing),

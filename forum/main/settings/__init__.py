@@ -10,5 +10,7 @@ from .static_files import *
 DEBUG_TOOLS = False
 
 if DEBUG_TOOLS:
-    MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware", ] + MIDDLEWARE
+    MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    ] + MIDDLEWARE
     INSTALLED_APPS.append("debug_toolbar")

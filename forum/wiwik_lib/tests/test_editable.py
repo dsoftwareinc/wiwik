@@ -4,43 +4,75 @@ from datetime import timedelta
 from django.test import override_settings, TestCase
 from django.urls import reverse
 
-from common.test_utils import ForumClient, assert_message_in_response, assert_url_in_chain
+from common.test_utils import (
+    ForumClient,
+    assert_message_in_response,
+    assert_url_in_chain,
+)
 from forum.views import utils
 from userauth.models import ForumUser
 from wiwik_lib.models import EditedResource
 
 
 class EditableClient(ForumClient):
-
     def admin_changelist(self, model: str, query: str = None):
-        url = reverse(f'admin:wiwik_lib_{model}_changelist')
+        url = reverse(f"admin:wiwik_lib_{model}_changelist")
         if query is not None:
-            url += f'?{query}'
+            url += f"?{query}"
         return self.get(url, follow=True)
 
     def admin_change(self, model: str, pk: int):
-        url = reverse(f'admin:wiwik_lib_{model}_change', args=[pk, ])
+        url = reverse(
+            f"admin:wiwik_lib_{model}_change",
+            args=[
+                pk,
+            ],
+        )
         return self.get(url, follow=True)
 
     def edit_tag_get(self, tag_word: str):
-        return self.get(reverse('tags:edit', args=[tag_word, ]), follow=True)
+        return self.get(
+            reverse(
+                "tags:edit",
+                args=[
+                    tag_word,
+                ],
+            ),
+            follow=True,
+        )
 
     def edit_tag_post(self, tag_word: str, description: str, wiki: str, summary: str):
         return self.post(
-            reverse('tags:edit', args=[tag_word, ]),
-            {'description': description, 'wiki': wiki, 'summary': summary, },
-            follow=True, )
+            reverse(
+                "tags:edit",
+                args=[
+                    tag_word,
+                ],
+            ),
+            {
+                "description": description,
+                "wiki": wiki,
+                "summary": summary,
+            },
+            follow=True,
+        )
 
 
 class EditableApiTestCase(TestCase):
-    usernames = ['myusername1', 'myusername2', 'myusername3', ]
+    usernames = [
+        "myusername1",
+        "myusername2",
+        "myusername3",
+    ]
 
-    password = 'magicalPa$$w0rd'
-    title = 'my_question_title'
-    question_content = 'my_question_content'
-    answer_content = 'answer---content'
-    comment_content = 'comment---content'
-    tags = ['my_first_tag', ]
+    password = "magicalPa$$w0rd"
+    title = "my_question_title"
+    question_content = "my_question_content"
+    answer_content = "answer---content"
+    comment_content = "comment---content"
+    tags = [
+        "my_first_tag",
+    ]
 
     def setUp(self):
         self.client = EditableClient()
@@ -50,16 +82,20 @@ class EditableApiTestCase(TestCase):
         super().setUpClass()
         cls.users = [
             ForumUser.objects.create_user(
-                item, f'{item}@a.com', cls.password,
-                is_moderator=(item == cls.usernames[2]))
+                item,
+                f"{item}@a.com",
+                cls.password,
+                is_moderator=(item == cls.usernames[2]),
+            )
             for item in cls.usernames
         ]
-        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ','.join(cls.tags))
+        cls.question = utils.create_question(
+            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
+        )
         cls.answer = utils.create_answer(cls.answer_content, cls.users[1], cls.question)
 
 
 class EditableTests(EditableApiTestCase):
-
     def test_edit_tag__second_edit_prevented(self):
         self.client.login(self.usernames[0], self.password)
         self.client.edit_tag_get(self.tags[0])
@@ -68,8 +104,18 @@ class EditableTests(EditableApiTestCase):
         res = self.client.edit_tag_get(self.tags[0])
         #
         self.assertEqual(200, res.status_code)
-        assert_message_in_response(res, f"Tag {self.tags[0]} is currently edited by a different user")
-        assert_url_in_chain(res, reverse('tags:info', args=[self.tags[0], ]))
+        assert_message_in_response(
+            res, f"Tag {self.tags[0]} is currently edited by a different user"
+        )
+        assert_url_in_chain(
+            res,
+            reverse(
+                "tags:info",
+                args=[
+                    self.tags[0],
+                ],
+            ),
+        )
 
     @override_settings(EDIT_LOCK_TIMEOUT=timedelta(milliseconds=1))
     def test_edit_tag__first_edit_is_old(self):
@@ -93,8 +139,18 @@ class EditableTests(EditableApiTestCase):
         res = self.client.edit_question_get(self.question.id)
         #
         self.assertEqual(200, res.status_code)
-        assert_message_in_response(res, "Question is currently edited by a different user")
-        assert_url_in_chain(res, reverse('forum:thread', args=[self.question.id, ]))
+        assert_message_in_response(
+            res, "Question is currently edited by a different user"
+        )
+        assert_url_in_chain(
+            res,
+            reverse(
+                "forum:thread",
+                args=[
+                    self.question.id,
+                ],
+            ),
+        )
 
     @override_settings(EDIT_LOCK_TIMEOUT=timedelta(milliseconds=1))
     def test_edit_question__first_edit_is_old(self):
@@ -118,8 +174,18 @@ class EditableTests(EditableApiTestCase):
         res = self.client.edit_answer_get(self.answer.id)
         #
         self.assertEqual(200, res.status_code)
-        assert_message_in_response(res, "Answer is currently edited by a different user")
-        assert_url_in_chain(res, reverse('forum:thread', args=[self.question.id, ]))
+        assert_message_in_response(
+            res, "Answer is currently edited by a different user"
+        )
+        assert_url_in_chain(
+            res,
+            reverse(
+                "forum:thread",
+                args=[
+                    self.question.id,
+                ],
+            ),
+        )
 
     @override_settings(EDIT_LOCK_TIMEOUT=timedelta(milliseconds=1))
     def test_edit_answer__first_edit_is_old(self):
@@ -137,15 +203,19 @@ class EditableTests(EditableApiTestCase):
 
 
 class EditableAdminTest(EditableApiTestCase):
-    superuser_name = 'superuser'
-    password = 'magicalPa$$w0rd'
+    superuser_name = "superuser"
+    password = "magicalPa$$w0rd"
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.superuser = ForumUser.objects.create_superuser(
-            cls.superuser_name, f'{cls.superuser_name}@a.com', cls.password)
-        EditedResource.objects.create(user=cls.users[1], content_object=cls.question, )
+            cls.superuser_name, f"{cls.superuser_name}@a.com", cls.password
+        )
+        EditedResource.objects.create(
+            user=cls.users[1],
+            content_object=cls.question,
+        )
 
     def setUp(self):
         super(EditableAdminTest, self).setUp()
@@ -155,7 +225,7 @@ class EditableAdminTest(EditableApiTestCase):
         self.client.login(self.superuser_name, self.password)
         self.assertEqual(1, EditedResource.objects.count())
         # act
-        res = self.client.admin_changelist('editedresource')
+        res = self.client.admin_changelist("editedresource")
         # assert
         self.assertEqual(200, res.status_code)
 
@@ -164,6 +234,8 @@ class EditableAdminTest(EditableApiTestCase):
         self.client.login(self.superuser_name, self.password)
         self.assertEqual(1, EditedResource.objects.count())
         # act
-        res = self.client.admin_change('editedresource', EditedResource.objects.first().id)
+        res = self.client.admin_change(
+            "editedresource", EditedResource.objects.first().id
+        )
         # assert
         self.assertEqual(200, res.status_code)

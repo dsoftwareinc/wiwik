@@ -4,13 +4,12 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('forum', '0011_rename_tagfollow_usertagstats'),
+        ("forum", "0011_rename_tagfollow_usertagstats"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='QuestionFollow',
+            name="QuestionFollow",
         ),
     ]

@@ -27,69 +27,73 @@ class ColorFormatter(logging.Formatter):
 
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            '()': 'main.settings.ColorFormatter',
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "()": "main.settings.ColorFormatter",
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
         },
-        'simple': {
-            '()': 'main.settings.ColorFormatter',
-            'format': '%(asctime)s %(levelname)s %(name)s.%(funcName)s:%(lineno)s- %(message)s',
-        },
-    },
-    'filters': {
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
+        "simple": {
+            "()": "main.settings.ColorFormatter",
+            "format": "%(asctime)s %(levelname)s %(name)s.%(funcName)s:%(lineno)s- %(message)s",
         },
     },
-    'handlers': {
-        'console': {
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+    "filters": {
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
             # 'filters': ['require_debug_true'],
             # - print everything to console, gunicorn aggregates to file
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
         },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler',
-        }
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+        },
     },
-    'root': {
-        'handlers': ['console', 'mail_admins'],
-        'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+    "root": {
+        "handlers": ["console", "mail_admins"],
+        "level": os.getenv("DJANGO_LOG_LEVEL", "DEBUG"),
     },
-    'loggers': {
-        'scheduler': {
-            'handlers': ['console'],
-            'level': 'WARNING',
+    "loggers": {
+        "scheduler": {
+            "handlers": ["console"],
+            "level": "WARNING",
         },
-        'django': {
-            'handlers': ['console'],
-            'level': 'WARNING',
-            'propagate': True,
+        "django": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": True,
         },
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
+        "django.request": {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
         },
-        'MARKDOWN': {
-            'handlers': ['console', ],
-            'level': 'WARNING',
-            'propagate': True,
+        "MARKDOWN": {
+            "handlers": [
+                "console",
+            ],
+            "level": "WARNING",
+            "propagate": True,
         },
-        'rq': {
-            'handlers': ['console', ],
-            'level': 'INFO',
-            'propagate': True,
+        "rq": {
+            "handlers": [
+                "console",
+            ],
+            "level": "INFO",
+            "propagate": True,
         }
         # 'django.db.backends': {
         #     'handlers': ['console'],
@@ -123,5 +127,5 @@ LOGGING = {
         #     'handlers': ['console', 'mail_admins'],
         #     'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
         # },
-    }
+    },
 }

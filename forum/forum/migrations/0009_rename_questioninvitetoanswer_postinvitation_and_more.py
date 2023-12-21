@@ -5,19 +5,18 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('forum', '0008_alter_question_answers_count_and_more'),
+        ("forum", "0008_alter_question_answers_count_and_more"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='QuestionInviteToAnswer',
-            new_name='PostInvitation',
+            old_name="QuestionInviteToAnswer",
+            new_name="PostInvitation",
         ),
         migrations.AlterModelOptions(
-            name='postinvitation',
-            options={'verbose_name_plural': 'Post Invitations'},
+            name="postinvitation",
+            options={"verbose_name_plural": "Post Invitations"},
         ),
     ]

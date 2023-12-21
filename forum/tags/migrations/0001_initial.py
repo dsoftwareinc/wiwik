@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -15,49 +14,177 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tag_word', models.CharField(max_length=25, unique=True)),
-                ('description', models.TextField(blank=True, max_length=500, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('wiki', models.TextField(blank=True, default='')),
-                ('number_of_questions', models.IntegerField(default=0, help_text='total number of questions with this tag asked')),
-                ('number_asked_today', models.IntegerField(default=0, help_text='number of questions with this tag asked today')),
-                ('number_asked_this_week', models.IntegerField(default=0, help_text='number of questions with this tag asked this week')),
-                ('number_followers', models.IntegerField(default=0, help_text='Number of followers for tag, calculated async')),
-                ('experts', models.CharField(blank=True, default='', help_text='Comma separated list of usernames that are considered experts', max_length=100, null=True)),
-                ('stars', models.CharField(blank=True, default='', help_text='Comma separated list of usernames that are considered stars', max_length=100, null=True)),
-                ('related', models.CharField(blank=True, default='', help_text='Comma separated list of related tags', max_length=100, null=True)),
-                ('author', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("tag_word", models.CharField(max_length=25, unique=True)),
+                (
+                    "description",
+                    models.TextField(blank=True, max_length=500, null=True),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("wiki", models.TextField(blank=True, default="")),
+                (
+                    "number_of_questions",
+                    models.IntegerField(
+                        default=0,
+                        help_text="total number of questions with this tag asked",
+                    ),
+                ),
+                (
+                    "number_asked_today",
+                    models.IntegerField(
+                        default=0,
+                        help_text="number of questions with this tag asked today",
+                    ),
+                ),
+                (
+                    "number_asked_this_week",
+                    models.IntegerField(
+                        default=0,
+                        help_text="number of questions with this tag asked this week",
+                    ),
+                ),
+                (
+                    "number_followers",
+                    models.IntegerField(
+                        default=0,
+                        help_text="Number of followers for tag, calculated async",
+                    ),
+                ),
+                (
+                    "experts",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text="Comma separated list of usernames that are considered experts",
+                        max_length=100,
+                        null=True,
+                    ),
+                ),
+                (
+                    "stars",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text="Comma separated list of usernames that are considered stars",
+                        max_length=100,
+                        null=True,
+                    ),
+                ),
+                (
+                    "related",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text="Comma separated list of related tags",
+                        max_length=100,
+                        null=True,
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='TagEdit',
+            name="TagEdit",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('summary', models.CharField(max_length=200)),
-                ('before_wiki', models.TextField(blank=True, null=True)),
-                ('before_description', models.TextField(blank=True, null=True)),
-                ('author', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
-                ('tag', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tags.tag')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("summary", models.CharField(max_length=200)),
+                ("before_wiki", models.TextField(blank=True, null=True)),
+                ("before_description", models.TextField(blank=True, null=True)),
+                (
+                    "author",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "tag",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="tags.tag"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Synonym',
+            name="Synonym",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('name', models.CharField(max_length=25, unique=True)),
-                ('active', models.BooleanField(default=False, help_text='Is synonym active in searching for tags')),
-                ('approved_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL)),
-                ('author', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL)),
-                ('tag', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tags.tag')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("name", models.CharField(max_length=25, unique=True)),
+                (
+                    "active",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Is synonym active in searching for tags",
+                    ),
+                ),
+                (
+                    "approved_by",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="+",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="+",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "tag",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="tags.tag"
+                    ),
+                ),
             ],
         ),
     ]

@@ -11,8 +11,8 @@ from wiwik_lib.utils import CURRENT_SITE
 
 
 def old_unanswered_questions_email_report(
-        tags_list: List[str] = None,
-        skip_if_empty: bool = True) -> str:
+    tags_list: List[str] = None, skip_if_empty: bool = True
+) -> str:
     """
     Generate a report with old unanswered questions on a list of tags.
     Old question is defined as created_at is before now minus settings.QUESTION_OLD_ON_DAYS
@@ -28,28 +28,35 @@ def old_unanswered_questions_email_report(
     """
     if settings.DAYS_FOR_QUESTION_TO_BECOME_OLD is None:
         return ""
-    from_date = timezone.now() - timezone.timedelta(days=settings.DAYS_FOR_QUESTION_TO_BECOME_OLD)
+    from_date = timezone.now() - timezone.timedelta(
+        days=settings.DAYS_FOR_QUESTION_TO_BECOME_OLD
+    )
     query_filter = Q(created_at__lt=from_date)  # Old questions
     if tags_list:  # In tags
         query_filter = query_filter & Q(tags__tag_word__in=tags_list)
-    questions_list = list(Question.objects
-                          .filter(query_filter)
-                          .annotate(num_answers=Count('answer'))
-                          .filter(num_answers=0)  # unanswered
-                          .order_by('-votes', '-created_at')
-                          )
+    questions_list = list(
+        Question.objects.filter(query_filter)
+        .annotate(num_answers=Count("answer"))
+        .filter(num_answers=0)  # unanswered
+        .order_by("-votes", "-created_at")
+    )
     if len(questions_list) == 0 and skip_if_empty:
-        return ''
-    template = loader.get_template('emails/reports/includes/unanswered-questions.report.html')
-    res = template.render(context={'questions': questions_list,
-                                   'basesite': CURRENT_SITE,
-                                   })
+        return ""
+    template = loader.get_template(
+        "emails/reports/includes/unanswered-questions.report.html"
+    )
+    res = template.render(
+        context={
+            "questions": questions_list,
+            "basesite": CURRENT_SITE,
+        }
+    )
     return res
 
 
-def recent_questions_email_report(from_date: date,
-                                  tags_list: List[str] = None,
-                                  skip_if_empty: bool = True) -> str:
+def recent_questions_email_report(
+    from_date: date, tags_list: List[str] = None, skip_if_empty: bool = True
+) -> str:
     """
     Generate a report with all the questions that were created from :from_date and
     have tags from :tags_list. If :tags_list is empty, then send all questions
@@ -70,17 +77,20 @@ def recent_questions_email_report(from_date: date,
     if tags_list:
         query_filter = query_filter & Q(tags__tag_word__in=tags_list)
         total_questions = Question.objects.filter(created_at__gte=from_date).count()
-    questions_list = list(Question.objects
-                          .filter(query_filter)
-                          .annotate(num_answers=Count('answer'))
-                          .order_by('-votes', '-created_at')
-                          )
+    questions_list = list(
+        Question.objects.filter(query_filter)
+        .annotate(num_answers=Count("answer"))
+        .order_by("-votes", "-created_at")
+    )
     if len(questions_list) == 0 and skip_if_empty:
-        return ''
-    template = loader.get_template('emails/reports/includes/questions.report.html')
-    res = template.render(context={'fromdate': from_date,
-                                   'questions': questions_list,
-                                   'total_questions': total_questions,
-                                   'basesite': CURRENT_SITE,
-                                   })
+        return ""
+    template = loader.get_template("emails/reports/includes/questions.report.html")
+    res = template.render(
+        context={
+            "fromdate": from_date,
+            "questions": questions_list,
+            "total_questions": total_questions,
+            "basesite": CURRENT_SITE,
+        }
+    )
     return res

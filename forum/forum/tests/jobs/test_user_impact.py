@@ -8,17 +8,19 @@ from userauth.models import ForumUser
 
 
 class TestUsersAutocompleteView(ForumApiTestCase):
-    question_title = 'my question title'
-    question_content = 'My question content'
-    answer_content = 'My answer content'
-    tags = ['my_first_tag', 'my_second_tag', 'my_third_tag']
-    superuser_name = 'superuser'
+    question_title = "my question title"
+    question_content = "My question content"
+    answer_content = "My answer content"
+    tags = ["my_first_tag", "my_second_tag", "my_third_tag"]
+    superuser_name = "superuser"
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.questions = [
-            utils.create_question(user, cls.question_title, cls.question_content, ','.join(cls.tags))
+            utils.create_question(
+                user, cls.question_title, cls.question_content, ",".join(cls.tags)
+            )
             for user in cls.users
         ]
         utils.create_answer(cls.answer_content, cls.users[0], cls.questions[0])
@@ -29,24 +31,27 @@ class TestUsersAutocompleteView(ForumApiTestCase):
         a = utils.create_answer(cls.answer_content, cls.users[0], cls.questions[1])
         a.is_accepted = True
         a.save()
-        cls.superuser = ForumUser.objects.create_superuser(cls.superuser_name, f'{cls.superuser_name}@a.com',
-                                                           cls.password)
+        cls.superuser = ForumUser.objects.create_superuser(
+            cls.superuser_name, f"{cls.superuser_name}@a.com", cls.password
+        )
         utils.update_question(
-            cls.users[1], cls.questions[0],
-            cls.question_title + '1', cls.question_content, ','.join(cls.tags))
+            cls.users[1],
+            cls.questions[0],
+            cls.question_title + "1",
+            cls.question_content,
+            ",".join(cls.tags),
+        )
 
     def setUp(self):
         self.client = ForumClient()
 
-    @mock.patch('forum.jobs.user_impact.calculate_user_impact')
+    @mock.patch("forum.jobs.user_impact.calculate_user_impact")
     def test_calculating_for_all_users(self, method: mock.MagicMock):
         # arrange
         # act
         calculate_all_users_impact()
         # assert
-        method.assert_has_calls([
-            mock.call(u) for u in self.users
-        ], any_order=True)
+        method.assert_has_calls([mock.call(u) for u in self.users], any_order=True)
         assert_not_called_with(method, mock.call(self.superuser))
 
     def test_calculate_user_impact(self):

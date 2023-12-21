@@ -12,9 +12,9 @@ __vectorizer: Optional[TfidfVectorizer] = None
 def initialize_tfidf():
     logger.info("Initializing NLTK...")
     try:
-        nltk.data.find('tokenizers/punkt')
+        nltk.data.find("tokenizers/punkt")
     except LookupError:
-        nltk.download('punkt')
+        nltk.download("punkt")
 
     stemmer = nltk.stem.porter.PorterStemmer()
     remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
@@ -23,9 +23,11 @@ def initialize_tfidf():
         return [stemmer.stem(item) for item in tokens]
 
     def normalize(text):
-        return stem_tokens(nltk.word_tokenize(text.lower().translate(remove_punctuation_map)))
+        return stem_tokens(
+            nltk.word_tokenize(text.lower().translate(remove_punctuation_map))
+        )
 
-    return TfidfVectorizer(tokenizer=normalize, stop_words='english')
+    return TfidfVectorizer(tokenizer=normalize, stop_words="english")
 
 
 def calc_tfidf_pair(text1: str, text2: str) -> float:

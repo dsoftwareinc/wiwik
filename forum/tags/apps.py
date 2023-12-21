@@ -6,5 +6,5 @@ logger = logging.getLogger(__package__)
 
 
 class TagsConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'tags'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "tags"

@@ -4,8 +4,13 @@ from wiwik_lib.utils import CURRENT_SITE
 
 
 def get_model_url(model_name: str, model) -> str:
-    if model_name == 'tag':
-        return reverse('forum:tag', args=[model.tag_word, ])
+    if model_name == "tag":
+        return reverse(
+            "forum:tag",
+            args=[
+                model.tag_word,
+            ],
+        )
     if model_name == "comment_answer":
         parent_model_name = "answer"
         parent_pk = model.answer.pk
@@ -18,8 +23,8 @@ def get_model_url(model_name: str, model) -> str:
     else:
         parent_model_name = "question"
         parent_pk = model.pk
-    anchor = f'#{parent_model_name}_{parent_pk}'
-    return reverse('forum:thread', args=[model.get_question().pk]) + anchor
+    anchor = f"#{parent_model_name}_{parent_pk}"
+    return reverse("forum:thread", args=[model.get_question().pk]) + anchor
 
 
 def get_model_url_with_base(model_name: str, model) -> str:

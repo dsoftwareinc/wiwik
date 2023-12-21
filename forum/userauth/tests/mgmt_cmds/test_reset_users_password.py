@@ -11,7 +11,7 @@ class ResetUsersPasswordTest(TestCase):
         out = StringIO()
         management.call_command(
             "reset_users",
-            '--no-color',
+            "--no-color",
             *args,
             **kwargs,
             stdout=out,
@@ -22,14 +22,16 @@ class ResetUsersPasswordTest(TestCase):
     def test__green(self):
         # assert
         for i in range(2):
-            ForumUser.objects.create_user(f'user{i}',
-                                          f'user{i}@so.com',
-                                          f'user{i}',
-                                          name=f'user name {i}',
-                                          title='fancy title')
+            ForumUser.objects.create_user(
+                f"user{i}",
+                f"user{i}@so.com",
+                f"user{i}",
+                name=f"user name {i}",
+                title="fancy title",
+            )
         # act
         self.call_command()
         # assert
         user_qs = ForumUser.objects.all()
         for u in user_qs:
-            self.assertTrue(u.check_password('1111'))
+            self.assertTrue(u.check_password("1111"))

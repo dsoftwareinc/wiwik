@@ -13,63 +13,86 @@ class VoteActivity(models.Model):
     Either a reputation change (upvote/downvote/accepted answer/edit content)
     or getting a badge from the system.
     """
+
     created_at = models.DateTimeField(auto_now_add=True)
     source = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        blank=True, null=True,
+        blank=True,
+        null=True,
         on_delete=models.DO_NOTHING,
-        help_text='User who voted to create this activity',
-        related_name='+'
+        help_text="User who voted to create this activity",
+        related_name="+",
     )
     target = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        help_text='User affected by this activity',
-        related_name='reputation_votes'
+        help_text="User affected by this activity",
+        related_name="reputation_votes",
     )
     question = models.ForeignKey(
-        'forum.Question', on_delete=models.CASCADE,
-        default=None, null=True, blank=True,
-        help_text='Question caused this'
+        "forum.Question",
+        on_delete=models.CASCADE,
+        default=None,
+        null=True,
+        blank=True,
+        help_text="Question caused this",
     )
     answer = models.ForeignKey(
-        'forum.Answer', on_delete=models.CASCADE,
-        default=None, null=True, blank=True,
-        help_text='Answer that caused this, if relevant'
+        "forum.Answer",
+        on_delete=models.CASCADE,
+        default=None,
+        null=True,
+        blank=True,
+        help_text="Answer that caused this, if relevant",
     )
     reputation_change = models.IntegerField(
-        null=True, blank=True, default=None,
-        help_text='Change in reputation for target user',
+        null=True,
+        blank=True,
+        default=None,
+        help_text="Change in reputation for target user",
     )
     seen = models.DateTimeField(
-        default=None, null=True, blank=True,
-        help_text='When the target user has seen this activity')
+        default=None,
+        null=True,
+        blank=True,
+        help_text="When the target user has seen this activity",
+    )
     badge = models.ForeignKey(
-        'badges.Badge', null=True, blank=True, on_delete=models.CASCADE, default=None,
-        help_text='Badge on this activity')
+        "badges.Badge",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        default=None,
+        help_text="Badge on this activity",
+    )
     objects = AdvancedModelManager(
-        select_related=('badge', 'target', 'question',), )
+        select_related=(
+            "badge",
+            "target",
+            "question",
+        ),
+    )
 
     class Meta:
-        verbose_name_plural = 'Activities'
+        verbose_name_plural = "Activities"
 
     def __str__(self):
         if self.badge:
-            return f'{self.target.username} earned {self.badge.name}'
-        answer_str = f' answer {self.answer_id}' if self.answer is not None else ''
-        return f'VoteActivity[{self.reputation_change},target={self.target.username},q={self.question_id}{answer_str}]'
+            return f"{self.target.username} earned {self.badge.name}"
+        answer_str = f" answer {self.answer_id}" if self.answer is not None else ""
+        return f"VoteActivity[{self.reputation_change},target={self.target.username},q={self.question_id}{answer_str}]"
 
     @property
     def time_section(self):
         curr_time = timezone.now()
         if self.created_at.date() == curr_time.date():
-            section = 'Today'
+            section = "Today"
         elif self.created_at >= curr_time - timedelta(days=7):
-            section = 'Last 7 days'
+            section = "Last 7 days"
         elif self.created_at >= curr_time - timedelta(days=30):
-            section = 'Last 30 days'
+            section = "Last 30 days"
         else:
-            section = 'Older'
+            section = "Older"
         return section
 
     def save(self, *args, **kwargs):
@@ -86,16 +109,17 @@ class SearchRecord(models.Model):
     This model represents a search done on the server.
     The information can be used for reporting.
     """
+
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        help_text='User affected by this activity',
-        related_name='+'
+        help_text="User affected by this activity",
+        related_name="+",
     )
-    query = models.CharField(max_length=400, help_text='Query user did')
-    results = models.CharField(max_length=50, help_text='questionIds results')
-    time = models.IntegerField(help_text='Time search has taken')
+    query = models.CharField(max_length=400, help_text="Query user did")
+    results = models.CharField(max_length=50, help_text="questionIds results")
+    time = models.IntegerField(help_text="Time search has taken")
 
     def __str__(self):
-        return f'SearchRecord[query={self.query}]'
+        return f"SearchRecord[query={self.query}]"

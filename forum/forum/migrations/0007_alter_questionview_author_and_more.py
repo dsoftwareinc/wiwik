@@ -8,25 +8,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('forum', '0006_alter_question_last_activity'),
+        ("forum", "0006_alter_question_last_activity"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='questionview',
-            name='author',
-            field=models.ForeignKey(help_text='Who viewed the post', on_delete=django.db.models.deletion.CASCADE,
-                                    to=settings.AUTH_USER_MODEL),
+            model_name="questionview",
+            name="author",
+            field=models.ForeignKey(
+                help_text="Who viewed the post",
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='questionview',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, help_text='When was the post viewed'),
+            model_name="questionview",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, help_text="When was the post viewed"
+            ),
         ),
         migrations.AlterField(
-            model_name='questionview',
-            name='question',
-            field=models.ForeignKey(help_text='Post that was viewed (Represented by the question',
-                                    on_delete=django.db.models.deletion.CASCADE, to='forum.question'),
+            model_name="questionview",
+            name="question",
+            field=models.ForeignKey(
+                help_text="Post that was viewed (Represented by the question",
+                on_delete=django.db.models.deletion.CASCADE,
+                to="forum.question",
+            ),
         ),
     ]

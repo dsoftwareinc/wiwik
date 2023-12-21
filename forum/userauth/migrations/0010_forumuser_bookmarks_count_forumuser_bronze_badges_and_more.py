@@ -6,65 +6,88 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('badges', '0001_squashed_0003_auto_20211211_1535'),
-        ('userauth', '0001_squashed_0009_forumuseradditionaldata_bookmark_count'),
+        ("badges", "0001_squashed_0003_auto_20211211_1535"),
+        ("userauth", "0001_squashed_0009_forumuseradditionaldata_bookmark_count"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='forumuser',
-            name='bookmarks_count',
-            field=models.IntegerField(default=0, help_text='Number of bookmarks user have'),
+            model_name="forumuser",
+            name="bookmarks_count",
+            field=models.IntegerField(
+                default=0, help_text="Number of bookmarks user have"
+            ),
         ),
         migrations.AddField(
-            model_name='forumuser',
-            name='bronze_badges',
-            field=models.IntegerField(default=0, help_text='Number of bronze badges the user has'),
+            model_name="forumuser",
+            name="bronze_badges",
+            field=models.IntegerField(
+                default=0, help_text="Number of bronze badges the user has"
+            ),
         ),
         migrations.AddField(
-            model_name='forumuser',
-            name='gold_badges',
-            field=models.IntegerField(default=0, help_text='Number of gold badges the user has'),
+            model_name="forumuser",
+            name="gold_badges",
+            field=models.IntegerField(
+                default=0, help_text="Number of gold badges the user has"
+            ),
         ),
         migrations.AddField(
-            model_name='forumuser',
-            name='last_email_datetime',
-            field=models.DateTimeField(blank=True, help_text='Date+Time of email sent to user', null=True),
+            model_name="forumuser",
+            name="last_email_datetime",
+            field=models.DateTimeField(
+                blank=True, help_text="Date+Time of email sent to user", null=True
+            ),
         ),
         migrations.AddField(
-            model_name='forumuser',
-            name='next_badge',
-            field=models.ForeignKey(blank=True, help_text='Next badge recommended for user', null=True,
-                                    on_delete=django.db.models.deletion.SET_NULL, to='badges.badge'),
+            model_name="forumuser",
+            name="next_badge",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Next badge recommended for user",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="badges.badge",
+            ),
         ),
         migrations.AddField(
-            model_name='forumuser',
-            name='people_reached',
-            field=models.IntegerField(default=0, help_text='Number of views posts user created had'),
+            model_name="forumuser",
+            name="people_reached",
+            field=models.IntegerField(
+                default=0, help_text="Number of views posts user created had"
+            ),
         ),
         migrations.AddField(
-            model_name='forumuser',
-            name='posts_edited',
-            field=models.IntegerField(default=0, help_text='Number of posts user edited'),
+            model_name="forumuser",
+            name="posts_edited",
+            field=models.IntegerField(
+                default=0, help_text="Number of posts user edited"
+            ),
         ),
         migrations.AddField(
-            model_name='forumuser',
-            name='reputation_score',
+            model_name="forumuser",
+            name="reputation_score",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='forumuser',
-            name='search_count',
-            field=models.IntegerField(default=0, help_text='Number of searches user made'),
+            model_name="forumuser",
+            name="search_count",
+            field=models.IntegerField(
+                default=0, help_text="Number of searches user made"
+            ),
         ),
         migrations.AddField(
-            model_name='forumuser',
-            name='silver_badges',
-            field=models.IntegerField(default=0, help_text='Number of silver badges the user has'),
+            model_name="forumuser",
+            name="silver_badges",
+            field=models.IntegerField(
+                default=0, help_text="Number of silver badges the user has"
+            ),
         ),
         migrations.AddField(
-            model_name='forumuser',
-            name='votes',
-            field=models.IntegerField(default=0, help_text='Number of votes user casted'),
+            model_name="forumuser",
+            name="votes",
+            field=models.IntegerField(
+                default=0, help_text="Number of votes user casted"
+            ),
         ),
     ]
