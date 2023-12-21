@@ -106,30 +106,6 @@ def delete_activity(
     recalculate_user_reputation(target)
 
 
-MODELS_MAP = {
-    "question": models.Question,
-    "answer": models.Answer,
-    "comment_answer": models.AnswerComment,
-    "comment_question": models.QuestionComment,
-}
-
-
-def get_model(model_name: str, pk: int) -> Optional[Model]:
-    """Get a model instance based on model name and primary key
-    :param model_name: model name to look for, based on MODELS_MAP dictionary
-    :param pk: primary key to look for
-    :returns: the instance of the model with the primary key, or None if not found
-    """
-    if model_name is None or model_name not in MODELS_MAP:
-        logger.error(f"Attempt to get model {model_name} which is not supported")
-        raise NotImplementedError
-    try:
-        q = MODELS_MAP[model_name].objects.get(pk=pk)
-    except MODELS_MAP[model_name].DoesNotExist:
-        q = None
-    return q
-
-
 # ======== Question methods ================
 
 
@@ -440,6 +416,9 @@ def create_invites_and_notify_invite_users_to_question(
     return len(invited_list)
 
 
+# ======== General methods ================
+
+
 _POST_TYPE_TO_VIEW_NAME = {
     models.Question.PostType.QUESTION.value: "forum:thread",
     models.Question.PostType.ARTICLE.value: "articles:detail",
@@ -450,3 +429,51 @@ _POST_TYPE_TO_VIEW_NAME = {
 
 def get_view_name_for_post_type(post: models.Question) -> str:
     return _POST_TYPE_TO_VIEW_NAME[post.type]
+
+
+_MODELS_MAP = {
+    "article": models.Question,
+    "question": models.Question,
+    "answer": models.Answer,
+    "comment_answer": models.AnswerComment,
+    "comment_question": models.QuestionComment,
+    "tag": Tag,
+}
+
+
+def get_model(model_name: str, pk: int) -> Optional[Model]:
+    """Get a model instance based on model name and primary key
+    :param model_name: model name to look for, based on MODELS_MAP dictionary
+    :param pk: primary key to look for
+    :returns: the instance of the model with the primary key, or None if not found
+    """
+    if model_name is None or model_name not in _MODELS_MAP:
+        logger.error(f"Attempt to get model {model_name} which is not supported")
+        raise NotImplementedError
+    try:
+        q = _MODELS_MAP[model_name].objects.get(pk=pk)
+    except _MODELS_MAP[model_name].DoesNotExist:
+        q = None
+    return q
+
+
+_MODERATOR_ACTIONS = {"edit", "delete"}
+
+
+def user_has_perm(action: str, user: ForumUser, model: str, pk: int) -> bool:
+    """Check whether the user has permissions to perform action on a model instance
+    :param action: action to check
+    :param user: user to check
+    :param model: model to check
+    :param pk: the primary key of the model instance
+    :returns: True if user has permission, False otherwise
+    """
+    if user.is_staff or user.is_superuser:
+        return True
+    ins = get_model(model, pk)
+    author = getattr(ins, "author", None)
+    if author == user:
+        return True
+    if model in _MODELS_MAP and user.is_moderator:
+        return True
+    return False

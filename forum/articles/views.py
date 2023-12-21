@@ -14,7 +14,7 @@ from forum.models import QuestionBookmark, VoteActivity
 from forum.views import utils
 from forum.views.helpers import get_questions_queryset
 from forum.views.q_and_a_crud.view_thread import view_thread_background_tasks
-from forum.views.utils import get_view_name_for_post_type
+from forum.views.utils import get_view_name_for_post_type, user_has_perm
 from userauth.models import ForumUser
 from wiwik_lib.models import user_model_defer_fields
 from wiwik_lib.utils import paginate_queryset
@@ -205,7 +205,7 @@ def view_article_edit(request, pk: int):
     if not article.is_article:
         return redirect(get_view_name_for_post_type(article), pk=pk)
     user: ForumUser = cast(ForumUser, request.user)
-    if article.author != user and not user.can_edit:  # TODO change edit user permissions
+    if not user_has_perm("edit", user, "article", pk):
         messages.error(request, "You can not edit this article", "danger")
         return redirect("articles:detail", pk=pk)
     if not ask_to_edit_resource(request.user, article):

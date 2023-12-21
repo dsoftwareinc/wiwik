@@ -5,12 +5,7 @@ from wiwik_lib.utils import CURRENT_SITE
 
 def get_model_url(model_name: str, model) -> str:
     if model_name == "tag":
-        return reverse(
-            "forum:tag",
-            args=[
-                model.tag_word,
-            ],
-        )
+        return reverse("forum:tag", args=[model.tag_word])
     if model_name == "comment_answer":
         parent_model_name = "answer"
         parent_pk = model.answer.pk

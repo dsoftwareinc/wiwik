@@ -7,6 +7,7 @@ from django.urls import reverse
 
 from forum.models import Answer
 from forum.views import utils
+from forum.views.utils import user_has_perm
 from userauth.models import ForumUser
 from wiwik_lib.views import ask_to_edit_resource, finish_edit_resource
 
@@ -15,7 +16,7 @@ from wiwik_lib.views import ask_to_edit_resource, finish_edit_resource
 def view_editanswer(request, answer_pk):
     user = cast(ForumUser, request.user)
     answer = get_object_or_404(Answer, pk=answer_pk)
-    if answer.author != user and not user.can_edit:  # TODO change edit user permissions
+    if not user_has_perm("edit", user, "answer", answer_pk):
         messages.error(request, "You can not edit this answer", "danger")
         return redirect("forum:thread", pk=answer.question.pk)
     if not ask_to_edit_resource(request.user, answer):

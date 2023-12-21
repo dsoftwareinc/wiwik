@@ -69,7 +69,6 @@
                 {% endfor %}
             {% endfor %}
             {% if user.reputation_votes.count > MAX_REPUTATION_ITEMS %}
-                {# TODO performance improvement - move count to user_additionaldata #}
                 <a class="list-group-item dropdown-item"
                    href="{% url 'userauth:profile' user.username 'reputation' %}">
                     Show more...

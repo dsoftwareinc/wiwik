@@ -1,3 +1,5 @@
+from typing import cast
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -7,6 +9,7 @@ from forum.models import Question
 from forum.views import utils
 from forum.views.helpers import render_questions
 from tags.models import Tag
+from userauth.models import ForumUser
 
 
 @login_required
@@ -55,7 +58,7 @@ def view_tag_questions_list(request, tag_word: str):
         messages.warning(request, f"Tag {tag_word} does not exist")
         return redirect("forum:list")
     main_query = Question.objects.filter(Q(tags__tag_word__iexact=tag_word))
-    show_edit_desc_button = request.user.can_edit_tag
+    show_edit_desc_button = cast(ForumUser, request.user).can_edit_tag
     tag_user_follows = utils.get_user_followed_tags(request.user)
     tag_words_user_follows = [t.tag_word for t in tag_user_follows]
     return render_questions(
