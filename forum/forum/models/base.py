@@ -261,10 +261,9 @@ class QuestionAdditionalData(models.Model):
 
 
 class Answer(VotableUserInput, Flaggable):
-    """
-    Class to represent an answer to a question in the forum
-    """
+    """Class to represent an answer to a question in the forum"""
     question = models.ForeignKey(Question, on_delete=models.CASCADE, blank=False)
+    parent = models.ForeignKey('Answer', on_delete=models.SET_NULL, blank=True, null=True)
     is_accepted = models.BooleanField(default=False)
 
     def __str__(self):
