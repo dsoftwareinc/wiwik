@@ -113,18 +113,14 @@ class UserAuthAdminTest(UserAuthTestCase):
         self.client.login(self.superuser_name, self.password)
         data = {
             "action": "deactivate_users",
-            "_selected_action": ForumUser.objects.exclude(
-                id=self.superuser.id
-            ).values_list("pk", flat=True),
+            "_selected_action": ForumUser.objects.exclude(id=self.superuser.id).values_list("pk", flat=True),
         }
         # act
         res = self.client.admin_changelist_post("forumuser", data=data)
         # assert
         self.assertEqual(200, res.status_code)
         self.assertEqual(1, ForumUser.objects.filter(is_active=True).count())
-        self.assertEqual(
-            len(self.users), ForumUser.objects.filter(is_active=False).count()
-        )
+        self.assertEqual(len(self.users), ForumUser.objects.filter(is_active=False).count())
 
     def test_admin_action_grant_moderator__green(self):
         # arrange
@@ -132,17 +128,13 @@ class UserAuthAdminTest(UserAuthTestCase):
         self.assertEqual(0, ForumUser.objects.filter(is_moderator=True).count())
         data = {
             "action": "action_grant_moderator",
-            "_selected_action": ForumUser.objects.exclude(
-                id=self.superuser.id
-            ).values_list("pk", flat=True),
+            "_selected_action": ForumUser.objects.exclude(id=self.superuser.id).values_list("pk", flat=True),
         }
         # act
         res = self.client.admin_changelist_post("forumuser", data=data)
         # assert
         self.assertEqual(200, res.status_code)
-        self.assertEqual(
-            len(self.users), ForumUser.objects.filter(is_moderator=True).count()
-        )
+        self.assertEqual(len(self.users), ForumUser.objects.filter(is_moderator=True).count())
         self.assertEqual(1, ForumUser.objects.filter(is_moderator=False).count())
 
     def test_admin_action_grant_moderator__inactive_user__green(self):
@@ -153,17 +145,13 @@ class UserAuthAdminTest(UserAuthTestCase):
         self.users[0].save()
         data = {
             "action": "action_grant_moderator",
-            "_selected_action": ForumUser.objects.exclude(
-                id=self.superuser.id
-            ).values_list("pk", flat=True),
+            "_selected_action": ForumUser.objects.exclude(id=self.superuser.id).values_list("pk", flat=True),
         }
         # act
         res = self.client.admin_changelist_post("forumuser", data=data)
         # assert
         self.assertEqual(200, res.status_code)
-        self.assertEqual(
-            len(self.users) - 1, ForumUser.objects.filter(is_moderator=True).count()
-        )
+        self.assertEqual(len(self.users) - 1, ForumUser.objects.filter(is_moderator=True).count())
         self.assertEqual(2, ForumUser.objects.filter(is_moderator=False).count())
 
     def test_admin_action_cleanup_visits__green(self):
@@ -183,9 +171,7 @@ class UserAuthAdminTest(UserAuthTestCase):
             self.assertEqual(4, UserVisit.objects.filter(user=u).count())
         data = {
             "action": "action_user_visits_cleanup",
-            "_selected_action": ForumUser.objects.exclude(
-                id=self.superuser.id
-            ).values_list("pk", flat=True),
+            "_selected_action": ForumUser.objects.exclude(id=self.superuser.id).values_list("pk", flat=True),
         }
         # act
         res = self.client.admin_changelist_post("forumuser", data=data)

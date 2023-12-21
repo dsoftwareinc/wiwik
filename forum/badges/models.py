@@ -37,9 +37,7 @@ class Badge(models.Model):
         help_text="Badge type",
     )
     active = models.BooleanField(default=True)
-    only_once = models.BooleanField(
-        default=True, help_text="Can this badge be earned only once or more than once"
-    )
+    only_once = models.BooleanField(default=True, help_text="Can this badge be earned only once or more than once")
     trigger = models.IntegerField(
         null=True,
         blank=True,

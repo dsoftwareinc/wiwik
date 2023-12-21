@@ -102,9 +102,7 @@ ALLOWED_TAGS = frozenset(
 
 @register.filter(is_safe=True)
 def markdownify(text: str):
-    markdown = Markdown(
-        extensions=MARKDOWN_EXTENSIONS, extension_configs=MARKDOWN_EXTENSIONS_CONFIG
-    )
+    markdown = Markdown(extensions=MARKDOWN_EXTENSIONS, extension_configs=MARKDOWN_EXTENSIONS_CONFIG)
     html = markdown.convert(text)
     html = bleach.clean(html, attributes=ALLOWED_ATTRIBUTES, tags=ALLOWED_TAGS)
     return mark_safe(html)
@@ -215,10 +213,7 @@ _3RD_PARTY_URLS = {
 
 @register.simple_tag(name="tool_url")
 def get_url(tool_name: str):
-    if (
-        tool_name not in _3RD_PARTY_URLS["CDN"]
-        or tool_name not in _3RD_PARTY_URLS["STATIC"]
-    ):
+    if tool_name not in _3RD_PARTY_URLS["CDN"] or tool_name not in _3RD_PARTY_URLS["STATIC"]:
         raise template.TemplateSyntaxError(f"{tool_name} does not exist!")
     if settings.USE_CDN:
         return _3RD_PARTY_URLS["CDN"][tool_name]

@@ -16,12 +16,8 @@ DOCUMENTATION_DIRECTORY = os.path.join(BASE_DIR, "..", "docs")
 
 @job
 def log_search(user: ForumUser, query: str, results: List[int], timems: int):
-    logger.info(
-        f'Searching for: "{query}" in {timems}ms. got first 5 results: {results}'
-    )
-    SearchRecord.objects.create(
-        author=user, query=query, results=",".join(map(str, results)), time=timems
-    )
+    logger.info(f'Searching for: "{query}" in {timems}ms. got first 5 results: {results}')
+    SearchRecord.objects.create(author=user, query=query, results=",".join(map(str, results)), time=timems)
     user.search_count += 1
     user.save()
     pass
@@ -36,11 +32,7 @@ def create_documentation_posts():
             yield random.choice(users)
 
     random_user = random_user_generator()
-    filenames = [
-        y
-        for x in os.walk(DOCUMENTATION_DIRECTORY)
-        for y in glob(os.path.join(x[0], "*.md"))
-    ]
+    filenames = [y for x in os.walk(DOCUMENTATION_DIRECTORY) for y in glob(os.path.join(x[0], "*.md"))]
     logger.info(f"Populating {len(filenames)} documentation files")
     for filename in filenames:
         logger.info(f"Posting {filename} to wiwik")

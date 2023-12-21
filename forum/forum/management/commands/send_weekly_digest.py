@@ -60,8 +60,6 @@ class Command(ManagementCommand):
             f.write(html)
             f.close()
         if emails:
-            email = EmailMultiAlternatives(
-                f"Weekly digest for user {username}", "", to=emails
-            )
+            email = EmailMultiAlternatives(f"Weekly digest for user {username}", "", to=emails)
             email.attach_alternative(html, "text/html")
             email.send()

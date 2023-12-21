@@ -23,9 +23,7 @@ def initialize_tfidf():
         return [stemmer.stem(item) for item in tokens]
 
     def normalize(text):
-        return stem_tokens(
-            nltk.word_tokenize(text.lower().translate(remove_punctuation_map))
-        )
+        return stem_tokens(nltk.word_tokenize(text.lower().translate(remove_punctuation_map)))
 
     return TfidfVectorizer(tokenizer=normalize, stop_words="english")
 

@@ -30,9 +30,7 @@ class TestEditTag(TagsApiTestCase):
 
     def test_edit_tag_post__not_logged_in__redirect(self):
         # act
-        res = self.client.edit_post(
-            self.tags[0].tag_word, self.new_description, self.new_wiki, self.summary
-        )
+        res = self.client.edit_post(self.tags[0].tag_word, self.new_description, self.new_wiki, self.summary)
         # assert
         self.assertEqual(200, res.status_code)
         assert_url_in_chain(
@@ -58,9 +56,7 @@ class TestEditTag(TagsApiTestCase):
     def test_edit_tag_post__green(self):
         self.client.login(self.username, self.password)
         # act
-        res = self.client.edit_post(
-            self.tags[0].tag_word, self.new_description, self.new_wiki, self.summary
-        )
+        res = self.client.edit_post(self.tags[0].tag_word, self.new_description, self.new_wiki, self.summary)
         # assert
         self.assertEqual(200, res.status_code)
         assert_url_in_chain(
@@ -72,9 +68,7 @@ class TestEditTag(TagsApiTestCase):
                 ],
             ),
         )
-        assert_message_in_response(
-            res, f"Tag {self.tags[0].tag_word} edited successfully"
-        )
+        assert_message_in_response(res, f"Tag {self.tags[0].tag_word} edited successfully")
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()
         self.assertEqual(self.new_description, tag.description)
@@ -85,9 +79,7 @@ class TestEditTag(TagsApiTestCase):
     def test_edit_tag_post__change_only_description(self):
         self.client.login(self.username, self.password)
         # act
-        res = self.client.edit_post(
-            self.tags[0].tag_word, self.new_description, self.tags[0].wiki, self.summary
-        )
+        res = self.client.edit_post(self.tags[0].tag_word, self.new_description, self.tags[0].wiki, self.summary)
         # assert
         self.assertEqual(200, res.status_code)
         assert_url_in_chain(
@@ -99,9 +91,7 @@ class TestEditTag(TagsApiTestCase):
                 ],
             ),
         )
-        assert_message_in_response(
-            res, f"Tag {self.tags[0].tag_word} edited successfully"
-        )
+        assert_message_in_response(res, f"Tag {self.tags[0].tag_word} edited successfully")
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()
         self.assertEqual(self.new_description, tag.description)
@@ -112,9 +102,7 @@ class TestEditTag(TagsApiTestCase):
     def test_edit_tag_post__twice_by_same_user__should_have_one_edit(self):
         self.client.login(self.username, self.password)
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
-        self.client.edit_post(
-            self.tags[0].tag_word, self.new_description, self.new_wiki, self.summary
-        )
+        self.client.edit_post(self.tags[0].tag_word, self.new_description, self.new_wiki, self.summary)
         # act
         res = self.client.edit_post(
             self.tags[0].tag_word,
@@ -133,9 +121,7 @@ class TestEditTag(TagsApiTestCase):
                 ],
             ),
         )
-        assert_message_in_response(
-            res, f"Tag {self.tags[0].tag_word} edited successfully"
-        )
+        assert_message_in_response(res, f"Tag {self.tags[0].tag_word} edited successfully")
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()
         self.assertEqual(self.new_description, tag.description)
@@ -146,9 +132,7 @@ class TestEditTag(TagsApiTestCase):
     def test_edit_tag_post__description_too_short__should_fail(self):
         self.client.login(self.username, self.password)
         # act
-        res = self.client.edit_post(
-            self.tags[0].tag_word, "very short", self.new_wiki, self.summary
-        )
+        res = self.client.edit_post(self.tags[0].tag_word, "very short", self.new_wiki, self.summary)
         # assert
         self.assertEqual(200, res.status_code)
         assert_url_in_chain(
@@ -171,9 +155,7 @@ class TestEditTag(TagsApiTestCase):
         self.client.login(self.username, self.password)
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         # act
-        res = self.client.edit_post(
-            self.tags[0].tag_word, tag.description, tag.wiki, self.summary
-        )
+        res = self.client.edit_post(self.tags[0].tag_word, tag.description, tag.wiki, self.summary)
         # assert
         self.assertEqual(200, res.status_code)
         assert_url_in_chain(
@@ -185,17 +167,13 @@ class TestEditTag(TagsApiTestCase):
                 ],
             ),
         )
-        assert_message_in_response(
-            res, f"No changes made in tag {self.tags[0].tag_word} data"
-        )
+        assert_message_in_response(res, f"No changes made in tag {self.tags[0].tag_word} data")
         self.assertEqual(0, tag.tagedit_set.count())
 
     def test_edit_tag_post__wiki_too_short__should_fail(self):
         self.client.login(self.username, self.password)
         # act
-        res = self.client.edit_post(
-            self.tags[0].tag_word, self.new_description, "very short", self.summary
-        )
+        res = self.client.edit_post(self.tags[0].tag_word, self.new_description, "very short", self.summary)
         # assert
         self.assertEqual(200, res.status_code)
         assert_url_in_chain(
@@ -209,8 +187,7 @@ class TestEditTag(TagsApiTestCase):
         )
         assert_message_in_response(
             res,
-            "Error: Wiki content should have "
-            f"at least {settings.MIN_TAG_WIKI_LENGTH} characters",
+            "Error: Wiki content should have " f"at least {settings.MIN_TAG_WIKI_LENGTH} characters",
         )
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()
@@ -279,9 +256,7 @@ class TestEditTag(TagsApiTestCase):
     def test_edit_tag_post__summary_too_short__should_fail(self):
         self.client.login(self.username, self.password)
         # act
-        res = self.client.edit_post(
-            self.tags[0].tag_word, self.new_description, self.new_wiki, "X"
-        )
+        res = self.client.edit_post(self.tags[0].tag_word, self.new_description, self.new_wiki, "X")
         # assert
         self.assertEqual(200, res.status_code)
         assert_url_in_chain(
@@ -295,8 +270,7 @@ class TestEditTag(TagsApiTestCase):
         )
         assert_message_in_response(
             res,
-            "Error: Edit summary should have "
-            f"at least {settings.MIN_TAG_EDIT_SUMMARY_LENGTH} characters",
+            "Error: Edit summary should have " f"at least {settings.MIN_TAG_EDIT_SUMMARY_LENGTH} characters",
         )
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()
@@ -326,8 +300,7 @@ class TestEditTag(TagsApiTestCase):
         )
         assert_message_in_response(
             res,
-            "Error: Edit summary too long, "
-            f"max is {settings.MIN_TAG_EDIT_SUMMARY_LENGTH} characters",
+            "Error: Edit summary too long, " f"max is {settings.MIN_TAG_EDIT_SUMMARY_LENGTH} characters",
         )
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()

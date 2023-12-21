@@ -35,16 +35,12 @@ def view_space_questions(request, space_id: int):
 @login_required
 def view_user_spaces_latest_questions(request):
     user_spaces = (
-        SpaceMember.objects.filter(user=request.user)
-        .values_list("space_id", flat=True)
-        .order_by("-created_at")[:3]
+        SpaceMember.objects.filter(user=request.user).values_list("space_id", flat=True).order_by("-created_at")[:3]
     )
     tab = utils.get_request_tab(request)
     q = utils.get_request_param(request, "q", None)
     tag_word = utils.get_request_param(request, "tag", None)
-    spaces_base_qs = Question.objects.filter(
-        space__in=user_spaces, space__restricted=True
-    )
+    spaces_base_qs = Question.objects.filter(space__in=user_spaces, space__restricted=True)
     if tag_word:
         spaces_base_qs = spaces_base_qs.filter(Q(tags__tag_word__iexact=tag_word))
     spaces_questions_qs = get_questions_queryset(spaces_base_qs, tab, q, None)
@@ -56,6 +52,4 @@ def view_user_spaces_latest_questions(request):
         "tag_word": tag_word,
         "space_questions": spaces_questions_qs,
     }
-    return render(
-        request, "spaces/includes/user-spaces-questions.partial.html", context
-    )
+    return render(request, "spaces/includes/user-spaces-questions.partial.html", context)

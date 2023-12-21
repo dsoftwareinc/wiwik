@@ -19,18 +19,11 @@ class TestSearch(ForumApiTestCase):
         super().setUpClass()
         forum.views.search.query_method = forum.views.search.sqlite3_query_method
         cls.questions = [
-            utils.create_question(
-                user, cls.question_title, cls.question_content, ",".join(cls.tags)
-            )
+            utils.create_question(user, cls.question_title, cls.question_content, ",".join(cls.tags))
             for user in cls.users
         ]
         cls.questions.extend(
-            [
-                utils.create_question(
-                    user, cls.question_title, cls.question_content, cls.tags[0]
-                )
-                for user in cls.users
-            ]
+            [utils.create_question(user, cls.question_title, cls.question_content, cls.tags[0]) for user in cls.users]
         )
         utils.create_answer(cls.answer_content, cls.users[0], cls.questions[0])
         utils.upvote(cls.users[0], cls.questions[1])
@@ -48,9 +41,7 @@ class TestSearch(ForumApiTestCase):
         res = self.client.questions_list(query="my question title")
         # assert
         soup = BeautifulSoup(res.content, "html.parser")
-        self.assertEqual(
-            len(self.users) * 2, len(soup.find_all("div", {"class": "summary"}))
-        )
+        self.assertEqual(len(self.users) * 2, len(soup.find_all("div", {"class": "summary"})))
 
     def test_search__bad_quotes__green(self):
         # arrange
@@ -59,9 +50,7 @@ class TestSearch(ForumApiTestCase):
         res = self.client.questions_list(query='my question "title')
         # assert
         soup = BeautifulSoup(res.content, "html.parser")
-        self.assertEqual(
-            len(self.users) * 2, len(soup.find_all("div", {"class": "summary"}))
-        )
+        self.assertEqual(len(self.users) * 2, len(soup.find_all("div", {"class": "summary"})))
 
     def test_search__bad_quotes_2nd__green(self):
         # arrange
@@ -83,9 +72,7 @@ class TestSearch(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[0], self.password)
         # act
-        res = self.client.questions_list(
-            query=f'user:{self.usernames[0]} "my question title"'
-        )
+        res = self.client.questions_list(query=f'user:{self.usernames[0]} "my question title"')
         # assert
         soup = BeautifulSoup(res.content, "html.parser")
         self.assertEqual(2, len(soup.find_all("div", {"class": "summary"})))
@@ -97,9 +84,7 @@ class TestSearch(ForumApiTestCase):
         res = self.client.questions_list(query=f"[{self.tags[2]}]")
         # assert
         soup = BeautifulSoup(res.content, "html.parser")
-        num_results = Question.objects.filter(
-            tags__tag_word__iexact=self.tags[2]
-        ).count()
+        num_results = Question.objects.filter(tags__tag_word__iexact=self.tags[2]).count()
         self.assertEqual(num_results, len(soup.find_all("div", {"class": "summary"})))
 
     def test_search__multiple_tags__green(self):
@@ -132,9 +117,7 @@ class TestSearch(ForumApiTestCase):
         res = self.client.questions_list(query="answers:0")
         # assert
         soup = BeautifulSoup(res.content, "html.parser")
-        self.assertEqual(
-            len(self.questions) - 2, len(soup.find_all("div", {"class": "summary"}))
-        )
+        self.assertEqual(len(self.questions) - 2, len(soup.find_all("div", {"class": "summary"})))
 
     def test_search__resolved__green(self):
         # arrange
@@ -170,6 +153,4 @@ class TestSearch(ForumApiTestCase):
         res = self.client.questions_list(query="score:dsa")
         # assert
         soup = BeautifulSoup(res.content, "html.parser")
-        self.assertEqual(
-            len(self.questions), len(soup.find_all("div", {"class": "summary"}))
-        )
+        self.assertEqual(len(self.questions), len(soup.find_all("div", {"class": "summary"})))

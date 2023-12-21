@@ -29,9 +29,7 @@ class SendReportTest(TestCase):
         file_mock.assert_called_with("x.html", "w")
 
     def test__all_reports_to_email__green(self):
-        params = (
-            "-f 2020-01-01 --reports tags_activity users_activity questions -e a@a.com"
-        )
+        params = "-f 2020-01-01 --reports tags_activity users_activity questions -e a@a.com"
         # act
         out = self.call_command(params.split(" "))
         # assert
@@ -43,7 +41,6 @@ class SendReportTest(TestCase):
         out = self.call_command(params.split(" "))
         # assert
         self.assertEqual(
-            'Can not generate report of type "bad_report"\n'
-            "Options are tags_activity, users_activity, questions\n",
+            'Can not generate report of type "bad_report"\n' "Options are tags_activity, users_activity, questions\n",
             out,
         )

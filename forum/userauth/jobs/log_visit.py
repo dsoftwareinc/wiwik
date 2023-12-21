@@ -20,9 +20,7 @@ MAX_MS_TIME_FOR_REQUEST = 400
     "default",
     result_ttl=5,
 )
-def log_request(
-    user_id: int, client_ip: str, time: datetime, duration: int, method: str, path: str
-) -> None:
+def log_request(user_id: int, client_ip: str, time: datetime, duration: int, method: str, path: str) -> None:
     log_method = logger.warning if duration > MAX_MS_TIME_FOR_REQUEST else logger.debug
     user = ForumUser.objects.get(id=user_id)
     log_method(f'{user.username},"{method} {path}" took {duration}ms')
@@ -34,9 +32,7 @@ def log_request(
         country_name = None
         city_name = None
 
-    if UserVisit.objects.filter(
-        user=user, visit_date=time.date(), country=country_name, city=city_name
-    ).exists():
+    if UserVisit.objects.filter(user=user, visit_date=time.date(), country=country_name, city=city_name).exists():
         return
     consecutive_days = (
         UserVisit.objects.filter(user=user, visit_date=time.date() - timedelta(days=1))
@@ -46,11 +42,7 @@ def log_request(
         or 0
     ) + 1
     total_days = (
-        UserVisit.objects.filter(user=user)
-        .order_by("-total_days")
-        .values_list("total_days", flat=True)
-        .first()
-        or 0
+        UserVisit.objects.filter(user=user).order_by("-total_days").values_list("total_days", flat=True).first() or 0
     ) + 1
     max_consecutive_days = max(
         UserVisit.objects.filter(user=user)

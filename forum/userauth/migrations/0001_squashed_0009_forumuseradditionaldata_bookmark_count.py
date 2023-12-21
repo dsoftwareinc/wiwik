@@ -28,10 +28,7 @@ def forwards(apps, schema_editor):
         last_visit.total_days = total_days
 
         max_consecutive_days = (
-            UserVisit.objects.filter(user=user)
-            .order_by("-consecutive_days")
-            .first()
-            .consecutive_days
+            UserVisit.objects.filter(user=user).order_by("-consecutive_days").first().consecutive_days
         )
         last_visit.max_consecutive_days = max_consecutive_days
 
@@ -94,9 +91,7 @@ class Migration(migrations.Migration):
                 ("password", models.CharField(max_length=128, verbose_name="password")),
                 (
                     "last_login",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="last login"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="last login"),
                 ),
                 (
                     "is_superuser",
@@ -109,29 +104,21 @@ class Migration(migrations.Migration):
                 (
                     "username",
                     models.CharField(
-                        error_messages={
-                            "unique": "A user with that username already exists."
-                        },
+                        error_messages={"unique": "A user with that username already exists."},
                         help_text="Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
                         max_length=150,
                         unique=True,
-                        validators=[
-                            django.contrib.auth.validators.UnicodeUsernameValidator()
-                        ],
+                        validators=[django.contrib.auth.validators.UnicodeUsernameValidator()],
                         verbose_name="username",
                     ),
                 ),
                 (
                     "first_name",
-                    models.CharField(
-                        blank=True, max_length=150, verbose_name="first name"
-                    ),
+                    models.CharField(blank=True, max_length=150, verbose_name="first name"),
                 ),
                 (
                     "last_name",
-                    models.CharField(
-                        blank=True, max_length=150, verbose_name="last name"
-                    ),
+                    models.CharField(blank=True, max_length=150, verbose_name="last name"),
                 ),
                 (
                     "is_staff",
@@ -151,9 +138,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "email",
-                    models.EmailField(
-                        max_length=255, unique=True, verbose_name="email address"
-                    ),
+                    models.EmailField(max_length=255, unique=True, verbose_name="email address"),
                 ),
                 (
                     "name",
@@ -230,9 +215,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "email_notifications",
-                    models.BooleanField(
-                        default=True, help_text="email notifications enabled?"
-                    ),
+                    models.BooleanField(default=True, help_text="email notifications enabled?"),
                 ),
             ],
             options={
@@ -275,27 +258,19 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "search_count",
-                    models.IntegerField(
-                        default=0, help_text="Number of searches user made"
-                    ),
+                    models.IntegerField(default=0, help_text="Number of searches user made"),
                 ),
                 (
                     "bronze_badges",
-                    models.IntegerField(
-                        default=0, help_text="Number of bronze badges the user has"
-                    ),
+                    models.IntegerField(default=0, help_text="Number of bronze badges the user has"),
                 ),
                 (
                     "gold_badges",
-                    models.IntegerField(
-                        default=0, help_text="Number of gold badges the user has"
-                    ),
+                    models.IntegerField(default=0, help_text="Number of gold badges the user has"),
                 ),
                 (
                     "silver_badges",
-                    models.IntegerField(
-                        default=0, help_text="Number of silver badges the user has"
-                    ),
+                    models.IntegerField(default=0, help_text="Number of silver badges the user has"),
                 ),
             ],
             options={
@@ -353,23 +328,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="forumuseradditionaldata",
             name="people_reached",
-            field=models.IntegerField(
-                default=0, help_text="Number of views posts user created had"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of views posts user created had"),
         ),
         migrations.AddField(
             model_name="forumuseradditionaldata",
             name="posts_edited",
-            field=models.IntegerField(
-                default=0, help_text="Number of posts user edited"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of posts user edited"),
         ),
         migrations.AddField(
             model_name="forumuseradditionaldata",
             name="votes",
-            field=models.IntegerField(
-                default=0, help_text="Number of votes user casted"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of votes user casted"),
         ),
         migrations.AlterModelManagers(
             name="forumuser",
@@ -391,9 +360,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="forumuseradditionaldata",
             name="user",
-            field=models.OneToOneField(
-                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
-            ),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name="forumuser",
@@ -420,9 +387,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="forumuseradditionaldata",
             name="bookmarks_count",
-            field=models.IntegerField(
-                default=0, help_text="Number of bookmarks user have"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of bookmarks user have"),
         ),
         migrations.RunPython(
             code=forwards_user_bookmarks_count,

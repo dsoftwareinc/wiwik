@@ -11,9 +11,7 @@ from .models import Badge
 from .populate_db import BADGE_LOGIC
 
 
-def _check_badge_for_user(
-    badge: Badge, user: ForumUser, method: Callable[[ForumUser], int]
-) -> bool:
+def _check_badge_for_user(badge: Badge, user: ForumUser, method: Callable[[ForumUser], int]) -> bool:
     """
     Check whether user is entitled to a badge. If they do and the activity
     doesn't exist, create it
@@ -34,14 +32,9 @@ def _check_badge_for_user(
     expected_count = method(user)[0]
     while expected_count < badge_count:  # User has more badges than expected
         logger.info(
-            f'User has {badge_count} "{badge.name}" badges where they should have {expected_count} '
-            f"- removing last"
+            f'User has {badge_count} "{badge.name}" badges where they should have {expected_count} ' f"- removing last"
         )
-        last = (
-            VoteActivity.objects.filter(badge=badge, target=user)
-            .order_by("-created_at")
-            .first()
-        )
+        last = VoteActivity.objects.filter(badge=badge, target=user).order_by("-created_at").first()
         last.delete()
         badge_count = VoteActivity.objects.filter(badge=badge, target=user).count()
     if expected_count > badge_count:
@@ -56,9 +49,7 @@ def _check_badge_for_user(
         elif badge.type == BadgeType.BRONZE:
             user.bronze_badges += 1
         else:
-            logger.error(
-                f"No matching counter field for badge {badge.name} of type {badge.type}"
-            )
+            logger.error(f"No matching counter field for badge {badge.name} of type {badge.type}")
         user.save()
         return True
     return False
@@ -95,9 +86,7 @@ def check_badge_for_all_users(badge_name: str):
         badge = Badge.objects.get(name=badge_name)
         check_users(badge)
     except Badge.DoesNotExist:
-        logger.warning(
-            f"Could not find badge {badge_name} in database, maybe the DB needs to be updated"
-        )
+        logger.warning(f"Could not find badge {badge_name} in database, maybe the DB needs to be updated")
         return
 
 
@@ -137,13 +126,9 @@ def review_all_badges() -> None:
     badge_qs = Badge.objects.all()
     for badge in badge_qs:
         logger.info(f"Checking users entitled to badge {badge.name}")
-        badge_type_count[badge.type] = check_users(badge) + badge_type_count.get(
-            badge.type, 0
-        )
+        badge_type_count[badge.type] = check_users(badge) + badge_type_count.get(badge.type, 0)
     for badge_type in badge_type_count:
-        logger.info(
-            f"{badge_type_count[badge_type]} users received {badge_type} badges"
-        )
+        logger.info(f"{badge_type_count[badge_type]} users received {badge_type} badges")
     recalculate_user_badges_stats()
 
 

@@ -104,9 +104,7 @@ class TagAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super(TagAdmin, self).get_queryset(request)
-        qs = qs.annotate(
-            questions_count=Count("question"), synonym_count=Count("synonym")
-        )
+        qs = qs.annotate(questions_count=Count("question"), synonym_count=Count("synonym"))
         return qs
 
     @admin.display(ordering="questions_count", description="# questions")

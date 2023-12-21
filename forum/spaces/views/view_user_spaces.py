@@ -13,9 +13,7 @@ def view_side_menu_user_spaces(request):
     if request.user.is_superuser:
         spaces = Space.objects.all().order_by("-created_at")
     else:
-        spaces = Space.objects.filter(spacemember__user=request.user).order_by(
-            "-created_at"
-        )
+        spaces = Space.objects.filter(spacemember__user=request.user).order_by("-created_at")
     return render(
         request,
         "spaces/base.menu.spaces.partial.html",

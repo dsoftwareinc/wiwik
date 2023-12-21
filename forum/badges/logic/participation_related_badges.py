@@ -25,9 +25,7 @@ def user_commented_10_with_5_upvotes(user: ForumUser) -> BadgeCalculation:
 
 
 def user_visited_30_consecutive_days(user: ForumUser) -> BadgeCalculation:
-    visited_30_or_more = UserVisit.objects.filter(
-        user=user, consecutive_days__gte=30
-    ).exists()
+    visited_30_or_more = UserVisit.objects.filter(user=user, consecutive_days__gte=30).exists()
     count = 1 if visited_30_or_more else 0
     closest = (
         UserVisit.objects.filter(user=user)
@@ -51,9 +49,7 @@ def user_login_from_multiple_cities(user: ForumUser) -> BadgeCalculation:
     return count, 0
 
 
-def user_login_from_multiple_countries(
-    required: int, user: ForumUser
-) -> BadgeCalculation:
+def user_login_from_multiple_countries(required: int, user: ForumUser) -> BadgeCalculation:
     countries = UserVisit.objects.filter(user=user).values("country").distinct().count()
     return countries // required, countries % required
 

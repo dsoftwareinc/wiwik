@@ -8,9 +8,7 @@ def get_tags_matching(query: str):
     qs = models.Tag.objects.all()
     if query is not None:
         qs = qs.filter(tag_word__icontains=query)
-    results = list(
-        qs.order_by("-number_asked_this_week").values_list("tag_word", flat=True)[:10]
-    )
+    results = list(qs.order_by("-number_asked_this_week").values_list("tag_word", flat=True)[:10])
     if len(results) < 10 and query is not None:
         synonym_list = list(
             models.Synonym.objects.filter(active=True, name__icontains=query)

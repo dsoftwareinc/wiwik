@@ -18,15 +18,9 @@ class TestAcceptAnswerView(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
-        cls.answer2 = utils.create_answer(
-            cls.answer_content, cls.users[1], cls.question
-        )
-        cls.answer3 = utils.create_answer(
-            cls.answer_content, cls.users[0], cls.question
-        )
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
+        cls.answer2 = utils.create_answer(cls.answer_content, cls.users[1], cls.question)
+        cls.answer3 = utils.create_answer(cls.answer_content, cls.users[0], cls.question)
         cls.answer = utils.create_answer(cls.answer_content, cls.users[2], cls.question)
         cls.question_pk = cls.question.pk
         cls.answer_pk = cls.answer.pk
@@ -85,9 +79,7 @@ class TestAcceptAnswerView(ForumApiTestCase):
         self.assertEqual(0, q.answer_set.filter(is_accepted=True).count())
         assert_url_in_chain(
             res,
-            reverse("userauth:login")
-            + "?next="
-            + reverse("forum:answer_accept", args=[q.pk, a.pk]),
+            reverse("userauth:login") + "?next=" + reverse("forum:answer_accept", args=[q.pk, a.pk]),
         )
 
     def test_accept_answer_view__bad_question_pk(self):
@@ -131,9 +123,7 @@ class TestAcceptAnswerView(ForumApiTestCase):
 
     def test_accept_answer_view__answer_to_different_question(self):
         # arrange
-        q = utils.create_question(
-            self.users[1], self.title, self.question_content, ",".join(self.tags)
-        )
+        q = utils.create_question(self.users[1], self.title, self.question_content, ",".join(self.tags))
         a = utils.create_answer(self.answer_content, self.users[0], q)
         self.client.login(self.usernames[1], self.password)
         # act

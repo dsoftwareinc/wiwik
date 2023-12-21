@@ -32,6 +32,4 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
             )
             inform_admins_bad_registration(u.email, request)
             user_email_domain = u.email.split("@")[1]
-            raise PermissionDenied(
-                f"login failed with email from  @{user_email_domain} domain"
-            )
+            raise PermissionDenied(f"login failed with email from  @{user_email_domain} domain")

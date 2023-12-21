@@ -41,9 +41,7 @@ def markdownify(text: str):
 
 class SendEmailForm(forms.Form):
     subject = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Subject"}))
-    users = forms.ModelMultipleChoiceField(
-        label="To", queryset=ForumUser.objects.all(), widget=forms.SelectMultiple()
-    )
+    users = forms.ModelMultipleChoiceField(label="To", queryset=ForumUser.objects.all(), widget=forms.SelectMultiple())
     message = forms.Field()
 
 
@@ -74,9 +72,7 @@ class SendUserEmails(FormView):
         email.attach_alternative(message_html, "text/html")
         email.send()
         # email_users.delay(users, subject, message)
-        user_message = "{0} users emailed successfully!".format(
-            form.cleaned_data["users"].count()
-        )
+        user_message = "{0} users emailed successfully!".format(form.cleaned_data["users"].count())
         messages.success(self.request, user_message)
         return super(SendUserEmails, self).form_valid(form)
 
@@ -115,9 +111,7 @@ def action_user_visits_cleanup(self, request, queryset):
     for u in queryset:
         last_visit = UserVisit.objects.filter(user=u).order_by("-visit_date").first()
         if last_visit is not None:
-            count, _ = UserVisit.objects.filter(
-                user=u, visit_date__lt=last_visit.visit_date
-            ).delete()
+            count, _ = UserVisit.objects.filter(user=u, visit_date__lt=last_visit.visit_date).delete()
             deleted += count
 
     messages.info(request, f"Deleted {deleted} old visits")
@@ -130,9 +124,7 @@ def action_visits_cleanup(self, request, queryset):
     for u in users:
         last_visit = UserVisit.objects.filter(user=u).order_by("-visit_date").first()
         if last_visit is not None:
-            count, _ = UserVisit.objects.filter(
-                user=u, visit_date__lt=last_visit.visit_date
-            ).delete()
+            count, _ = UserVisit.objects.filter(user=u, visit_date__lt=last_visit.visit_date).delete()
             deleted += count
 
     messages.info(request, f"Deleted {deleted} old visits")

@@ -19,9 +19,7 @@ def most_similar_questions_by_postgres_rank(q: Question, count: int = 5):
         .values("question1_id", "question2_id")[:count]
     )
     question_ids = [
-        similarity["question2_id"]
-        if similarity["question1_id"] == q.id
-        else similarity["question1_id"]
+        similarity["question2_id"] if similarity["question1_id"] == q.id else similarity["question1_id"]
         for similarity in similarity_qs
     ]
     a_subquery = (
@@ -30,9 +28,7 @@ def most_similar_questions_by_postgres_rank(q: Question, count: int = 5):
         .values("count")
         .order_by("-count")
     )
-    questions = Question.objects.filter(id__in=question_ids).annotate(
-        num_answers=Subquery(a_subquery)
-    )
+    questions = Question.objects.filter(id__in=question_ids).annotate(num_answers=Subquery(a_subquery))
     return questions
 
 
@@ -41,6 +37,4 @@ def view_partial_related_questions(request, question_pk: int):
     q = get_object_or_404(Question, pk=question_pk)
     related = most_similar_questions_by_postgres_rank(q)
 
-    return render(
-        request, "partial.thread.related-questions.template.html", {"related": related}
-    )
+    return render(request, "partial.thread.related-questions.template.html", {"related": related})

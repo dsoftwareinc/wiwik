@@ -108,12 +108,7 @@ class TagEdit(models.Model):
     before_description = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return (
-            f"TagEdit["
-            f"tag={self.tag.tag_word},"
-            f"summary={self.summary},"
-            f"created_at={self.created_at}]"
-        )
+        return f"TagEdit[" f"tag={self.tag.tag_word}," f"summary={self.summary}," f"created_at={self.created_at}]"
 
 
 class Synonym(models.Model):
@@ -131,9 +126,7 @@ class Synonym(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     name = models.CharField(max_length=25, unique=True)
-    active = models.BooleanField(
-        default=False, help_text="Is synonym active in searching for tags"
-    )
+    active = models.BooleanField(default=False, help_text="Is synonym active in searching for tags")
     approved_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,

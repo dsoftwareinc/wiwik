@@ -83,9 +83,7 @@ class ArticleAdmin(NumericFilterModelAdmin):
         description="#Followers",
     )
     def followers_count(self, o: Article):
-        return Follow.objects.filter(
-            content_type=ContentType.objects.get_for_model(o), object_id=o.id
-        ).count()
+        return Follow.objects.filter(content_type=ContentType.objects.get_for_model(o), object_id=o.id).count()
 
     @admin.display(
         description="Tags List",

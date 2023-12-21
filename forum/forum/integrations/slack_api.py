@@ -38,9 +38,7 @@ slack_client = configure_slack_client()
 
 
 @job
-def slack_post_channel_message(
-    text: str, channel: str, thread_ts: str = None, notification_text: str = None
-):
+def slack_post_channel_message(text: str, channel: str, thread_ts: str = None, notification_text: str = None):
     if settings.SLACK_BOT_TOKEN is None:
         return
     blocks = [
@@ -56,9 +54,7 @@ def slack_post_channel_message(
             mrkdwn=True,
         )
     except SlackApiError as e:
-        logger.warning(
-            f"Got an error while posting to channel {channel}: {e.response['error']}"
-        )
+        logger.warning(f"Got an error while posting to channel {channel}: {e.response['error']}")
 
 
 def _get_slack_userid(email: str):
@@ -70,16 +66,12 @@ def _get_slack_userid(email: str):
         try:
             response = slack_client.users_lookupByEmail(email=email)
             if not response["ok"]:
-                logger.warning(
-                    f"Couldn't find slack user for email {email}, slack error: {response['error']}"
-                )
+                logger.warning(f"Couldn't find slack user for email {email}, slack error: {response['error']}")
                 return None
             user.slack_userid = response["user"]["id"]
             user.save()
         except SlackApiError as e:
-            logger.warning(
-                f"Couldn't find slack user for email {email}, slack error: {e.response['error']}"
-            )
+            logger.warning(f"Couldn't find slack user for email {email}, slack error: {e.response['error']}")
             return None
     return user.slack_userid
 
@@ -91,49 +83,35 @@ def _get_forumuser_by_slack_userid(slack_user_id: str) -> Union[ForumUser, None]
     try:
         response = slack_client.users_info(user=slack_user_id)
         if not response["ok"]:
-            logger.warning(
-                f"Couldn't find slack user {slack_user_id}, slack error: {response['error']}"
-            )
+            logger.warning(f"Couldn't find slack user {slack_user_id}, slack error: {response['error']}")
             return None
         email = response.get("user", {}).get("profile", {}).get("email", None)
         user = ForumUser.objects.filter(email=email).first()
         if user is None:
-            logger.warning(
-                f"Couldn't find forum user for slack user {slack_user_id} with email: {email}"
-            )
+            logger.warning(f"Couldn't find forum user for slack user {slack_user_id} with email: {email}")
             return None
         user.slack_userid = slack_user_id
         user.save()
         return user
     except SlackApiError as e:
-        logger.warning(
-            f"Couldn't find slack user {slack_user_id}, slack error: {e.response['error']}"
-        )
+        logger.warning(f"Couldn't find slack user {slack_user_id}, slack error: {e.response['error']}")
         return None
 
 
 def _get_permalink(channel: str, message_ts: str) -> Union[str, None]:
     try:
-        response = slack_client.chat_getPermalink(
-            channel=channel, message_ts=message_ts
-        )
+        response = slack_client.chat_getPermalink(channel=channel, message_ts=message_ts)
         if not response["ok"]:
-            logger.warning(
-                f"Couldn't find permalink to {channel}:{message_ts}, slack error: {response['error']}"
-            )
+            logger.warning(f"Couldn't find permalink to {channel}:{message_ts}, slack error: {response['error']}")
             return None
         return response.get("permalink", None)
     except SlackApiError as e:
-        logger.warning(
-            f"Couldn't find permalink to {channel}:{message_ts}, slack error: {e.response['error']}"
-        )
+        logger.warning(f"Couldn't find permalink to {channel}:{message_ts}, slack error: {e.response['error']}")
         return None
 
 
 @job
-def slack_post_im_message_to_email(
-    text: str, email: str, notification_text: str = None
-):
+def slack_post_im_message_to_email(text: str, email: str, notification_text: str = None):
     if settings.SLACK_BOT_TOKEN is None:
         return
     try:
@@ -145,9 +123,7 @@ def slack_post_im_message_to_email(
         blocks = [
             SectionBlock(text=TextObject(text=text, type="mrkdwn")),
         ]
-        slack_client.chat_postMessage(
-            channel=user_id, text=notification_text or text, blocks=blocks, mrkdwn=True
-        )
+        slack_client.chat_postMessage(channel=user_id, text=notification_text or text, blocks=blocks, mrkdwn=True)
     except SlackApiError as e:
         logger.warning(f"Got an error: {e.response['error']}")
 
@@ -163,17 +139,13 @@ def slack_post_question_modal(user_id: str, text: str, post_id: str) -> View:
             InputBlock(
                 block_id="title",
                 label="Question title",
-                element=PlainTextInputElement(
-                    action_id="title_id", multiline=False, placeholder="Question title"
-                ),
+                element=PlainTextInputElement(action_id="title_id", multiline=False, placeholder="Question title"),
                 optional=False,
             ),
             InputBlock(
                 block_id="text",
                 label="Question text",
-                element=PlainTextInputElement(
-                    action_id="text_id", multiline=True, initial_value=text
-                ),
+                element=PlainTextInputElement(action_id="text_id", multiline=True, initial_value=text),
                 optional=False,
             ),
             InputBlock(
@@ -217,9 +189,7 @@ def _slack_view(payload: dict) -> View:
     message_ts = message.get("thread_ts", message["ts"])
     # channel = payload['channel']['name']
     channel_id = payload["channel"]["id"]
-    existing_question_data = Question.objects.filter(
-        source="slack", source_id=f"{channel_id}:{message_ts}"
-    ).first()
+    existing_question_data = Question.objects.filter(source="slack", source_id=f"{channel_id}:{message_ts}").first()
     if existing_question_data is None:
         slack_view = slack_post_question_modal(
             payload["user"]["id"],
@@ -247,9 +217,7 @@ def post_from_slack(payload: dict) -> None:
                 )
             ),
         ]
-        slack_client.chat_postMessage(
-            channel=originator_slack_id, blocks=blocks, mrkdwn=True
-        )
+        slack_client.chat_postMessage(channel=originator_slack_id, blocks=blocks, mrkdwn=True)
         return
     if payload["type"] == "message_action":
         slack_view = _slack_view(payload)
@@ -269,15 +237,12 @@ def post_from_slack(payload: dict) -> None:
             tags = values["tags"]["tags_id"]["selected_options"]
             tags = [i["value"] for i in tags]
         except KeyError as e:
-            logger.error(
-                f"Slack payload does not have expected format. payload={payload},e={e}"
-            )
+            logger.error(f"Slack payload does not have expected format. payload={payload},e={e}")
             return
         # author_slack_id = values['author']['user_id']['selected_user']
         # author = _get_forumuser_by_slack_userid(author_slack_id)
         logger.debug(
-            f"{originator} posted from slack question[title={title}, "
-            f"text={text}, author={originator}, tags={tags}]"
+            f"{originator} posted from slack question[title={title}, " f"text={text}, author={originator}, tags={tags}]"
         )
         # actually creating the question.
         channel_id, message_ts = view["private_metadata"].split("~~")

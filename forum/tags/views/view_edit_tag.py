@@ -14,37 +14,23 @@ class TagError(Exception):
 def validate_tag_data(tag: models.Tag, description, wiki, summary) -> None:
     if description is None or len(description) < settings.MIN_TAG_DESCRIPTION_LENGTH:
         raise TagError("Description too short")
-    if (
-        tag.wiki is not None
-        and wiki != tag.wiki
-        and (wiki is None or len(wiki) < settings.MIN_TAG_WIKI_LENGTH)
-    ):
-        raise TagError(
-            f"Wiki content should have at least {settings.MIN_TAG_WIKI_LENGTH} characters"
-        )
+    if tag.wiki is not None and wiki != tag.wiki and (wiki is None or len(wiki) < settings.MIN_TAG_WIKI_LENGTH):
+        raise TagError(f"Wiki content should have at least {settings.MIN_TAG_WIKI_LENGTH} characters")
     if len(description) > settings.MAX_TAG_DESCRIPTION_LENGTH:
-        raise TagError(
-            f"Description too long, max is {settings.MAX_TAG_DESCRIPTION_LENGTH} characters"
-        )
+        raise TagError(f"Description too long, max is {settings.MAX_TAG_DESCRIPTION_LENGTH} characters")
     if len(wiki) > settings.MAX_TAG_WIKI_LENGTH:
         raise TagError("Wiki content too long")
     if summary is None or len(summary) < settings.MIN_TAG_EDIT_SUMMARY_LENGTH:
-        raise TagError(
-            f"Edit summary should have at least {settings.MIN_TAG_EDIT_SUMMARY_LENGTH} characters"
-        )
+        raise TagError(f"Edit summary should have at least {settings.MIN_TAG_EDIT_SUMMARY_LENGTH} characters")
     if len(summary) > settings.MAX_TAG_EDIT_SUMMARY_LENGTH:
-        raise TagError(
-            f"Edit summary too long, max is {settings.MIN_TAG_EDIT_SUMMARY_LENGTH} characters"
-        )
+        raise TagError(f"Edit summary too long, max is {settings.MIN_TAG_EDIT_SUMMARY_LENGTH} characters")
 
 
 @login_required
 def view_edit_tag(request, tag_word: str):
     tag = get_object_or_404(models.Tag, tag_word=tag_word)
     if not ask_to_edit_resource(request.user, tag):
-        messages.warning(
-            request, f"Tag {tag_word} is currently edited by a different user"
-        )
+        messages.warning(request, f"Tag {tag_word} is currently edited by a different user")
         return redirect("tags:info", tag_word=tag_word)
     if request.method == "GET":
         return render(

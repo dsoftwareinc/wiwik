@@ -21,18 +21,14 @@ def getenv_asint(key, default=None):
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    "SECRET_KEY", "django-insecure-ge#=&h34r27hjgv!0tu!xzt1a(h7^-!ybzzl1#cf*1&pdcvfz)"
-)
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-ge#=&h34r27hjgv!0tu!xzt1a(h7^-!ybzzl1#cf*1&pdcvfz)")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = getenv_asbool("DEBUG", default="TRUE")
 SEND_EMAILS = getenv_asbool("SEND_EMAILS", default="FALSE")
 DEBUG_EMAIL_TO = os.environ.get("DEBUG_EMAIL_TO", default="style.daniel@gmail.com")
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="*").split(" ")
-CSRF_TRUSTED_ORIGINS = os.environ.get(
-    "CSRF_TRUSTED_ORIGINS", default="https://* http://*"
-).split(" ")
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", default="https://* http://*").split(" ")
 # Application definition
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
@@ -134,9 +130,7 @@ AUTH_USER_MODEL = "userauth.ForumUser"
 LOGIN_REDIRECT_URL = "forum:home"
 LOGIN_URL = "userauth:login"
 
-EMAIL_BACKEND = os.getenv(
-    "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
-)
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
 EMAIL_HOST = os.getenv("EMAIL_HOST")
 EMAIL_PORT = os.getenv("EMAIL_PORT")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")

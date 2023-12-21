@@ -33,9 +33,7 @@ def users_with_most_reputation_since(
     if exclude_usernames is None:
         exclude_usernames = []
     res = (
-        VoteActivity.objects.filter(
-            question__tags=tag, created_at__gte=since, target__is_active=True
-        )
+        VoteActivity.objects.filter(question__tags=tag, created_at__gte=since, target__is_active=True)
         .exclude(target__username__in=exclude_usernames)
         .values("target", "question__tags")
         .annotate(tot=Sum("reputation_change"))
@@ -46,9 +44,7 @@ def users_with_most_reputation_since(
 
 
 def update_tag_stats_for_tag(tag: Tag):
-    tag.number_of_questions = Question.objects.filter(
-        tags__tag_word__iexact=tag.tag_word
-    ).count()
+    tag.number_of_questions = Question.objects.filter(tags__tag_word__iexact=tag.tag_word).count()
 
     seven_days_ago = timezone.now() - timezone.timedelta(days=7)
     tag.number_asked_this_week = Question.objects.filter(
@@ -61,9 +57,7 @@ def update_tag_stats_for_tag(tag: Tag):
 
     tag.number_followers = tag.follows.count()
 
-    experts_usernames = users_with_most_reputation_since(
-        tag, count=settings.NUMBER_OF_TAG_EXPERTS
-    )
+    experts_usernames = users_with_most_reputation_since(tag, count=settings.NUMBER_OF_TAG_EXPERTS)
     tag.experts = ",".join(experts_usernames) if len(experts_usernames) > 0 else None
 
     stars_usernames = users_with_most_reputation_since(

@@ -18,9 +18,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="question",
             name="has_accepted_answer",
-            field=models.BooleanField(
-                default=False, help_text="Does post have an accepted answer?"
-            ),
+            field=models.BooleanField(default=False, help_text="Does post have an accepted answer?"),
         ),
         migrations.AlterField(
             model_name="question",
@@ -97,9 +95,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="question",
             name="tags",
-            field=models.ManyToManyField(
-                help_text="Tags post is asscociated with", to="tags.tag"
-            ),
+            field=models.ManyToManyField(help_text="Tags post is asscociated with", to="tags.tag"),
         ),
         migrations.AlterField(
             model_name="question",

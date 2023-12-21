@@ -5,9 +5,7 @@ from django.urls import reverse
 
 @given("logged in with user number {user_number:d}")
 def login(context, user_number: int):
-    context.test.client.login(
-        username=context.usernames[user_number], password=context.default_user_password
-    )
+    context.test.client.login(username=context.usernames[user_number], password=context.default_user_password)
 
 
 @then("The user should not have bookmarks in the user-navbar bookmarks")
@@ -27,23 +25,17 @@ def assert_bookmark_in_navbar(context):
 
 @when("The user bookmark the question")
 def bookmark_question(context):
-    context.test.client.get(
-        reverse("forum:bookmark", args=[context.question.pk]), follow=True
-    )
+    context.test.client.get(reverse("forum:bookmark", args=[context.question.pk]), follow=True)
 
 
 @when("The user remove the question's bookmark")
 def remove_bookmark(context):
-    context.test.client.get(
-        reverse("forum:unbookmark", args=[context.question.pk]), follow=True
-    )
+    context.test.client.get(reverse("forum:unbookmark", args=[context.question.pk]), follow=True)
 
 
 @then("user {user_number:d} should not have votes in the user-navbar votes")
 def assert_no_votes_in_navbar(context, user_number: int):
-    context.test.client.login(
-        username=context.usernames[user_number], password=context.default_user_password
-    )
+    context.test.client.login(username=context.usernames[user_number], password=context.default_user_password)
     res = context.test.client.get(reverse("forum:user_navbar"), follow=True)
     soup = BeautifulSoup(res.content, "html.parser")
 
@@ -53,9 +45,7 @@ def assert_no_votes_in_navbar(context, user_number: int):
 
 @then("user {user_number:d} should have votes in the user-navbar votes")
 def assert_votes_in_navbar(context, user_number: int):
-    context.test.client.login(
-        username=context.usernames[user_number], password=context.default_user_password
-    )
+    context.test.client.login(username=context.usernames[user_number], password=context.default_user_password)
     res = context.test.client.get(reverse("forum:user_navbar"), follow=True)
     soup = BeautifulSoup(res.content, "html.parser")
 
@@ -65,13 +55,9 @@ def assert_votes_in_navbar(context, user_number: int):
 
 @when("user {user_number:d} upvote the question")
 def user_upvote(context, user_number: int):
-    context.test.client.login(
-        username=context.usernames[user_number], password=context.default_user_password
-    )
+    context.test.client.login(username=context.usernames[user_number], password=context.default_user_password)
     res = context.test.client.get(
-        reverse(
-            "forum:upvote", args=[context.question.pk, "question", context.question.pk]
-        ),
+        reverse("forum:upvote", args=[context.question.pk, "question", context.question.pk]),
         follow=True,
     )
     assert res.status_code == 200
@@ -79,9 +65,7 @@ def user_upvote(context, user_number: int):
 
 @when("user {user_number:d} downvote the question")
 def user_downvote(context, user_number: int):
-    context.test.client.login(
-        username=context.usernames[user_number], password=context.default_user_password
-    )
+    context.test.client.login(username=context.usernames[user_number], password=context.default_user_password)
     res = context.test.client.get(
         reverse(
             "forum:downvote",

@@ -18,9 +18,7 @@ from wiwik_lib.utils import is_email_allowed, CURRENT_SITE
 
 class SignUpForm(UserCreationForm):
     name = forms.CharField(max_length=100, required=True)
-    email = forms.EmailField(
-        max_length=254, help_text="Required. Inform a valid email address."
-    )
+    email = forms.EmailField(max_length=254, help_text="Required. Inform a valid email address.")
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
@@ -92,8 +90,7 @@ def view_signup(request):
     username = form.cleaned_data.get("username")
     messages.success(
         request,
-        f"New account created: {username}, "
-        f"Please confirm your email address to complete the registration",
+        f"New account created: {username}, " f"Please confirm your email address to complete the registration",
     )
 
     mail_admins(

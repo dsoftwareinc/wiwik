@@ -31,13 +31,13 @@ def get_questions_queryset(
     elif tab == TabEnum.MOST_VIEWED.value:
         qs = base_queryset.all().order_by("-views")
     elif tab == TabEnum.UNRESOLVED.value:
-        qs = base_queryset.filter(
-            type__in=Question.POST_TYPE_ACCEPTING_ANSWERS, has_accepted_answer=False
-        ).order_by("-created_at")
+        qs = base_queryset.filter(type__in=Question.POST_TYPE_ACCEPTING_ANSWERS, has_accepted_answer=False).order_by(
+            "-created_at"
+        )
     elif tab == TabEnum.UNANSWERED.value:
-        qs = base_queryset.filter(
-            type__in=Question.POST_TYPE_ACCEPTING_ANSWERS, answers_count=0
-        ).order_by("-created_at")
+        qs = base_queryset.filter(type__in=Question.POST_TYPE_ACCEPTING_ANSWERS, answers_count=0).order_by(
+            "-created_at"
+        )
     else:
         qs = base_queryset.all().order_by("-type", "-created_at")
     if query and user:
@@ -50,16 +50,12 @@ def get_questions_queryset(
 def render_questions(request, base_qs: QuerySet, header: str, extra: dict = None):
     tab = utils.get_request_tab(request)
     q = utils.get_request_param(request, "q", None)
-    all_questions_qs = get_questions_queryset(
-        base_qs.exclude(space__restricted=True), tab, q, request.user
-    )
+    all_questions_qs = get_questions_queryset(base_qs.exclude(space__restricted=True), tab, q, request.user)
     all_questions_qs = all_questions_qs.prefetch_related(
         "tags",
     )
     page_number = int(utils.get_request_param(request, "page", "1"))
-    page_qs = paginate_queryset(
-        all_questions_qs, page_number, settings.QUESTIONS_PER_PAGE
-    )
+    page_qs = paginate_queryset(all_questions_qs, page_number, settings.QUESTIONS_PER_PAGE)
     context = {
         "all_questions": page_qs,
         "tab": tab if q is None else None,

@@ -38,16 +38,12 @@ class Command(ManagementCommand):
     def notify_new_comment(self):
         settings.EMAIL_FILE_PATH = os.path.join(self.base_dir, "new_comment")
         comment = models.QuestionComment.objects.all()[0]
-        notifications.notify_new_comment(
-            self.originator, comment.get_question(), comment
-        )
+        notifications.notify_new_comment(self.originator, comment.get_question(), comment)
 
     def notify_answer_changes(self):
         settings.EMAIL_FILE_PATH = os.path.join(self.base_dir, "answer_changes")
         answer = models.Answer.objects.all()[0]
-        notifications.notify_answer_changes(
-            self.originator, answer, "old answer content"
-        )
+        notifications.notify_answer_changes(self.originator, answer, "old answer content")
 
     def notify_new_answer(self):
         settings.EMAIL_FILE_PATH = os.path.join(self.base_dir, "new_answer")
@@ -58,22 +54,16 @@ class Command(ManagementCommand):
         settings.EMAIL_FILE_PATH = os.path.join(self.base_dir, "question_changes")
         content_type = ContentType.objects.get(app_label="forum", model="question")
         question = Follow.objects.filter(content_type=content_type)[0].content_object
-        notifications.notify_question_changes(
-            self.originator, question, "Old title", "Old content"
-        )
+        notifications.notify_question_changes(self.originator, question, "Old title", "Old content")
 
     def notify_tag_followers_new_question(self):
         settings.EMAIL_FILE_PATH = os.path.join(self.base_dir, "new_question")
         tag_follow = models.UserTagStats.objects.filter(questions_by_user__gt=0).first()
         if tag_follow is None:
-            self.error_print(
-                "No tag with followers, leaving notify_tag_followers_new_question"
-            )
+            self.error_print("No tag with followers, leaving notify_tag_followers_new_question")
             return
         question = tag_follow.tag.question_set.first()
-        notifications.notify_tag_followers_new_question(
-            self.originator, set(question.tag_words()), question
-        )
+        notifications.notify_tag_followers_new_question(self.originator, set(question.tag_words()), question)
 
     def handle(self, directory: str, *args, **options):
         """

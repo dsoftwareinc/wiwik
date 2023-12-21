@@ -19,12 +19,8 @@ class UsersViewTest(UserAuthTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        question = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
-        VoteActivity.objects.create(
-            source=None, target=cls.users[1], reputation_change=10, question=question
-        )
+        question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
+        VoteActivity.objects.create(source=None, target=cls.users[1], reputation_change=10, question=question)
 
     def test__users_list__green(self):
         self.client.login(self.usernames[0], self.password)
@@ -42,10 +38,7 @@ class UsersViewTest(UserAuthTestCase):
         self.assertEqual(200, res.status_code)
         assert_url_in_chain(
             res,
-            reverse("userauth:login")
-            + "?next="
-            + reverse("userauth:list")
-            + "%3Ftab%3Dall%26",
+            reverse("userauth:login") + "?next=" + reverse("userauth:list") + "%3Ftab%3Dall%26",
         )
 
     def test_users_list__query_user(self):
@@ -85,9 +78,7 @@ class UsersViewTest(UserAuthTestCase):
         self.assertEqual(200, res.status_code)
         soup = BeautifulSoup(res.content, "html.parser")
         self.assertEqual(3, len(soup.find_all("div", {"class": "user-list-card"})))
-        self.assertEqual(
-            1, len(soup.find_all("span", {"class": "btn btn-moderator-tag"}))
-        )
+        self.assertEqual(1, len(soup.find_all("span", {"class": "btn btn-moderator-tag"})))
 
     def test_users_list__with_from_date__green(self):
         self.client.login(self.usernames[0], self.password)
@@ -119,9 +110,5 @@ class UsersViewTest(UserAuthTestCase):
         self.assertEqual(3, len(soup.find_all("div", {"class": "user-list-card"})))
         self.assertEqual(
             0,
-            len(
-                soup.find_all(
-                    "div", {"class": "pagination pagination-md pull-right p-2"}
-                )
-            ),
+            len(soup.find_all("div", {"class": "pagination pagination-md pull-right p-2"})),
         )

@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
 from forum.apps import logger
+from forum.models import Answer
 from forum.views import utils
 from userauth.models import ForumUser
 
@@ -13,11 +14,9 @@ from userauth.models import ForumUser
 def view_delete_answer(request, question_pk: int, answer_pk: int):
     user: ForumUser = cast(ForumUser, request.user)
     question = utils.get_model("question", question_pk)
-    answer = utils.get_model("answer", answer_pk)
+    answer: Answer = utils.get_model("answer", answer_pk)
     if answer is None:
-        logger.warning(
-            f"user {user.username} tried to delete answer {answer_pk} which does not exist"
-        )
+        logger.warning(f"user {user.username} tried to delete answer {answer_pk} which does not exist")
         return redirect("forum:thread", pk=question_pk)
 
     if answer.question_id != question_pk:
@@ -28,9 +27,7 @@ def view_delete_answer(request, question_pk: int, answer_pk: int):
         return redirect("forum:thread", pk=question_pk)
 
     if answer.author != user and not user.can_delete_answer:
-        logger.warning(
-            f"user {user.username} tried to delete answer {answer_pk} which they did not author"
-        )
+        logger.warning(f"user {user.username} tried to delete answer {answer_pk} which they did not author")
         return redirect("forum:thread", pk=question_pk)
     if request.method == "POST":
         utils.delete_answer(answer)

@@ -33,9 +33,7 @@ class UserAuthLoginTest(UserAuthTestCase):
         # assert
         assert res.status_code == 200
         assert_url_in_chain(res, reverse("forum:home"))
-        assert_message_in_response(
-            res, f"You are logged in as <b>{self.usernames[0]}@a.com</b>"
-        )
+        assert_message_in_response(res, f"You are logged in as <b>{self.usernames[0]}@a.com</b>")
 
     def test_login__bad_password__should_fail(self):
         # act
@@ -67,9 +65,7 @@ class UserAuthLoginTest(UserAuthTestCase):
 
     def test_login__bad_next__go_to_home(self):
         # act
-        res = self.client.login_post(
-            self.usernames[0], self.password, next_url="javascript/alert(1)"
-        )
+        res = self.client.login_post(self.usernames[0], self.password, next_url="javascript/alert(1)")
         # assert
         self.assertEqual(200, res.status_code)
         assert_url_in_chain(res, reverse("forum:home"))

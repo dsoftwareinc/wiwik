@@ -109,9 +109,7 @@ Enter a valid email address.
         )
 
     def test_signup__passwords_mismatch(self):
-        res = self.client.signup_post(
-            "user2", "u2", "u2@a.com", "cunld233", "cunld2332233"
-        )
+        res = self.client.signup_post("user2", "u2", "u2@a.com", "cunld233", "cunld2332233")
         # assert user not created
         self.assertEqual(0, models.ForumUser.objects.filter(username="u2").count())
         self.assertEqual(200, res.status_code)
@@ -122,9 +120,7 @@ Enter a valid email address.
         # assert user not created
         self.assertEqual(0, models.ForumUser.objects.filter(username="u2").count())
         self.assertEqual(200, res.status_code)
-        assert_message_in_response(
-            res, "This password is too short. It must contain at least 8 characters."
-        )
+        assert_message_in_response(res, "This password is too short. It must contain at least 8 characters.")
         assert_message_in_response(res, "This password is too common.")
         assert_message_in_response(res, "This password is entirely numeric.")
 
@@ -136,22 +132,14 @@ Enter a valid email address.
         self.assertEqual(1, models.ForumUser.objects.filter(username="u0").count())
 
     def test_signup__email_exists(self):
-        self.client.signup_post(
-            "user_email_exists", "user_email_exists", "email@a.com", "cunld233"
-        )
+        self.client.signup_post("user_email_exists", "user_email_exists", "email@a.com", "cunld233")
         res = self.client.signup_post("another_user", "u0", "email@a.com", "cunld233")
         # assert user not created
         self.assertEqual(200, res.status_code)
-        self.assertEqual(
-            1, models.ForumUser.objects.filter(username="user_email_exists").count()
-        )
-        self.assertEqual(
-            0, models.ForumUser.objects.filter(username="another_user").count()
-        )
+        self.assertEqual(1, models.ForumUser.objects.filter(username="user_email_exists").count())
+        self.assertEqual(0, models.ForumUser.objects.filter(username="another_user").count())
         self.assertEqual(200, res.status_code)
-        assert_message_in_response(
-            res, "email already registered, you can reset your password"
-        )
+        assert_message_in_response(res, "email already registered, you can reset your password")
 
     def test_signup__user_not_logged_in(self):
         # act

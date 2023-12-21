@@ -11,9 +11,7 @@ from userauth.apps import logger
 
 def view_login(request):
     if request.method == "POST":
-        next_url = (
-            request.GET["next"] if "next" in request.GET else reverse("forum:home")
-        )
+        next_url = request.GET["next"] if "next" in request.GET else reverse("forum:home")
         try:
             resolve(next_url)
         except Resolver404:
@@ -26,9 +24,7 @@ def view_login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.info(
-                    request, f"You are logged in as <b>{user.display_name()}</b>"
-                )
+                messages.info(request, f"You are logged in as <b>{user.display_name()}</b>")
                 url = next_url
                 try:
                     resolve(next_url)
@@ -42,9 +38,7 @@ def view_login(request):
     if isinstance(request.user, AnonymousUser):
         form = AuthenticationForm()
         google_login_allowed = SocialApp.objects.filter(provider="google").count() > 0
-        facebook_login_allowed = (
-            SocialApp.objects.filter(provider="facebook").count() > 0
-        )
+        facebook_login_allowed = SocialApp.objects.filter(provider="facebook").count() > 0
         okta_login_allowed = SocialApp.objects.filter(provider="okta").count() > 0
         return render(
             request,

@@ -29,15 +29,9 @@ class TestEditQuestionView(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user1 = ForumUser.objects.create_user(
-            cls.username1, f"{cls.username1}@a.com", cls.password
-        )
-        cls.user2 = ForumUser.objects.create_user(
-            cls.username2, f"{cls.username2}@a.com", cls.password
-        )
-        cls.question = utils.create_question(
-            cls.user1, cls.title, cls.question_content, ",".join(cls.tags)
-        )
+        cls.user1 = ForumUser.objects.create_user(cls.username1, f"{cls.username1}@a.com", cls.password)
+        cls.user2 = ForumUser.objects.create_user(cls.username2, f"{cls.username2}@a.com", cls.password)
+        cls.question = utils.create_question(cls.user1, cls.title, cls.question_content, ",".join(cls.tags))
 
     def test_edit_question_get__green(self):
         # arrange
@@ -46,12 +40,8 @@ class TestEditQuestionView(ForumApiTestCase):
         res = self.client.edit_question_get(self.question.pk)
         # assert
         self.assertContains(res, 'input id="tagsEdit" name="tags"')
-        self.assertContains(
-            res, f'<textarea id="queseditor" name="queseditor">{self.question_content}'
-        )
-        self.assertContains(
-            res, f'<textarea name="title" style="width:100%">{self.title}'
-        )
+        self.assertContains(res, f'<textarea id="queseditor" name="queseditor">{self.question_content}')
+        self.assertContains(res, f'<textarea name="title" style="width:100%">{self.title}')
 
     def test_edit_question_get__not_author__should_not_allow(self):
         # arrange
@@ -70,9 +60,7 @@ class TestEditQuestionView(ForumApiTestCase):
         new_content = "new content with good enough length"
         new_tags = ["tag1", "tag2"]
         # act
-        res = self.client.edit_question_post(
-            self.question.pk, new_title, new_content, ",".join(new_tags)
-        )
+        res = self.client.edit_question_post(self.question.pk, new_title, new_content, ",".join(new_tags))
         # assert
         q = models.Question.objects.get(pk=self.question.pk)
         self.assertEqual(new_title, q.title)
@@ -90,18 +78,14 @@ class TestEditQuestionView(ForumApiTestCase):
         # arrange
         self.client.login(self.username1, self.password)
         # act
-        res = self.client.edit_question_post(
-            self.question.pk, self.title, self.question_content, ",".join(self.tags)
-        )
+        res = self.client.edit_question_post(self.question.pk, self.title, self.question_content, ",".join(self.tags))
         # assert
         assert_message_in_response(res, "Question updated successfully")
         assert_url_in_chain(res, reverse("forum:thread", args=[self.question.pk]))
 
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch("forum.jobs.start_job")
-    def test_edit_question_post__edit_by_other_user__green(
-        self, start_job: mock.MagicMock
-    ):
+    def test_edit_question_post__edit_by_other_user__green(self, start_job: mock.MagicMock):
         # arrange
         admin_user = ForumUser.objects.create_superuser("admin", "a@a.com", "1111")
         self.client.login("admin", "1111")
@@ -109,9 +93,7 @@ class TestEditQuestionView(ForumApiTestCase):
         new_content = "new content with good enough length"
         new_tags = ["tag1", "tag2"]
         # act
-        res = self.client.edit_question_post(
-            self.question.pk, new_title, new_content, ",".join(new_tags) + ", "
-        )
+        res = self.client.edit_question_post(self.question.pk, new_title, new_content, ",".join(new_tags) + ", ")
         # assert
         q = models.Question.objects.get(pk=self.question.pk)
         self.assertEqual(new_title, q.title)
@@ -152,9 +134,7 @@ class TestEditQuestionView(ForumApiTestCase):
         new_content = "new content with good enough length"
         new_tags = ["tag1", "tag2"]
         # act
-        res = self.client.edit_question_post(
-            self.question.pk, new_title, new_content, ",".join(new_tags)
-        )
+        res = self.client.edit_question_post(self.question.pk, new_title, new_content, ",".join(new_tags))
         # assert
         q = models.Question.objects.get(pk=self.question.pk)
         assert_message_in_response(res, "Error: Title too long")
@@ -163,9 +143,7 @@ class TestEditQuestionView(ForumApiTestCase):
         self.assertEqual(0, len(res.redirect_chain))
         # test for #302
         soup = BeautifulSoup(res.content, "html.parser")
-        self.assertEqual(
-            ",".join(new_tags), soup.find("input", {"id": "tagsEdit"}).attrs["value"]
-        )
+        self.assertEqual(",".join(new_tags), soup.find("input", {"id": "tagsEdit"}).attrs["value"])
 
     def test_edit_question_get__not_existing_question__return_not_found(self):
         # arrange

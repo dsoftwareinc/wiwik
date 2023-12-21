@@ -108,8 +108,6 @@ class Command(ManagementCommand):
             f.write(html)
             f.close()
         if emails:
-            email = EmailMultiAlternatives(
-                f"Activity on wiwik since {fromdate.date()}", "", to=emails
-            )
+            email = EmailMultiAlternatives(f"Activity on wiwik since {fromdate.date()}", "", to=emails)
             email.attach_alternative(html, "text/html")
             email.send()

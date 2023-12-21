@@ -28,15 +28,9 @@ class TestEditArticleView(ArticlesApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user1: ForumUser = ForumUser.objects.create_user(
-            cls.username1, f"{cls.username1}@a.com", cls.password
-        )
-        cls.user2: ForumUser = ForumUser.objects.create_user(
-            cls.username2, f"{cls.username2}@a.com", cls.password
-        )
-        cls.article = utils.create_article(
-            cls.user1, cls.title, cls.article_content, ",".join(cls.tags)
-        )
+        cls.user1: ForumUser = ForumUser.objects.create_user(cls.username1, f"{cls.username1}@a.com", cls.password)
+        cls.user2: ForumUser = ForumUser.objects.create_user(cls.username2, f"{cls.username2}@a.com", cls.password)
+        cls.article = utils.create_article(cls.user1, cls.title, cls.article_content, ",".join(cls.tags))
 
     def test_edit_article_get__green(self):
         # arrange
@@ -45,16 +39,10 @@ class TestEditArticleView(ArticlesApiTestCase):
         res = self.client.edit_article_get(self.article.pk)
         # assert
         soup = BeautifulSoup(res.content, "html.parser")
-        self.assertEqual(
-            1, len(soup.find_all("input", {"id": "tagsEdit", "name": "tags"}))
-        )
+        self.assertEqual(1, len(soup.find_all("input", {"id": "tagsEdit", "name": "tags"})))
         self.assertEqual(
             1,
-            len(
-                soup.find_all(
-                    "textarea", {"id": "articleeditor", "name": "articleeditor"}
-                )
-            ),
+            len(soup.find_all("textarea", {"id": "articleeditor", "name": "articleeditor"})),
         )
         self.assertEqual(1, len(soup.find_all("input", {"name": "title"})))
 
@@ -75,9 +63,7 @@ class TestEditArticleView(ArticlesApiTestCase):
         new_content = "new content with good enough length"
         new_tags = ["tag1", "tag2"]
         # act
-        res = self.client.edit_article_post(
-            self.article.pk, new_title, new_content, ",".join(new_tags)
-        )
+        res = self.client.edit_article_post(self.article.pk, new_title, new_content, ",".join(new_tags))
         # assert
         self.article.refresh_from_db()
         self.assertEqual(new_title, self.article.title)
@@ -95,18 +81,14 @@ class TestEditArticleView(ArticlesApiTestCase):
         # arrange
         self.client.login(self.username1, self.password)
         # act
-        res = self.client.edit_article_post(
-            self.article.pk, self.title, self.article_content, ",".join(self.tags)
-        )
+        res = self.client.edit_article_post(self.article.pk, self.title, self.article_content, ",".join(self.tags))
         # assert
         assert_message_in_response(res, "Article updated successfully")
         assert_url_in_chain(res, reverse("articles:detail", args=[self.article.pk]))
 
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch("forum.jobs.start_job")
-    def test_edit_article_post__edit_by_other_user__green(
-        self, start_job: mock.MagicMock
-    ):
+    def test_edit_article_post__edit_by_other_user__green(self, start_job: mock.MagicMock):
         # arrange
         admin_user = ForumUser.objects.create_superuser("admin", "a@a.com", "1111")
         self.client.login("admin", "1111")
@@ -114,9 +96,7 @@ class TestEditArticleView(ArticlesApiTestCase):
         new_content = "new content with good enough length"
         new_tags = ["tag1", "tag2"]
         # act
-        res = self.client.edit_article_post(
-            self.article.pk, new_title, new_content, ",".join(new_tags) + ", "
-        )
+        res = self.client.edit_article_post(self.article.pk, new_title, new_content, ",".join(new_tags) + ", ")
         # assert
         self.article.refresh_from_db()
         self.assertEqual(new_title, self.article.title)
@@ -134,9 +114,7 @@ class TestEditArticleView(ArticlesApiTestCase):
         self.assertEqual(2, admin_user.reputation_score)
         start_job.assert_has_calls(
             [
-                mock.call(
-                    jobs.update_user_tag_stats, self.article.id, self.article.author_id
-                ),
+                mock.call(jobs.update_user_tag_stats, self.article.id, self.article.author_id),
                 mock.call(add_meilisearch_document, self.article.id),
                 mock.call(
                     jobs.notify_user_email,
@@ -158,9 +136,7 @@ class TestEditArticleView(ArticlesApiTestCase):
         new_content = "new content with good enough length"
         new_tags = ["tag1", "tag2"]
         # act
-        res = self.client.edit_article_post(
-            self.article.pk, new_title, new_content, ",".join(new_tags)
-        )
+        res = self.client.edit_article_post(self.article.pk, new_title, new_content, ",".join(new_tags))
         # assert
         self.article.refresh_from_db()
         assert_message_in_response(
@@ -172,9 +148,7 @@ class TestEditArticleView(ArticlesApiTestCase):
         self.assertEqual(0, len(res.redirect_chain))
         # test for #302
         soup = BeautifulSoup(res.content, "html.parser")
-        self.assertEqual(
-            ",".join(new_tags), soup.find("input", {"id": "tagsEdit"}).attrs["value"]
-        )
+        self.assertEqual(",".join(new_tags), soup.find("input", {"id": "tagsEdit"}).attrs["value"])
 
     def test_edit_article_get__not_existing_question__return_not_found(self):
         # arrange

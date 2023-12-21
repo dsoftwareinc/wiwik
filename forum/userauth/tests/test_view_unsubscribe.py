@@ -15,9 +15,7 @@ class UserAuthUnsubscribeEmailNotificationsTest(UserAuthTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user1 = ForumUser.objects.create_user(
-            cls.username1, f"{cls.username1}@a.com", cls.password
-        )
+        cls.user1 = ForumUser.objects.create_user(cls.username1, f"{cls.username1}@a.com", cls.password)
 
     def test_unsubscribe__green(self):
         user_id_base64 = urlsafe_base64_encode(force_bytes(self.user1.pk))

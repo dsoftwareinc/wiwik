@@ -74,9 +74,7 @@ class TestSlackApi(TestCase):
         # act
         slack_api.slack_post_im_message_to_email(self.text, self.email)
         # assert
-        slack_api.slack_client.users_lookupByEmail.assert_called_once_with(
-            email=self.email
-        )
+        slack_api.slack_client.users_lookupByEmail.assert_called_once_with(email=self.email)
         slack_api.slack_client.chat_postMessage.assert_called_once_with(
             channel=user_id, blocks=mock.ANY, text=self.text, mrkdwn=True
         )
@@ -101,9 +99,7 @@ class TestSlackApi(TestCase):
         # act
         slack_api.slack_post_im_message_to_email(self.text, self.email)
         # assert
-        slack_api.slack_client.users_lookupByEmail.assert_called_once_with(
-            email=self.email
-        )
+        slack_api.slack_client.users_lookupByEmail.assert_called_once_with(email=self.email)
         slack_api.slack_client.chat_postMessage.assert_not_called()
 
     def test_slack_post_im_message__user_not_found_in_forum(self):
@@ -129,9 +125,7 @@ class TestSlackApi(TestCase):
         # act
         slack_api.slack_post_im_message_to_email(self.text, self.email)
         # assert
-        slack_api.slack_client.users_lookupByEmail.assert_called_once_with(
-            email=self.email
-        )
+        slack_api.slack_client.users_lookupByEmail.assert_called_once_with(email=self.email)
         slack_api.slack_client.chat_postMessage.assert_called_once_with(
             channel=user_id, blocks=mock.ANY, text=self.text, mrkdwn=True
         )
@@ -145,7 +139,5 @@ class TestSlackApi(TestCase):
         # act
         slack_api.slack_post_im_message_to_email(self.text, self.email)
         # assert
-        slack_api.slack_client.users_lookupByEmail.assert_called_once_with(
-            email=self.email
-        )
+        slack_api.slack_client.users_lookupByEmail.assert_called_once_with(email=self.email)
         slack_api.slack_client.chat_postMessage.assert_not_called()

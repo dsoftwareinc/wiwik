@@ -16,9 +16,7 @@ def view_space_edit(request, space_id: int):
     validate_space_access(space, request.user)
     is_member = space.spacemember_set.filter(user=request.user).exists()
     if request.method == "GET":
-        member_usernames = ",".join(
-            space.spacemember_set.all().values_list("user__username", flat=True)
-        )
+        member_usernames = ",".join(space.spacemember_set.all().values_list("user__username", flat=True))
         latest_posts = Question.objects.filter(space=space).order_by("-created_at")[:5]
 
         return render(
@@ -32,9 +30,7 @@ def view_space_edit(request, space_id: int):
             },
         )
     if request.method != "POST":
-        logger.warning(
-            f"User {request.user} performed unexpected request method: {request.method}"
-        )
+        logger.warning(f"User {request.user} performed unexpected request method: {request.method}")
         return redirect("spaces:detail", space_id=space_id)
     # Save changes
     data = request.POST.dict()

@@ -12,10 +12,7 @@ class TestSynonyms(TagsApiTestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.synonyms = [
-            Synonym.objects.create(
-                name=f"synonym_{tag.tag_word}", tag=tag, active=False
-            )
-            for tag in cls.tags
+            Synonym.objects.create(name=f"synonym_{tag.tag_word}", tag=tag, active=False) for tag in cls.tags
         ]
 
     def test_synonyms_list__green(self):
@@ -66,9 +63,7 @@ class TestSynonyms(TagsApiTestCase):
         soup = BeautifulSoup(res.content, "html.parser")
         expected = len(soup.find_all("tr"))
         # act
-        res = self.client.synonyms_list_suggest(
-            "synonym_suggestion", self.tags[0].tag_word
-        )
+        res = self.client.synonyms_list_suggest("synonym_suggestion", self.tags[0].tag_word)
         # assert
         self.assertEqual(200, res.status_code)
         soup = BeautifulSoup(res.content, "html.parser")
@@ -100,31 +95,23 @@ class TestSynonyms(TagsApiTestCase):
         # arrange
         self.client.login(self.username, self.password)
         # act
-        res = self.client.synonyms_list_suggest(
-            "synonymname", self.tags[0].tag_word + "111"
-        )
+        res = self.client.synonyms_list_suggest("synonymname", self.tags[0].tag_word + "111")
         # assert
         self.assertEqual(200, res.status_code)
         soup = BeautifulSoup(res.content, "html.parser")
         self.assertEqual(len(self.synonyms) + 1, len(soup.find_all("tr")))
-        assert_message_in_response(
-            res, "Could not find this tag, first ask a few questions with it"
-        )
+        assert_message_in_response(res, "Could not find this tag, first ask a few questions with it")
 
     def test_synonym_suggest__synonym_name_exist__should_not_create(self):
         # arrange
         self.client.login(self.username, self.password)
         # act
-        res = self.client.synonyms_list_suggest(
-            self.synonyms[0].name, self.tags[0].tag_word
-        )
+        res = self.client.synonyms_list_suggest(self.synonyms[0].name, self.tags[0].tag_word)
         # assert
         self.assertEqual(200, res.status_code)
         soup = BeautifulSoup(res.content, "html.parser")
         self.assertEqual(len(self.synonyms) + 1, len(soup.find_all("tr")))
-        assert_message_in_response(
-            res, "Synonym with this name already suggested for this tag, aborting"
-        )
+        assert_message_in_response(res, "Synonym with this name already suggested for this tag, aborting")
 
     def test_synonym_suggest__synonym_name_exist_for_another_tag__should_not_create(
         self,
@@ -132,16 +119,12 @@ class TestSynonyms(TagsApiTestCase):
         # arrange
         self.client.login(self.username, self.password)
         # act
-        res = self.client.synonyms_list_suggest(
-            self.synonyms[0].name, self.tags[1].tag_word
-        )
+        res = self.client.synonyms_list_suggest(self.synonyms[0].name, self.tags[1].tag_word)
         # assert
         self.assertEqual(200, res.status_code)
         soup = BeautifulSoup(res.content, "html.parser")
         self.assertEqual(len(self.synonyms) + 1, len(soup.find_all("tr")))
-        assert_message_in_response(
-            res, "Synonym with this name already suggested for another tag, aborting"
-        )
+        assert_message_in_response(res, "Synonym with this name already suggested for another tag, aborting")
 
 
 class TestSynonymsApproval(TagsApiTestCase):
@@ -157,10 +140,7 @@ class TestSynonymsApproval(TagsApiTestCase):
             is_moderator=True,
         )
         cls.synonyms = [
-            Synonym.objects.create(
-                name=f"synonym_{tag.tag_word}", tag=tag, active=False
-            )
-            for tag in cls.tags
+            Synonym.objects.create(name=f"synonym_{tag.tag_word}", tag=tag, active=False) for tag in cls.tags
         ]
 
     def test_synonym_approve__green(self):

@@ -27,9 +27,7 @@ class Votable(models.Model):
     class Meta:
         abstract = True
 
-    users_upvoted = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, blank=True, related_name="+"
-    )
+    users_upvoted = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="+")
     users_downvoted = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         blank=True,
@@ -88,9 +86,7 @@ class VotableUserInput(UserInput, Votable):
 
     def save(self, *args, **kwargs):
         if self.id is not None:
-            logger.debug(
-                f"`{self.__class__.__name__}:{self.id}`, updating votes before saving"
-            )
+            logger.debug(f"`{self.__class__.__name__}:{self.id}`, updating votes before saving")
             self.votes = self.users_upvoted.count() - self.users_downvoted.count()
         self.content = dedent_code(self.content)
         super(VotableUserInput, self).save(*args, **kwargs)
@@ -109,9 +105,7 @@ class QuestionManager(models.Manager):
                 + SearchVector("content", weight="B")
                 + SearchVector(StringAgg("tags__tag_word", delimiter=","), weight="B")
                 + SearchVector(
-                    StringAgg(
-                        "answer__content", delimiter="\n", output_field=TextField()
-                    ),
+                    StringAgg("answer__content", delimiter="\n", output_field=TextField()),
                     weight="D",
                 )
             )
@@ -138,10 +132,7 @@ class Question(VotableUserInput, Flaggable, Followable):
         OFF_TOPIC = "O", "Off Topic"
         NEEDS_DETAILS = "N", "Needs details or Clarity"
 
-    POST_ARTICLE_TYPES = {
-        PostType.ARTICLE,
-        PostType.HOWTO,
-    }
+    POST_ARTICLE_TYPES = {PostType.ARTICLE, PostType.HOWTO}
     POST_TYPE_ACCEPTING_ANSWERS = {PostType.QUESTION, PostType.DISCUSSION}
     POST_STATUS_ACCEPTING_ANSWERS = {PostStatus.OPEN, PostStatus.TRIAGED}
     SOURCES = [
@@ -154,7 +145,11 @@ class Question(VotableUserInput, Flaggable, Followable):
         default=PostStatus.OPEN,
         help_text="Post status",
     )
-    status_updated_at = models.DateTimeField(blank=True, null=True)
+    status_updated_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text="When was the status last updated",
+    )
     type = models.CharField(
         max_length=2,
         choices=PostType.choices,
@@ -181,7 +176,6 @@ class Question(VotableUserInput, Flaggable, Followable):
         Tag,
         help_text="Tags post is asscociated with",
     )
-
     is_anonymous = models.BooleanField(
         default=False,
         help_text="Is post anonymous?",
@@ -229,8 +223,7 @@ class Question(VotableUserInput, Flaggable, Followable):
     @property
     def is_accepting_answers(self):
         return (
-            self.type in Question.POST_TYPE_ACCEPTING_ANSWERS
-            and self.status in Question.POST_STATUS_ACCEPTING_ANSWERS
+            self.type in Question.POST_TYPE_ACCEPTING_ANSWERS and self.status in Question.POST_STATUS_ACCEPTING_ANSWERS
         )
 
     @property
@@ -238,8 +231,8 @@ class Question(VotableUserInput, Flaggable, Followable):
         return self.type in Question.POST_ARTICLE_TYPES
 
     @property
-    def is_question(self):
-        return self.type == Question.PostType.QUESTION
+    def is_discussion(self):
+        return self.type == Question.PostType.DISCUSSION
 
     @property
     def duplicate_question_link(self):
@@ -252,9 +245,7 @@ class Question(VotableUserInput, Flaggable, Followable):
     def is_old(self):
         if settings.DAYS_FOR_QUESTION_TO_BECOME_OLD is None:
             return False
-        old_question_date = timezone.now() - timedelta(
-            days=settings.DAYS_FOR_QUESTION_TO_BECOME_OLD
-        )
+        old_question_date = timezone.now() - timedelta(days=settings.DAYS_FOR_QUESTION_TO_BECOME_OLD)
         return self.created_at < old_question_date
 
     def get_question(self):
@@ -307,9 +298,7 @@ class Answer(VotableUserInput, Flaggable):
     """Class to represent an answer to a question in the forum"""
 
     question = models.ForeignKey(Question, on_delete=models.CASCADE, blank=False)
-    parent = models.ForeignKey(
-        "Answer", on_delete=models.SET_NULL, blank=True, null=True
-    )
+    parent = models.ForeignKey("Answer", on_delete=models.SET_NULL, blank=True, null=True)
     is_accepted = models.BooleanField(default=False)
 
     def __str__(self):
@@ -320,9 +309,7 @@ class Answer(VotableUserInput, Flaggable):
 
     @property
     def is_recent(self):
-        recent_answer_date = timezone.now() - timedelta(
-            days=settings.ANSWER_IS_RECENT_DAYS
-        )
+        recent_answer_date = timezone.now() - timedelta(days=settings.ANSWER_IS_RECENT_DAYS)
         return self.created_at >= recent_answer_date
 
     def get_question(self) -> Question:

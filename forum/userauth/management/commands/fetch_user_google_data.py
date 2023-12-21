@@ -15,9 +15,7 @@ class Command(ManagementCommand):
     def update_user_pic(self, user, force=False):
         self.print(f"Updating data for {user.email}")
         if os.path.isfile(user.profile_pic.path):
-            self.print(
-                f"User picture exists for {user.email} in {user.profile_pic.path}"
-            )
+            self.print(f"User picture exists for {user.email} in {user.profile_pic.path}")
             if not force:
                 return
         user_data = user.socialaccount_set.filter(provider="google").first()

@@ -11,12 +11,8 @@ class PostInvitation(models.Model):
     While a question is left unanswered => the viewer can see who is invited to answer the question.
     """
 
-    question = models.ForeignKey(
-        Question, on_delete=models.CASCADE, blank=False, related_name="invitations"
-    )
-    invitee = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="+"
-    )
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, blank=False, related_name="invitations")
+    invitee = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="+")
     inviter = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         null=True,
@@ -25,9 +21,7 @@ class PostInvitation(models.Model):
         related_name="+",
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    objects = AdvancedModelManager(
-        select_related=("invitee",), deferred_fields=user_model_defer_fields("invitee")
-    )
+    objects = AdvancedModelManager(select_related=("invitee",), deferred_fields=user_model_defer_fields("invitee"))
 
     class Meta:
         verbose_name_plural = "Post Invitations"
@@ -46,31 +40,19 @@ class QuestionBookmark(models.Model):
     Represents a bookmark of a user.
     """
 
-    question = models.ForeignKey(
-        Question, on_delete=models.CASCADE, blank=False, related_name="bookmarks"
-    )
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="bookmarks"
-    )
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, blank=False, related_name="bookmarks")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="bookmarks")
     created_at = models.DateTimeField(auto_now_add=True)
     objects = AdvancedModelManager(
         select_related=("question",),
     )
 
-    def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
-        super(QuestionBookmark, self).save(
-            force_insert, force_update, using, update_fields
-        )
-        self.user.bookmarks_count = QuestionBookmark.objects.filter(
-            user=self.user
-        ).count()
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super(QuestionBookmark, self).save(force_insert, force_update, using, update_fields)
+        self.user.bookmarks_count = QuestionBookmark.objects.filter(user=self.user).count()
         self.user.save()
 
     def delete(self, using=None, keep_parents=False):
         super(QuestionBookmark, self).delete(using, keep_parents)
-        self.user.bookmarks_count = QuestionBookmark.objects.filter(
-            user=self.user
-        ).count()
+        self.user.bookmarks_count = QuestionBookmark.objects.filter(user=self.user).count()
         self.user.save()

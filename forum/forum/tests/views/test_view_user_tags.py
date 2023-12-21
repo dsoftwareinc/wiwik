@@ -20,9 +20,7 @@ class TestFollowTagView(ForumApiTestCase):
         # assert
         self.assertEqual(
             0,
-            models.UserTagStats.objects.filter(
-                user=self.users[0], tag=self.tag
-            ).count(),
+            models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count(),
         )
         self.assertEqual(1, self.tag.follows.count())
         assert_url_in_chain(
@@ -44,9 +42,7 @@ class TestFollowTagView(ForumApiTestCase):
         models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count()
         self.assertEqual(
             0,
-            models.UserTagStats.objects.filter(
-                user=self.users[0], tag=self.tag
-            ).count(),
+            models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count(),
         )
         assert_url_in_chain(
             res,
@@ -93,9 +89,7 @@ class TestUnfollowTagView(ForumApiTestCase):
         # assert
         self.assertEqual(
             0,
-            models.UserTagStats.objects.filter(
-                user=self.users[0], tag=self.tag
-            ).count(),
+            models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count(),
         )
         assert_url_in_chain(
             res,
@@ -115,9 +109,7 @@ class TestUnfollowTagView(ForumApiTestCase):
         # assert
         self.assertEqual(
             0,
-            models.UserTagStats.objects.filter(
-                user=self.users[0], tag=self.tag
-            ).count(),
+            models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count(),
         )
         assert_url_in_chain(
             res,
@@ -137,9 +129,7 @@ class TestUnfollowTagView(ForumApiTestCase):
         # assert
         self.assertEqual(
             0,
-            models.UserTagStats.objects.filter(
-                user=self.users[0], tag=self.tag
-            ).count(),
+            models.UserTagStats.objects.filter(user=self.users[0], tag=self.tag).count(),
         )
         assert_url_in_chain(
             res,

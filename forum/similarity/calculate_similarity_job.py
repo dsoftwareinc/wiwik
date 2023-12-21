@@ -20,24 +20,18 @@ def _upsert_similarity(q1: Question, q2: Question, **kwargs):
     """
     similarities = kwargs
     if len(similarities.keys()) == 0:
-        logger.warning(
-            "No similarities were given, give one of " + ", ".join(KNOWN_SIMILARITIES)
-        )
+        logger.warning("No similarities were given, give one of " + ", ".join(KNOWN_SIMILARITIES))
         return
     remove_keys = []
     for k, v in similarities.items():
         if v is None:
             remove_keys.append(k)
         if k not in KNOWN_SIMILARITIES:
-            logger.warning(
-                f"{k} not in known similarities ({', '.join(KNOWN_SIMILARITIES)})"
-            )
+            logger.warning(f"{k} not in known similarities ({', '.join(KNOWN_SIMILARITIES)})")
             return
     for k in remove_keys:
         similarities.pop(k)
-    sim = models.PostSimilarity.objects.filter(
-        Q(question1=q1, question2=q2) | Q(question1=q2, question2=q1)
-    ).first()
+    sim = models.PostSimilarity.objects.filter(Q(question1=q1, question2=q2) | Q(question1=q2, question2=q1)).first()
     if sim is None:
         sim = models.PostSimilarity.objects.create(
             question1=q1,
@@ -64,9 +58,7 @@ def calculate_tfidf():
     question_ids = list()
     question_qs = Question.objects.all()
     for q in question_qs:
-        q_doc = (
-            thread_markdown_bytesio(q, include_authors=False).getvalue().decode("utf8")
-        )
+        q_doc = thread_markdown_bytesio(q, include_authors=False).getvalue().decode("utf8")
         docs.append(q_doc)
         question_ids.append(q.id)
     res = calc_tfidf_multiple_documents(docs)

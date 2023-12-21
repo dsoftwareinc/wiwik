@@ -9,9 +9,7 @@ from tags.models import Tag
 @admin.action(description="Merge tags")
 def merge_tags(self, request, queryset):
     # Find tag with most questions
-    results = list(
-        queryset.order_by("-questions_count").values_list("tag_word", flat=True)
-    )
+    results = list(queryset.order_by("-questions_count").values_list("tag_word", flat=True))
     logger.info(f"Got request to merge tags {results} to {results[0]}")
     target_tag = Tag.objects.get(tag_word=results[0])
     for tag_word in results[1:]:

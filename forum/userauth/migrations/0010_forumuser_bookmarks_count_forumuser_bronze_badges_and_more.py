@@ -14,30 +14,22 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="forumuser",
             name="bookmarks_count",
-            field=models.IntegerField(
-                default=0, help_text="Number of bookmarks user have"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of bookmarks user have"),
         ),
         migrations.AddField(
             model_name="forumuser",
             name="bronze_badges",
-            field=models.IntegerField(
-                default=0, help_text="Number of bronze badges the user has"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of bronze badges the user has"),
         ),
         migrations.AddField(
             model_name="forumuser",
             name="gold_badges",
-            field=models.IntegerField(
-                default=0, help_text="Number of gold badges the user has"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of gold badges the user has"),
         ),
         migrations.AddField(
             model_name="forumuser",
             name="last_email_datetime",
-            field=models.DateTimeField(
-                blank=True, help_text="Date+Time of email sent to user", null=True
-            ),
+            field=models.DateTimeField(blank=True, help_text="Date+Time of email sent to user", null=True),
         ),
         migrations.AddField(
             model_name="forumuser",
@@ -53,16 +45,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="forumuser",
             name="people_reached",
-            field=models.IntegerField(
-                default=0, help_text="Number of views posts user created had"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of views posts user created had"),
         ),
         migrations.AddField(
             model_name="forumuser",
             name="posts_edited",
-            field=models.IntegerField(
-                default=0, help_text="Number of posts user edited"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of posts user edited"),
         ),
         migrations.AddField(
             model_name="forumuser",
@@ -72,22 +60,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="forumuser",
             name="search_count",
-            field=models.IntegerField(
-                default=0, help_text="Number of searches user made"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of searches user made"),
         ),
         migrations.AddField(
             model_name="forumuser",
             name="silver_badges",
-            field=models.IntegerField(
-                default=0, help_text="Number of silver badges the user has"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of silver badges the user has"),
         ),
         migrations.AddField(
             model_name="forumuser",
             name="votes",
-            field=models.IntegerField(
-                default=0, help_text="Number of votes user casted"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of votes user casted"),
         ),
     ]

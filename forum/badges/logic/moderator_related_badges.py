@@ -14,15 +14,11 @@ def user_edited_count_vs_expected(required: int, user: ForumUser) -> BadgeCalcul
 
 
 def user_upvoted_count_vs_expected(required: int, user: ForumUser) -> BadgeCalculation:
-    upvoted_count = models.VoteActivity.objects.filter(
-        source=user, reputation_change__gt=0
-    ).count()
+    upvoted_count = models.VoteActivity.objects.filter(source=user, reputation_change__gt=0).count()
     return divmod(upvoted_count, required)
 
 
-def user_upvoted_competing_answers_count_vs_expected(
-    required: int, user: ForumUser
-) -> BadgeCalculation:
+def user_upvoted_competing_answers_count_vs_expected(required: int, user: ForumUser) -> BadgeCalculation:
     upvoted_count = models.VoteActivity.objects.filter(
         source=user,
         reputation_change__gt=0,

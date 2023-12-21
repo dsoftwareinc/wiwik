@@ -1,16 +1,19 @@
+from typing import cast
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
 from forum.models import Question
 from forum.views import utils
+from userauth.models import ForumUser
 from wiwik_lib.views import ask_to_edit_resource, finish_edit_resource
 from .view_ask_question import validate_question_data, QuestionError
 
 
 @login_required
 def view_editquestion(request, pk):
-    user = request.user
+    user = cast(ForumUser, request.user)
     q = get_object_or_404(Question, pk=pk)
     if q.author != user and not user.can_edit:  # TODO change edit user permissions
         messages.error(request, "You can not edit this question", "danger")

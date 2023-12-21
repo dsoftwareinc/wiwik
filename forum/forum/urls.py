@@ -15,9 +15,7 @@ urlpatterns = [
         views.view_editanswer,
         name="answer_edit",
     ),
-    path(
-        "question/<int:pk>/delete", views.view_delete_question, name="question_delete"
-    ),
+    path("question/<int:pk>/delete", views.view_delete_question, name="question_delete"),
     path(
         "question/<int:question_pk>/delete/<int:answer_pk>",
         views.view_delete_answer,
@@ -111,9 +109,7 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    path(
-        "users-autocomplete/", views.view_users_autocomplete, name="users_autocomplete"
-    ),
+    path("users-autocomplete/", views.view_users_autocomplete, name="users_autocomplete"),
     path("users-get/", views.view_get_users_data, name="users-get"),
     path("image-upload/", views.view_image_upload, name="image_upload"),
 ]

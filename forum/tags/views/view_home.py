@@ -23,9 +23,7 @@ def render_tags_list(request):
     basic_query_set = models.Tag.objects.all()
 
     if query:
-        basic_query_set = basic_query_set.filter(
-            Q(tag_word__icontains=query) | Q(synonym__name__icontains=query)
-        )
+        basic_query_set = basic_query_set.filter(Q(tag_word__icontains=query) | Q(synonym__name__icontains=query))
     basic_query_set = basic_query_set.order_by("-number_of_questions", "tag_word")
 
     # Pagination

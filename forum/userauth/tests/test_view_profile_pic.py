@@ -12,12 +12,8 @@ class UserAuthEditProfileTest(UserAuthTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user1 = ForumUser.objects.create_user(
-            cls.username1, f"{cls.username1}@a.com", cls.password
-        )
-        cls.user2 = ForumUser.objects.create_user(
-            cls.username2, f"{cls.username2}@a.com", cls.password
-        )
+        cls.user1 = ForumUser.objects.create_user(cls.username1, f"{cls.username1}@a.com", cls.password)
+        cls.user2 = ForumUser.objects.create_user(cls.username2, f"{cls.username2}@a.com", cls.password)
 
     def test_profile_pic_post__user_upload_new_profile_pic__should_redirect(self):
         # arrange

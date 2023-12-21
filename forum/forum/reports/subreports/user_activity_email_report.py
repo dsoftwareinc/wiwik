@@ -56,9 +56,7 @@ def user_activity_email_report(from_date: date):
         )
     )
     for username, num_visits, reputation, search_count in users_visited:
-        users_dict[username] = UserData(
-            username, reputation, num_visits=num_visits, search_count=search_count
-        )
+        users_dict[username] = UserData(username, reputation, num_visits=num_visits, search_count=search_count)
     users_questions_list = list(
         ForumUser.objects.filter(question__created_at__gte=from_date)
         .annotate(num_questions=Count("question"))
@@ -69,9 +67,7 @@ def user_activity_email_report(from_date: date):
         if username in users_dict:
             users_dict[username].num_questions = num_questions
         else:
-            users_dict[username] = UserData(
-                username, reputation, num_questions=num_questions
-            )
+            users_dict[username] = UserData(username, reputation, num_questions=num_questions)
 
     users_answers_list = list(
         ForumUser.objects.filter(answer__created_at__gte=from_date)
@@ -83,9 +79,7 @@ def user_activity_email_report(from_date: date):
         if username in users_dict:
             users_dict[username].num_answers = num_answers
         else:
-            users_dict[username] = UserData(
-                username, reputation, num_answers=num_answers
-            )
+            users_dict[username] = UserData(username, reputation, num_answers=num_answers)
 
     users_qcomments_list = list(
         ForumUser.objects.filter(questioncomment__created_at__gte=from_date)
@@ -97,9 +91,7 @@ def user_activity_email_report(from_date: date):
         if username in users_dict:
             users_dict[username].num_question_comments = num_qcomments
         else:
-            users_dict[username] = UserData(
-                username, reputation, num_question_comments=num_qcomments
-            )
+            users_dict[username] = UserData(username, reputation, num_question_comments=num_qcomments)
 
     users_acomments_list = list(
         ForumUser.objects.filter(answercomment__created_at__gte=from_date)
@@ -111,9 +103,7 @@ def user_activity_email_report(from_date: date):
         if username in users_dict:
             users_dict[username].num_answer_comments = num_acomments
         else:
-            users_dict[username] = UserData(
-                username, reputation, num_answer_comments=num_acomments
-            )
+            users_dict[username] = UserData(username, reputation, num_answer_comments=num_acomments)
 
     num_users_visited = len(users_dict)
     users_list = sorted(filter(lambda u: u.valid(), users_dict.values()), reverse=True)

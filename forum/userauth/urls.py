@@ -12,9 +12,7 @@ urlpatterns = [
         views.view_deactivate_user,
         name="deactivate_user",
     ),
-    path(
-        "staff-activate/<str:username>/", views.view_activate_user, name="activate_user"
-    ),
+    path("staff-activate/<str:username>/", views.view_activate_user, name="activate_user"),
     path("editprofile/", views.view_editprofile, name="edit"),
     path("editprofile/profile-pic/", views.view_profile_pic, name="profile_pic"),
     path("profile/<str:username>/<str:tab>/", views.view_profile, name="profile"),

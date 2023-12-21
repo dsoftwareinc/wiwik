@@ -48,9 +48,7 @@ def dedent_code(markdown_text: str) -> str:
     return "\n".join(lines)
 
 
-def get_request_param(
-    request: HttpRequest, param_name: str, default_value: Optional[str]
-) -> Optional[str]:
+def get_request_param(request: HttpRequest, param_name: str, default_value: Optional[str]) -> Optional[str]:
     """Get a parameter value from a request"""
     if request.GET:
         return request.GET.get(param_name, default_value)  # type: ignore

@@ -10,16 +10,10 @@ class TestUpvoteCommentView(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
         cls.answer = utils.create_answer(cls.answer_content, cls.users[1], cls.question)
-        cls.qcomment = utils.create_comment(
-            cls.comment_content, cls.users[2], cls.question
-        )
-        cls.acomment = utils.create_comment(
-            cls.comment_content, cls.users[0], cls.answer
-        )
+        cls.qcomment = utils.create_comment(cls.comment_content, cls.users[2], cls.question)
+        cls.acomment = utils.create_comment(cls.comment_content, cls.users[0], cls.answer)
 
     def test_upvote_comment_for_question__green(self):
         self.client.login(self.usernames[0], self.password)

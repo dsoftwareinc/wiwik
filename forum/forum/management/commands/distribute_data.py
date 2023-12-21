@@ -70,7 +70,5 @@ class Command(ManagementCommand):
         for user in user_list:
             profile_pic_filename = "default_pics/" + random.choice(filenames)
             user.profile_pic = profile_pic_filename
-            logger.info(
-                f"Resetting profile-pic for {user.username}: using {profile_pic_filename}"
-            )
+            logger.info(f"Resetting profile-pic for {user.username}: using {profile_pic_filename}")
             user.save()

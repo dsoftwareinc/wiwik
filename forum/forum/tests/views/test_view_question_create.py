@@ -21,9 +21,7 @@ class TestAddQuestion(ForumApiTestCase):
         self.assertEqual(1, len(soup.find_all("input", {"id": "tagsEdit"})))
         self.assertEqual(1, len(soup.find_all("textarea", {"id": "queseditor"})))
         self.assertEqual(1, len(soup.find_all("textarea", {"name": "title"})))
-        self.assertEqual(
-            1, len(soup.find_all("input", {"type": "checkbox", "name": "anonymous"}))
-        )
+        self.assertEqual(1, len(soup.find_all("input", {"type": "checkbox", "name": "anonymous"})))
 
     def test_post_question_get__with_anonymous_disabled__green(self):
         # arrange
@@ -36,9 +34,7 @@ class TestAddQuestion(ForumApiTestCase):
         self.assertEqual(1, len(soup.find_all("input", {"id": "tagsEdit"})))
         self.assertEqual(1, len(soup.find_all("textarea", {"id": "queseditor"})))
         self.assertEqual(1, len(soup.find_all("textarea", {"name": "title"})))
-        self.assertEqual(
-            0, len(soup.find_all("input", {"type": "checkbox", "name": "anonymous"}))
-        )
+        self.assertEqual(0, len(soup.find_all("input", {"type": "checkbox", "name": "anonymous"})))
 
     def test_post_question__green(self):
         # arrange
@@ -59,13 +55,9 @@ class TestAddQuestion(ForumApiTestCase):
         q = qs[0]
         tags_list = list(q.tags.all())
         self.assertEqual(len(tags_list), len(tags))
-        notifications.notify_tag_followers_new_question.assert_called_once_with(
-            self.users[0], set(tags), mock.ANY
-        )
+        notifications.notify_tag_followers_new_question.assert_called_once_with(self.users[0], set(tags), mock.ANY)
         assert_message_in_response(res, "Question posted successfully")
-        self.assertEqual(
-            len(tags), notifications.notify_tag_followers_new_question.call_count
-        )
+        self.assertEqual(len(tags), notifications.notify_tag_followers_new_question.call_count)
 
     @mock.patch("forum.jobs.start_job")
     def test_post_question__with_invites__green(self, start_job: mock.MagicMock):
@@ -79,9 +71,7 @@ class TestAddQuestion(ForumApiTestCase):
             tag.tag_word,
         ]
         # act
-        res = self.client.add_question_post(
-            title, content, tags=", ".join(tags), invites=",".join(self.usernames[1:])
-        )
+        res = self.client.add_question_post(title, content, tags=", ".join(tags), invites=",".join(self.usernames[1:]))
         # assert
         qs = models.Question.objects.filter(title=title, content=content)
         self.assertEqual(1, qs.count())
@@ -121,9 +111,7 @@ class TestAddQuestion(ForumApiTestCase):
         ]
         notifications.notify_tag_followers_new_question = mock.MagicMock()
         # act
-        res = self.client.add_question_post(
-            title, content, ", ".join(tags), anonymous="on"
-        )
+        res = self.client.add_question_post(title, content, ", ".join(tags), anonymous="on")
         # assert
         qs = models.Question.objects.filter(title=title, content=content)
         assert qs.count() == 1
@@ -132,12 +120,8 @@ class TestAddQuestion(ForumApiTestCase):
         tags_list = list(q.tags.all())
         self.assertEqual(len(tags_list), len(tags))
         for t in tags_list:
-            assert (
-                t.tag_word in tags
-            ), f"expected {t.tag_word} in {tags_list} but is not there"
-        notifications.notify_tag_followers_new_question.assert_called_once_with(
-            self.users[0], set(tags), mock.ANY
-        )
+            assert t.tag_word in tags, f"expected {t.tag_word} in {tags_list} but is not there"
+        notifications.notify_tag_followers_new_question.assert_called_once_with(self.users[0], set(tags), mock.ANY)
         assert_message_in_response(res, "Question posted successfully")
         assert notifications.notify_tag_followers_new_question.call_count == len(tags)
 
@@ -311,9 +295,7 @@ badly indented code
         notifications.notify_tag_followers_new_question = mock.MagicMock()
         answer_content = "answer content for question with answer"
         # act
-        res = self.client.add_question_post(
-            title, content, ", ".join(tags), answereditor=answer_content
-        )
+        res = self.client.add_question_post(title, content, ", ".join(tags), answereditor=answer_content)
         # assert
         qs = models.Question.objects.filter(title=title, content=content)
         self.assertEqual(1, qs.count())
@@ -322,13 +304,9 @@ badly indented code
         self.assertEqual(len(tags_list), len(tags))
         self.assertFalse(q.has_accepted_answer)
         self.assertEqual(0, q.answer_set.count())
-        notifications.notify_tag_followers_new_question.assert_called_once_with(
-            self.users[0], set(tags), mock.ANY
-        )
+        notifications.notify_tag_followers_new_question.assert_called_once_with(self.users[0], set(tags), mock.ANY)
         assert_message_in_response(res, "Question posted successfully")
-        self.assertEqual(
-            len(tags), notifications.notify_tag_followers_new_question.call_count
-        )
+        self.assertEqual(len(tags), notifications.notify_tag_followers_new_question.call_count)
 
     def test_post_question__with_answer_and_invites__should_ignore_invites(self):
         # arrange

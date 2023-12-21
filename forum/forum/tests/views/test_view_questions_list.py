@@ -34,9 +34,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         res = self.client.questions_list()
         # assert
         self.assertContains(res, "Login")
-        assert_url_in_chain(
-            res, reverse("userauth:login") + "?next=" + reverse("forum:list")
-        )
+        assert_url_in_chain(res, reverse("userauth:login") + "?next=" + reverse("forum:list"))
 
     def test_questions_list__empty_list_user_loggedin_default_tab(self):
         # arrange
@@ -83,9 +81,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[1], self.password)
         user = self.users[0]
-        utils.create_question(
-            user, self.title, self.question_content, ",".join(self.tags)
-        )
+        utils.create_question(user, self.title, self.question_content, ",".join(self.tags))
         # act
         res = self.client.questions_list(tab=TabEnum.LATEST.value)
         # assert
@@ -103,9 +99,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[1], self.password)
         user = self.users[0]
-        utils.create_question(
-            user, self.title, self.question_content, ",".join(self.tags)
-        )
+        utils.create_question(user, self.title, self.question_content, ",".join(self.tags))
         # act
         res = self.client.questions_list(tab=TabEnum.MOST_VIEWED.value)
         # assert
@@ -124,9 +118,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[1], self.password)
         user = self.users[0]
-        utils.create_question(
-            user, self.title, self.question_content, ",".join(self.tags)
-        )
+        utils.create_question(user, self.title, self.question_content, ",".join(self.tags))
         # act
         res = self.client.questions_list(tab=TabEnum.UNRESOLVED.value)
         # assert
@@ -145,9 +137,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[1], self.password)
         user = self.users[0]
-        utils.create_question(
-            user, self.title, self.question_content, ",".join(self.tags)
-        )
+        utils.create_question(user, self.title, self.question_content, ",".join(self.tags))
         # act
         res = self.client.questions_list(tab=TabEnum.UNANSWERED.value)
         # assert
@@ -207,9 +197,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
         title_to_file = "unique title"
         self.client.login(self.usernames[1], self.password)
         # prev_search_count = self.users[0].search_count
-        utils.create_question(
-            self.users[0], title_to_file, self.question_content, ",".join(self.tags)
-        )
+        utils.create_question(self.users[0], title_to_file, self.question_content, ",".join(self.tags))
         # act
         res = self.client.questions_list(query=title_to_file)
         # assert
@@ -234,9 +222,7 @@ class TestForumQuestionsForTag(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.tag = models.Tag.objects.create(
-            tag_word=cls.tag_word, description=cls.tag_description
-        )
+        cls.tag = models.Tag.objects.create(tag_word=cls.tag_word, description=cls.tag_description)
         cls.tag.experts = cls.username
         cls.tag.stars = cls.username
         cls.tag.save()
@@ -276,9 +262,7 @@ class TestHomeView(ForumApiTestCase):
         tag_description = "my tag description with many things"
         self.client.login(self.usernames[1], self.password)
         user = self.users[1]
-        tag = models.Tag.objects.create(
-            tag_word="my_first_tag", description=tag_description
-        )
+        tag = models.Tag.objects.create(tag_word="my_first_tag", description=tag_description)
         follow_models.create_follow_tag(tag, user)
         utils.create_question(user, self.title, self.question_content, tag_word)
         # act
@@ -312,9 +296,7 @@ class TestHomeView(ForumApiTestCase):
         self.client.login(self.usernames[1], self.password)
         user = self.users[1]
         for i in range(3):
-            tag = models.Tag.objects.create(
-                tag_word=f"tag{i}", description=tag_description
-            )
+            tag = models.Tag.objects.create(tag_word=f"tag{i}", description=tag_description)
             follow_models.create_follow_tag(tag, user)
         tag_str = ",".join([f"tag{i}" for i in range(3)])
         utils.create_question(user, self.title, self.question_content, tag_str)
@@ -334,9 +316,7 @@ class TestHomeView(ForumApiTestCase):
         user = self.users[1]
         tags_list = list()
         for i in range(3):
-            tag = models.Tag.objects.create(
-                tag_word=f"tag{i}", description=tag_description if i > 0 else None
-            )
+            tag = models.Tag.objects.create(tag_word=f"tag{i}", description=tag_description if i > 0 else None)
             follow_models.create_follow_tag(tag, user)
             tags_list.append(tag)
         tag_str = ",".join([f"tag{i}" for i in range(3)])

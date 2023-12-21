@@ -13,9 +13,7 @@ class Command(ManagementCommand):
     help = "Run a job"
 
     def add_arguments(self, parser: CommandParser):
-        parser.add_argument(
-            "-m", "--module", type=str, default="forum.jobs", help="Module to load"
-        )
+        parser.add_argument("-m", "--module", type=str, default="forum.jobs", help="Module to load")
         parser.add_argument("job", nargs="?", type=str, help="Job to run")
 
     def list_jobs(self):

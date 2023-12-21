@@ -10,12 +10,8 @@ class TestUserNavbarPartialView(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
-        cls.answer = utils.create_answer(
-            cls.answer_content, cls.users[1], cls.question, False
-        )
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
+        cls.answer = utils.create_answer(cls.answer_content, cls.users[1], cls.question, False)
         QuestionBookmark.objects.create(user=cls.users[1], question=cls.question)
 
     def test_user_navbar_partial_view__should_show_bookmarks__when_user_has(self):

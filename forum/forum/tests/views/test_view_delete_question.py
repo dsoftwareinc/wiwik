@@ -10,9 +10,7 @@ class TestDeleteQuestionView(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
         utils.create_answer(cls.answer_content, cls.users[1], cls.question)
         utils.create_answer(cls.answer_content, cls.users[0], cls.question)
         a = utils.create_answer(cls.answer_content, cls.users[2], cls.question)
@@ -26,9 +24,7 @@ class TestDeleteQuestionView(ForumApiTestCase):
         # assert
         self.assertEqual(1, models.Question.objects.all().count())
         self.assertEqual(3, models.Answer.objects.all().count())
-        self.assertEqual(
-            f"/question/{self.question.pk}/delete", res.request["PATH_INFO"]
-        )
+        self.assertEqual(f"/question/{self.question.pk}/delete", res.request["PATH_INFO"])
 
     def test_delete_question__green(self):
         # arrange
@@ -47,12 +43,8 @@ class TestDeleteQuestionView(ForumApiTestCase):
         self.assertEqual(0, models.Answer.objects.all().count())
         self.users[0].refresh_from_db()
         self.users[2].refresh_from_db()
-        self.assertEqual(
-            question_user_previous_reputation - 20, self.users[0].reputation_score
-        )
-        self.assertEqual(
-            answer_user_previous_reputation - 20, self.users[2].reputation_score
-        )
+        self.assertEqual(question_user_previous_reputation - 20, self.users[0].reputation_score)
+        self.assertEqual(answer_user_previous_reputation - 20, self.users[2].reputation_score)
         assert_url_in_chain(res, reverse("forum:list"))
 
     def test_delete_question__user_not_logged_in(self):
@@ -61,9 +53,7 @@ class TestDeleteQuestionView(ForumApiTestCase):
         res = self.client.delete_question(self.question.pk)
         # assert
         self.assertEqual(1, models.Answer.objects.filter(pk=self.answer_pk).count())
-        self.assertEqual(
-            3, models.Question.objects.get(pk=self.question.pk).answer_set.count()
-        )
+        self.assertEqual(3, models.Question.objects.get(pk=self.question.pk).answer_set.count())
         assert_url_in_chain(
             res,
             reverse("userauth:login")
@@ -82,9 +72,7 @@ class TestDeleteQuestionView(ForumApiTestCase):
         # act
         res = self.client.delete_question(self.question.pk)
         # assert
-        self.assertEqual(
-            3, models.Question.objects.get(pk=self.question.pk).answer_set.count()
-        )
+        self.assertEqual(3, models.Question.objects.get(pk=self.question.pk).answer_set.count())
         assert_url_in_chain(res, reverse("forum:thread", args=[self.question.pk]))
 
     def test_delete_question__question_does_not_exist(self):
@@ -93,9 +81,7 @@ class TestDeleteQuestionView(ForumApiTestCase):
         # act
         res = self.client.delete_question(self.question.pk + 5)
         # assert
-        self.assertEqual(
-            3, models.Question.objects.get(pk=self.question.pk).answer_set.count()
-        )
+        self.assertEqual(3, models.Question.objects.get(pk=self.question.pk).answer_set.count())
         assert_url_in_chain(res, reverse("forum:list"))
 
     def test_delete_question__question_has_invites__should_delete_invites(self):

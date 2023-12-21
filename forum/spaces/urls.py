@@ -14,7 +14,5 @@ urlpatterns = [
         views.view_user_spaces_latest_questions,
         name="user-spaces-questions",
     ),
-    path(
-        "property/<str:property_name>", views.view_property_info, name="property-info"
-    ),
+    path("property/<str:property_name>", views.view_property_info, name="property-info"),
 ]

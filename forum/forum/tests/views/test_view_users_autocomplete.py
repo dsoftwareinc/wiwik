@@ -16,9 +16,7 @@ class TestUsersAutocompleteView(ForumApiTestCase):
         results = json.loads(res.content.decode("utf-8"))["results"]
         self.assertIsNotNone(results)
         self.assertEqual(2, len(results))
-        self.assertEqual(
-            [], list(filter(lambda x: x["username"] == self.usernames[2], results))
-        )
+        self.assertEqual([], list(filter(lambda x: x["username"] == self.usernames[2], results)))
 
     def test_users_autocomplete__when_given_name_and_selected__should_return_1_users(
         self,
@@ -33,12 +31,8 @@ class TestUsersAutocompleteView(ForumApiTestCase):
         results = json.loads(res.content.decode("utf-8"))["results"]
         self.assertIsNotNone(results)
         self.assertEqual(1, len(results))
-        self.assertEqual(
-            [], list(filter(lambda x: x["username"] == self.usernames[2], results))
-        )
-        self.assertEqual(
-            [], list(filter(lambda x: x["username"] == self.usernames[1], results))
-        )
+        self.assertEqual([], list(filter(lambda x: x["username"] == self.usernames[2], results)))
+        self.assertEqual([], list(filter(lambda x: x["username"] == self.usernames[1], results)))
 
     def test_users_autocomplete__when_no_matching_users__should_return_nothing(self):
         self.client.login(self.usernames[2], self.password)

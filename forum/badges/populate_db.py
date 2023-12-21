@@ -25,10 +25,7 @@ def upsert_badges_in_db() -> None:
             badge.section = section
             badge.trigger = badge_data.trigger
             badge.group = badge_data.group
-            if (
-                badge.name in BADGE_LOGIC
-                and BADGE_LOGIC[badge.name] != badge_data.logic
-            ):
+            if badge.name in BADGE_LOGIC and BADGE_LOGIC[badge.name] != badge_data.logic:
                 logger.error(f"Logic for badge {badge.name} changed")
                 raise ValueError(f"Logic for badge {badge.name} changed")
             BADGE_LOGIC[badge.name] = badge_data.logic

@@ -39,9 +39,7 @@ class UserAuthEditProfileTest(UserAuthTestCase):
         # act
         res = self.client.edit_profile_get()
         # assert
-        assert_url_in_chain(
-            res, reverse("userauth:login") + "?next=" + reverse("userauth:edit")
-        )
+        assert_url_in_chain(res, reverse("userauth:login") + "?next=" + reverse("userauth:edit"))
 
     def test_editprofile_post__green(self):
         self.client.login(self.username1, self.password)
@@ -85,9 +83,7 @@ class UserAuthEditProfileTest(UserAuthTestCase):
         res = self.client.edit_profile_post("name" + "n" * 100, "", "new about", "on")
         # assert
         self.assertEqual(200, res.status_code)
-        assert_message_in_response(
-            res, "Expected value length between 1..100 for fullname but got 104"
-        )
+        assert_message_in_response(res, "Expected value length between 1..100 for fullname but got 104")
         self.user1.refresh_from_db()
         self.assertEqual(self.name, self.user1.name)
         self.assertEqual(self.title, self.user1.title)

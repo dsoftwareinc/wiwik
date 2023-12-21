@@ -89,9 +89,7 @@ class EditableApiTestCase(TestCase):
             )
             for item in cls.usernames
         ]
-        cls.question = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
         cls.answer = utils.create_answer(cls.answer_content, cls.users[1], cls.question)
 
 
@@ -104,9 +102,7 @@ class EditableTests(EditableApiTestCase):
         res = self.client.edit_tag_get(self.tags[0])
         #
         self.assertEqual(200, res.status_code)
-        assert_message_in_response(
-            res, f"Tag {self.tags[0]} is currently edited by a different user"
-        )
+        assert_message_in_response(res, f"Tag {self.tags[0]} is currently edited by a different user")
         assert_url_in_chain(
             res,
             reverse(
@@ -139,9 +135,7 @@ class EditableTests(EditableApiTestCase):
         res = self.client.edit_question_get(self.question.id)
         #
         self.assertEqual(200, res.status_code)
-        assert_message_in_response(
-            res, "Question is currently edited by a different user"
-        )
+        assert_message_in_response(res, "Question is currently edited by a different user")
         assert_url_in_chain(
             res,
             reverse(
@@ -174,9 +168,7 @@ class EditableTests(EditableApiTestCase):
         res = self.client.edit_answer_get(self.answer.id)
         #
         self.assertEqual(200, res.status_code)
-        assert_message_in_response(
-            res, "Answer is currently edited by a different user"
-        )
+        assert_message_in_response(res, "Answer is currently edited by a different user")
         assert_url_in_chain(
             res,
             reverse(
@@ -234,8 +226,6 @@ class EditableAdminTest(EditableApiTestCase):
         self.client.login(self.superuser_name, self.password)
         self.assertEqual(1, EditedResource.objects.count())
         # act
-        res = self.client.admin_change(
-            "editedresource", EditedResource.objects.first().id
-        )
+        res = self.client.admin_change("editedresource", EditedResource.objects.first().id)
         # assert
         self.assertEqual(200, res.status_code)

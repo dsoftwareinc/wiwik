@@ -17,9 +17,7 @@ class TestTemplates(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user1 = ForumUser.objects.create_user(
-            cls.username1, f"{cls.username1}@a.com", cls.password
-        )
+        cls.user1 = ForumUser.objects.create_user(cls.username1, f"{cls.username1}@a.com", cls.password)
 
     def test_questions_list__has_footer(self):
         # act

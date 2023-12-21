@@ -29,9 +29,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.article = utils.create_article(
-            cls.users[1], cls.title, cls.content, ",".join(cls.tags)
-        )
+        cls.article = utils.create_article(cls.users[1], cls.title, cls.content, ",".join(cls.tags))
         settings.MAX_COMMENTS = 3
 
     def test_articles_detail_view__user_not_logged_in(self):
@@ -140,9 +138,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
         comment_content = "comment------content"
         notifications._notify_question_followers = mock.MagicMock()
         # act
-        res = self.client.article_add_comment(
-            self.article.pk, "question", self.article.pk, comment_content
-        )
+        res = self.client.article_add_comment(self.article.pk, "question", self.article.pk, comment_content)
         # assert
         comment = models.QuestionComment.objects.filter(question=self.article).first()
         self.assertEqual(comment_content, comment.content)
@@ -150,11 +146,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
         soup = BeautifulSoup(res.content, "html.parser")
         self.assertEqual(
             1,
-            len(
-                soup.find_all(
-                    "div", {"hx-get": f"/question/{self.article.pk}/comments"}
-                )
-            ),
+            len(soup.find_all("div", {"hx-get": f"/question/{self.article.pk}/comments"})),
         )
         notifications._notify_question_followers.assert_called_once()
         start_job.assert_has_calls(
@@ -173,17 +165,13 @@ class TestArticleDetailView(ArticlesApiTestCase):
 
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch("forum.jobs.start_job")
-    def test_articles_detail_view_create_comment__with_mention__green(
-        self, start_job: mock.MagicMock
-    ):
+    def test_articles_detail_view_create_comment__with_mention__green(self, start_job: mock.MagicMock):
         # arrange
         self.client.login(self.usernames[0], self.password)
         comment_content = f"comment mentions @{self.usernames[1]}"
         notifications._notify_question_followers = mock.MagicMock()
         # act
-        res = self.client.article_add_comment(
-            self.article.pk, "question", self.article.pk, comment_content
-        )
+        res = self.client.article_add_comment(self.article.pk, "question", self.article.pk, comment_content)
         # assert
         comment = models.QuestionComment.objects.filter(question=self.article).first()
         self.assertEqual(comment_content, comment.content)
@@ -191,11 +179,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
         soup = BeautifulSoup(res.content, "html.parser")
         self.assertEqual(
             1,
-            len(
-                soup.find_all(
-                    "div", {"hx-get": f"/question/{self.article.pk}/comments"}
-                )
-            ),
+            len(soup.find_all("div", {"hx-get": f"/question/{self.article.pk}/comments"})),
         )
         notifications._notify_question_followers.assert_called_once()
         start_job.assert_has_calls(
@@ -233,9 +217,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
         comment_content = f"comment mentions @{self.usernames[1]}xx"
         notifications._notify_question_followers = mock.MagicMock()
         # act
-        res = self.client.article_add_comment(
-            self.article.pk, "question", self.article.pk, comment_content
-        )
+        res = self.client.article_add_comment(self.article.pk, "question", self.article.pk, comment_content)
         # assert
         comment = models.QuestionComment.objects.filter(question=self.article).first()
         self.assertEqual(comment_content, comment.content)
@@ -243,11 +225,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
         soup = BeautifulSoup(res.content, "html.parser")
         self.assertEqual(
             1,
-            len(
-                soup.find_all(
-                    "div", {"hx-get": f"/question/{self.article.pk}/comments"}
-                )
-            ),
+            len(soup.find_all("div", {"hx-get": f"/question/{self.article.pk}/comments"})),
         )
         notifications._notify_question_followers.assert_called_once()
         start_job.assert_has_calls(
@@ -275,9 +253,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
         comment_content = f'comment mentions @{self.usernames[1]}xx "quote'
         notifications._notify_question_followers = mock.MagicMock()
         # act
-        res = self.client.article_add_comment(
-            self.article.pk, "question", self.article.pk, comment_content
-        )
+        res = self.client.article_add_comment(self.article.pk, "question", self.article.pk, comment_content)
         # assert
         comment = models.QuestionComment.objects.filter(question=self.article).first()
         self.assertEqual(comment_content, comment.content)
@@ -285,11 +261,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
         soup = BeautifulSoup(res.content, "html.parser")
         self.assertEqual(
             1,
-            len(
-                soup.find_all(
-                    "div", {"hx-get": f"/question/{self.article.pk}/comments"}
-                )
-            ),
+            len(soup.find_all("div", {"hx-get": f"/question/{self.article.pk}/comments"})),
         )
         notifications._notify_question_followers.assert_called_once()
         start_job.assert_has_calls(
@@ -312,13 +284,9 @@ class TestArticleDetailView(ArticlesApiTestCase):
         self.client.login(self.usernames[0], self.password)
         comment_content = "***comment------content***"
         # act
-        res = self.client.article_add_comment(
-            self.article.pk, "question", self.article.pk + 1, comment_content
-        )
+        res = self.client.article_add_comment(self.article.pk, "question", self.article.pk + 1, comment_content)
         # assert
-        comment_count = models.QuestionComment.objects.filter(
-            question_id=self.article.pk + 1
-        ).count()
+        comment_count = models.QuestionComment.objects.filter(question_id=self.article.pk + 1).count()
         self.assertEqual(0, comment_count)
         self.assertNotContains(res, comment_content)
 
@@ -379,14 +347,10 @@ class TestArticleDetailView(ArticlesApiTestCase):
         self.client.login(self.usernames[0], self.password)
         comment_content = "   "
         # act
-        res = self.client.article_add_comment(
-            self.article.pk, "question", self.article.pk, comment_content
-        )
+        res = self.client.article_add_comment(self.article.pk, "question", self.article.pk, comment_content)
         # assert
         self.assertEqual(200, res.status_code)
-        self.assertEqual(
-            0, models.QuestionComment.objects.filter(question=self.article).count()
-        )
+        self.assertEqual(0, models.QuestionComment.objects.filter(question=self.article).count())
 
     def test_articles_detail_view_create_answer_empty_content__should_not_add(self):
         # arrange
@@ -404,22 +368,16 @@ class TestArticleDetailView(ArticlesApiTestCase):
         comment_content = "comment------content"
         another_comment_content = "comment------content$$%%@@##"
         for _ in range(settings.MAX_COMMENTS):
-            self.client.article_add_comment(
-                self.article.pk, "question", self.article.pk, comment_content
-            )
+            self.client.article_add_comment(self.article.pk, "question", self.article.pk, comment_content)
         # act
-        res = self.client.article_add_comment(
-            self.article.pk, "question", self.article.pk, another_comment_content
-        )
+        res = self.client.article_add_comment(self.article.pk, "question", self.article.pk, another_comment_content)
         # assert
         self.assertEqual(200, res.status_code)
         self.assertEqual(
             settings.MAX_COMMENTS,
             models.QuestionComment.objects.filter(question=self.article).count(),
         )
-        comment_list = list(
-            models.QuestionComment.objects.filter(question=self.article)
-        )
+        comment_list = list(models.QuestionComment.objects.filter(question=self.article))
         for c in comment_list:
             self.assertEqual(comment_content, c.content)
 
@@ -469,9 +427,7 @@ class TestForumArticleListView(ArticlesApiTestCase):
         res = self.client.articles_list()
         # assert
         self.assertContains(res, "Login")
-        assert_url_in_chain(
-            res, reverse("userauth:login") + "?next=" + reverse("articles:list")
-        )
+        assert_url_in_chain(res, reverse("userauth:login") + "?next=" + reverse("articles:list"))
 
     def test_articles_list__empty_list_user_loggedin_default_tab(self):
         # arrange

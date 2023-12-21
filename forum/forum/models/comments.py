@@ -20,13 +20,9 @@ class Comment(Flaggable):
     votes = models.IntegerField(default=0)
     content = models.TextField(max_length=300)
 
-    author = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False
-    )
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    users_upvoted = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, blank=True, related_name="+"
-    )
+    users_upvoted = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="+")
 
     def get_model(self) -> str:
         raise NotImplementedError
@@ -52,9 +48,7 @@ class Comment(Flaggable):
 class AnswerComment(Comment):
     """A class representing a comment to an answer."""
 
-    objects = AdvancedModelManager(
-        select_related=("author",), deferred_fields=user_model_defer_fields("author")
-    )
+    objects = AdvancedModelManager(select_related=("author",), deferred_fields=user_model_defer_fields("author"))
 
     class Meta:
         ordering = ["created_at"]
@@ -78,9 +72,7 @@ class AnswerComment(Comment):
 class QuestionComment(Comment):
     """A class representing a comment to a question."""
 
-    objects = AdvancedModelManager(
-        select_related=("author",), deferred_fields=user_model_defer_fields("author")
-    )
+    objects = AdvancedModelManager(select_related=("author",), deferred_fields=user_model_defer_fields("author"))
 
     class Meta:
         ordering = ["created_at"]

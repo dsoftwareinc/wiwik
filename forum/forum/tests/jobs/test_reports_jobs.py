@@ -38,8 +38,7 @@ class TestReportJobs(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.users = [
-            ForumUser.objects.create_user(username, f"{username}@a.com", cls.password)
-            for username in cls.usernames
+            ForumUser.objects.create_user(username, f"{username}@a.com", cls.password) for username in cls.usernames
         ]
         cls.old_question = utils.create_question(
             cls.users[0],
@@ -48,9 +47,7 @@ class TestReportJobs(TestCase):
             ",".join(cls.tags),
             created_at=timezone.now() - datetime.timedelta(days=10),
         )
-        cls.question = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
         utils.create_answer(cls.answer_content, cls.users[1], cls.question)
         utils.create_answer(cls.answer_content, cls.users[0], cls.question)
         tag = Tag.objects.create(tag_word=cls.no_activity_tag)
@@ -72,9 +69,7 @@ class TestReportJobs(TestCase):
         jobs.send_weekly_digest_for_users()
         # assert
         single_digest.assert_has_calls([mock.call(u, mock.ANY) for u in self.users])
-        notify_user.assert_has_calls(
-            [mock.call(u, subject, subject, result, True) for u in self.users]
-        )
+        notify_user.assert_has_calls([mock.call(u, subject, subject, result, True) for u in self.users])
 
     @mock.patch("forum.jobs.notify_user.notify_user_email")
     def test_send_weekly_digest_for_users__only_users_with_data__should_be_2(
@@ -93,14 +88,10 @@ class TestReportJobs(TestCase):
             ],
             any_order=True,
         )
-        assert_not_called_with(
-            notify_user, self.users[2], subject, subject, mock.ANY, True
-        )
+        assert_not_called_with(notify_user, self.users[2], subject, subject, mock.ANY, True)
 
     @mock.patch("django.core.mail.mail_admins")
-    def test_send_daily_activity_report_for_admins__green(
-        self, mail_admins: mock.MagicMock
-    ):
+    def test_send_daily_activity_report_for_admins__green(self, mail_admins: mock.MagicMock):
         # arrange
         fromdate = timezone.now() - datetime.timedelta(days=1)
         subject = f"Daily activity report {fromdate.date()}-{datetime.date.today()}"

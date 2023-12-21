@@ -18,9 +18,7 @@ class ForumUserManager(UserManager):
 
 class ForumUser(AbstractUser):
     email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
-    name = models.CharField(
-        max_length=100, null=True, blank=True, help_text="User displayed name"
-    )
+    name = models.CharField(max_length=100, null=True, blank=True, help_text="User displayed name")
     title = models.CharField(
         max_length=100,
         default="",
@@ -70,26 +68,16 @@ class ForumUser(AbstractUser):
     )
     objects = ForumUserManager()
     reputation_score = models.IntegerField(default=0)
-    search_count = models.IntegerField(
-        default=0, help_text="Number of searches user made"
-    )
-    bookmarks_count = models.IntegerField(
-        default=0, help_text="Number of bookmarks user have"
-    )
+    search_count = models.IntegerField(default=0, help_text="Number of searches user made")
+    bookmarks_count = models.IntegerField(default=0, help_text="Number of bookmarks user have")
     last_email_datetime = models.DateTimeField(
         null=True,
         blank=True,
         help_text="Date+Time of email sent to user",
     )
-    bronze_badges = models.IntegerField(
-        default=0, help_text="Number of bronze badges the user has"
-    )
-    silver_badges = models.IntegerField(
-        default=0, help_text="Number of silver badges the user has"
-    )
-    gold_badges = models.IntegerField(
-        default=0, help_text="Number of gold badges the user has"
-    )
+    bronze_badges = models.IntegerField(default=0, help_text="Number of bronze badges the user has")
+    silver_badges = models.IntegerField(default=0, help_text="Number of silver badges the user has")
+    gold_badges = models.IntegerField(default=0, help_text="Number of gold badges the user has")
     next_badge = models.ForeignKey(
         "badges.Badge",
         blank=True,
@@ -98,12 +86,8 @@ class ForumUser(AbstractUser):
         help_text="Next badge recommended for user",
     )
 
-    people_reached = models.IntegerField(
-        default=0, help_text="Number of views posts user created had"
-    )
-    posts_edited = models.IntegerField(
-        default=0, help_text="Number of posts user edited"
-    )
+    people_reached = models.IntegerField(default=0, help_text="Number of views posts user created had")
+    posts_edited = models.IntegerField(default=0, help_text="Number of posts user edited")
     votes = models.IntegerField(default=0, help_text="Number of votes user casted")
 
     def display_name(self):
@@ -165,26 +149,16 @@ class ForumUser(AbstractUser):
 class ForumUserAdditionalData(models.Model):
     user = models.OneToOneField(ForumUser, on_delete=models.CASCADE, blank=False)
     reputation_score = models.IntegerField(default=0)
-    search_count = models.IntegerField(
-        default=0, help_text="Number of searches user made"
-    )
-    bookmarks_count = models.IntegerField(
-        default=0, help_text="Number of bookmarks user have"
-    )
+    search_count = models.IntegerField(default=0, help_text="Number of searches user made")
+    bookmarks_count = models.IntegerField(default=0, help_text="Number of bookmarks user have")
     last_email_datetime = models.DateTimeField(
         null=True,
         blank=True,
         help_text="Date+Time of email sent to user",
     )
-    bronze_badges = models.IntegerField(
-        default=0, help_text="Number of bronze badges the user has"
-    )
-    silver_badges = models.IntegerField(
-        default=0, help_text="Number of silver badges the user has"
-    )
-    gold_badges = models.IntegerField(
-        default=0, help_text="Number of gold badges the user has"
-    )
+    bronze_badges = models.IntegerField(default=0, help_text="Number of bronze badges the user has")
+    silver_badges = models.IntegerField(default=0, help_text="Number of silver badges the user has")
+    gold_badges = models.IntegerField(default=0, help_text="Number of gold badges the user has")
     next_badge = models.ForeignKey(
         "badges.Badge",
         blank=True,
@@ -193,12 +167,8 @@ class ForumUserAdditionalData(models.Model):
         help_text="Next badge recommended for user",
     )
 
-    people_reached = models.IntegerField(
-        default=0, help_text="Number of views posts user created had"
-    )
-    posts_edited = models.IntegerField(
-        default=0, help_text="Number of posts user edited"
-    )
+    people_reached = models.IntegerField(default=0, help_text="Number of views posts user created had")
+    posts_edited = models.IntegerField(default=0, help_text="Number of posts user edited")
     votes = models.IntegerField(default=0, help_text="Number of votes user casted")
 
     class Meta:

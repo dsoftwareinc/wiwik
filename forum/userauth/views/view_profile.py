@@ -29,32 +29,18 @@ def get_user_forum_data(seeuser: ForumUser, tab: str, page_number: int):
         "questions": Question.objects.filter(author=seeuser).count(),
         "answers": Answer.objects.filter(author=seeuser).count(),
         "votes": VoteActivity.objects.filter(source=seeuser).count(),
-        "following": Follow.objects.filter(
-            user=seeuser, content_type=question_content_type
-        ).count(),
-        "reputation": (
-            VoteActivity.objects.filter(
-                target=seeuser, reputation_change__isnull=False
-            ).count()
-        ),
+        "following": Follow.objects.filter(user=seeuser, content_type=question_content_type).count(),
+        "reputation": (VoteActivity.objects.filter(target=seeuser, reputation_change__isnull=False).count()),
         "bookmarks": QuestionBookmark.objects.filter(user=seeuser).count(),
-        "badges": (
-            VoteActivity.objects.filter(target=seeuser, badge__isnull=False).count()
-        ),
+        "badges": (VoteActivity.objects.filter(target=seeuser, badge__isnull=False).count()),
     }
 
     if tab == "questions":
-        items = Question.objects.filter(author=seeuser, is_anonymous=False).order_by(
-            "-created_at"
-        )
+        items = Question.objects.filter(author=seeuser, is_anonymous=False).order_by("-created_at")
     if tab == "answers":
         items = Answer.objects.filter(author=seeuser).order_by("-created_at")
     if tab == "votes":
-        items = (
-            VoteActivity.objects.filter(source=seeuser)
-            .annotate(year=F("created_at__year"))
-            .order_by("-created_at")
-        )
+        items = VoteActivity.objects.filter(source=seeuser).annotate(year=F("created_at__year")).order_by("-created_at")
     if tab == "reputation":
         items = VoteActivity.objects.filter(target=seeuser).order_by("-created_at")
     if tab == "badges":
@@ -72,9 +58,9 @@ def get_user_forum_data(seeuser: ForumUser, tab: str, page_number: int):
     if tab == "following":
         items = [
             follow.content_object
-            for follow in Follow.objects.filter(
-                user=seeuser, content_type=question_content_type
-            ).order_by("-created_at")
+            for follow in Follow.objects.filter(user=seeuser, content_type=question_content_type).order_by(
+                "-created_at"
+            )
         ]
     if tab == "bookmarks":
         items = QuestionBookmark.objects.filter(user=seeuser).order_by("-created_at")
@@ -95,9 +81,7 @@ def view_profile(request, username: str, tab: str):
     date_joined = seeuser.date_joined
     page_number = get_request_param(request, "page", 1)
     items, counters = get_user_forum_data(seeuser, tab, page_number)
-    last_badge = (
-        VoteActivity.objects.filter(badge__isnull=False).order_by("created_at").first()
-    )
+    last_badge = VoteActivity.objects.filter(badge__isnull=False).order_by("created_at").first()
     context = {
         "items": items,
         "last_visit": last_visit,
@@ -117,8 +101,6 @@ def view_profile(request, username: str, tab: str):
 
     if tab == "following":
         context["user_tag_stats"] = (
-            UserTagStats.objects.filter(user=seeuser)
-            .order_by("-reputation")
-            .prefetch_related("tag")
+            UserTagStats.objects.filter(user=seeuser).order_by("-reputation").prefetch_related("tag")
         )
     return render(request, "userauth/profile.html", context)

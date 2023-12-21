@@ -9,11 +9,7 @@ from tags.models import Tag
 
 def tags_activity_email_report(from_date: date):
     tags_list = list(
-        Tag.objects.annotate(
-            num_questions=Count(
-                "question", filter=Q(question__created_at__gte=from_date)
-            )
-        )
+        Tag.objects.annotate(num_questions=Count("question", filter=Q(question__created_at__gte=from_date)))
         .filter(num_questions__gt=0)
         .order_by("-num_questions")
     )

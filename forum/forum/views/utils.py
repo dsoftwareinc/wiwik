@@ -24,13 +24,9 @@ from wiwik_lib.views.follow_views import delete_follow, create_follow
 def recalculate_user_reputation(user: AbstractUser) -> None:
     """Calculate a user reputation based on VoteActivity"""
     if user is None or not isinstance(user, ForumUser):
-        logger.warning(
-            f"User {user} is not a ForumUser, skipping reputation recalculation"
-        )
+        logger.warning(f"User {user} is not a ForumUser, skipping reputation recalculation")
         return
-    reputation_qs = models.VoteActivity.objects.filter(target=user).aggregate(
-        rep=Sum("reputation_change")
-    )
+    reputation_qs = models.VoteActivity.objects.filter(target=user).aggregate(rep=Sum("reputation_change"))
     reputation = reputation_qs.get("rep") or 0
     user.reputation_score = reputation
     user.save()
@@ -153,9 +149,7 @@ def _get_tag(tag_word: str, user: AbstractUser) -> Tag:
     return tag
 
 
-def create_article(
-    user: AbstractUser, title: str, content: str, tags: str, **kwargs
-) -> models.Question:
+def create_article(user: AbstractUser, title: str, content: str, tags: str, **kwargs) -> models.Question:
     if "type" not in kwargs:
         kwargs["type"] = models.Question.PostType.ARTICLE
     return create_question(user, title, content, tags, **kwargs)
@@ -180,9 +174,7 @@ def create_question(
         e.g., anonymous flag
     :return: the question created.
     """
-    q = models.Question.objects.create(
-        title=title, content=content, author=user, **kwargs
-    )
+    q = models.Question.objects.create(title=title, content=content, author=user, **kwargs)
     create_follow(q, user)
     question_tag_words = set(tags.replace(" ", "").lower().split(","))
     if "" in question_tag_words:
@@ -203,9 +195,7 @@ def create_question(
     return q
 
 
-def update_question(
-    user: AbstractUser, q: models.Question, title: str, content: str, tags: str
-) -> models.Question:
+def update_question(user: AbstractUser, q: models.Question, title: str, content: str, tags: str) -> models.Question:
     """Update question content if there are changes
     :param user: User who is updating the post model
     :param q: Question to be updated
@@ -275,15 +265,11 @@ def create_answer(
         logger.warning("Trying to create answer without question, ignoring")
         return None
     if question.answer_set.filter(author=user).count() > 0:
-        logger.warning(
-            f"User {user.username} already answered question, please update existing answer"
-        )
+        logger.warning(f"User {user.username} already answered question, please update existing answer")
         return None
     # Protect creating answers on posts that do not accept answer
     if not question.is_accepting_answers:
-        logger.warning(
-            f"User {user.username} is trying to answer a post {question.id} that does not accept answer"
-        )
+        logger.warning(f"User {user.username} is trying to answer a post {question.id} that does not accept answer")
         return None
     a = models.Answer.objects.create(content=content, author=user, question=question)
     tags = a.question.tags.all()
@@ -297,9 +283,7 @@ def create_answer(
     return a
 
 
-def update_answer(
-    user: AbstractUser, answer: models.Answer, content: str
-) -> models.Answer:
+def update_answer(user: AbstractUser, answer: models.Answer, content: str) -> models.Answer:
     if content == answer.content:
         logger.info("no changes when updating answer, ignoring")
         return answer
@@ -322,31 +306,23 @@ def delete_answer(answer: models.Answer):
     recalculate_user_reputation(editor)
 
 
-def undo_upvote(
-    user: AbstractUser, model_obj: models.VotableUserInput
-) -> models.VotableUserInput:
+def undo_upvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.VotableUserInput:
     model_obj.users_upvoted.remove(user)
     model_obj.save()
     delete_activity(user, model_obj.author, model_obj, settings.UPVOTE_CHANGE)
     return model_obj
 
 
-def undo_downvote(
-    user: AbstractUser, model_obj: models.VotableUserInput
-) -> models.VotableUserInput:
+def undo_downvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.VotableUserInput:
     model_obj.users_downvoted.remove(user)
     model_obj.save()
     delete_activity(user, model_obj.author, model_obj, settings.DOWNVOTE_CHANGE)
     return model_obj
 
 
-def upvote(
-    user: AbstractUser, model_obj: models.VotableUserInput
-) -> models.VotableUserInput:
+def upvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.VotableUserInput:
     if model_obj.users_downvoted.filter(id=user.id).count() > 0:
-        logger.debug(
-            f"User {user.username} previously downvoted, removing downvote first"
-        )
+        logger.debug(f"User {user.username} previously downvoted, removing downvote first")
         undo_downvote(user, model_obj)
 
     model_obj.users_upvoted.add(user)
@@ -357,13 +333,9 @@ def upvote(
     return model_obj
 
 
-def downvote(
-    user: AbstractUser, model_obj: models.VotableUserInput
-) -> models.VotableUserInput:
+def downvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.VotableUserInput:
     if model_obj.users_upvoted.filter(id=user.id).count() > 0:
-        logger.info(
-            f"User {user.username} previously downvoted, removing downvote first"
-        )
+        logger.info(f"User {user.username} previously downvoted, removing downvote first")
         undo_upvote(user, model_obj)
 
     model_obj.users_downvoted.add(user)
@@ -384,15 +356,11 @@ def accept_answer(answer: models.Answer) -> None:
     answer.question.has_accepted_answer = True
     answer.is_accepted = True
     answer.save()
-    logger.info(
-        f"Answer {answer.id} marked as accepted for question {answer.question_id}"
-    )
+    logger.info(f"Answer {answer.id} marked as accepted for question {answer.question_id}")
 
 
 # Comment method
-def create_comment(
-    content: str, user: AbstractUser, parent: models.UserInput
-) -> Optional[models.Comment]:
+def create_comment(content: str, user: AbstractUser, parent: models.UserInput) -> Optional[models.Comment]:
     if content is None or content.strip() == "":
         logger.warning("Trying to create comment without content, ignoring")
         return None
@@ -400,13 +368,9 @@ def create_comment(
         logger.warning("Trying to create comment without parent, ignoring")
         return None
     if isinstance(parent, models.Question):
-        comment = models.QuestionComment.objects.create(
-            content=content, author=user, question=parent
-        )
+        comment = models.QuestionComment.objects.create(content=content, author=user, question=parent)
     else:  # isinstance(parent,models.Answer)
-        comment = models.AnswerComment.objects.create(
-            content=content, author=user, answer=parent
-        )
+        comment = models.AnswerComment.objects.create(content=content, author=user, answer=parent)
     q = comment.get_question()
     notifications.notify_new_comment(user, parent, comment)
     create_follow(q, user)
@@ -452,9 +416,7 @@ def create_invites_and_notify_invite_users_to_question(
     invited_list = []
     for invitee in invitees:
         if inviter == invitee:
-            logger.debug(
-                f"User {inviter.username} invited itself to post[{post.id}] => skipping"
-            )
+            logger.debug(f"User {inviter.username} invited itself to post[{post.id}] => skipping")
             continue
         existing = PostInvitation.objects.filter(
             question=post,
@@ -476,3 +438,15 @@ def create_invites_and_notify_invite_users_to_question(
     logger.debug(f"Created {len(invited_list)} invitations: [{invited_list}]")
     notifications.notify_invite_users_to_question(inviter, post, invited_list)
     return len(invited_list)
+
+
+_POST_TYPE_TO_VIEW_NAME = {
+    models.Question.PostType.QUESTION.value: "forum:thread",
+    models.Question.PostType.ARTICLE.value: "articles:detail",
+    models.Question.PostType.HOWTO.value: "articles:detail",
+    models.Question.PostType.DISCUSSION.value: "TBD",  # todo
+}
+
+
+def get_view_name_for_post_type(post: models.Question) -> str:
+    return _POST_TYPE_TO_VIEW_NAME[post.type]

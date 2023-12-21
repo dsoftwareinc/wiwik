@@ -12,20 +12,14 @@ class PostSimilarity(models.Model):
     question2 = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="+")
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-    postgres_rank = models.DecimalField(
-        max_digits=5, decimal_places=4, help_text="Postgres full text search rank"
-    )
+    postgres_rank = models.DecimalField(max_digits=5, decimal_places=4, help_text="Postgres full text search rank")
     postgres_trigram_rank = models.DecimalField(
         max_digits=5,
         decimal_places=4,
         help_text="Reverse of distance based on trigram similarity",
     )
-    tfidf_rank = models.DecimalField(
-        max_digits=5, decimal_places=4, help_text="TF-IDF similarity"
-    )
-    rank = models.DecimalField(
-        max_digits=5, decimal_places=4, help_text="Calculated rank"
-    )
+    tfidf_rank = models.DecimalField(max_digits=5, decimal_places=4, help_text="TF-IDF similarity")
+    rank = models.DecimalField(max_digits=5, decimal_places=4, help_text="Calculated rank")
 
     class Meta:
         verbose_name_plural = "Similar Posts"

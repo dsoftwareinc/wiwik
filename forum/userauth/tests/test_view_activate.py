@@ -15,9 +15,7 @@ class UserAuthActivateTest(UserAuthTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user1 = ForumUser.objects.create_user(
-            cls.username1, f"{cls.username1}@a.com", cls.password
-        )
+        cls.user1 = ForumUser.objects.create_user(cls.username1, f"{cls.username1}@a.com", cls.password)
 
     def test_activate__green(self):
         self.user1.is_active = False
@@ -33,8 +31,7 @@ class UserAuthActivateTest(UserAuthTestCase):
         self.assertTrue(self.user1.is_active)
         assert_message_in_response(
             res,
-            "Account activated successfully. Thank you "
-            "for your email confirmation. Now you can login your account.",
+            "Account activated successfully. Thank you " "for your email confirmation. Now you can login your account.",
         )
 
     def test_activate__non_existing_user__should_fail(self):

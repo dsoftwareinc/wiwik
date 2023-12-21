@@ -23,10 +23,7 @@ def class_for_votes(votes: int):
 
 
 def get_created_at(obj):
-    if (
-        obj.created_at.tzinfo is not None
-        and obj.created_at.tzinfo.utcoffset(obj.created_at) is not None
-    ):
+    if obj.created_at.tzinfo is not None and obj.created_at.tzinfo.utcoffset(obj.created_at) is not None:
         return obj.created_at
     return timezone.make_aware(obj.created_at, timezone.get_fixed_timezone(0))
 
@@ -66,11 +63,7 @@ def latest_bookmarks(u: ForumUser, count=settings.MAX_BOOKMARK_ITEMS):
 
 @register.filter()
 def latest_reputation(u: ForumUser, count=settings.MAX_REPUTATION_ITEMS):
-    return (
-        u.reputation_votes.all()
-        .select_related("question")
-        .order_by("-created_at")[:count]
-    )
+    return u.reputation_votes.all().select_related("question").order_by("-created_at")[:count]
 
 
 @register.filter

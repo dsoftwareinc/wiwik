@@ -24,9 +24,7 @@ class UserAuthClient(Client):
     def signup_get(self):
         return self.get(reverse("userauth:signup"), follow=True)
 
-    def signup_post(
-        self, username: str, name: str, email: str, password: str, password2: str = None
-    ):
+    def signup_post(self, username: str, name: str, email: str, password: str, password2: str = None):
         return self.post(
             reverse("userauth:signup"),
             data={
@@ -114,9 +112,7 @@ class UserAuthClient(Client):
             follow=True,
         )
 
-    def edit_profile_post(
-        self, fullname: str, title: str, about: str, email_notifications: str
-    ):
+    def edit_profile_post(self, fullname: str, title: str, about: str, email_notifications: str):
         data = {
             "fullname": fullname,
             "title": title,
@@ -127,9 +123,7 @@ class UserAuthClient(Client):
         return self.post(reverse("userauth:edit"), data=data, follow=True)
 
     def profile_pic_post(self, image_data: str):
-        return self.post(
-            reverse("userauth:profile_pic"), data={"cropped-profile-pic": image_data}
-        )
+        return self.post(reverse("userauth:profile_pic"), data={"cropped-profile-pic": image_data})
 
     def profile_pic_get(self):
         return self.get(reverse("userauth:profile_pic"))
@@ -215,12 +209,9 @@ class UserAuthTestCase(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.users = [
-            ForumUser.objects.create_user(username, f"{username}@a.com", cls.password)
-            for username in cls.usernames
+            ForumUser.objects.create_user(username, f"{username}@a.com", cls.password) for username in cls.usernames
         ]
-        cls.question = create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
+        cls.question = create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
 
     def setUp(self):
         self.client = UserAuthClient()

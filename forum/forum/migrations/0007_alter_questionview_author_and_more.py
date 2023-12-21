@@ -24,9 +24,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="questionview",
             name="created_at",
-            field=models.DateTimeField(
-                auto_now_add=True, help_text="When was the post viewed"
-            ),
+            field=models.DateTimeField(auto_now_add=True, help_text="When was the post viewed"),
         ),
         migrations.AlterField(
             model_name="questionview",

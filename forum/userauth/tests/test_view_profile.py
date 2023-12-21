@@ -30,9 +30,7 @@ class UserAuthViewProfileTest(UserAuthTestCase):
             "GET",
             "/path",
         )
-        log_request(
-            cls.users[1].id, "174.95.73.69", timezone.now(), 200, "GET", "/path"
-        )
+        log_request(cls.users[1].id, "174.95.73.69", timezone.now(), 200, "GET", "/path")
 
     def test_view_profile__own_profile__green(self):
         # arrange
@@ -82,9 +80,7 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         self.assertContains(res, "Last visited", status_code=200)
         self.assertNotContains(res, "logos/Keybase_logo_official.png")
         assert res.status_code == 200
-        assert reverse("userauth:edit") not in str(
-            res.content
-        )  # don't show edit button
+        assert reverse("userauth:edit") not in str(res.content)  # don't show edit button
 
     def test_view_profile__user_not_following_questions__green(self):
         # arrange
@@ -108,9 +104,7 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         # assert
         self.assertEqual(200, res.status_code)
         soup = BeautifulSoup(res.content, "html.parser")
-        self.assertEqual(
-            2, len(soup.find_all("a", {"class": "btn btn-question-tag m-2"}))
-        )
+        self.assertEqual(2, len(soup.find_all("a", {"class": "btn btn-question-tag m-2"})))
 
     def test_view_profile__different_user_with_github__green(self):
         # arrange
@@ -126,9 +120,7 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         self.assertContains(res, "logo-github")
         self.assertContains(res, "logos/Keybase_logo_official.png")
         assert res.status_code == 200
-        assert reverse("userauth:edit") not in str(
-            res.content
-        )  # don't show edit button
+        assert reverse("userauth:edit") not in str(res.content)  # don't show edit button
 
     def test_view_profile__different_user_inactive__green(self):
         # arrange
@@ -150,9 +142,7 @@ class UserAuthViewProfileTest(UserAuthTestCase):
         res = self.client.view_profile(self.usernames[0], "reputation")
         # assert
         self.assertEqual(200, res.status_code)
-        assert reverse("userauth:edit") not in str(
-            res.content
-        )  # don't show edit button
+        assert reverse("userauth:edit") not in str(res.content)  # don't show edit button
         self.assertNotContains(res, "bg-unseen")
 
     def test_view_profile__non_existing_user(self):
@@ -218,9 +208,7 @@ class TestProfilePagination(UserAuthTestCase):
     def setUpClass(cls):
         super().setUpClass()
         for i in range(50):
-            utils.create_question(
-                cls.users[1], cls.title, cls.question_content, cls.tags[0]
-            )
+            utils.create_question(cls.users[1], cls.title, cls.question_content, cls.tags[0])
 
     def test_view_profile__pagination_middle_page__green(self):
         # arrange

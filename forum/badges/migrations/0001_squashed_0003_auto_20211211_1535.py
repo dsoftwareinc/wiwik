@@ -24,9 +24,7 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 (
                     "name",
-                    models.CharField(
-                        help_text="Short name of badge", max_length=30, unique=True
-                    ),
+                    models.CharField(help_text="Short name of badge", max_length=30, unique=True),
                 ),
                 (
                     "section",

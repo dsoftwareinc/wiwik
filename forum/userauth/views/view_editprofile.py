@@ -11,9 +11,7 @@ from userauth.apps import logger
 
 @login_required
 def view_editprofile(request):
-    def set_val(
-        key: str, attribute: str, min_length: int = 1, max_length: int = 20_000
-    ):
+    def set_val(key: str, attribute: str, min_length: int = 1, max_length: int = 20_000):
         val = data.get(key, None)
         if not val:
             return

@@ -9,9 +9,7 @@ class TestDeleteCommentView(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        q = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
+        q = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
         a = utils.create_answer(cls.answer_content, cls.users[2], q)
         cls.question = q
         cls.answer = a
@@ -34,9 +32,7 @@ class TestDeleteCommentView(ForumApiTestCase):
         # assert
         self.assertEqual(previous_count - 1, self.question.comments.count())
         anchor = f"#question_{self.question.pk}"
-        assert_url_in_chain(
-            res, reverse("forum:thread", args=[self.question.pk]) + anchor
-        )
+        assert_url_in_chain(res, reverse("forum:thread", args=[self.question.pk]) + anchor)
 
     def test_delete_answer_comment__green(self):
         # arrange
@@ -49,9 +45,7 @@ class TestDeleteCommentView(ForumApiTestCase):
         # assert
         self.assertEqual(previous_count - 1, self.answer.comments.count())
         anchor = f"#answer_{self.answer.pk}"
-        assert_url_in_chain(
-            res, reverse("forum:thread", args=[self.question.pk]) + anchor
-        )
+        assert_url_in_chain(res, reverse("forum:thread", args=[self.question.pk]) + anchor)
 
     def test_delete_question__user_not_logged_in(self):
         # arrange
@@ -65,9 +59,7 @@ class TestDeleteCommentView(ForumApiTestCase):
             res,
             reverse("userauth:login")
             + "?next="
-            + reverse(
-                "forum:comment_delete", args=[self.question.pk, "answer", comment.pk]
-            ),
+            + reverse("forum:comment_delete", args=[self.question.pk, "answer", comment.pk]),
         )
 
     def test_delete_comment__comment_owned_by_different_user(self):
@@ -80,9 +72,7 @@ class TestDeleteCommentView(ForumApiTestCase):
         # assert
         self.assertEqual(previous_count, self.answer.comments.count())
         anchor = f"#answer_{self.answer.pk}"
-        assert_url_in_chain(
-            res, reverse("forum:thread", args=[self.question.pk]) + anchor
-        )
+        assert_url_in_chain(res, reverse("forum:thread", args=[self.question.pk]) + anchor)
 
     def test_delete_comment__comment_does_not_exist(self):
         # arrange

@@ -10,9 +10,7 @@ class TestInviteToQuestionView(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
 
     def test_invite_to_question__non_existing_user__green(self):
         # arrange
@@ -48,9 +46,7 @@ class TestInviteToQuestionView(ForumApiTestCase):
                 ],
             ),
         )
-        assert_message_in_response(
-            res, "Successfully invited user(s) to this question."
-        )
+        assert_message_in_response(res, "Successfully invited user(s) to this question.")
 
     def test_invite_to_question__bad_question__green(self):
         # arrange

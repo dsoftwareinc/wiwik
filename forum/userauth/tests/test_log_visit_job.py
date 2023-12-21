@@ -13,9 +13,7 @@ class UserAuthActivateTest(UserAuthTestCase):
 
     def test_first_visit__total_days_should_be_1(self):
         # assert start
-        user = ForumUser.objects.create_user(
-            self.username, f"{self.username}@a.com", self.password
-        )
+        user = ForumUser.objects.create_user(self.username, f"{self.username}@a.com", self.password)
 
         self.assertEqual(0, UserVisit.objects.filter(user=user).count())
         # act
@@ -29,9 +27,7 @@ class UserAuthActivateTest(UserAuthTestCase):
 
     def test_visit_on_consecutive_day__green(self):
         # arrange
-        user = ForumUser.objects.create_user(
-            self.username, f"{self.username}@a.com", self.password
-        )
+        user = ForumUser.objects.create_user(self.username, f"{self.username}@a.com", self.password)
         log_request(
             user.id,
             "127.0.0.1",
@@ -53,9 +49,7 @@ class UserAuthActivateTest(UserAuthTestCase):
 
     def test_visit_on_consecutive_day__with_high_visit_count(self):
         # arrange
-        user = ForumUser.objects.create_user(
-            self.username, f"{self.username}@a.com", self.password
-        )
+        user = ForumUser.objects.create_user(self.username, f"{self.username}@a.com", self.password)
         for i in range(20, 10, -1):
             log_request(
                 user.id,
@@ -69,17 +63,11 @@ class UserAuthActivateTest(UserAuthTestCase):
         self.assertEqual(10, UserVisit.objects.filter(user=user).count())
         self.assertEqual(
             10,
-            UserVisit.objects.filter(user=user)
-            .order_by("-total_days")
-            .first()
-            .total_days,
+            UserVisit.objects.filter(user=user).order_by("-total_days").first().total_days,
         )
         self.assertEqual(
             10,
-            UserVisit.objects.filter(user=user)
-            .order_by("-max_consecutive_days")
-            .first()
-            .max_consecutive_days,
+            UserVisit.objects.filter(user=user).order_by("-max_consecutive_days").first().max_consecutive_days,
         )
         # act
         log_request(user.id, "127.0.0.1", timezone.now(), 200, "GET", "/path")
@@ -92,9 +80,7 @@ class UserAuthActivateTest(UserAuthTestCase):
 
     def test_visit_on_consecutive_day__purged_visits_table_with_high_visit_count(self):
         # arrange
-        user = ForumUser.objects.create_user(
-            self.username, f"{self.username}@a.com", self.password
-        )
+        user = ForumUser.objects.create_user(self.username, f"{self.username}@a.com", self.password)
         total_days = 20
         UserVisit.objects.create(
             user=user,
@@ -117,9 +103,7 @@ class UserAuthActivateTest(UserAuthTestCase):
 
     def test_visit_on_non_consecutive_day__green(self):
         # arrange
-        user = ForumUser.objects.create_user(
-            self.username, f"{self.username}@a.com", self.password
-        )
+        user = ForumUser.objects.create_user(self.username, f"{self.username}@a.com", self.password)
         log_request(
             user.id,
             "127.0.0.1",
@@ -141,9 +125,7 @@ class UserAuthActivateTest(UserAuthTestCase):
 
     def test_visit_on_same_day__green(self):
         # arrange
-        user = ForumUser.objects.create_user(
-            self.username, f"{self.username}@a.com", self.password
-        )
+        user = ForumUser.objects.create_user(self.username, f"{self.username}@a.com", self.password)
         log_request(user.id, "127.0.0.1", timezone.now(), 200, "GET", "/path")
         # assert start
         self.assertEqual(1, UserVisit.objects.filter(user=user).count())
@@ -158,9 +140,7 @@ class UserAuthActivateTest(UserAuthTestCase):
 
     def test_visit__real_ip__green(self):
         # arrange
-        user = ForumUser.objects.create_user(
-            self.username, f"{self.username}@a.com", self.password
-        )
+        user = ForumUser.objects.create_user(self.username, f"{self.username}@a.com", self.password)
         # act
         log_request(user.id, "174.95.73.69", timezone.now(), 200, "GET", "/path")
         # assert

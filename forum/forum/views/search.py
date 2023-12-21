@@ -74,9 +74,7 @@ def postgres_query_method(qs: QuerySet, initial_q: str) -> QuerySet:
     search_query = SearchQuery(query)
     search_rank = SearchRank(F("additional_data__search_vector"), search_query)
     res_qs = (
-        qs.annotate(relevance=search_rank)
-        .filter(relevance__isnull=False, relevance__gt=0.1)
-        .order_by("-relevance")
+        qs.annotate(relevance=search_rank).filter(relevance__isnull=False, relevance__gt=0.1).order_by("-relevance")
     )
     if res_qs.count() == 0:
         title_weight = settings.POSTGRES_SEARCH["weights"]["title"]
@@ -84,11 +82,7 @@ def postgres_query_method(qs: QuerySet, initial_q: str) -> QuerySet:
         res_qs = (
             qs.annotate(title_distance=TrigramDistance("title", query))
             .annotate(content_distance=TrigramDistance("content", query))
-            .annotate(
-                relevance=1
-                - F("title_distance") * title_weight
-                - F("content_distance") * content_weight
-            )
+            .annotate(relevance=1 - F("title_distance") * title_weight - F("content_distance") * content_weight)
             .filter(relevance__gt=settings.POSTGRES_SEARCH["trigram_min_relevance"])
             .order_by("-relevance")
         )
@@ -117,9 +111,7 @@ def meilisearchmethod():
         return ValueError("Can not use meilisearch when its configuration is off")
     import meilisearch
 
-    client = meilisearch.Client(
-        settings.MEILISEARCH_SERVER_ADDRESS, settings.MEILISEARCH_MASTERKEY
-    )
+    client = meilisearch.Client(settings.MEILISEARCH_SERVER_ADDRESS, settings.MEILISEARCH_MASTERKEY)
     index = client.index("posts")
 
     def meilisearch(qs: QuerySet, initial_q: str):
@@ -137,11 +129,9 @@ def meilisearchmethod():
 
         qs = qs.filter(id__in=question_ids)
         if len(question_ids) > 0 and _postgres_enabled():
-            qs = qs.annotate(
-                ordering=ArrayPosition(
-                    question_ids, F("id"), output_field=BigIntegerField()
-                )
-            ).order_by("ordering")
+            qs = qs.annotate(ordering=ArrayPosition(question_ids, F("id"), output_field=BigIntegerField())).order_by(
+                "ordering"
+            )
         return qs
 
     return meilisearch
@@ -156,18 +146,14 @@ def configure_query_method():
         logger.info("Meilisearch enabled, checking whether server is reachable")
         return meilisearchmethod()
     elif postgres_enabled:
-        logger.info(
-            "Database engine is postgres, query method based on postgres full text search"
-        )
+        logger.info("Database engine is postgres, query method based on postgres full text search")
         assert "trigram_min_relevance" in settings.POSTGRES_SEARCH
         assert "weights" in settings.POSTGRES_SEARCH
         assert "title" in settings.POSTGRES_SEARCH["weights"]
         assert "content" in settings.POSTGRES_SEARCH["weights"]
         res = postgres_query_method
     else:
-        logger.warning(
-            "Database engine not postgres, defaulting to query method based on title only"
-        )
+        logger.warning("Database engine not postgres, defaulting to query method based on title only")
         res = sqlite3_query_method
 
     return res

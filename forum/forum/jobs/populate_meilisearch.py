@@ -1347,9 +1347,7 @@ def _get_meilisearch_index():
     if not settings.MEILISEARCH_ENABLED:
         logger.warning("meilisearch Index could not be created")
         return None
-    client = meilisearch.Client(
-        settings.MEILISEARCH_SERVER_ADDRESS, settings.MEILISEARCH_MASTERKEY
-    )
+    client = meilisearch.Client(settings.MEILISEARCH_SERVER_ADDRESS, settings.MEILISEARCH_MASTERKEY)
     try:
         index = client.index("posts")
     except MeilisearchApiError:

@@ -17,12 +17,7 @@ def view_image_upload(request):
     if upload.size > settings.MAX_SIZE_KB_IMAGE_UPLOAD_KB * 1024:
         data = {"error": "fileTooLarge"}
         return JsonResponse(data)
-    filename = (
-        "uploads/"
-        + timezone.now().strftime("%Y-%m-%d.%H-%M-%S")
-        + "."
-        + upload.name.split(".")[-1]
-    )
+    filename = "uploads/" + timezone.now().strftime("%Y-%m-%d.%H-%M-%S") + "." + upload.name.split(".")[-1]
     logger.info(f"User {request.user} uploaded {upload.name}, saved as {filename}")
     fss = FileSystemStorage()
     file = fss.save(filename, upload)

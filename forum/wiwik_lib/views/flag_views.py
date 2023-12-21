@@ -34,9 +34,7 @@ def notify_moderators_new_flag(
         None
 
     """
-    subject = (
-        f'New content flagged by {originator.email} on a {model_name.split("_")[0]}'
-    )
+    subject = f'New content flagged by {originator.email} on a {model_name.split("_")[0]}'
     model_url = get_model_url_with_base(model_name, model)
     context = {
         "link": model_url,
@@ -47,34 +45,19 @@ def notify_moderators_new_flag(
     }
     template = loader.get_template("emails/new_flag.html")
     html = template.render(context=context)
-    activity_str = (
-        f'New content flagged by by {context["username"]}\n'
-        + f"link: {context['link']}"
-    )
+    activity_str = f'New content flagged by by {context["username"]}\n' + f"link: {context['link']}"
     moderators = ForumUser.objects.filter(is_moderator=True, is_active=True)
     for moderator in moderators:
-        jobs.start_job(
-            jobs.notify_user_email, moderator, subject, activity_str, html, True
-        )
-        jobs.start_job(
-            slack_api.slack_post_im_message_to_email, activity_str, moderator.email
-        )
+        jobs.start_job(jobs.notify_user_email, moderator, subject, activity_str, html, True)
+        jobs.start_job(slack_api.slack_post_im_message_to_email, activity_str, moderator.email)
 
 
-def flag_model(
-    user: AbstractUser, target: Flaggable, flag_type: str, extra: str = None
-) -> Optional[Flag]:
+def flag_model(user: AbstractUser, target: Flaggable, flag_type: str, extra: str = None) -> Optional[Flag]:
     content_type = ContentType.objects.get_for_model(target)
-    if Flag.objects.filter(
-        user=user, content_type=content_type, object_id=target.id
-    ).exists():
-        logger.debug(
-            f"User {user.username} already flagged {content_type}:{target.id} - ignoring"
-        )
+    if Flag.objects.filter(user=user, content_type=content_type, object_id=target.id).exists():
+        logger.debug(f"User {user.username} already flagged {content_type}:{target.id} - ignoring")
         return None
-    logger.debug(
-        f"User {user.username} flagging {content_type}:{target.id} of as {flag_type}"
-    )
+    logger.debug(f"User {user.username} flagging {content_type}:{target.id} of as {flag_type}")
     flag = Flag.objects.create(
         user=user,
         flag_type=flag_type,
@@ -96,16 +79,12 @@ def view_flag_model(request, model_pk: int):
     model_name_for_user = model_name.split("_")[0]
     instance = utils.get_model(model_name, model_pk)
     if instance is None:
-        logger.warning(
-            f"user {user.username} tries to flag {model_name}:{model_pk} which does not exist."
-        )
+        logger.warning(f"user {user.username} tries to flag {model_name}:{model_pk} which does not exist.")
         return HttpResponseBadRequest()
 
     flag_type = request.POST.get("flag_type", None)
     if flag_type not in map(lambda x: x[0], FLAG_CHOICES):
-        logger.warning(
-            f"user {user.username} tries to flag with a flag type {flag_type} which is invalid"
-        )
+        logger.warning(f"user {user.username} tries to flag with a flag type {flag_type} which is invalid")
         return redirect(get_model_url(model_name, instance))
     link = request.POST.get("link", None)
     extra = request.POST.get("extra", None)

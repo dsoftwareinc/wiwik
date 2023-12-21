@@ -10,19 +10,13 @@ class TestDeleteAnswerView(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
 
     def setUp(self):
         super().setUp()
         utils.create_answer(self.answer_content, self.users[1], self.question)
-        self.answer2 = utils.create_answer(
-            self.answer_content, self.users[0], self.question
-        )
-        self.answer = utils.create_answer(
-            self.answer_content, self.users[2], self.question
-        )
+        self.answer2 = utils.create_answer(self.answer_content, self.users[0], self.question)
+        self.answer = utils.create_answer(self.answer_content, self.users[2], self.question)
         utils.upvote(self.users[0], self.answer)
         utils.upvote(self.users[1], self.answer)
 
@@ -71,9 +65,7 @@ class TestDeleteAnswerView(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[2], self.password)
         # act
-        res = self.client.delete_answer_confirmation_page(
-            self.question.pk, self.answer.pk
-        )
+        res = self.client.delete_answer_confirmation_page(self.question.pk, self.answer.pk)
         # assert
         self.question.refresh_from_db()
         self.assertEqual(1, models.Answer.objects.filter(pk=self.answer.pk).count())
@@ -92,9 +84,7 @@ class TestDeleteAnswerView(ForumApiTestCase):
         res = self.client.delete_answer(self.question.pk, self.answer.pk)
         # assert
         self.assertEqual(0, models.Answer.objects.filter(pk=self.answer.pk).count())
-        self.assertEqual(
-            2, models.Question.objects.get(pk=self.question.pk).answer_set.count()
-        )
+        self.assertEqual(2, models.Question.objects.get(pk=self.question.pk).answer_set.count())
         self.users[2].refresh_from_db()
         self.assertEqual(previous_reputation - 20, self.users[2].reputation_score)
         assert_url_in_chain(res, reverse("forum:thread", args=[self.question.pk]))
@@ -105,9 +95,7 @@ class TestDeleteAnswerView(ForumApiTestCase):
         res = self.client.delete_answer(self.question.pk, self.answer.pk)
         # assert
         self.assertEqual(1, models.Answer.objects.filter(pk=self.answer.pk).count())
-        self.assertEqual(
-            3, models.Question.objects.get(pk=self.question.pk).answer_set.count()
-        )
+        self.assertEqual(3, models.Question.objects.get(pk=self.question.pk).answer_set.count())
         assert_url_in_chain(
             res,
             reverse("userauth:login")
@@ -122,9 +110,7 @@ class TestDeleteAnswerView(ForumApiTestCase):
         res = self.client.delete_answer(self.question.pk, self.answer.pk)
         # assert
         self.assertEqual(1, models.Answer.objects.filter(pk=self.answer.pk).count())
-        self.assertEqual(
-            3, models.Question.objects.get(pk=self.question.pk).answer_set.count()
-        )
+        self.assertEqual(3, models.Question.objects.get(pk=self.question.pk).answer_set.count())
         assert_url_in_chain(res, reverse("forum:thread", args=[self.question.pk]))
 
     def test_delete_answer__answer_does_not_exist(self):
@@ -134,23 +120,17 @@ class TestDeleteAnswerView(ForumApiTestCase):
         res = self.client.delete_answer(self.question.pk, self.answer.pk + 5)
         # assert
         self.assertEqual(1, models.Answer.objects.filter(pk=self.answer.pk).count())
-        self.assertEqual(
-            3, models.Question.objects.get(pk=self.question.pk).answer_set.count()
-        )
+        self.assertEqual(3, models.Question.objects.get(pk=self.question.pk).answer_set.count())
         assert_url_in_chain(res, reverse("forum:thread", args=[self.question.pk]))
 
     def test_delete_answer__answer_is_for_different_question(self):
         # arrange
-        q = utils.create_question(
-            self.users[0], self.title, self.question_content, ",".join(self.tags)
-        )
+        q = utils.create_question(self.users[0], self.title, self.question_content, ",".join(self.tags))
         a = utils.create_answer(self.answer_content, self.users[0], q)
         self.client.login(self.usernames[1], self.password)
         # act
         res = self.client.delete_answer(self.question.pk, a.pk)
         # assert
         self.assertEqual(1, models.Answer.objects.filter(pk=self.answer.pk).count())
-        self.assertEqual(
-            3, models.Question.objects.get(pk=self.question.pk).answer_set.count()
-        )
+        self.assertEqual(3, models.Question.objects.get(pk=self.question.pk).answer_set.count())
         assert_url_in_chain(res, reverse("forum:thread", args=[self.question.pk]))

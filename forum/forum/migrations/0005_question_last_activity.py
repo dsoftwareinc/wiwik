@@ -14,9 +14,7 @@ def calculate_last_activity(apps, schema_editor):
         times.extend(q.comments.values_list("created_at", flat=True))
         times.extend(q.answer_set.values_list("updated_at", flat=True))
         times.extend(
-            q.answer_set.annotate(last_comment=Max("comments__created_at")).values_list(
-                "last_comment", flat=True
-            )
+            q.answer_set.annotate(last_comment=Max("comments__created_at")).values_list("last_comment", flat=True)
         )
         times = filter(lambda x: x is not None, times)
         q.last_activity = max(times)

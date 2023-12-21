@@ -13,9 +13,7 @@ from tags.models import Synonym, TagEdit, Tag
 from userauth.models import ForumUser
 
 
-def tags_created_with_num_questions_vs_required(
-    required: int, user: ForumUser
-) -> BadgeCalculation:
+def tags_created_with_num_questions_vs_required(required: int, user: ForumUser) -> BadgeCalculation:
     count = (
         Tag.objects.filter(author=user)
         .annotate(questions_count=Count("question"))

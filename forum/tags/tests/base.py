@@ -71,9 +71,7 @@ class TagsClient(Client):
             url += "?q=" + query
         return self.get(url, follow=True)
 
-    def synonyms_list_get(
-        self, query: str = None, page: int = None, order_by: int = None
-    ):
+    def synonyms_list_get(self, query: str = None, page: int = None, order_by: int = None):
         url = reverse("tags:synonyms_list") + "?"
         if query is not None:
             url += f"q={query}&"
@@ -129,13 +127,8 @@ class TagsApiTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = ForumUser.objects.create_user(
-            cls.username, f"{cls.username}@a.com", cls.password
-        )
-        cls.tags = [
-            Tag.objects.create(tag_word=f"tag{i}", description=f"tag{i}_desc")
-            for i in range(3)
-        ]
+        cls.user = ForumUser.objects.create_user(cls.username, f"{cls.username}@a.com", cls.password)
+        cls.tags = [Tag.objects.create(tag_word=f"tag{i}", description=f"tag{i}_desc") for i in range(3)]
         UserTagStats.objects.create(tag=cls.tags[0], user=cls.user)
 
     def setUp(self):

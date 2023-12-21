@@ -42,10 +42,7 @@ def render_request(request):
     query_username = get_request_param(request, "q", None)
     basic_query_set = ForumUser.objects.filter(is_superuser=False, is_active=True)
     tab = request.GET.get("tab", "all")
-    if (
-        tab not in {"all", "month", "year", "week", "quarter"}
-        or query_username is not None
-    ):
+    if tab not in {"all", "month", "year", "week", "quarter"} or query_username is not None:
         tab = "all"
     from_date = request.GET.get("from_date", None)
     if query_username:
@@ -56,9 +53,7 @@ def render_request(request):
         )
 
     if tab == "all" and from_date is None:
-        queryset = basic_query_set.annotate(
-            reputation=F("additional_data__reputation_score")
-        )
+        queryset = basic_query_set.annotate(reputation=F("additional_data__reputation_score"))
     else:
         start_date = _calculate_start_date(tab, from_date)
         queryset = basic_query_set.filter(

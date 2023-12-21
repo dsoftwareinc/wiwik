@@ -12,9 +12,7 @@ from userauth.models import ForumUser
 http = urllib3.PoolManager()
 
 
-def _populate_user_data_from_social(
-    user: ForumUser, picture_only: bool = False
-) -> None:
+def _populate_user_data_from_social(user: ForumUser, picture_only: bool = False) -> None:
     user_social_account = user.socialaccount_set.filter(provider="google").first()
     if user_social_account is None:
         logger.info(f"Could not find social account for user {user.username}")

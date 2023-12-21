@@ -48,9 +48,7 @@ TRIGGER_EVENT_TYPES = {
 }
 
 
-def user_authored_vs_required(
-    model: Type[base_models.Model], required: int, user: ForumUser
-) -> BadgeCalculation:
+def user_authored_vs_required(model: Type[base_models.Model], required: int, user: ForumUser) -> BadgeCalculation:
     """
     Should be used with partial(model, required) so it will return
     a method accepting a user and returning the number of instances

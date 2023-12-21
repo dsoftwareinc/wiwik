@@ -18,9 +18,7 @@ class UserTagStats(models.Model):
         default=0,
         help_text="Number of answers authored by user in the tag",
     )
-    reputation = models.IntegerField(
-        default=0, help_text="Reputation earned by user for tag"
-    )
+    reputation = models.IntegerField(default=0, help_text="Reputation earned by user for tag")
     reputation_last_month = models.IntegerField(
         default=0,
         help_text="Reputation earned by user for tag in the past month",

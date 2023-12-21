@@ -11,10 +11,6 @@ class ForumConfig(AppConfig):
 
     def ready(self):
         if settings.GOOGLE_ANALYTICS_KEY is None:
-            logger.warning(
-                "Google Analytics key is not configured! set environment variable GOOGLE_ANALYTICS_KEY"
-            )
+            logger.warning("Google Analytics key is not configured! set environment variable GOOGLE_ANALYTICS_KEY")
         if not settings.ADMINS:
-            logger.warning(
-                "email for admin is not configured! set environment variable ADMIN_EMAIL"
-            )
+            logger.warning("email for admin is not configured! set environment variable ADMIN_EMAIL")

@@ -45,15 +45,11 @@ def _notify_question_followers(
         f"activity by {originator.username}, len: {len(activity)}"
     )
     for follow in follows:
-        jobs.start_job(
-            jobs.notify_user_email, follow.user, subject, activity, html, important
-        )
+        jobs.start_job(jobs.notify_user_email, follow.user, subject, activity, html, important)
     return users
 
 
-def notify_tag_followers_new_question(
-    originator: AbstractUser, tag_words: Set[str], q: models.Question
-) -> None:
+def notify_tag_followers_new_question(originator: AbstractUser, tag_words: Set[str], q: models.Question) -> None:
     """
     1. Notify in slack channel about a new question
     2. Notify tag followers about a new question
@@ -67,16 +63,12 @@ def notify_tag_followers_new_question(
         None
     """
     slack_template = loader.get_template("slack/new_question.md")
-    slack_msg = slack_template.render(
-        context={"q": q, "basesite": CURRENT_SITE, "tags": ", ".join(q.tag_words())}
-    )
+    slack_msg = slack_template.render(context={"q": q, "basesite": CURRENT_SITE, "tags": ", ".join(q.tag_words())})
     notify_slack_channel(slack_msg, settings.SLACK_NOTIFICATIONS_CHANNEL)
     emails_dict = dict()
     for tag_word in tag_words:
         follows = list(
-            models.UserTagStats.objects.filter(
-                ~Q(user=originator), user__is_active=True, tag__tag_word=tag_word
-            )
+            models.UserTagStats.objects.filter(~Q(user=originator), user__is_active=True, tag__tag_word=tag_word)
         )
         for follow in follows:
             emails_dict[follow.user] = tag_word
@@ -88,14 +80,9 @@ def notify_tag_followers_new_question(
         "q": q,
         # tag_word key should be inserted later
     }
-    activity_str = (
-        f"New question on tag: {q.title}\n"
-        + f"link: {model_url} Question content:\n{q.content}"
-    )
+    activity_str = f"New question on tag: {q.title}\n" + f"link: {model_url} Question content:\n{q.content}"
     template = loader.get_template("emails/new_question.html")
-    logger.debug(
-        f"Notifying {len(emails_dict)} followers about activity: {activity_str}"
-    )
+    logger.debug(f"Notifying {len(emails_dict)} followers about activity: {activity_str}")
     for user in emails_dict:
         html = template.render(context={"tag_word": emails_dict[user], **context})
         jobs.start_job(
@@ -129,16 +116,12 @@ def notify_question_changes(
     }
     user_display_name = _get_user_display_name(originator)
     activity_str = (
-        f'Question "{q.title}" by {q.author.username} '
-        f"was updated by {user_display_name}\n"
-        f"link: {model_url}\n"
+        f'Question "{q.title}" by {q.author.username} ' f"was updated by {user_display_name}\n" f"link: {model_url}\n"
     )
     if old_title != q.title:
         activity_str += f'Title changed from "{old_title}" to "{q.title}"\n'
     if old_content != q.content:
-        activity_str += (
-            f"Content changed from:\n\n {old_content} \n\nto:\n\n {q.content}\n"
-        )
+        activity_str += f"Content changed from:\n\n {old_content} \n\nto:\n\n {q.content}\n"
     subject = f"A question you are following was edited by {user_display_name}"
     template = loader.get_template("emails/question_updated.html")
     html = template.render(context=context)
@@ -153,19 +136,12 @@ def notify_new_answer(originator: AbstractUser, a: models.Answer):
         "a": a,
     }
     user_display_name = _get_user_display_name(originator)
-    activity_str = (
-        f'New answer to "{a.question.title}" by {user_display_name} was added\n'
-        + f"link: {model_url}\n"
-    )
+    activity_str = f'New answer to "{a.question.title}" by {user_display_name} was added\n' + f"link: {model_url}\n"
     subject = f"New answer by {user_display_name} on a question you are following"
     template = loader.get_template("emails/new_answer.html")
     html = template.render(context=context)
-    _notify_question_followers(
-        originator, a.get_question(), subject, activity_str, html, True
-    )
-    jobs.start_job(
-        slack_api.slack_post_im_message_to_email, activity_str, a.question.author.email
-    )
+    _notify_question_followers(originator, a.get_question(), subject, activity_str, html, True)
+    jobs.start_job(slack_api.slack_post_im_message_to_email, activity_str, a.question.author.email)
 
 
 def notify_answer_changes(originator: AbstractUser, a: models.Answer, old_content: str):
@@ -183,16 +159,12 @@ def notify_answer_changes(originator: AbstractUser, a: models.Answer, old_conten
         "basesite": CURRENT_SITE,
         "unsubscribe_link": unsubscribe_link_with_base(a.author),
     }
-    activity_str = (
-        f'Answer to "{q.title}" by {a.author} was updated' + f"link: {model_url}\n"
-    )
+    activity_str = f'Answer to "{q.title}" by {a.author} was updated' + f"link: {model_url}\n"
     subject = f"Your answer to a question was edited by {user_display_name}"
     template = loader.get_template("emails/answer_updated.html")
     html = template.render(context=context)
     jobs.start_job(jobs.notify_user_email, a.author, subject, activity_str, html, False)
-    jobs.start_job(
-        slack_api.slack_post_im_message_to_email, activity_str, a.author.email
-    )
+    jobs.start_job(slack_api.slack_post_im_message_to_email, activity_str, a.author.email)
 
 
 def notify_new_comment(
@@ -223,15 +195,11 @@ def notify_new_comment(
         )
     else:
         subject = f"New comment by {user_display_name} on your answer"
-        jobs.start_job(
-            jobs.notify_user_email, parent.author, subject, activity_str, html, False
-        )
+        jobs.start_job(jobs.notify_user_email, parent.author, subject, activity_str, html, False)
         notified_users = [
             parent.author,
         ]
-    jobs.start_job(
-        slack_api.slack_post_im_message_to_email, activity_str, parent.author.email
-    )
+    jobs.start_job(slack_api.slack_post_im_message_to_email, activity_str, parent.author.email)
     # Handling mentions
     if "@" not in comment.content:
         return
@@ -266,10 +234,7 @@ def notify_invite_users_to_question(
         return None
     subject = f"{inviter.username} invited you to answer a question"
     model_url = get_model_url_with_base(question.get_model(), question)
-    text = (
-        f"{inviter.username} invited you to answer the question: {question.title}\n"
-        f"link: {model_url}"
-    )
+    text = f"{inviter.username} invited you to answer the question: {question.title}\n" f"link: {model_url}"
     # Build html to send
     context = {
         "inviter": inviter,

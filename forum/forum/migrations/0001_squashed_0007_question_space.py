@@ -197,9 +197,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "tag",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="tags.tag"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="tags.tag"),
                 ),
                 (
                     "user",
@@ -224,9 +222,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "question",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="forum.question"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="forum.question"),
                 ),
                 (
                     "user",
@@ -372,9 +368,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="answer",
             name="question",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="forum.question"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="forum.question"),
         ),
         migrations.AddField(
             model_name="answer",
@@ -435,9 +429,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="flag",
             name="created_at",
-            field=models.DateTimeField(
-                auto_now_add=True, default=django.utils.timezone.now
-            ),
+            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -542,23 +534,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="tagfollow",
             name="answers_by_user",
-            field=models.IntegerField(
-                default=0, help_text="Number of answers authored by user in the tag"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of answers authored by user in the tag"),
         ),
         migrations.AddField(
             model_name="tagfollow",
             name="questions_by_user",
-            field=models.IntegerField(
-                default=0, help_text="Number of questions authored by user in the tag"
-            ),
+            field=models.IntegerField(default=0, help_text="Number of questions authored by user in the tag"),
         ),
         migrations.AddField(
             model_name="tagfollow",
             name="reputation",
-            field=models.IntegerField(
-                default=0, help_text="Reputation earned by user for tag"
-            ),
+            field=models.IntegerField(default=0, help_text="Reputation earned by user for tag"),
         ),
         migrations.CreateModel(
             name="VoteActivity",
@@ -719,9 +705,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "question",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="forum.question"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="forum.question"),
                 ),
             ],
         ),
@@ -751,51 +735,37 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="answer",
             name="users_downvoted",
-            field=models.ManyToManyField(
-                blank=True, related_name="+", to=settings.AUTH_USER_MODEL
-            ),
+            field=models.ManyToManyField(blank=True, related_name="+", to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
             model_name="answer",
             name="users_upvoted",
-            field=models.ManyToManyField(
-                blank=True, related_name="+", to=settings.AUTH_USER_MODEL
-            ),
+            field=models.ManyToManyField(blank=True, related_name="+", to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
             model_name="answercomment",
             name="users_upvoted",
-            field=models.ManyToManyField(
-                blank=True, related_name="+", to=settings.AUTH_USER_MODEL
-            ),
+            field=models.ManyToManyField(blank=True, related_name="+", to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
             model_name="question",
             name="users_downvoted",
-            field=models.ManyToManyField(
-                blank=True, related_name="+", to=settings.AUTH_USER_MODEL
-            ),
+            field=models.ManyToManyField(blank=True, related_name="+", to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
             model_name="question",
             name="users_upvoted",
-            field=models.ManyToManyField(
-                blank=True, related_name="+", to=settings.AUTH_USER_MODEL
-            ),
+            field=models.ManyToManyField(blank=True, related_name="+", to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterField(
             model_name="questionadditionaldata",
             name="question",
-            field=models.OneToOneField(
-                on_delete=django.db.models.deletion.CASCADE, to="forum.question"
-            ),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to="forum.question"),
         ),
         migrations.AlterField(
             model_name="questioncomment",
             name="users_upvoted",
-            field=models.ManyToManyField(
-                blank=True, related_name="+", to=settings.AUTH_USER_MODEL
-            ),
+            field=models.ManyToManyField(blank=True, related_name="+", to=settings.AUTH_USER_MODEL),
         ),
         migrations.CreateModel(
             name="SearchRecord",

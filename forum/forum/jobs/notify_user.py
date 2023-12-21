@@ -27,9 +27,7 @@ def send_email_async(email: EmailMessage) -> None:
     Returns:
         None
     """
-    if (
-        not settings.SEND_EMAILS
-    ):  # preventing sending emails to others when on DEBUG mode
+    if not settings.SEND_EMAILS:  # preventing sending emails to others when on DEBUG mode
         email.to = [
             settings.DEBUG_EMAIL_TO,
         ]
@@ -62,11 +60,7 @@ def should_notification_be_skipped(
         logger.debug(f"{user.email} does not have email notifications enabled")
         return True
     max_acceptable_time = timezone.now() - timedelta(hours=1)
-    if (
-        not important
-        and user.last_email_datetime is not None
-        and user.last_email_datetime > max_acceptable_time
-    ):
+    if not important and user.last_email_datetime is not None and user.last_email_datetime > max_acceptable_time:
         logger.debug(f"{user.email} received another notification recently")
         return True
     return False
@@ -116,16 +110,12 @@ def fix_html(html: str, user: ForumUser) -> str:
 
 
 @job
-def notify_user_email(
-    user: ForumUser, subject: str, text: str, html: str, important: bool = False
-):
+def notify_user_email(user: ForumUser, subject: str, text: str, html: str, important: bool = False):
     if not user.is_active:
         logger.debug(f"skipping notification to {user.email}: user inactive")
         return
     if should_notification_be_skipped(user, important):
-        logger.debug(
-            f"skipping notification to {user.email}: subject: {subject}, text-length: {len(text)}"
-        )
+        logger.debug(f"skipping notification to {user.email}: subject: {subject}, text-length: {len(text)}")
         return
     subject = fix_subject(subject)
     logger.debug(

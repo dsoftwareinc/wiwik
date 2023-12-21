@@ -11,24 +11,16 @@ from forum.apps import logger
 @login_required
 def view_bookmark_question(request, question_pk: int):
     if request.method != "GET":
-        logger.warning(
-            f"user {request.user.username} is trying to make a request not through the app"
-        )
+        logger.warning(f"user {request.user.username} is trying to make a request not through the app")
         return redirect("forum:thread", pk=question_pk)
     question = models.Question.objects.filter(pk=question_pk).first()
     if question is None:
-        logger.warning(
-            f"User {request.user.username} is trying to delete bookmark on a non existing question"
-        )
+        logger.warning(f"User {request.user.username} is trying to delete bookmark on a non existing question")
         return redirect("forum:thread", pk=question_pk)
     user = request.user
-    existing = models.QuestionBookmark.objects.filter(
-        user=user, question=question
-    ).first()
+    existing = models.QuestionBookmark.objects.filter(user=user, question=question).first()
     if existing is not None:
-        logger.debug(
-            f"User {user.username} already bookmarked question id {question.id}"
-        )
+        logger.debug(f"User {user.username} already bookmarked question id {question.id}")
         messages.info(request, "Bookmark already exists")
         return redirect("forum:thread", pk=question_pk)
     logger.debug(f"Creating bookmark for [user={user.username} question={question.id}]")
@@ -40,20 +32,14 @@ def view_bookmark_question(request, question_pk: int):
 @login_required
 def view_unbookmark_question(request, question_pk: int):
     if request.method != "GET":
-        logger.warning(
-            f"user {request.user.username} is trying to make a request not through the app"
-        )
+        logger.warning(f"user {request.user.username} is trying to make a request not through the app")
         return redirect("forum:thread", pk=question_pk)
     question = models.Question.objects.filter(pk=question_pk).first()
     if question is None:
-        logger.warning(
-            f"User {request.user.username} is trying to delete bookmark on a non existing question"
-        )
+        logger.warning(f"User {request.user.username} is trying to delete bookmark on a non existing question")
         return redirect("forum:thread", pk=question_pk)
     user = request.user
-    existing = models.QuestionBookmark.objects.filter(
-        user=user, question=question
-    ).first()
+    existing = models.QuestionBookmark.objects.filter(user=user, question=question).first()
     if existing is None:
         logger.debug(
             f"User {user.username} tries to delete bookmark for question "

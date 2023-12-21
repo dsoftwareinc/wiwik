@@ -31,9 +31,5 @@ def create_question_with_answer(context):
     context.answer_details = dict(
         content="answer------content",
     )
-    context.question = Question.objects.create(
-        author=context.users[0], **context.question_details
-    )
-    context.answer = Answer.objects.create(
-        author=context.users[1], question=context.question, **context.answer_details
-    )
+    context.question = Question.objects.create(author=context.users[0], **context.question_details)
+    context.answer = Answer.objects.create(author=context.users[1], question=context.question, **context.answer_details)

@@ -45,6 +45,4 @@ class Command(ManagementCommand):
             "forum.jobs.calculate_all_users_impact",
             "0 0 * * *",
         )
-        self.create_job(
-            "Calculate badges for users", "badges.jobs.review_all_badges", "0 */3 * * *"
-        )
+        self.create_job("Calculate badges for users", "badges.jobs.review_all_badges", "0 */3 * * *")

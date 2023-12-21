@@ -44,15 +44,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "tfidf_rank",
-                    models.DecimalField(
-                        decimal_places=4, help_text="TF-IDF similarity", max_digits=5
-                    ),
+                    models.DecimalField(decimal_places=4, help_text="TF-IDF similarity", max_digits=5),
                 ),
                 (
                     "rank",
-                    models.DecimalField(
-                        decimal_places=4, help_text="Calculated rank", max_digits=5
-                    ),
+                    models.DecimalField(decimal_places=4, help_text="Calculated rank", max_digits=5),
                 ),
                 (
                     "question1",

@@ -12,9 +12,7 @@ class TestHomeView(TagsApiTestCase):
         res = self.client.home()
         # assert
         self.assertEqual(200, res.status_code)
-        assert_url_in_chain(
-            res, reverse("userauth:login") + "?next=" + reverse("tags:list")
-        )
+        assert_url_in_chain(res, reverse("userauth:login") + "?next=" + reverse("tags:list"))
 
     def test_home_template__green(self):
         self.client.login(self.username, self.password)

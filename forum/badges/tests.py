@@ -73,9 +73,7 @@ class BadgesApiTestCase(TestCase):
         cls.badge = badge_qs[0]
         cls.users = list()
         for badge in badge_qs:
-            u = ForumUser.objects.create_user(
-                f"user_{badge.name}", f"user_{badge.name}@a.com", cls.password
-            )
+            u = ForumUser.objects.create_user(f"user_{badge.name}", f"user_{badge.name}@a.com", cls.password)
             VoteActivity.objects.create(badge=badge, target=u)
             cls.users.append(u)
 
@@ -88,9 +86,7 @@ class TestBadgesListView(BadgesApiTestCase):
         res = self.client.badges_list()
         # assert
         self.assertEqual(200, res.status_code)
-        assert_url_in_chain(
-            res, reverse("userauth:login") + "?next=" + reverse("badges:list")
-        )
+        assert_url_in_chain(res, reverse("userauth:login") + "?next=" + reverse("badges:list"))
 
     def test_badges_list_view__green(self):
         # arrange

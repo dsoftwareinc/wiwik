@@ -132,9 +132,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "tag",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="tags.tag"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="tags.tag"),
                 ),
             ],
         ),
@@ -181,9 +179,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "tag",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="tags.tag"
-                    ),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="tags.tag"),
                 ),
             ],
         ),

@@ -20,9 +20,7 @@ def validate_question_data(title: str, content: str) -> None:
     if title is None or len(title) < settings.MIN_QUESTION_TITLE_LENGTH:
         raise QuestionError("Title too short")
     if content is None or len(content) < settings.MIN_QUESTION_CONTENT_LENGTH:
-        raise QuestionError(
-            f"Content should have at least {settings.MIN_QUESTION_CONTENT_LENGTH} characters"
-        )
+        raise QuestionError(f"Content should have at least {settings.MIN_QUESTION_CONTENT_LENGTH} characters")
     if len(title) > settings.MAX_QUESTION_TITLE_LENGTH:
         raise QuestionError("Title too long")
     if len(content) > settings.MAX_QUESTION_CONTENT_LENGTH:
@@ -36,8 +34,7 @@ def create_invites(inviter: AbstractUser, question: models.Question, invites: st
         user = ForumUser.objects.filter(username=username).first()
         if user is None:
             logger.warning(
-                f"Failed to invite user {username} to answer question id {question.id} "
-                f"because user does not exist"
+                f"Failed to invite user {username} to answer question id {question.id} " f"because user does not exist"
             )
         else:
             users.append(user)
@@ -106,9 +103,7 @@ def view_askquestion(request):
         )
         create_invites(user, question, invites)
         if with_answer and answer_content:
-            a = utils.create_answer(
-                answer_content, user, question, send_notifications=False
-            )
+            a = utils.create_answer(answer_content, user, question, send_notifications=False)
             utils.accept_answer(a)
         messages.success(request, "Question posted successfully")
         return redirect("forum:thread", pk=question.pk)

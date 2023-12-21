@@ -11,15 +11,9 @@ class TestDownvoteView(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
-        cls.answer_same_user = utils.create_answer(
-            "answer---content", cls.users[0], cls.question
-        )
-        cls.answer_diff_user = utils.create_answer(
-            "answer---content", cls.users[1], cls.question
-        )
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
+        cls.answer_same_user = utils.create_answer("answer---content", cls.users[0], cls.question)
+        cls.answer_diff_user = utils.create_answer("answer---content", cls.users[1], cls.question)
         cls.prev_last_activity = cls.question.last_activity
 
     def test_downvote_question__green(self):
@@ -29,14 +23,11 @@ class TestDownvoteView(ForumApiTestCase):
         # assert
         assert_url_in_chain(
             res,
-            reverse("forum:thread", args=[self.question.pk])
-            + f"#question_{self.question.pk}",
+            reverse("forum:thread", args=[self.question.pk]) + f"#question_{self.question.pk}",
         )
         self.question.refresh_from_db()
         self.assertEqual(-1, self.question.votes)
-        self.assertEqual(
-            settings.DOWNVOTE_CHANGE, self.question.author.reputation_score
-        )
+        self.assertEqual(settings.DOWNVOTE_CHANGE, self.question.author.reputation_score)
         vote_activity_list = list(models.VoteActivity.objects.all())
         item = vote_activity_list[0]
         self.assertEqual(1, len(vote_activity_list))
@@ -54,14 +45,11 @@ class TestDownvoteView(ForumApiTestCase):
         # assert
         assert_url_in_chain(
             res,
-            reverse("forum:thread", args=[self.question.pk])
-            + f"#answer_{self.answer_diff_user.pk}",
+            reverse("forum:thread", args=[self.question.pk]) + f"#answer_{self.answer_diff_user.pk}",
         )
         self.answer_diff_user.refresh_from_db()
         self.assertEqual(-1, self.answer_diff_user.votes)
-        self.assertEqual(
-            settings.DOWNVOTE_CHANGE, self.answer_diff_user.author.reputation_score
-        )
+        self.assertEqual(settings.DOWNVOTE_CHANGE, self.answer_diff_user.author.reputation_score)
         vote_activity_list = list(models.VoteActivity.objects.all())
         item = vote_activity_list[0]
         self.assertEqual(1, len(vote_activity_list))
@@ -80,8 +68,7 @@ class TestDownvoteView(ForumApiTestCase):
         # assert
         assert_url_in_chain(
             res,
-            reverse("forum:thread", args=[self.question.pk])
-            + f"#answer_{self.answer_same_user.pk}",
+            reverse("forum:thread", args=[self.question.pk]) + f"#answer_{self.answer_same_user.pk}",
         )
         self.answer_same_user.refresh_from_db()
         self.assertEqual(0, self.answer_same_user.votes)
@@ -97,8 +84,7 @@ class TestDownvoteView(ForumApiTestCase):
         # assert
         assert_url_in_chain(
             res,
-            reverse("forum:thread", args=[self.question.pk])
-            + f"#answer_{self.answer_diff_user.pk}",
+            reverse("forum:thread", args=[self.question.pk]) + f"#answer_{self.answer_diff_user.pk}",
         )
         a = (
             models.Answer.objects.filter(id=self.answer_diff_user.pk)
@@ -133,17 +119,14 @@ class TestDownvoteView(ForumApiTestCase):
         # assert
         assert_url_in_chain(
             res,
-            reverse("forum:thread", args=[self.question.pk])
-            + f"#answer_{self.answer_diff_user.pk}",
+            reverse("forum:thread", args=[self.question.pk]) + f"#answer_{self.answer_diff_user.pk}",
         )
         a = (
             models.Answer.objects.filter(id=self.answer_diff_user.pk)
             .prefetch_related("author", "author__additional_data")
             .first()
         )
-        self.assertEqual(
-            previous_reputation - settings.DOWNVOTE_CHANGE, a.author.reputation_score
-        )
+        self.assertEqual(previous_reputation - settings.DOWNVOTE_CHANGE, a.author.reputation_score)
         self.assertEqual(0, models.VoteActivity.objects.all().count())
         self.question.refresh_from_db()
         self.assertGreater(self.question.last_activity, self.prev_last_activity)

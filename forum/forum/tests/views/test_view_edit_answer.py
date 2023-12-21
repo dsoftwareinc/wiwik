@@ -17,13 +17,9 @@ class TestEditAnswerView(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
         cls.answer = utils.create_answer(cls.answer_content, cls.users[1], cls.question)
-        cls.answer_url = (
-            reverse("forum:thread", args=[cls.question.pk]) + f"#answer_{cls.answer.pk}"
-        )
+        cls.answer_url = reverse("forum:thread", args=[cls.question.pk]) + f"#answer_{cls.answer.pk}"
         cls.previous_last_activity = cls.question.last_activity
 
     def test_edit_answer_get__green(self):
@@ -32,9 +28,7 @@ class TestEditAnswerView(ForumApiTestCase):
         # act
         res = self.client.edit_answer_get(self.answer.pk)
         # assert
-        self.assertContains(
-            res, f'<textarea id="queseditor" name="queseditor">{self.answer_content}'
-        )
+        self.assertContains(res, f'<textarea id="queseditor" name="queseditor">{self.answer_content}')
         self.question.refresh_from_db()
         self.assertEqual(self.question.last_activity, self.previous_last_activity)
 
@@ -62,9 +56,7 @@ class TestEditAnswerView(ForumApiTestCase):
         start_job.assert_has_calls(
             [
                 mock.call(review_bagdes_event, TRIGGER_EVENT_TYPES["Update post"]),
-                mock.call(
-                    view_thread_background_tasks, self.users[1], self.answer.question
-                ),
+                mock.call(view_thread_background_tasks, self.users[1], self.answer.question),
             ],
             any_order=True,
         )  # no notification should be sent.
@@ -85,9 +77,7 @@ class TestEditAnswerView(ForumApiTestCase):
         self.assertEqual(self.question.last_activity, self.previous_last_activity)
 
     @mock.patch("forum.jobs.start_job")
-    def test_edit_answer_post__edit_by_other_user__green(
-        self, start_job: mock.MagicMock
-    ):
+    def test_edit_answer_post__edit_by_other_user__green(self, start_job: mock.MagicMock):
         # arrange
         admin_user = ForumUser.objects.create_superuser("admin", "a@a.com", "1111")
         self.client.login("admin", "1111")

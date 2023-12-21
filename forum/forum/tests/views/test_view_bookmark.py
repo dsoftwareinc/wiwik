@@ -7,9 +7,7 @@ class TestBookmarkQuestionView(ForumApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.question = utils.create_question(
-            cls.users[1], cls.title, cls.question_content, ",".join(cls.tags)
-        )
+        cls.question = utils.create_question(cls.users[1], cls.title, cls.question_content, ",".join(cls.tags))
 
     def test_bookmark_question__green(self):
         self.client.login(self.usernames[0], self.password)
@@ -22,9 +20,7 @@ class TestBookmarkQuestionView(ForumApiTestCase):
 
     def test_bookmark_question__existing_bookmark__should_not_create(self):
         self.client.login(self.usernames[0], self.password)
-        models.QuestionBookmark.objects.create(
-            user=self.users[0], question=self.question
-        )
+        models.QuestionBookmark.objects.create(user=self.users[0], question=self.question)
         # act
         res = self.client.bookmark_question(self.question.pk)
         # assert
@@ -44,9 +40,7 @@ class TestBookmarkQuestionView(ForumApiTestCase):
 
     def test_unbookmark_question__green(self):
         self.client.login(self.usernames[0], self.password)
-        models.QuestionBookmark.objects.create(
-            user=self.users[0], question=self.question
-        )
+        models.QuestionBookmark.objects.create(user=self.users[0], question=self.question)
         # act
         res = self.client.unbookmark_question(self.question.pk)
         # assert

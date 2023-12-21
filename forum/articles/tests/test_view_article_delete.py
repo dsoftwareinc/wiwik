@@ -19,9 +19,7 @@ class TestDeleteArticleView(ArticlesApiTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.article = utils.create_article(
-            cls.users[0], cls.title, cls.article_content, ",".join(cls.tags)
-        )
+        cls.article = utils.create_article(cls.users[0], cls.title, cls.article_content, ",".join(cls.tags))
 
     def test_get_delete_article_confirmation_page__green(self):
         # arrange
@@ -51,9 +49,7 @@ class TestDeleteArticleView(ArticlesApiTestCase):
         # assert
         self.assertEqual(0, Article.objects.all().count())
         self.users[0].refresh_from_db()
-        self.assertEqual(
-            question_user_previous_reputation - 20, self.users[0].reputation_score
-        )
+        self.assertEqual(question_user_previous_reputation - 20, self.users[0].reputation_score)
         assert_url_in_chain(res, reverse("articles:list"))
 
     def test_delete_article__user_not_logged_in(self):

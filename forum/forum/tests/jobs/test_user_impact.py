@@ -18,9 +18,7 @@ class TestUsersAutocompleteView(ForumApiTestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.questions = [
-            utils.create_question(
-                user, cls.question_title, cls.question_content, ",".join(cls.tags)
-            )
+            utils.create_question(user, cls.question_title, cls.question_content, ",".join(cls.tags))
             for user in cls.users
         ]
         utils.create_answer(cls.answer_content, cls.users[0], cls.questions[0])

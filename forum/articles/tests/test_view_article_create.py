@@ -49,12 +49,8 @@ class TestAddArticle(ArticlesApiTestCase):
         q = qs[0]
         tags_list = list(q.tags.all())
         self.assertEqual(len(tags_list), len(tags))
-        notifications.notify_tag_followers_new_question.assert_called_once_with(
-            self.users[0], set(tags), mock.ANY
-        )
-        self.assertEqual(
-            len(tags), notifications.notify_tag_followers_new_question.call_count
-        )
+        notifications.notify_tag_followers_new_question.assert_called_once_with(self.users[0], set(tags), mock.ANY)
+        self.assertEqual(len(tags), notifications.notify_tag_followers_new_question.call_count)
 
     # TODO fix
     # @mock.patch('forum.jobs.start_job')
@@ -94,9 +90,7 @@ class TestAddArticle(ArticlesApiTestCase):
         res = self.client.add_article_post(title, content, ", ".join(tags))
         # assert
         self.assertEqual(0, models.Question.objects.count())
-        assert_message_in_response(
-            res, "Error: Title has 5 characters, must be between 10 and 255 characters."
-        )
+        assert_message_in_response(res, "Error: Title has 5 characters, must be between 10 and 255 characters.")
         self.assertContains(res, title)
         self.assertContains(res, content)
 
@@ -180,9 +174,7 @@ class TestAddArticle(ArticlesApiTestCase):
         notifications.notify_tag_followers_new_question = mock.MagicMock()
         answer_content = "answer content for question with answer"
         # act
-        res = self.client.add_article_post(
-            title, content, ", ".join(tags), answereditor=answer_content
-        )
+        res = self.client.add_article_post(title, content, ", ".join(tags), answereditor=answer_content)
         # assert
         qs = models.Question.objects.filter(title=title, content=content)
         self.assertEqual(1, qs.count())
@@ -191,10 +183,6 @@ class TestAddArticle(ArticlesApiTestCase):
         self.assertEqual(len(tags_list), len(tags))
         self.assertFalse(q.has_accepted_answer)
         self.assertEqual(0, q.answer_set.count())
-        notifications.notify_tag_followers_new_question.assert_called_once_with(
-            self.users[0], set(tags), mock.ANY
-        )
+        notifications.notify_tag_followers_new_question.assert_called_once_with(self.users[0], set(tags), mock.ANY)
         assert_message_in_response(res, "Article draft posted successfully")
-        self.assertEqual(
-            len(tags), notifications.notify_tag_followers_new_question.call_count
-        )
+        self.assertEqual(len(tags), notifications.notify_tag_followers_new_question.call_count)

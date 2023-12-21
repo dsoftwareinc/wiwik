@@ -11,9 +11,7 @@ def write_section(out, text, sep: Union[str, None] = "-"):
     if sep:
         splitted = text.split("\n")
         max_len = min(50, max([len(s) for s in splitted]))
-        seperator = bytes(
-            ("\n" if sep == "-" else "") + (sep * max_len) + "\n", encoding="utf-8"
-        )
+        seperator = bytes(("\n" if sep == "-" else "") + (sep * max_len) + "\n", encoding="utf-8")
         out.write(seperator)
 
 
@@ -22,9 +20,7 @@ def thread_markdown_bytesio(question: models.Question, **kwargs) -> BytesIO:
     write_section(out, question.title, "=")
     write_section(out, "Tags: " + ", ".join(question.tag_words()))
     if kwargs.get("include_authors", True):
-        write_section(
-            out, f"Author: {question.author.username} ({question.author.name})"
-        )
+        write_section(out, f"Author: {question.author.username} ({question.author.name})")
     write_section(out, question.content)
     answers = question.answer_set.order_by("-votes")
     for answer in answers:

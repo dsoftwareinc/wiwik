@@ -22,9 +22,7 @@ def _beginning_of_day() -> datetime.datetime:
 
 def revoke_moderator(user: ForumUser, num_visits: int, last_month: datetime):
     logger.debug(f"Revoking {user.username} moderator rights")
-    subject = (
-        "Sorry, wiwik is revoking your moderator rights since you are not there enough"
-    )
+    subject = "Sorry, wiwik is revoking your moderator rights since you are not there enough"
     template = loader.get_template("emails/moderator_revoke.html")
     html = template.render(
         context={
@@ -60,24 +58,18 @@ def _generate_questions_report_for_user(user: ForumUser, bom: datetime):
     # Generate questions report for user since the beginning of the month
     tags = viewutils.get_user_followed_tags(user)
     if len(tags) == 0:
-        logger.debug(
-            f"User {user.username} does not follow any tags, skipping sending digest"
-        )
+        logger.debug(f"User {user.username} does not follow any tags, skipping sending digest")
         # todo send notification to watch some tags? should be only once.
         return ""
     tag_words = [tag.tag_word for tag in tags]
     report_html = recent_questions_email_report(bom, tag_words, skip_if_empty=False)
     if report_html == "":
-        logger.debug(
-            f"Report for {user.username} has nothing in it, skipping sending digest"
-        )
+        logger.debug(f"Report for {user.username} has nothing in it, skipping sending digest")
         return ""
     return report_html
 
 
-def send_warning_loosing_moderator_status_to_user(
-    user: ForumUser, num_visits: int, bom: datetime
-) -> None:
+def send_warning_loosing_moderator_status_to_user(user: ForumUser, num_visits: int, bom: datetime) -> None:
     """
     Send user a warning about loosing moderator status and a list of questions created
     since the beginning of the month.
@@ -90,9 +82,7 @@ def send_warning_loosing_moderator_status_to_user(
     Returns:
         None
     """
-    logger.debug(
-        f"Moderator {user.username} visited {num_visits} days this month - sending warning"
-    )
+    logger.debug(f"Moderator {user.username} visited {num_visits} days this month - sending warning")
     questions_report = _generate_questions_report_for_user(user, bom)
     template = loader.get_template("emails/moderator_revoke_warning.html")
     moderator_revoke_warning = template.render(
@@ -128,9 +118,7 @@ def update_moderator_status_for_users():
         None
     """
     last_month = _beginning_of_day() - datetime.timedelta(days=30)
-    user_qs = ForumUser.objects.filter(
-        is_superuser=False, is_staff=False, is_active=True
-    ).annotate(
+    user_qs = ForumUser.objects.filter(is_superuser=False, is_staff=False, is_active=True).annotate(
         num_visits=Count("uservisit", filter=Q(uservisit__visit_date__gte=last_month))
     )
     for user in user_qs:
@@ -138,10 +126,7 @@ def update_moderator_status_for_users():
         if user.is_moderator and user.num_visits < settings.DAYS_TO_REVOKE_MODERATOR:
             revoke_moderator(user, user.num_visits, last_month)
         # grant moderator status if users visited often
-        elif (
-            not user.is_moderator
-            and user.num_visits >= settings.DAYS_TO_GRANT_MODERATOR
-        ):
+        elif not user.is_moderator and user.num_visits >= settings.DAYS_TO_GRANT_MODERATOR:
             grant_moderator(user, user.num_visits, last_month)
 
 
@@ -159,13 +144,7 @@ def warn_users_loosing_moderator_status():
     beginning_of_month = _beginning_of_day().replace(day=1)
     moderator_qs = ForumUser.objects.filter(
         is_moderator=True, is_superuser=False, is_staff=False, is_active=True
-    ).annotate(
-        num_visits=Count(
-            "uservisit", filter=Q(uservisit__visit_date__gte=beginning_of_month)
-        )
-    )
+    ).annotate(num_visits=Count("uservisit", filter=Q(uservisit__visit_date__gte=beginning_of_month)))
     for moderator in moderator_qs:
         if moderator.num_visits < settings.DAYS_TO_REVOKE_MODERATOR:
-            send_warning_loosing_moderator_status_to_user(
-                moderator, moderator.num_visits, beginning_of_month
-            )
+            send_warning_loosing_moderator_status_to_user(moderator, moderator.num_visits, beginning_of_month)

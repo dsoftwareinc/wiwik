@@ -23,6 +23,7 @@ from forum.models import (
     UserInput,
 )
 from forum.views import utils
+from forum.views.utils import get_view_name_for_post_type
 from userauth.models import ForumUser
 from wiwik_lib.models import user_model_defer_fields
 
@@ -85,29 +86,22 @@ def _create_answer_and_message(request, question_pk: int, answer_content: str) -
         messages.success(request, "Answer posted successfully")
 
 
-def _create_comment(
-    request, model_name: str, model_pk: int, content: str
-) -> Optional[Comment]:
+def _create_comment(request, model_name: str, model_pk: int, content: str) -> Optional[Comment]:
     if not (settings.MIN_COMMENT_LENGTH <= len(content) <= settings.MAX_COMMENT_LENGTH):
         logger.warning(
             f"user {request.user} trying to create a comment "
             f"on {model_name}:{model_pk} with bad length ({len(content)})"
         )
-        messages.error(
-            request, f"Can not create comment with length {len(content)}", "danger"
-        )
+        messages.error(request, f"Can not create comment with length {len(content)}", "danger")
         return None
     if model_name not in ("question", "answer"):
         logger.warning(
-            f"user {request.user} trying to create a comment "
-            f"on {model_name}:{model_pk} which is not supported"
+            f"user {request.user} trying to create a comment " f"on {model_name}:{model_pk} which is not supported"
         )
         return None
     comment_parent: UserInput = utils.get_model(model_name, model_pk)  # type: ignore
     if comment_parent is None:
-        logger.warning(
-            f"Trying to comment on {model_name}:{model_pk} which could not be fetched"
-        )
+        logger.warning(f"Trying to comment on {model_name}:{model_pk} which could not be fetched")
         return None
     if comment_parent.comments.count() >= settings.MAX_COMMENTS:
         logger.warning(
@@ -130,9 +124,7 @@ def _do_single_question_post_action(request, question_pk: int) -> HttpResponseRe
     if action == "create_answer":  # Handle adding answer
         _create_answer_and_message(request, question_pk, params.get("editor1"))
     elif action == "create_comment":  # Handle adding comment
-        _create_comment(
-            request, params.get("model"), params.get("model_pk"), params.get("comment")
-        )
+        _create_comment(request, params.get("model"), params.get("model_pk"), params.get("comment"))
     else:
         logger.warning(f'{request.user} tried to perform an unknown action "{action}"')
     return redirect("forum:thread", pk=question_pk)
@@ -160,11 +152,11 @@ def view_single_question(request, pk):
     if request.method == "POST":
         return _do_single_question_post_action(request, pk)
     if request.method != "GET":
-        logger.warning(
-            f"User {request.user} tried to access thread view with {request.method} method"
-        )
+        logger.warning(f"User {request.user} tried to access thread view with {request.method} method")
     try:
         q = Question.objects.get(pk=pk)
+        if q.type != Question.PostType.QUESTION:
+            return redirect(get_view_name_for_post_type(q), pk=pk)
         user_upvoted = Exists(
             VoteActivity.objects.filter(
                 question_id=pk,
@@ -181,37 +173,18 @@ def view_single_question(request, pk):
             )
         )
         q = (
-            Question.objects.annotate(
-                user_follows=Value(q.follows.filter(user=request.user).exists())
-            )
-            .annotate(
-                user_bookmarked=Exists(
-                    QuestionBookmark.objects.filter(user=request.user, question_id=pk)
-                )
-            )
-            .annotate(
-                user_answered=Exists(
-                    Answer.objects.filter(author=request.user, question_id=pk)
-                )
-            )
+            Question.objects.annotate(user_follows=Value(q.follows.filter(user=request.user).exists()))
+            .annotate(user_bookmarked=Exists(QuestionBookmark.objects.filter(user=request.user, question_id=pk)))
+            .annotate(user_answered=Exists(Answer.objects.filter(author=request.user, question_id=pk)))
             .annotate(user_upvoted=user_upvoted)
             .annotate(user_downvoted=user_downvoted)
-            .select_related(
-                "author",
-                "editor",
-            )
-            .defer(
-                *user_model_defer_fields("author"), *user_model_defer_fields("editor")
-            )
+            .select_related("author", "editor")
+            .defer(*user_model_defer_fields("author"), *user_model_defer_fields("editor"))
             .get(pk=pk)
         )
     except Question.DoesNotExist:
         return redirect("forum:list")
-    attrs = (
-        Question.objects.only("id")
-        .annotate(num_bookmarks=Count("bookmarks"))
-        .get(pk=pk)
-    )
+    attrs = Question.objects.only("id").annotate(num_bookmarks=Count("bookmarks")).get(pk=pk)
     q.num_bookmarks = attrs.num_bookmarks
 
     user: ForumUser = cast(ForumUser, request.user)

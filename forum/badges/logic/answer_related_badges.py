@@ -5,29 +5,19 @@ from userauth.models import ForumUser
 from .utils import TRIGGER_EVENT_TYPES, BadgeType, BadgeData, BadgeCalculation
 
 
-def user_answers_query(
-    min_votes: int, required: int, user: ForumUser
-) -> BadgeCalculation:
+def user_answers_query(min_votes: int, required: int, user: ForumUser) -> BadgeCalculation:
     count = models.Answer.objects.filter(author=user, votes__gte=min_votes).count()
     return count // required, count % required
 
 
-def user_accepted_answers_with_no_votes(
-    required: int, user: ForumUser
-) -> BadgeCalculation:
-    count = (
-        models.Answer.objects.exclude(question__author=user)
-        .filter(author=user, votes=0, is_accepted=True)
-        .count()
-    )
+def user_accepted_answers_with_no_votes(required: int, user: ForumUser) -> BadgeCalculation:
+    count = models.Answer.objects.exclude(question__author=user).filter(author=user, votes=0, is_accepted=True).count()
     return count // required, count % required
 
 
 def user_answer_not_accepted_higher_score(user: ForumUser) -> BadgeCalculation:
     # answers not accepted for questions with accepted answer
-    answer_qs = models.Answer.objects.filter(
-        author=user, is_accepted=False, question__has_accepted_answer=True
-    )
+    answer_qs = models.Answer.objects.filter(author=user, is_accepted=False, question__has_accepted_answer=True)
     count = 0
     for answer in answer_qs:
         # find accepted answer

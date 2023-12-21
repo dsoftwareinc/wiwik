@@ -18,10 +18,7 @@ def assert_not_called_with(self, *args, **kwargs):
         self.assert_called_with(*args, **kwargs)
     except AssertionError:
         return
-    raise AssertionError(
-        "Expected %s to not have been called."
-        % self._format_mock_call_signature(args, kwargs)
-    )
+    raise AssertionError("Expected %s to not have been called." % self._format_mock_call_signature(args, kwargs))
 
 
 class ForumClient(Client):
@@ -201,45 +198,29 @@ class ForumClient(Client):
         )
 
     def upvote(self, question_pk, model, model_pk):
-        return self.get(
-            reverse("forum:upvote", args=[question_pk, model, model_pk]), follow=True
-        )
+        return self.get(reverse("forum:upvote", args=[question_pk, model, model_pk]), follow=True)
 
     def downvote(self, question_pk, model, model_pk):
-        return self.get(
-            reverse("forum:downvote", args=[question_pk, model, model_pk]), follow=True
-        )
+        return self.get(reverse("forum:downvote", args=[question_pk, model, model_pk]), follow=True)
 
     def accept_answer(self, question_pk: int, answer_pk: int):
-        return self.get(
-            reverse("forum:answer_accept", args=[question_pk, answer_pk]), follow=True
-        )
+        return self.get(reverse("forum:answer_accept", args=[question_pk, answer_pk]), follow=True)
 
     def delete_answer(self, question_pk: int, answer_pk: int):
-        return self.post(
-            reverse("forum:answer_delete", args=[question_pk, answer_pk]), follow=True
-        )
+        return self.post(reverse("forum:answer_delete", args=[question_pk, answer_pk]), follow=True)
 
     def delete_answer_confirmation_page(self, question_pk: int, answer_pk: int):
-        return self.get(
-            reverse("forum:answer_delete", args=[question_pk, answer_pk]), follow=True
-        )
+        return self.get(reverse("forum:answer_delete", args=[question_pk, answer_pk]), follow=True)
 
     def delete_question(self, question_pk: int):
-        return self.post(
-            reverse("forum:question_delete", args=[question_pk]), follow=True
-        )
+        return self.post(reverse("forum:question_delete", args=[question_pk]), follow=True)
 
     def get_delete_question_confirmation_page(self, question_pk: int):
-        return self.get(
-            reverse("forum:question_delete", args=[question_pk]), follow=True
-        )
+        return self.get(reverse("forum:question_delete", args=[question_pk]), follow=True)
 
     def delete_comment(self, question_pk: int, parent_model: str, comment_id: int):
         return self.get(
-            reverse(
-                "forum:comment_delete", args=[question_pk, parent_model, comment_id]
-            ),
+            reverse("forum:comment_delete", args=[question_pk, parent_model, comment_id]),
             follow=True,
         )
 
@@ -257,9 +238,7 @@ class ForumClient(Client):
 
     def upvote_comment(self, question_pk: int, parent_model: str, comment_id: int):
         return self.get(
-            reverse(
-                "forum:comment_upvote", args=[question_pk, parent_model, comment_id]
-            ),
+            reverse("forum:comment_upvote", args=[question_pk, parent_model, comment_id]),
             follow=True,
         )
 

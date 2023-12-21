@@ -13,9 +13,7 @@ class TestAutocompleteView(TagsApiTestCase):
         res = self.client.autocomplete(None)
         # assert
         self.assertEqual(200, res.status_code)
-        assert_url_in_chain(
-            res, reverse("userauth:login") + "?next=" + reverse("tags:autocomplete")
-        )
+        assert_url_in_chain(res, reverse("userauth:login") + "?next=" + reverse("tags:autocomplete"))
 
     def test_autocomplete__no_query__green(self):
         self.client.login(self.username, self.password)

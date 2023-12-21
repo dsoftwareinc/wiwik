@@ -14,10 +14,7 @@ class TagAdminTest(TagsApiTestCase):
             cls.superuser_name, f"{cls.superuser_name}@a.com", cls.password
         )
         cls.synonyms = [
-            Synonym.objects.create(
-                name=f"synonym_{tag.tag_word}", tag=tag, active=False
-            )
-            for tag in cls.tags
+            Synonym.objects.create(name=f"synonym_{tag.tag_word}", tag=tag, active=False) for tag in cls.tags
         ]
         cls.tagedit = TagEdit.objects.create(
             tag=cls.tags[0],

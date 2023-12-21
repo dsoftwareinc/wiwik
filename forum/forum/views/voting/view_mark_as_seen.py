@@ -15,8 +15,7 @@ def view_mark_as_seen(request, vote_activity_pk: int):
         return HttpResponseNotFound()
     if activity.target != user:
         logger.warning(
-            f"user {user.username} is trying to mark activity {activity.id} "
-            f"as seen but they are not the target"
+            f"user {user.username} is trying to mark activity {activity.id} " f"as seen but they are not the target"
         )
         return HttpResponseForbidden()
     activity.seen = timezone.now()

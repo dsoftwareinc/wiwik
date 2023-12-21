@@ -36,13 +36,9 @@ class TestBase(TestCase):
         cls.superuser = ForumUser.objects.create_superuser(
             cls.superuser_name, f"{cls.superuser_name}@a.com", cls.password
         )
-        cls.users = [
-            ForumUser.objects.create_user(item, f"{item}@a.com", cls.password)
-            for item in cls.usernames
-        ]
+        cls.users = [ForumUser.objects.create_user(item, f"{item}@a.com", cls.password) for item in cls.usernames]
         cls.questions = [
-            utils.create_question(user, cls.question_title, cls.question_content, "")
-            for user in cls.users
+            utils.create_question(user, cls.question_title, cls.question_content, "") for user in cls.users
         ]
 
     def setUp(self) -> None:
@@ -135,9 +131,7 @@ class TestTfIdf(TestBase):
         calculate_tfidf()
         # assert
         question_count = Question.objects.count()
-        self.assertEqual(
-            question_count * (question_count - 1) / 2, PostSimilarity.objects.count()
-        )
+        self.assertEqual(question_count * (question_count - 1) / 2, PostSimilarity.objects.count())
 
 
 class TestCalculateSimilarities(TestCase):
@@ -156,13 +150,9 @@ class TestCalculateSimilarities(TestCase):
         cls.superuser = ForumUser.objects.create_superuser(
             cls.superuser_name, f"{cls.superuser_name}@a.com", cls.password
         )
-        cls.users = [
-            ForumUser.objects.create_user(item, f"{item}@a.com", cls.password)
-            for item in cls.usernames
-        ]
+        cls.users = [ForumUser.objects.create_user(item, f"{item}@a.com", cls.password) for item in cls.usernames]
         cls.questions = [
-            utils.create_question(user, cls.question_title, cls.question_content, "")
-            for user in cls.users
+            utils.create_question(user, cls.question_title, cls.question_content, "") for user in cls.users
         ]
 
     def call_command(self, *args, **kwargs):

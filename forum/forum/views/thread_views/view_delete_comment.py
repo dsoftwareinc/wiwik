@@ -12,9 +12,7 @@ def view_deletecomment(request, pk: int, model: str, comment_id: int):
     comment = utils.get_model("comment_" + model, comment_id)
     user = request.user
     if comment is None:
-        logger.warning(
-            f"user {user.username} tried to delete comment {comment_id} which does not exist"
-        )
+        logger.warning(f"user {user.username} tried to delete comment {comment_id} which does not exist")
         return redirect("forum:thread", pk=pk)
     parent_pk = comment.answer.pk if model == "answer" else comment.question.pk
     if comment.author == user or user.can_delete_comment:

@@ -12,12 +12,7 @@ def postgres_search_rank(text: str, q: models.Question) -> float:
     """
     search_query = SearchQuery(text)
     search_rank = SearchRank(F("additional_data__search_vector"), search_query)
-    rank = (
-        models.Question.objects.filter(id=q.id)
-        .annotate(rank=search_rank)
-        .values_list("rank", flat=True)
-        .first()
-    )
+    rank = models.Question.objects.filter(id=q.id).annotate(rank=search_rank).values_list("rank", flat=True).first()
     return rank
 
 
@@ -32,11 +27,7 @@ def postgres_trigram_rank(text: str, q: models.Question) -> float:
         models.Question.objects.filter(id=q.id)
         .annotate(title_distance=TrigramDistance("title", text))
         .annotate(content_distance=TrigramDistance("content", text))
-        .annotate(
-            relevance=1
-            - F("title_distance") * title_weight
-            - F("content_distance") * content_weight
-        )
+        .annotate(relevance=1 - F("title_distance") * title_weight - F("content_distance") * content_weight)
         .order_by("-relevance")
         .values_list("relevance", flat=True)
         .first()

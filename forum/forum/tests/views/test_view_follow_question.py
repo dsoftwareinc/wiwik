@@ -9,9 +9,7 @@ from wiwik_lib.views.follow_views import create_follow
 class TestFollowQuestionView(ForumApiTestCase):
     def setUp(self):
         super().setUp()
-        self.question = utils.create_question(
-            self.users[0], self.title, self.question_content, ",".join(self.tags)
-        )
+        self.question = utils.create_question(self.users[0], self.title, self.question_content, ",".join(self.tags))
 
     def test_follow_question__green(self):
         self.client.login(self.usernames[1], self.password)
@@ -44,9 +42,7 @@ class TestFollowQuestionView(ForumApiTestCase):
 class TestUnfollowQuestionView(ForumApiTestCase):
     def setUp(self):
         super().setUp()
-        self.question = utils.create_question(
-            self.users[0], self.title, self.question_content, ",".join(self.tags)
-        )
+        self.question = utils.create_question(self.users[0], self.title, self.question_content, ",".join(self.tags))
 
     def test_unfollow_question__green(self):
         self.client.login(self.usernames[0], self.password)

@@ -51,9 +51,7 @@ def search_from_slack(request):
     # user_id = request.POST.get('user_id', None)
     query = request.POST.get("text", None)
     results = list(
-        search.query_method(Question.objects, query).order_by(
-            "-has_accepted_answer", "-votes", "-created_at"
-        )[:3]
+        search.query_method(Question.objects, query).order_by("-has_accepted_answer", "-votes", "-created_at")[:3]
     )
     res = {"blocks": slack_api.questions_message(results)}
     logger.debug(res)

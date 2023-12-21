@@ -21,9 +21,7 @@ from django.urls import path, include
 urlpatterns = [
     path("", include(("forum.urls", "forum"), namespace="forum")),
     path("articles/", include(("articles.urls", "articles"), namespace="articles")),
-    path(
-        "BB-aDmin/", admin.site.urls
-    ),  # intentionally non-standard to prevent casual hacking tries.
+    path("BB-aDmin/", admin.site.urls),  # intentionally non-standard to prevent casual hacking tries.
     path("scheduler/", include("scheduler.urls")),
     path("accounts/", include("allauth.urls")),
     path("users/", include(("userauth.urls", "userauth"), namespace="userauth")),

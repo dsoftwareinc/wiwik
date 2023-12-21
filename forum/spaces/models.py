@@ -103,23 +103,15 @@ class Space(models.Model):
 
     @property
     def properties(self):
-        return SpaceProperty.objects.filter(space_property_rel__space=self).order_by(
-            "name"
-        )
+        return SpaceProperty.objects.filter(space_property_rel__space=self).order_by("name")
 
 
 class SpaceToProperty(models.Model):
-    space = models.ForeignKey(
-        Space, on_delete=models.CASCADE, related_name="space_property_rel"
-    )
-    property = models.ForeignKey(
-        SpaceProperty, on_delete=models.CASCADE, related_name="space_property_rel"
-    )
+    space = models.ForeignKey(Space, on_delete=models.CASCADE, related_name="space_property_rel")
+    property = models.ForeignKey(SpaceProperty, on_delete=models.CASCADE, related_name="space_property_rel")
 
     def __str__(self):
-        return (
-            f"SpaceToProperty[space={self.space.short_name},prop={self.property.name}]"
-        )
+        return f"SpaceToProperty[space={self.space.short_name},prop={self.property.name}]"
 
 
 class SpaceMember(models.Model):

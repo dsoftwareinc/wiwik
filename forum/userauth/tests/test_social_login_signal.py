@@ -20,12 +20,8 @@ class UserAuthLoginTest(UserAuthTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user1 = ForumUser.objects.create_user(
-            cls.username1, f"{cls.username1}@a.com", cls.password
-        )
-        cls.user2 = ForumUser.objects.create_user(
-            cls.username2, f"{cls.username2}@a.com", cls.password
-        )
+        cls.user1 = ForumUser.objects.create_user(cls.username1, f"{cls.username1}@a.com", cls.password)
+        cls.user2 = ForumUser.objects.create_user(cls.username2, f"{cls.username2}@a.com", cls.password)
         cls.user_no_social = ForumUser.objects.create_user(
             cls.username_no_social,
             f"{cls.username_no_social}@a.com",
@@ -40,8 +36,7 @@ class UserAuthLoginTest(UserAuthTestCase):
             "given_name": "Daniel",
             "family_name": "Moran",
             "link": "https://plus.google.com/100466292043055079210",
-            "picture": "https://lh3.googleusercontent.com/a-/AOh14GhJ_MtvscWtf-"
-            "1mWCYS43nIM5CdykiTiIbxl25y=s96-c",
+            "picture": "https://lh3.googleusercontent.com/a-/AOh14GhJ_MtvscWtf-" "1mWCYS43nIM5CdykiTiIbxl25y=s96-c",
             "locale": "en",
             "hd": "backbase.com",
         }
@@ -71,9 +66,7 @@ class UserAuthLoginTest(UserAuthTestCase):
         self.user1.refresh_from_db()
         self.assertEqual(self.extra_data["email"], self.user1.email)
         self.assertEqual(self.extra_data["name"], self.user1.name)
-        self.assertIn(
-            f"profile_pic_{self.username1}.google", self.user1.profile_pic.path
-        )
+        self.assertIn(f"profile_pic_{self.username1}.google", self.user1.profile_pic.path)
         # cleanup
         os.remove(self.user1.profile_pic.path)
 
@@ -154,9 +147,7 @@ class UserAuthLoginTest(UserAuthTestCase):
         )
         # assert
         self.user1.refresh_from_db()
-        self.assertIn(
-            f"profile_pic_{self.username1}.google", self.user1.profile_pic.path
-        )
+        self.assertIn(f"profile_pic_{self.username1}.google", self.user1.profile_pic.path)
         # cleanup
         os.remove(self.user1.profile_pic.path)
 

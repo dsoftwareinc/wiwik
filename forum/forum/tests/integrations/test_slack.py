@@ -28,9 +28,7 @@ class TestSlack(ForumApiTestCase):
             q,
         ]
         mock_query.return_value = query_result
-        res = self.client.post(
-            reverse("forum:slack-search"), data={"text": "subscription"}
-        )
+        res = self.client.post(reverse("forum:slack-search"), data={"text": "subscription"})
 
         # assert
         self.assertEqual(200, res.status_code)

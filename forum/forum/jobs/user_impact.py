@@ -9,16 +9,11 @@ from userauth.models import ForumUser
 @job
 def calculate_user_impact(user: ForumUser):
     userdata = user
-    userdata.people_reached = Question.objects.filter(
-        Q(author=user) | Q(answer__author=user)
-    ).aggregate(reach=Coalesce(Sum("views"), 0))["reach"]
-    userdata.posts_edited = (
-        Question.objects.filter(editor=user).count()
-        + Answer.objects.filter(editor=user).count()
-    )
-    userdata.votes = VoteActivity.objects.filter(
-        source=user, reputation_change__isnull=False
-    ).count()
+    userdata.people_reached = Question.objects.filter(Q(author=user) | Q(answer__author=user)).aggregate(
+        reach=Coalesce(Sum("views"), 0)
+    )["reach"]
+    userdata.posts_edited = Question.objects.filter(editor=user).count() + Answer.objects.filter(editor=user).count()
+    userdata.votes = VoteActivity.objects.filter(source=user, reputation_change__isnull=False).count()
     userdata.save()
 
 

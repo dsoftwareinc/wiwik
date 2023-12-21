@@ -14,6 +14,7 @@ from forum.models import QuestionBookmark, VoteActivity
 from forum.views import utils
 from forum.views.helpers import get_questions_queryset
 from forum.views.q_and_a_crud.view_thread import view_thread_background_tasks
+from forum.views.utils import get_view_name_for_post_type
 from userauth.models import ForumUser
 from wiwik_lib.models import user_model_defer_fields
 from wiwik_lib.utils import paginate_queryset
@@ -29,16 +30,12 @@ def view_article_list(request):
     base_qs = Article.objects.filter(type__in=Article.POST_ARTICLE_TYPES)
     tab = common_utils.get_request_tab(request)
     q = utils.get_request_param(request, "q", None)
-    all_questions_qs = get_questions_queryset(
-        base_qs.filter(space__isnull=True), tab, q, request.user
-    )
+    all_questions_qs = get_questions_queryset(base_qs.filter(space__isnull=True), tab, q, request.user)
     all_questions_qs = all_questions_qs.prefetch_related(
         "tags",
     )
     page_number = request.GET.get("page", 1)
-    page_qs = paginate_queryset(
-        all_questions_qs, page_number, settings.QUESTIONS_PER_PAGE
-    )
+    page_qs = paginate_queryset(all_questions_qs, page_number, settings.QUESTIONS_PER_PAGE)
     context = {
         "all_questions": page_qs,
         "tab": tab if q is None else None,
@@ -56,14 +53,10 @@ def _create_comment(request, model_name: str, model_pk: int, content: str):
             f"user {request.user} trying to create a comment "
             f"on {model_name}:{model_pk} with bad length ({len(content)})"
         )
-        messages.error(
-            request, f"Can not create comment with length {len(content)}", "danger"
-        )
+        messages.error(request, f"Can not create comment with length {len(content)}", "danger")
         return None
     if parent is None:
-        logger.warning(
-            f"Trying to comment on {model_name}:{model_pk} which could not be fetched"
-        )
+        logger.warning(f"Trying to comment on {model_name}:{model_pk} which could not be fetched")
         return None
     if parent.comments.count() >= settings.MAX_COMMENTS:
         logger.warning(
@@ -86,13 +79,9 @@ def _do_article_create_post_action(request, pk):
     params = request.POST.dict()
     action = params.get("action")
     if action == "create_comment":  # Handle adding comment
-        _create_comment(
-            request, params.get("model"), params.get("model_pk"), params.get("comment")
-        )
+        _create_comment(request, params.get("model"), params.get("model_pk"), params.get("comment"))
     else:
-        logger.warning(
-            f'{request.user} tried to perform an unknown action "{action}" on article:{pk}'
-        )
+        logger.warning(f'{request.user} tried to perform an unknown action "{action}" on article:{pk}')
     return redirect("articles:detail", pk=pk)
 
 
@@ -101,11 +90,7 @@ class ArticleValidationError(Exception):
 
 
 def _validate_article_data(title: str, content: str) -> None:
-    if (
-        title is None
-        or len(title) < settings.MIN_ARTICLE_TITLE_LENGTH
-        or len(title) > 255
-    ):
+    if title is None or len(title) < settings.MIN_ARTICLE_TITLE_LENGTH or len(title) > 255:
         length = len(title) if title is not None else 0
         raise ArticleValidationError(
             f"Title has {length} characters, must be between {settings.MIN_ARTICLE_TITLE_LENGTH} and 255 characters."
@@ -127,7 +112,7 @@ def _validate_article_data(title: str, content: str) -> None:
 def view_article_detail(request, pk: int):
     article = get_object_or_404(Article, pk=pk)
     if not article.is_article:
-        return redirect("forum:thread", pk=pk)
+        return redirect(get_view_name_for_post_type(article), pk=pk)
     # Handle adding new comment
     if request.method == "POST":
         return _do_article_create_post_action(request, pk)
@@ -147,14 +132,8 @@ def view_article_detail(request, pk: int):
         )
     )
     article = (
-        Article.objects.annotate(
-            user_follows=Value(article.follows.filter(user=request.user).exists())
-        )
-        .annotate(
-            user_bookmarked=Exists(
-                QuestionBookmark.objects.filter(user=request.user, question_id=pk)
-            )
-        )
+        Article.objects.annotate(user_follows=Value(article.follows.filter(user=request.user).exists()))
+        .annotate(user_bookmarked=Exists(QuestionBookmark.objects.filter(user=request.user, question_id=pk)))
         .annotate(user_upvoted=user_upvoted)
         .annotate(user_downvoted=user_downvoted)
         .select_related(
@@ -197,12 +176,11 @@ def view_article_detail(request, pk: int):
 def view_article_delete(request, pk: int):
     article = get_object_or_404(Article, pk=pk)
     if not article.is_article:
-        return redirect("forum:thread", pk=pk)
+        return redirect(get_view_name_for_post_type(article), pk=pk)
     user = request.user
     if not article.user_can_delete(user):
         logger.warning(
-            f"user {user.username} tried to delete article {pk} "
-            f"which does they do not have permission to delete"
+            f"user {user.username} tried to delete article {pk} " f"which does they do not have permission to delete"
         )
         return redirect("articles:detail", pk=pk)
     if request.method == "POST":
@@ -225,11 +203,9 @@ def view_article_delete(request, pk: int):
 def view_article_edit(request, pk: int):
     article = get_object_or_404(Article, pk=pk)
     if not article.is_article:
-        return redirect("forum:thread", pk=pk)
+        return redirect(get_view_name_for_post_type(article), pk=pk)
     user: ForumUser = cast(ForumUser, request.user)
-    if (
-        article.author != user and not user.can_edit
-    ):  # TODO change edit user permissions
+    if article.author != user and not user.can_edit:  # TODO change edit user permissions
         messages.error(request, "You can not edit this article", "danger")
         return redirect("articles:detail", pk=pk)
     if not ask_to_edit_resource(request.user, article):
@@ -272,9 +248,7 @@ def view_article_create(request):
     if request.method == "GET":
         return render(request, "articles/articles-create.html", {})
     if request.method != "POST":
-        logger.warning(
-            f"{user.username} tried {request.path} with HTTP {request.method}"
-        )
+        logger.warning(f"{user.username} tried {request.path} with HTTP {request.method}")
         return render(request, "articles/articles-create.html", {})
     data = request.POST.dict()
     title = data.get("title")

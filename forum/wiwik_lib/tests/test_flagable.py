@@ -20,9 +20,7 @@ class FlagsClient:
     def login(self, username: str, password: str):
         return self.client.login(username=username, password=password)
 
-    def flag_model(
-        self, model_name: str, model_pk: int, flag_type: str, extra: str = None
-    ):
+    def flag_model(self, model_name: str, model_pk: int, flag_type: str, extra: str = None):
         data = {
             "model-name": model_name,
             "model_pk": model_pk,
@@ -84,15 +82,11 @@ class FlagApiTestCase(TestCase):
             )
             for item in cls.usernames
         ]
-        cls.question = utils.create_question(
-            cls.users[0], cls.title, cls.question_content, ",".join(cls.tags)
-        )
+        cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
         a = utils.create_answer(cls.answer_content, cls.users[1], cls.question)
         cls.question_pk = cls.question.pk
         cls.answer_pk = a.pk
-        cls.qcomment = utils.create_comment(
-            cls.comment_content, cls.users[2], cls.question
-        )
+        cls.qcomment = utils.create_comment(cls.comment_content, cls.users[2], cls.question)
         cls.acomment = utils.create_comment(cls.comment_content, cls.users[0], a)
         cls.qcomment_pk = cls.qcomment.pk
         cls.acomment_pk = cls.acomment.pk
@@ -111,8 +105,7 @@ class TestFlagAnswerView(FlagApiTestCase):
         assert_message_in_response(res, message)
         assert_url_in_chain(
             res,
-            reverse("forum:thread", args=[self.question_pk])
-            + f"#answer_{self.answer_pk}",
+            reverse("forum:thread", args=[self.question_pk]) + f"#answer_{self.answer_pk}",
         )
         start_job.assert_has_calls(
             [
@@ -167,8 +160,7 @@ class TestFlagCommentView(FlagApiTestCase):
         assert_message_in_response(res, message)
         assert_url_in_chain(
             res,
-            reverse("forum:thread", args=[self.question_pk])
-            + f"#question_{self.question_pk}",
+            reverse("forum:thread", args=[self.question_pk]) + f"#question_{self.question_pk}",
         )
 
     def test_flag_comment_for_answer__green(self):
@@ -185,8 +177,7 @@ class TestFlagCommentView(FlagApiTestCase):
         )
         assert_url_in_chain(
             res,
-            reverse("forum:thread", args=[self.question_pk])
-            + f"#answer_{self.answer_pk}",
+            reverse("forum:thread", args=[self.question_pk]) + f"#answer_{self.answer_pk}",
         )
 
     def test_flag_comment_for_answer__same_user__should_do_nothing(self):
@@ -223,8 +214,7 @@ class TestFlagQuestionView(FlagApiTestCase):
         assert_message_in_response(res, message)
         assert_url_in_chain(
             res,
-            reverse("forum:thread", args=[self.question.pk])
-            + f"#question_{self.question.pk}",
+            reverse("forum:thread", args=[self.question.pk]) + f"#question_{self.question.pk}",
         )
 
     def test_flag_question__same_user__should_do_nothing(self):
@@ -261,8 +251,7 @@ class TestFlagQuestionView(FlagApiTestCase):
         assert_message_in_response(res, message)
         assert_url_in_chain(
             res,
-            reverse("forum:thread", args=[self.question.pk])
-            + f"#question_{self.question.pk}",
+            reverse("forum:thread", args=[self.question.pk]) + f"#question_{self.question.pk}",
         )
 
     def test_flag_question__bad_request__do_nothing(self):

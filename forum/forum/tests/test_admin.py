@@ -25,18 +25,11 @@ class TestAdmin(ForumApiTestCase):
             cls.superuser_name, f"{cls.superuser_name}@a.com", cls.password
         )
         cls.questions = [
-            utils.create_question(
-                user, cls.question_title, cls.question_content, ",".join(cls.tags)
-            )
+            utils.create_question(user, cls.question_title, cls.question_content, ",".join(cls.tags))
             for user in cls.users
         ]
         cls.questions.extend(
-            [
-                utils.create_question(
-                    user, cls.question_title, cls.question_content, cls.tags[0]
-                )
-                for user in cls.users
-            ]
+            [utils.create_question(user, cls.question_title, cls.question_content, cls.tags[0]) for user in cls.users]
         )
         utils.create_answer(cls.answer_content, cls.users[0], cls.questions[0])
         utils.upvote(cls.users[0], cls.questions[1])
@@ -70,32 +63,24 @@ class TestAdmin(ForumApiTestCase):
             first = apps.get_model(f"forum.{model}").objects.all().first()
             if first:
                 res = self.client.admin_change(model, first.id)
-                self.assertEqual(
-                    200, res.status_code, f"When testing for model {model}"
-                )
+                self.assertEqual(200, res.status_code, f"When testing for model {model}")
 
     def test_admin_changelist__question_filter__green(self):
         self.client.login(self.superuser_name, self.password)
 
-        res = self.client.admin_changelist(
-            "answer", query=f"question__id={self.questions[0].id}"
-        )
+        res = self.client.admin_changelist("answer", query=f"question__id={self.questions[0].id}")
         self.assertEqual(200, res.status_code)
 
     def test_admin_answer_changelist__author_filter__green(self):
         self.client.login(self.superuser_name, self.password)
 
-        res = self.client.admin_changelist(
-            "answer", query=f"author__username={self.usernames[0]}"
-        )
+        res = self.client.admin_changelist("answer", query=f"author__username={self.usernames[0]}")
         self.assertEqual(200, res.status_code)
 
     def test_admin_usertagstats_changelist__tagname_filter__green(self):
         self.client.login(self.superuser_name, self.password)
 
-        res = self.client.admin_changelist(
-            "usertagstats", query=f"tag__tag_word={self.tags[0]}"
-        )
+        res = self.client.admin_changelist("usertagstats", query=f"tag__tag_word={self.tags[0]}")
         self.assertEqual(200, res.status_code)
 
     def test_admin_tag_changelist__merge_tags__green(self):

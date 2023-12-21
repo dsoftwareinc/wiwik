@@ -24,14 +24,10 @@ def create_new_suggestion(request, synonym_name: str, tag_word: str):
         return
     tag = models.Tag.objects.filter(tag_word=tag_word).first()
     if tag is None:
-        messages.warning(
-            request, "Could not find this tag, first ask a few questions with it"
-        )
+        messages.warning(request, "Could not find this tag, first ask a few questions with it")
         return
     if tag.synonym_set.filter(name=synonym_name).exists():
-        messages.warning(
-            request, "Synonym with this name already suggested for this tag, aborting"
-        )
+        messages.warning(request, "Synonym with this name already suggested for this tag, aborting")
         return
     if Synonym.objects.filter(name=synonym_name).exists():
         messages.warning(
@@ -75,9 +71,7 @@ def view_synonym_list(request):
     page = request.GET.get("page", 1)
     basic_query_set = models.Synonym.objects.all()
     if query:
-        basic_query_set = basic_query_set.filter(
-            Q(name__icontains=query) | Q(tag__tag_word__icontains=query)
-        )
+        basic_query_set = basic_query_set.filter(Q(name__icontains=query) | Q(tag__tag_word__icontains=query))
     order_by, order_by_num = _get_order_by_from_request(request)
     basic_query_set = basic_query_set.order_by(order_by)
     paginator = Paginator(basic_query_set, ITEMS_PER_PAGE)
@@ -101,16 +95,12 @@ def view_synonym_list(request):
 def view_approve_synonym(request, synonym_pk: int):
     synonym = models.Synonym.objects.filter(pk=synonym_pk).first()
     if synonym is None:
-        logger.warning(
-            f"user {request.user.username} tries to approve non existing synonym {synonym_pk}"
-        )
+        logger.warning(f"user {request.user.username} tries to approve non existing synonym {synonym_pk}")
         return redirect(reverse("tags:synonyms_list"))
     user = request.user
     if user.can_approve_synonym:
         messages.info(request, f"Synonym {synonym.name} approved")
-        logger.info(
-            f"user {request.user.username} approved {synonym.name} for tag {synonym.tag.tag_word}"
-        )
+        logger.info(f"user {request.user.username} approved {synonym.name} for tag {synonym.tag.tag_word}")
         synonym.active = True
         synonym.approved_by = user
         synonym.save()
