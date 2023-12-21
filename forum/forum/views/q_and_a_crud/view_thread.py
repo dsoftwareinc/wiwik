@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import cast
+from typing import cast, Optional
 
 from django.conf import settings
 from django.contrib import messages
@@ -12,16 +12,14 @@ from scheduler import job
 from common import utils as common_utils
 from forum import jobs
 from forum.apps import logger
-from forum.models import Question, VoteActivity, QuestionView, QuestionBookmark, Answer
+from forum.models import Question, VoteActivity, QuestionView, QuestionBookmark, Answer, Comment
 from forum.views import utils
 from userauth.models import ForumUser
 from wiwik_lib.models import user_model_defer_fields
 
 
 def _get_question_answers(q: Question, order_by: str, user):
-    """
-    Get all questions answers ordered_by.
-    """
+    """Get all questions answers ordered_by."""
     match order_by:
         case 'oldest':
             order_by_field = 'created_at'
@@ -47,11 +45,11 @@ def _get_question_answers(q: Question, order_by: str, user):
     return list(qs)
 
 
-def _create_answer_and_message(request, question_pk: int, answer_content: str):
+def _create_answer_and_message(request, question_pk: int, answer_content: str) -> None:
     question = Question.objects.filter(pk=question_pk).first()
     if question is None:
         logger.warning('Trying to create answer without question, ignoring')
-        return None
+        return
     if question.answer_set.count() >= settings.MAX_ANSWERS:
         logger.warning(f'User {request.user} tries to create answer for question {question_pk} '
                        f'when it already reached max number of answers')
@@ -61,7 +59,7 @@ def _create_answer_and_message(request, question_pk: int, answer_content: str):
         messages.success(request, 'Answer posted successfully')
 
 
-def _create_comment(request, model_name: str, model_pk: int, content: str):
+def _create_comment(request, model_name: str, model_pk: int, content: str) -> Optional[Comment]:
     parent = utils.get_model(model_name, model_pk)
     if not (settings.MIN_COMMENT_LENGTH <= len(content) <= settings.MAX_COMMENT_LENGTH):
         logger.warning(f'user {request.user} trying to create a comment '
@@ -75,7 +73,7 @@ def _create_comment(request, model_name: str, model_pk: int, content: str):
         logger.warning(f'User {request.user} tries to create comment for {model_name}:{model_pk} '
                        f'when it already reached max number of comments')
         return None
-    utils.create_comment(content, request.user, parent)
+    return utils.create_comment(content, request.user, parent)
 
 
 def _do_single_question_post_action(request, question_pk: int):

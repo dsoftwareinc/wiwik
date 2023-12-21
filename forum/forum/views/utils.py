@@ -3,7 +3,7 @@ from typing import Union, List, Optional
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Sum
+from django.db.models import Sum, Model
 from django.utils import timezone
 
 from badges.jobs import review_bagdes_event
@@ -100,7 +100,7 @@ MODELS_MAP = {
 }
 
 
-def get_model(model_name: str, pk: int):
+def get_model(model_name: str, pk: int) -> Model:
     """Get a model instance based on model name and primary key
     :param model_name: model name to look for, based on MODELS_MAP dictionary
     :param pk: primary key to look for
@@ -121,7 +121,7 @@ def get_model(model_name: str, pk: int):
 def _get_tag(tag_word: str, user: AbstractUser) -> Tag:
     """
     Get tag with tag_word.
-    If such tag doesn't exist, check for a synonym with tag_word.
+    If no tag with the tag_word is found, check for a synonym with tag_word.
     If it doesn't exist, create a tag (with the user as its author).
     """
     tag = Tag.objects.filter(tag_word=tag_word).first()
@@ -141,32 +141,31 @@ def create_article(user: AbstractUser, title: str, content: str, tags: str, **kw
 
 
 def create_question(user: AbstractUser, title: str, content: str, tags: str,
-                    send_notifications=True,
+                    send_notifications: bool = True,
                     **kwargs) -> models.Question:
     """Create a question in the DB, add tags to the question and notify tag followers about new question.
-    :param user: question author
+    :param user: Question author
     :param title: question title
     :param content: question content
     :param tags: tags to include, as string, separated by commas
-    :param send_notifications: should notifications be sent? on by default
+    :param send_notifications: should notifications be sent? On by default
     :param kwargs:
-        other params to include in Question.objects.create,
+        Other params to include in Question.objects.create,
         e.g., anonymous flag
     :return: the question created.
     """
-    q = models.Question.objects.create(
-        title=title, content=content, author=user, **kwargs)
+    q = models.Question.objects.create(title=title, content=content, author=user, **kwargs)
     create_follow(q, user)
-    tags_to_add = set(tags.replace(' ', '').lower().split(','))
-    if '' in tags_to_add:
-        tags_to_add.remove('')
-    for tag_word in tags_to_add:
-        tag = _get_tag(tag_word, user)
+    question_tag_words = set(tags.replace(' ', '').lower().split(','))
+    if '' in question_tag_words:
+        question_tag_words.remove('')
+    for tag_word in question_tag_words:
+        tag: Tag = _get_tag(tag_word, user)
         q.tags.add(tag)
         follow_models.create_follow_tag(tag, user)
     q.save()
     if send_notifications:
-        notifications.notify_tag_followers_new_question(user, tags_to_add, q, )
+        notifications.notify_tag_followers_new_question(user, question_tag_words, q, )
     jobs.start_job(jobs.update_user_tag_stats, q.id, user.id)
     jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES['Create post'])
     return q

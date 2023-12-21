@@ -52,6 +52,6 @@ def create_follow_tag(tag: Tag, user: AbstractUser) -> None:
     create_follow(tag, user)
 
 
-def delete_follow_tag(tag: Tag, user: AbstractUser):
+def delete_follow_tag(tag: Tag, user: AbstractUser) -> None:
     handle_user_tag_stats(tag, user)
     delete_follow(tag, user)
