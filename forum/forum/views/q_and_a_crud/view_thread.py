@@ -123,7 +123,7 @@ def _do_single_question_post_action(request, question_pk: int) -> HttpResponseRe
 
     :param request:
     :param question_pk: Question pk, for redirecting back to the main thread view.
-    :return: redirect to thread view
+    :return: Redirect to thread view
     """
     params = request.POST.dict()
     action = params.get("action")

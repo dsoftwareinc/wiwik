@@ -31,7 +31,7 @@ def recalculate_user_reputation(user: AbstractUser) -> None:
     reputation_qs = models.VoteActivity.objects.filter(target=user).aggregate(
         rep=Sum("reputation_change")
     )
-    reputation = reputation_qs.get("rep", 0)
+    reputation = reputation_qs.get("rep") or 0
     user.reputation_score = reputation
     user.save()
 
