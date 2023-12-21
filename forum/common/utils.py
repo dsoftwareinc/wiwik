@@ -56,7 +56,7 @@ def get_request_param(
 ) -> Optional[str]:
     """Get a parameter value from a request"""
     if request.GET:
-        return request.GET.get(param_name, default_value)
+        return request.GET.get(param_name, default_value)  # type: ignore
     return default_value
 
 

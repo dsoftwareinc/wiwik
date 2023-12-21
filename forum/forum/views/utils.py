@@ -21,19 +21,17 @@ from wiwik_lib.models import Follow
 from wiwik_lib.views.follow_views import delete_follow, create_follow
 
 
-def recalculate_user_reputation(user: AbstractUser):
-    """
-    Calculate a user reputation based on VoteActivity
-    """
-    if user is None:
+def recalculate_user_reputation(user: AbstractUser) -> None:
+    """Calculate a user reputation based on VoteActivity"""
+    if user is None or not isinstance(user, ForumUser):
+        logger.warning(f'User {user} is not a ForumUser, skipping reputation recalculation')
         return
     reputation_qs = (models.VoteActivity.objects
                      .filter(target=user)
                      .aggregate(rep=Sum('reputation_change')))
-    reputation = reputation_qs['rep'] or 0
-    if isinstance(user, ForumUser):
-        user.reputation_score = reputation
-        user.save()
+    reputation = reputation_qs.get('rep', 0)
+    user.reputation_score = reputation
+    user.save()
 
 
 def create_activity(source: Union[AbstractUser, None],
@@ -77,19 +75,26 @@ def delete_activity(
         userinput: models.UserInput,
         rep_change: int) -> None:
     """Find an activity with parameters and delete it
+    :param source: Originator of VoteActivity (upvoter, downvoter, ...)
+    :param target: Target of VoteActivity who will earn the rep-points
+    :param userinput: Input the VoteActivity is on (can be Question or Answer)
+    :param rep_change: Value of VoteActivity
     """
-    logger.debug(f'Delete activity by {source.username}: '
-                 f'{rep_change} for {target.username} on {userinput.get_model()} {userinput.id}')
-
     activity = (models.VoteActivity.objects
                 .filter(source=source, target=target,
                         question=userinput.get_question(), answer=userinput.get_answer(),
                         reputation_change=rep_change)
                 .first())
-    if activity is not None:
-        activity.delete()
-        recalculate_user_reputation(target)
-    return None
+    if activity is None:
+        logger.warning(
+            f'Tried deleting activity by {source.username} with {rep_change}pts for {target.username} '
+            f'on {userinput.get_model()} {userinput.id} but could not find such activity')
+        return
+
+    logger.debug(f'Delete activity by {source.username}: '
+                 f'{rep_change} for {target.username} on {userinput.get_model()} {userinput.id}')
+    activity.delete()
+    recalculate_user_reputation(target)
 
 
 MODELS_MAP = {
@@ -100,11 +105,11 @@ MODELS_MAP = {
 }
 
 
-def get_model(model_name: str, pk: int) -> Model:
+def get_model(model_name: str, pk: int) -> Optional[Model]:
     """Get a model instance based on model name and primary key
     :param model_name: model name to look for, based on MODELS_MAP dictionary
     :param pk: primary key to look for
-    :returns: the instance
+    :returns: the instance of the model with the primary key, or None if not found
     """
     if model_name is None or model_name not in MODELS_MAP:
         logger.error(f"Attempt to get model {model_name} which is not supported")
@@ -213,7 +218,7 @@ def update_question(user: AbstractUser, q: models.Question, title: str, content:
     return q
 
 
-def delete_question(question: models.Question):
+def delete_question(question: models.Question) -> None:
     answers_list = list(question.answer_set.all().using('default'))
     for answer in answers_list:
         delete_answer(answer)

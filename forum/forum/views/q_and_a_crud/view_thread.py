@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Exists, OuterRef, Value
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from scheduler import job
@@ -12,7 +13,7 @@ from scheduler import job
 from common import utils as common_utils
 from forum import jobs
 from forum.apps import logger
-from forum.models import Question, VoteActivity, QuestionView, QuestionBookmark, Answer, Comment
+from forum.models import Question, VoteActivity, QuestionView, QuestionBookmark, Answer, Comment, UserInput
 from forum.views import utils
 from userauth.models import ForumUser
 from wiwik_lib.models import user_model_defer_fields
@@ -60,28 +61,32 @@ def _create_answer_and_message(request, question_pk: int, answer_content: str) -
 
 
 def _create_comment(request, model_name: str, model_pk: int, content: str) -> Optional[Comment]:
-    parent = utils.get_model(model_name, model_pk)
     if not (settings.MIN_COMMENT_LENGTH <= len(content) <= settings.MAX_COMMENT_LENGTH):
         logger.warning(f'user {request.user} trying to create a comment '
                        f'on {model_name}:{model_pk} with bad length ({len(content)})')
         messages.error(request, f'Can not create comment with length {len(content)}', 'danger')
         return None
-    if parent is None:
+    if model_name not in ('question', 'answer'):
+        logger.warning(f'user {request.user} trying to create a comment '
+                       f'on {model_name}:{model_pk} which is not supported')
+        return None
+    comment_parent: UserInput = utils.get_model(model_name, model_pk)  # type: ignore
+    if comment_parent is None:
         logger.warning(f'Trying to comment on {model_name}:{model_pk} which could not be fetched')
         return None
-    if parent.comments.count() >= settings.MAX_COMMENTS:
+    if comment_parent.comments.count() >= settings.MAX_COMMENTS:
         logger.warning(f'User {request.user} tries to create comment for {model_name}:{model_pk} '
                        f'when it already reached max number of comments')
         return None
-    return utils.create_comment(content, request.user, parent)
+    return utils.create_comment(content, request.user, comment_parent)
 
 
-def _do_single_question_post_action(request, question_pk: int):
+def _do_single_question_post_action(request, question_pk: int) -> HttpResponseRedirect:
     """Create new answer or new comment in a question thread.
 
     :param request:
     :param question_pk: Question pk, for redirecting back to the main thread view.
-    :return:
+    :return: redirect to thread view
     """
     params = request.POST.dict()
     action = params.get('action')
@@ -114,6 +119,8 @@ def view_single_question(request, pk):
     # Handle adding new answer/comment
     if request.method == 'POST':
         return _do_single_question_post_action(request, pk)
+    if request.method != 'GET':
+        logger.warning(f'User {request.user} tried to access thread view with {request.method} method')
     try:
         q = Question.objects.get(pk=pk)
         user_upvoted = Exists(VoteActivity.objects.filter(
@@ -140,25 +147,25 @@ def view_single_question(request, pk):
     show_follow = not q.user_follows
     show_accept_button = (q.author == user or user.can_edit or user.is_staff)
     show_edit_button = (q.author == user or user.can_edit)
-    show_delete_q_button = (q.author == user or user.can_delete_question)
-    show_delete_a_button = user.can_delete_answer
+    show_delete_question_button = (q.author == user or user.can_delete_question)
+    show_delete_answer_button = user.can_delete_answer
     order_answers_by = common_utils.get_request_param(request, 'order_by', 'votes')
     all_answers = _get_question_answers(q, order_answers_by, request.user)
     bookmarked = q.user_bookmarked
 
     jobs.start_job(view_thread_background_tasks, request.user, q)
 
-    return render(request, 'main/thread.template.html',
-                  {'q': q,
-                   'num_bookmarks': q.num_bookmarks,
-                   'all_answers': all_answers,
-                   'show_accept_button': show_accept_button,
-                   'show_edit_button': show_edit_button,
-                   'show_delete_q_button': show_delete_q_button,
-                   'show_delete_a_button': show_delete_a_button,
-                   'max_answers': settings.MAX_ANSWERS,
-                   'show_follow': show_follow,
-                   'bookmarked': bookmarked,
-                   'order_by': order_answers_by,
-                   'title': q.title,
-                   })
+    return render(request, 'main/thread.template.html', {
+        'q': q,
+        'num_bookmarks': q.num_bookmarks,
+        'all_answers': all_answers,
+        'show_accept_button': show_accept_button,
+        'show_edit_button': show_edit_button,
+        'show_delete_q_button': show_delete_question_button,
+        'show_delete_a_button': show_delete_answer_button,
+        'max_answers': settings.MAX_ANSWERS,
+        'show_follow': show_follow,
+        'bookmarked': bookmarked,
+        'order_by': order_answers_by,
+        'title': q.title,
+    })
