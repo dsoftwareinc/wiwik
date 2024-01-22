@@ -41,7 +41,7 @@ pymdown-extensions = "^10.4"
 
 # 3rd party integrations
 slack-sdk = "^3.21"
-meilisearch = "^0.28" # meilisearch driver
+meilisearch = "^0.29" # meilisearch driver
 psycopg2-binary = "^2.9" # Postgres driver
 redis = "^5.0" # Redis driver, for redis-cache
 behave-django = "^1.4.0"
