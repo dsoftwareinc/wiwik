@@ -24,6 +24,7 @@
     --bs-black: #000;
     --bs-gray: #343a40;
     --bs-gray-dark: #6c757d;
+    --bs-gray-050: #121215;
     --bs-gray-100: #252529;
     --bs-gray-150: #2f3238;
     --bs-gray-200: #343a40;
@@ -91,6 +92,7 @@
     --bs-white: #fff;
     --bs-gray: #6c757d;
     --bs-gray-dark: #343a40;
+    --bs-gray-050: #fafafa;
     --bs-gray-100: #f8f9fa;
     --bs-gray-200: #e9ecef;
     --bs-gray-300: #dee2e6;
