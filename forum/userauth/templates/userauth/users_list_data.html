@@ -26,7 +26,7 @@
     <div class="form-control-plaintext">{{ title }}</div>
     <div class="row g-0" id="usersList">
         {% for user in users %}
-            <div class="col-sm-4 pe-2 py-1">
+            <div class="col-lg-3 col-sm-4 pe-2 py-1">
                 {% include 'userauth/includes/users-list.usercard.template.html' with u=user %}
             </div>
         {% empty %}

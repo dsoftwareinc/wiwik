@@ -177,6 +177,10 @@ pre {
     border: none !important;
 }
 
+.user-list-card {
+    background-color: var(--bs-gray-100);
+}
+
 .user-card-container {
     display: flex;
     flex-direction: column;
