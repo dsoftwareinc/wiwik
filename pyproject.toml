@@ -2,6 +2,7 @@
 name = "wiwik"
 version = "0.1.0"
 description = "What I wish I knew knowledge management system"
+maintainers = ["Daniel Moran <daniel@moransoftware.ca>"]
 authors = ["Daniel Moran <daniel@moransoftware.ca>"]
 license = "Fair Source 50"
 readme = "README.md"
