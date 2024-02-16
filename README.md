@@ -1,10 +1,12 @@
 About
 =====
-![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cunla/b756396efb895f0e34558c980f1ca0c7/raw/wiwik.json)
+![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cunla/b756396efb895f0e34558c980f1ca0c7/raw/wiwik.json) ![Static Badge](https://img.shields.io/badge/Made_with-Django-blue)
 
-![](https://img.shields.io/badge/Made_with-Django-blue?style=for-the-badge&logo=Django)
 
 wiwik (What I wish I knew) is a knowledge management system aimed to be used by tech companies.
+
+> Empowering your engineering teams to deliver **through collective knowledge**.
+wiwik enables people to ask, share and learn information about your technology.
 
 In most tech organizations, developers ask other developers in messaging applications. This interrupts developers
 answering, and the impact is amplified for the developers answering as they have to restart their work (i.e.,
