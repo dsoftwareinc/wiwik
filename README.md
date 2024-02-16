@@ -2,6 +2,7 @@ About
 =====
 ![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cunla/b756396efb895f0e34558c980f1ca0c7/raw/wiwik.json) ![Static Badge](https://img.shields.io/badge/Made_with-Django-blue)
 
+Maintainer needed! Please open an issue if you are interested.
 
 wiwik (What I wish I knew) is a knowledge management system aimed to be used by tech companies.
 
