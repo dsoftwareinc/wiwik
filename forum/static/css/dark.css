@@ -7,9 +7,9 @@
     --gold-color: #F0B400;
     --gold-bg-color: #5d573c;
     --updates-bg-color: #d0caca;
-    --tag-background-color-hsl: 205, 46%, 92%;
+    --tag-background-color-hsl: 210, 50%, 22%;
     --tag-border-color: transparent;
-    --tag-color-hsl: 205, 47%, 42%;
+    --tag-color-hsl: 210, 89%, 84%;
     --bs-blue: #0d6efd;
     --bs-indigo: #6610f2;
     --bs-purple: #6f42c1;
@@ -136,9 +136,9 @@
     --updates-bg-color: #d0caca;
     --link-color: #0d6efd;
     --link-color-hover: #07377F;
-    --tag-background-color-hsl: 205, 46%, 92%;
+    --tag-background-color-hsl: 210, 50%, 22%;
     --tag-border-color: transparent;
-    --tag-color-hsl: 205, 47%, 42%;
+    --tag-color-hsl: 210, 89%, 84%;
     --code-bg-color: var(--bs-gray-200);
     --code-fg-color: var(--bs-gray-700);
     --bs-emphasis-color: var(--bs-body-color);
