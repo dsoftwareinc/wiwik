@@ -1,3 +1,4 @@
+{% load humanize %}
 {% load wiwik_template_tags %}
 <div class="row summary">
     <div class="col-12 col-lg-2">
@@ -45,18 +46,25 @@
                 {% endif %}
                 {% if q.is_anonymous %}
                     Asked anonymously {{ q.created_at | timesince }}
+                {% elif q.editor %}
+                    <a href="{% url 'userauth:profile' q.editor.username 'questions' %}">
+                        {{ q.editor.display_name }} 
+                    </a>
+                    <span class="text-bold">{{ q.editor.reputation_score | intcomma }}</span> 
+                    modified {{ q.updated_at | timesince }} ago
                 {% else %}
-                    Asked {{ q.created_at | timesince }} ago by
                     <a href="{% url 'userauth:profile' q.author.username 'questions' %}">
-                    {{ q.author.display_name }}
-                </a>
+                        {{ q.author.display_name }} 
+                    </a>
+                    <span class="text-bold">{{ q.author.reputation_score | intcomma }}</span> 
+                    asked {{ q.created_at | timesince }} ago
                 {% endif %}
             </span>
         </div>
     </div>
 </div>
-    {% if not last %}
-        <hr/>
-    {% endif %}
+{% if not last %}
+    <hr/>
+{% endif %}
 
 

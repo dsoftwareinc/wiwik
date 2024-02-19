@@ -236,7 +236,7 @@ pre {
 }
 
 .question-details {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--bs-gray-600);
     display: flex;
     align-items: flex-end;
@@ -432,6 +432,11 @@ pre {
 
 .pointer-event {
     pointer-events: auto;
+}
+
+.text-bold {
+    color: var(--bs-dark);
+    font-weight: bold;
 }
 
 .text-gray {
