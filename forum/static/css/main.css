@@ -523,6 +523,12 @@ textarea {
     border-color: var(--bs-gray-300);
 }
 
+textarea:focus {
+    outline: none !important;
+
+    box-shadow: 0 0 1px var(--bs-black);
+}
+
 button {
     color: var(--bs-dark);
 }
