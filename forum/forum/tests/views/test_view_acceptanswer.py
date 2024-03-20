@@ -42,7 +42,7 @@ class TestAcceptAnswerView(ForumApiTestCase):
             target=a.author,
             question=q,
             answer=a,
-            reputation_change=settings.ACCEPT_ANSWER_CHANGE,
+            type=models.VoteActivity.ActivityType.ACCEPT,
         ).count()
         self.assertEqual(1, activity_len)
 
@@ -63,7 +63,7 @@ class TestAcceptAnswerView(ForumApiTestCase):
             source=self.users[0],
             target=a.author,
             question=q,
-            reputation_change=settings.ACCEPT_ANSWER_CHANGE,
+            type=models.VoteActivity.ActivityType.ACCEPT,
         ).count()
         self.assertEqual(1, activity_len)
 
@@ -158,6 +158,6 @@ class TestAcceptAnswerView(ForumApiTestCase):
             target=a.author,
             question=q,
             answer=a,
-            reputation_change=settings.ACCEPT_ANSWER_OLD_QUESTION_CHANGE,
+            type=models.VoteActivity.ActivityType.ACCEPT_OLD,
         ).count()
         self.assertEqual(1, activity_len)

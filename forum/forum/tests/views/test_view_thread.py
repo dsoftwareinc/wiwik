@@ -1,7 +1,7 @@
 from unittest import mock
 
 from bs4 import BeautifulSoup
-from django.conf import settings
+from constance import config
 from django.test.utils import override_settings
 from django.urls import reverse
 
@@ -23,8 +23,8 @@ class TestThreadView(ForumApiTestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
-        settings.MAX_ANSWERS = 3
-        settings.MAX_COMMENTS = 3
+        config.MAX_ANSWERS = 3
+        config.MAX_COMMENTS = 3
 
     def test_thread_view__user_not_logged_in(self):
         self.client.login(self.usernames[0], self.password)
@@ -128,7 +128,7 @@ class TestThreadView(ForumApiTestCase):
         self.assertContains(res2, self.usernames[1])
 
     def test_thread_view_with_invites__has_accepted_answer__dont_show_question_invitees(
-        self,
+            self,
     ):
         # arrange
         self.question.has_accepted_answer = True
@@ -242,7 +242,7 @@ class TestThreadView(ForumApiTestCase):
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch("forum.jobs.start_job")
     def test_thread_view_create_question_comment__with_mention_user_does_not_exists__should_not_notify(
-        self, start_job: mock.MagicMock
+            self, start_job: mock.MagicMock
     ):
         # arrange
         self.client.login(self.usernames[0], self.password)
@@ -278,7 +278,7 @@ class TestThreadView(ForumApiTestCase):
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch("forum.jobs.start_job")
     def test_thread_view_create_question_comment__with_mention_user_bad_quotes__should_handle_bad_quotes(
-        self, start_job: mock.MagicMock
+            self, start_job: mock.MagicMock
     ):
         # arrange
         self.client.login(self.usernames[0], self.password)
@@ -352,11 +352,11 @@ class TestThreadView(ForumApiTestCase):
         self.assertEqual(comment.created_at, self.question.last_activity)
 
     def test_thread_view_create_question_comment__empty_comment__should_not_create(
-        self,
+            self,
     ):
         # arrange
         self.client.login(self.usernames[0], self.password)
-        comment_content = " " * settings.MIN_COMMENT_LENGTH
+        comment_content = " " * config.MIN_COMMENT_LENGTH
         notifications._notify_question_followers = mock.MagicMock()
         # act
         res = self.client.thread_add_comment(self.question.pk, "question", self.question.pk, comment_content)
@@ -450,18 +450,18 @@ class TestThreadView(ForumApiTestCase):
                 password="1111",
                 email=f"{self.usernames[0]}{i}@use.com",
             )
-            for i in range(settings.MAX_ANSWERS + 1)
+            for i in range(config.MAX_ANSWERS + 1)
         ]
         q = utils.create_question(
-            users[settings.MAX_ANSWERS],
+            users[config.MAX_ANSWERS],
             self.title,
             self.question_content,
             ",".join(self.tags),
         )
         answer_content = "answer------content"
-        for i in range(settings.MAX_ANSWERS):
+        for i in range(config.MAX_ANSWERS):
             utils.create_answer(answer_content, users[i], q)
-        self.client.login(users[settings.MAX_ANSWERS].username, "1111")
+        self.client.login(users[config.MAX_ANSWERS].username, "1111")
         # act
         res = self.client.view_thread_get(q.pk)
         # assert
@@ -476,13 +476,13 @@ class TestThreadView(ForumApiTestCase):
                 password="1111",
                 email=f"{self.usernames[0]}{i}@use.com",
             )
-            for i in range(settings.MAX_ANSWERS + 1)
+            for i in range(config.MAX_ANSWERS + 1)
         ]
         answer_content = "answer------content"
-        for i in range(settings.MAX_ANSWERS):
+        for i in range(config.MAX_ANSWERS):
             utils.create_answer(answer_content, users[i], self.question)
         new_answer_content = "new---answer------content---"
-        self.client.login(users[settings.MAX_ANSWERS].username, "1111")
+        self.client.login(users[config.MAX_ANSWERS].username, "1111")
         # act
         res = self.client.thread_add_answer(self.question.pk, new_answer_content)
         # assert
@@ -513,7 +513,7 @@ class TestThreadView(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[0], self.password)
         answer_content = "answer------content"
-        for _ in range(settings.MAX_ANSWERS):
+        for _ in range(config.MAX_ANSWERS):
             utils.create_answer(answer_content, self.users[0], self.question)
         new_answer_content = "new---answer------content---"
         # act
@@ -546,14 +546,14 @@ class TestThreadView(ForumApiTestCase):
         self.client.login(self.usernames[0], self.password)
         comment_content = "comment------content"
         another_comment_content = "comment------content$$%%@@##"
-        for _ in range(settings.MAX_COMMENTS):
+        for _ in range(config.MAX_COMMENTS):
             self.client.thread_add_comment(self.question.pk, "question", self.question.pk, comment_content)
         # act
         res = self.client.thread_add_comment(self.question.pk, "question", self.question.pk, another_comment_content)
         # assert
         self.assertEqual(200, res.status_code)
         self.assertEqual(
-            settings.MAX_COMMENTS,
+            config.MAX_COMMENTS,
             models.QuestionComment.objects.filter(question=self.question).count(),
         )
         comment_list = list(models.QuestionComment.objects.filter(question=self.question))

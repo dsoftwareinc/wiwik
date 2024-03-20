@@ -14,7 +14,21 @@ class VoteActivity(models.Model):
     or getting a badge from the system.
     """
 
+    class ActivityType(models.TextChoices):
+        UPVOTE = "u", "Upvote"
+        DOWNVOTE = "d", "Downvote"
+        ACCEPT = "a", "Accepted answer"
+        EDITED = "e", "Edited post"
+        ACCEPT_OLD = "o", "Accepted answer for old question"
+        BADGE = "b", "Badge"
+
     created_at = models.DateTimeField(auto_now_add=True)
+    type = models.CharField(
+        max_length=2,
+        choices=ActivityType.choices,
+        default=ActivityType.UPVOTE,
+        help_text="Vote activity type",
+    )
     source = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         blank=True,

@@ -1,6 +1,7 @@
 import time
 from typing import Optional
 
+from constance import config
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db.models import QuerySet
@@ -55,7 +56,7 @@ def render_questions(request, base_qs: QuerySet, header: str, extra: dict = None
         "tags",
     )
     page_number = int(utils.get_request_param(request, "page", "1"))
-    page_qs = paginate_queryset(all_questions_qs, page_number, settings.QUESTIONS_PER_PAGE)
+    page_qs = paginate_queryset(all_questions_qs, page_number, config.QUESTIONS_PER_PAGE)
     context = {
         "all_questions": page_qs,
         "tab": tab if q is None else None,

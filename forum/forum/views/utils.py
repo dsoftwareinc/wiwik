@@ -1,6 +1,6 @@
 from typing import Union, List, Optional
 
-from django.conf import settings
+from constance import config
 from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Sum, Model
@@ -33,19 +33,31 @@ def recalculate_user_reputation(user: AbstractUser) -> None:
 
 
 def create_activity(
-    source: Union[AbstractUser, None],
-    target: AbstractUser,
-    userinput: models.UserInput,
-    rep_change: int,
+        source: Union[AbstractUser, None],
+        target: AbstractUser,
+        userinput: models.UserInput,
+        activity_type: models.VoteActivity.ActivityType,
 ) -> models.VoteActivity:
     """Create VoteActivity if it does not exist.
     :param source: Originator of VoteActivity (upvoter, downvoter, ...) - can be None
     :param target: Target of VoteActivity who will earn the rep-points - can NOT be None
     :param userinput: Input the VoteActivity is on (can be Question or Answer)
-    :param rep_change: Value of VoteActivity
+    :param activity_type: Type of activity
     :returns: Created VoteActivity
     """
+    rep_change_map = {
+        models.VoteActivity.ActivityType.EDITED: config.EDITED_CHANGE,
+        models.VoteActivity.ActivityType.UPVOTE: config.UPVOTE_CHANGE,
+        models.VoteActivity.ActivityType.DOWNVOTE: config.DOWNVOTE_CHANGE,
+        models.VoteActivity.ActivityType.ACCEPT: config.ACCEPT_ANSWER_CHANGE,
+        models.VoteActivity.ActivityType.ACCEPT_OLD: config.ACCEPT_ANSWER_OLD_QUESTION_CHANGE,
+    }
     source_username = source.username if source else None
+    if activity_type not in rep_change_map:
+        logger.warning(f'Activity type {activity_type} unknown')
+        rep_change = 0
+    else:
+        rep_change = rep_change_map[activity_type]
     logger.debug(
         f"Create activity by {source_username}: "
         f"{rep_change} for {target.username} on {userinput.get_model()} {userinput.id}"
@@ -56,7 +68,7 @@ def create_activity(
         target=target,
         question=userinput.get_question(),
         answer=userinput.get_answer(),
-        reputation_change=rep_change,
+        type=activity_type,
     ).first()
     if exist is not None:
         logger.warning("Activity already exist, exiting")
@@ -67,40 +79,43 @@ def create_activity(
         question=userinput.get_question(),
         answer=userinput.get_answer(),
         reputation_change=rep_change,
+        type=activity_type,
     )
     recalculate_user_reputation(target)
     return activity
 
 
 def delete_activity(
-    source: AbstractUser,
-    target: AbstractUser,
-    userinput: models.UserInput,
-    rep_change: int,
+        source: AbstractUser,
+        target: AbstractUser,
+        userinput: models.UserInput,
+        activity_type: Optional[models.VoteActivity.ActivityType],
 ) -> None:
     """Find an activity with parameters and delete it
     :param source: Originator of VoteActivity (upvoter, downvoter, ...)
     :param target: Target of VoteActivity who will earn the rep-points
     :param userinput: Input the VoteActivity is on (can be Question or Answer)
-    :param rep_change: Value of VoteActivity
+    :param activity_type: Type of activity
     """
-    activity = models.VoteActivity.objects.filter(
+    activity_qs = models.VoteActivity.objects.filter(
         source=source,
         target=target,
         question=userinput.get_question(),
         answer=userinput.get_answer(),
-        reputation_change=rep_change,
-    ).first()
+    )
+    if activity_type is not None:
+        activity_qs = activity_qs.filter(type=activity_type)
+    activity = activity_qs.first()
     if activity is None:
         logger.warning(
-            f"Tried deleting activity by {source.username} with {rep_change}pts for {target.username} "
+            f"Tried deleting activity by {source.username} with type {activity_type} for {target.username} "
             f"on {userinput.get_model()} {userinput.id} but could not find such activity"
         )
         return
 
     logger.debug(
         f"Delete activity by {source.username}: "
-        f"{rep_change} for {target.username} on {userinput.get_model()} {userinput.id}"
+        f"{activity_type} for {target.username} on {userinput.get_model()} {userinput.id}"
     )
     activity.delete()
     recalculate_user_reputation(target)
@@ -132,12 +147,12 @@ def create_article(user: AbstractUser, title: str, content: str, tags: str, **kw
 
 
 def create_question(
-    user: AbstractUser,
-    title: str,
-    content: str,
-    tags: str,
-    send_notifications: bool = True,
-    **kwargs,
+        user: AbstractUser,
+        title: str,
+        content: str,
+        tags: str,
+        send_notifications: bool = True,
+        **kwargs,
 ) -> models.Question:
     """Create a question in the DB, add tags to the question and notify tag followers about new question.
     :param user: Question author
@@ -194,7 +209,7 @@ def update_question(user: AbstractUser, q: models.Question, title: str, content:
     if user != q.author:
         # If user updating is not the author, add them as editor and create edit reputation for them
         q.editor = user
-        create_activity(None, user, q, 2)
+        create_activity(None, user, q, models.VoteActivity.ActivityType.EDITED)
     tags_to_remove = curr_tag_words.difference(new_tag_words)
     for tag_word in tags_to_remove:
         tag = Tag.objects.get(tag_word=tag_word)
@@ -229,10 +244,10 @@ def delete_question(question: models.Question) -> None:
 
 
 def create_answer(
-    content: str,
-    user: AbstractUser,
-    question: models.Question,
-    send_notifications: bool = True,
+        content: str,
+        user: AbstractUser,
+        question: models.Question,
+        send_notifications: bool = True,
 ) -> Optional[models.Answer]:
     if content is None or content.strip() == "":
         logger.warning("Trying to create answer without content, ignoring")
@@ -267,7 +282,7 @@ def update_answer(user: AbstractUser, answer: models.Answer, content: str) -> mo
     answer.content = content
     if user != answer.author:
         answer.editor = user
-        create_activity(None, user, answer, 2)
+        create_activity(None, user, answer, models.VoteActivity.ActivityType.EDITED)
     answer.save()
     notifications.notify_answer_changes(user, answer, old_content)
     jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES["Update post"])
@@ -285,14 +300,14 @@ def delete_answer(answer: models.Answer):
 def undo_upvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.VotableUserInput:
     model_obj.users_upvoted.remove(user)
     model_obj.save()
-    delete_activity(user, model_obj.author, model_obj, settings.UPVOTE_CHANGE)
+    delete_activity(user, model_obj.author, model_obj, models.VoteActivity.ActivityType.UPVOTE)
     return model_obj
 
 
 def undo_downvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.VotableUserInput:
     model_obj.users_downvoted.remove(user)
     model_obj.save()
-    delete_activity(user, model_obj.author, model_obj, settings.DOWNVOTE_CHANGE)
+    delete_activity(user, model_obj.author, model_obj, models.VoteActivity.ActivityType.DOWNVOTE)
     return model_obj
 
 
@@ -304,7 +319,7 @@ def upvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.Vot
     model_obj.users_upvoted.add(user)
     model_obj.save()
     create_follow(model_obj.get_question(), user)
-    create_activity(user, model_obj.author, model_obj, settings.UPVOTE_CHANGE)
+    create_activity(user, model_obj.author, model_obj, models.VoteActivity.ActivityType.UPVOTE)
     jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES["Upvote"])
     return model_obj
 
@@ -317,7 +332,7 @@ def downvote(user: AbstractUser, model_obj: models.VotableUserInput) -> models.V
     model_obj.users_downvoted.add(user)
     model_obj.save()
     create_follow(model_obj.get_question(), user)
-    create_activity(user, model_obj.author, model_obj, settings.DOWNVOTE_CHANGE)
+    create_activity(user, model_obj.author, model_obj, models.VoteActivity.ActivityType.DOWNVOTE)
     return model_obj
 
 
@@ -376,7 +391,7 @@ def get_user_followed_tags(user: AbstractUser) -> list[Tag]:
 
 
 def create_invites_and_notify_invite_users_to_question(
-    inviter: AbstractUser, invitees: List[AbstractUser], post: models.Question
+        inviter: AbstractUser, invitees: List[AbstractUser], post: models.Question
 ) -> int:
     """Generate invitations for user to participate in a post.
 

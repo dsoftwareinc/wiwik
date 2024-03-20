@@ -55,6 +55,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "constance.context_processors.config",
                 "wiwik_lib.context_processor.env_context",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
@@ -140,6 +141,14 @@ EMAIL_USE_TLS = True
 INTERNAL_IPS = ("127.0.0.1",)
 # SITE_URL = "https://example.com"
 # SESSION_COOKIE_AGE = 600  # https://docs.djangoproject.com/en/3.2/ref/settings/#session-cookie-age
+
+# Features for testing
+
+# Disable the possibility of user skipping notifications (for forcing notifications)
+DISABLE_USER_NOTIFICATION_SKIPPING = False
+# Run async tasks sync to avoid the need for worker
+RUN_ASYNC_JOBS_SYNC = getenv_asbool("RUN_ASYNC_JOBS_SYNC", default="FALSE")
+
 
 REDIS_CACHE_URL = os.getenv("REDIS_CACHE_URL", None)
 if REDIS_CACHE_URL:

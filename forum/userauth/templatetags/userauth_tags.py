@@ -1,6 +1,7 @@
 from datetime import date
 from typing import List, Dict
 
+from constance import config
 from django import template
 from django.conf import settings
 from django.db.models import Sum
@@ -57,12 +58,12 @@ def dayssince(d: date, add_suffix: bool = True):
 
 
 @register.filter()
-def latest_bookmarks(u: ForumUser, count=settings.MAX_BOOKMARK_ITEMS):
+def latest_bookmarks(u: ForumUser, count=config.MAX_BOOKMARK_ITEMS):
     return u.bookmarks.all().select_related("question").order_by("-created_at")[:count]
 
 
 @register.filter()
-def latest_reputation(u: ForumUser, count=settings.MAX_REPUTATION_ITEMS):
+def latest_reputation(u: ForumUser, count=config.MAX_REPUTATION_ITEMS):
     return u.reputation_votes.all().select_related("question").order_by("-created_at")[:count]
 
 

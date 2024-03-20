@@ -25,7 +25,7 @@
     const mermaidTheme = (wiwikTheme === 'light') ? 'neutral' : 'dark';
     mermaid.initialize({startOnLoad: true, theme: mermaidTheme,});
 </script>
-{% if LATEX_SUPPORT_ENABLED %}
+{% if config.LATEX_SUPPORT_ENABLED %}
     <script type="module">
         import katex from "{% tool_url 'katex-mjs' %}";
         import renderMathInElement from "{% tool_url 'katex-autorender-mjs' %}";

@@ -7,8 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <META NAME="Description" CONTENT="What I wish I knew - Knowledge management system for organizations">
-    <link rel="icon" type="image/png" href="{{ favicon_link_light }}" media="(prefers-color-scheme: light)">
-    <link rel="icon" type="image/png" href="{{ favicon_link_dark }}" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" href="{{ config.FAVICON_LINK_LIGHT }}" media="(prefers-color-scheme: light)">
+    <link rel="icon" type="image/png" href="{{ config.FAVICON_LINK_DARK }}" media="(prefers-color-scheme: dark)">
     <title>{{ title|default:'What I wish I knew' }}</title>
     <link rel="stylesheet" href="{% tool_url 'bootstrap-css' %}">
     {% block extrastyle %}{% endblock %}
@@ -63,7 +63,7 @@
                         <span id="darkModeOn" class="material-icons">light_mode</span>
                     </a>
                 </div>
-                {% if SHOWCASE %}
+                {% if config.SHOWCASE_DEPLOYMENT %}
                     <div class="nav-item nav-link dropdown">
                         <a class="menu-icon-link"
                            href="https://github.com/dsoftwareinc/wiwik">

@@ -68,7 +68,7 @@
                     {% endif %}
                 {% endfor %}
             {% endfor %}
-            {% if user.reputation_votes.count > MAX_REPUTATION_ITEMS %}
+            {% if user.reputation_votes.count > config.MAX_REPUTATION_ITEMS %}
                 <a class="list-group-item dropdown-item"
                    href="{% url 'userauth:profile' user.username 'reputation' %}">
                     Show more...
@@ -102,7 +102,7 @@
                     </div>
                 </a>
             {% endfor %}
-            {% if user.additional_data.bookmarks_count > MAX_BOOKMARK_ITEMS %}
+            {% if user.additional_data.bookmarks_count > config.MAX_BOOKMARK_ITEMS %}
                 <a class="list-group-item dropdown-item"
                    href="{% url 'userauth:profile' user.username 'bookmarks' %}">
                     Show more...

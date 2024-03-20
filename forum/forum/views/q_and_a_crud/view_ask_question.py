@@ -1,4 +1,4 @@
-from django.conf import settings
+from constance import config
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AbstractUser
@@ -17,13 +17,13 @@ class QuestionError(Exception):
 
 
 def validate_question_data(title: str, content: str) -> None:
-    if title is None or len(title) < settings.MIN_QUESTION_TITLE_LENGTH:
+    if title is None or len(title) < config.MIN_QUESTION_TITLE_LENGTH:
         raise QuestionError("Title too short")
-    if content is None or len(content) < settings.MIN_QUESTION_CONTENT_LENGTH:
-        raise QuestionError(f"Content should have at least {settings.MIN_QUESTION_CONTENT_LENGTH} characters")
-    if len(title) > settings.MAX_QUESTION_TITLE_LENGTH:
+    if content is None or len(content) < config.MIN_QUESTION_CONTENT_LENGTH:
+        raise QuestionError(f"Content should have at least {config.MIN_QUESTION_CONTENT_LENGTH} characters")
+    if len(title) > config.MAX_QUESTION_TITLE_LENGTH:
         raise QuestionError("Title too long")
-    if len(content) > settings.MAX_QUESTION_CONTENT_LENGTH:
+    if len(content) > config.MAX_QUESTION_CONTENT_LENGTH:
         raise QuestionError("Content too long")
 
 
@@ -90,7 +90,6 @@ def view_askquestion(request):
                     "title": title,
                     "content": content,
                     "tags": tags,
-                    "allow_anonymous_question": settings.ALLOW_ANONYMOUS_QUESTION,
                 },
             )
         question = utils.create_question(
@@ -107,13 +106,7 @@ def view_askquestion(request):
             utils.accept_answer(a)
         messages.success(request, "Question posted successfully")
         return redirect("forum:thread", pk=question.pk)
-    return render(
-        request,
-        "main/askquestion.html",
-        {
-            "allow_anonymous_question": settings.ALLOW_ANONYMOUS_QUESTION,
-        },
-    )
+    return render(request, "main/askquestion.html")
 
 
 def view_markdown_help(request):

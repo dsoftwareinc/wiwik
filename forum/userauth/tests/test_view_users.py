@@ -20,7 +20,9 @@ class UsersViewTest(UserAuthTestCase):
     def setUpClass(cls):
         super().setUpClass()
         question = utils.create_question(cls.users[0], cls.title, cls.question_content, ",".join(cls.tags))
-        VoteActivity.objects.create(source=None, target=cls.users[1], reputation_change=10, question=question)
+        VoteActivity.objects.create(
+            source=None, target=cls.users[1], reputation_change=10, question=question,
+            type=VoteActivity.ActivityType.UPVOTE)
 
     def test__users_list__green(self):
         self.client.login(self.usernames[0], self.password)

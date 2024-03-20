@@ -1,6 +1,7 @@
 from unittest import mock
 
 from bs4 import BeautifulSoup
+from constance import config
 from django.test.utils import override_settings
 from django.urls import reverse
 
@@ -61,6 +62,7 @@ class TestEditArticleView(ArticlesApiTestCase):
         self.client.login(self.username1, self.password)
         new_title = "new_title_with_appropriate_length"
         new_content = "new content with good enough length"
+        config.MIN_ARTICLE_CONTENT_LENGTH = len(new_content)
         new_tags = ["tag1", "tag2"]
         # act
         res = self.client.edit_article_post(self.article.pk, new_title, new_content, ",".join(new_tags))
@@ -80,6 +82,7 @@ class TestEditArticleView(ArticlesApiTestCase):
     def test_edit_article_post__no_changes(self):
         # arrange
         self.client.login(self.username1, self.password)
+        config.MIN_ARTICLE_CONTENT_LENGTH = len(self.article_content)
         # act
         res = self.client.edit_article_post(self.article.pk, self.title, self.article_content, ",".join(self.tags))
         # assert
@@ -94,6 +97,7 @@ class TestEditArticleView(ArticlesApiTestCase):
         self.client.login("admin", "1111")
         new_title = "new_title_with_appropriate_length"
         new_content = "new content with good enough length"
+        config.MIN_ARTICLE_CONTENT_LENGTH = len(new_content)
         new_tags = ["tag1", "tag2"]
         # act
         res = self.client.edit_article_post(self.article.pk, new_title, new_content, ",".join(new_tags) + ", ")

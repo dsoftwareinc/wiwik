@@ -1,7 +1,7 @@
 from unittest import mock
 
 from bs4 import BeautifulSoup
-from django.conf import settings
+from constance import config
 
 from common.test_utils import assert_message_in_response
 from forum import models, jobs
@@ -12,7 +12,7 @@ from forum.views import notifications
 class TestAddQuestion(ForumApiTestCase):
     def test_post_question_get__with_anonymous_allowed__green(self):
         # arrange
-        settings.ALLOW_ANONYMOUS_QUESTION = True
+        config.ALLOW_ANONYMOUS_QUESTION = True
         self.client.login(self.usernames[0], self.password)
         # act
         res = self.client.add_question_get()
@@ -25,7 +25,7 @@ class TestAddQuestion(ForumApiTestCase):
 
     def test_post_question_get__with_anonymous_disabled__green(self):
         # arrange
-        settings.ALLOW_ANONYMOUS_QUESTION = False
+        config.ALLOW_ANONYMOUS_QUESTION = False
         self.client.login(self.usernames[0], self.password)
         # act
         res = self.client.add_question_get()
@@ -151,7 +151,7 @@ class TestAddQuestion(ForumApiTestCase):
         self.assertEqual(0, models.Question.objects.count())
         assert_message_in_response(
             res,
-            f"Error: Content should have at least {settings.MIN_QUESTION_CONTENT_LENGTH} characters",
+            f"Error: Content should have at least {config.MIN_QUESTION_CONTENT_LENGTH} characters",
         )
         self.assertContains(res, title)
         self.assertContains(res, content)
@@ -160,7 +160,7 @@ class TestAddQuestion(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[0], self.password)
         title = "title with sufficient length"
-        content = "long content: " + "x" * settings.MAX_QUESTION_CONTENT_LENGTH
+        content = "long content: " + "x" * config.MAX_QUESTION_CONTENT_LENGTH
         tags = ["tag1", "tag2"]
         # act
         res = self.client.add_question_post(title, content, ", ".join(tags))

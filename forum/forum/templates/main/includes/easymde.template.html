@@ -19,6 +19,8 @@
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             let editor = new EasyMDE({
                 autoDownloadFontAwesome: false,
+                lineNumbers: true,
+                minHeight: "300px",
                 element: elem,
                 toolbar: ["bold", "italic", "heading", "|",
                     "quote", "unordered-list", "ordered-list", "code", "|",
@@ -35,6 +37,9 @@
                 imagePathAbsolute: true,
                 renderingConfig: {
                     codeSyntaxHighlighting: true,
+                },
+                parsingConfig: {
+                    allowAtxHeaderWithoutSpace: false,
                 },
                 autosave: {
                     enabled: !skipautosave,

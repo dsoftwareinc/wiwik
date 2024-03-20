@@ -7,20 +7,56 @@ from datetime import timedelta
 
 from .base import getenv_asbool, getenv_asint
 
-USE_CDN = getenv_asbool("USE_CDN", default="TRUE")
-ALLOW_USER_NOTIFICATION_SKIPPING = True  # Allow skipping notifications in certain scenarios
-RUN_ASYNC_JOBS_SYNC = getenv_asbool("RUN_ASYNC_JOBS_SYNC", default="FALSE")
-FAVICON_LINK_LIGHT = os.getenv("FAVICON_LINK_LIGHT", "/static/favicon-light.ico")
-FAVICON_LINK_DARK = os.getenv("FAVICON_LINK_LIGHT", "/static/favicon-dark.ico")
-UPVOTE_CHANGE = 10
-DOWNVOTE_CHANGE = -10
-ACCEPT_ANSWER_CHANGE = 15
-ACCEPT_ANSWER_OLD_QUESTION_CHANGE = 100
-MAX_REPUTATION_ITEMS = 10
-MAX_BOOKMARK_ITEMS = 20
-ALLOW_ANONYMOUS_QUESTION = getenv_asbool("ALLOW_ANONYMOUS_QUESTION", "FALSE")
-MAX_ANSWERS = int(os.getenv("MAX_ANSWERS_ON_QUESTION", 3))
-MAX_COMMENTS = int(os.getenv("MAX_COMMENTS", 5))
+CONSTANCE_CONFIG = {
+    'USE_CDN': (True, 'Should 3rd party libraries be downloaded using CDN', bool),
+    'FAVICON_LINK_LIGHT': ("/static/favicon-light.ico", 'site favicon for light-mode', str),
+    'FAVICON_LINK_DARK': ("/static/favicon-dark.ico", 'site favicon for dark-mode', str),
+    'MAX_BOOKMARK_ITEMS': (20, 'Bookmarks to show on nav-bar', int),
+    'MAX_REPUTATION_ITEMS': (10, 'Reputation activity to show on nav-bar', int),
+    'LATEX_SUPPORT_ENABLED': (True, 'Enable LaTex support', bool),
+    'GOOGLE_ANALYTICS_KEY': (os.getenv("GOOGLE_ANALYTICS_KEY", ""), 'Google Analytics key', str),
+    'SHOWCASE_DEPLOYMENT': (True, 'Show link to wiwik source code', bool),
+    "UPVOTE_CHANGE": (10, "Points change for upvote", int),
+    "DOWNVOTE_CHANGE": (-10, "Points change for downvote", int),
+    "EDITED_CHANGE": (2, "Points change for editing post", int),
+    "ACCEPT_ANSWER_CHANGE": (15, "Points change for accepted answer", int),
+    "ACCEPT_ANSWER_OLD_QUESTION_CHANGE": (100, "Points change for accepted answer on an old question", int),
+    "ALLOW_ANONYMOUS_QUESTION": (True, "Allow posting questions anonymously", bool),
+    "MIN_QUESTION_CONTENT_LENGTH": (20, "Minimum characters allowed in question body", int),
+    "MAX_QUESTION_CONTENT_LENGTH": (30000, "Max characters allowed in question body", int),
+    "MIN_QUESTION_TITLE_LENGTH": (15, "Minimum characters allowed in question title", int),
+    "MAX_QUESTION_TITLE_LENGTH": (150, "Maximum characters allowed in question title", int),
+    "MIN_COMMENT_LENGTH": (15, "Minimum characters in a comment", int),
+    "MAX_COMMENT_LENGTH": (200, "Maximum characters in a comment", int),
+    "MIN_ARTICLE_TITLE_LENGTH": (10, "Minimum characters in an article title", int),
+    "MAX_ARTICLE_TITLE_LENGTH": (255, "Maximum characters in an article title", int),
+    "MIN_ARTICLE_CONTENT_LENGTH": (50, "Minimum characters allowed in article body", int),
+    "MAX_ARTICLE_CONTENT_LENGTH": (100_000, "Maximum characters allowed in article body", int),
+    "MAX_ANSWERS": (3, "Maximum number of answers on a question", int),
+    "MAX_COMMENTS": (5, "Maximum number of comments on a post", int),
+    "QUESTIONS_PER_PAGE": (20, "Number of questions on a page", int),
+}
+
+CONSTANCE_CONFIG_FIELDSETS = {
+    "Web": ("USE_CDN", "FAVICON_LINK_LIGHT", "FAVICON_LINK_DARK", "GOOGLE_ANALYTICS_KEY",),
+    "Forum Web settings": (
+        "LATEX_SUPPORT_ENABLED", "MAX_BOOKMARK_ITEMS", "MAX_REPUTATION_ITEMS", "SHOWCASE_DEPLOYMENT",
+        "ALLOW_ANONYMOUS_QUESTION", "QUESTIONS_PER_PAGE",
+    ),
+    "Voting configuration": (
+        "UPVOTE_CHANGE", "DOWNVOTE_CHANGE", "ACCEPT_ANSWER_CHANGE", "ACCEPT_ANSWER_OLD_QUESTION_CHANGE",
+        "EDITED_CHANGE",
+    ),
+    "Post limits": (
+        "MIN_QUESTION_TITLE_LENGTH", "MAX_QUESTION_TITLE_LENGTH",
+        "MIN_QUESTION_CONTENT_LENGTH", "MAX_QUESTION_CONTENT_LENGTH",
+        "MIN_COMMENT_LENGTH", "MAX_COMMENT_LENGTH",
+        "MIN_ARTICLE_TITLE_LENGTH", "MAX_ARTICLE_TITLE_LENGTH",
+        "MIN_ARTICLE_CONTENT_LENGTH", "MAX_ARTICLE_CONTENT_LENGTH",
+        "MAX_ANSWERS", "MAX_COMMENTS",
+    ),
+}
+
 POSTGRES_SEARCH = {
     "trigram_min_relevance": 0.05,
     "weights": {
@@ -34,20 +70,7 @@ DAYS_TO_REVOKE_MODERATOR = 10
 DAYS_TO_GRANT_MODERATOR = 16
 DAYS_FOR_QUESTION_TO_BECOME_OLD = getenv_asint("DAYS_FOR_QUESTION_TO_BECOME_OLD", None)
 ANSWER_IS_RECENT_DAYS = 3
-QUESTIONS_PER_PAGE = int(os.getenv("QUESTIONS_PER_PAGE", 20))
-LATEX_SUPPORT_ENABLED = True
-GOOGLE_ANALYTICS_KEY = os.getenv("GOOGLE_ANALYTICS_KEY", None)
-SHOWCASE_DEPLOYMENT = os.getenv("SHOWCASE_DEPLOYMENT", False)
 
-MIN_COMMENT_LENGTH = int(os.getenv("MIN_COMMENT_LENGTH", 15))
-MAX_COMMENT_LENGTH = int(os.getenv("MAX_COMMENT_LENGTH", 200))
-MIN_QUESTION_TITLE_LENGTH = int(os.getenv("MIN_QUESTION_TITLE_LENGTH", 15))
-MAX_QUESTION_TITLE_LENGTH = int(os.getenv("MAX_QUESTION_TITLE_LENGTH", 150))
-MIN_QUESTION_CONTENT_LENGTH = int(os.getenv("MIN_QUESTION_CONTENT_LENGTH", 20))
-MAX_QUESTION_CONTENT_LENGTH = int(os.getenv("MAX_QUESTION_CONTENT_LENGTH", 30000))
-MIN_ARTICLE_TITLE_LENGTH = int(os.getenv("MIN_ARTICLE_TITLE_LENGTH", 10))
-MIN_ARTICLE_CONTENT_LENGTH = int(os.getenv("MIN_ARTICLE_CONTENT_LENGTH", 50))
-MAX_ARTICLE_CONTENT_LENGTH = int(os.getenv("MAX_ARTICLE_CONTENT_LENGTH", 100_000))
 # Tag edit settings
 MIN_TAG_DESCRIPTION_LENGTH = 20
 MAX_TAG_DESCRIPTION_LENGTH = 460

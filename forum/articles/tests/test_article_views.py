@@ -1,6 +1,7 @@
 from unittest import mock
 
 from bs4 import BeautifulSoup
+from constance import config
 from django.conf import settings
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -30,7 +31,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.article = utils.create_article(cls.users[1], cls.title, cls.content, ",".join(cls.tags))
-        settings.MAX_COMMENTS = 3
+        config.MAX_COMMENTS = 3
 
     def test_articles_detail_view__user_not_logged_in(self):
         self.client.login(self.usernames[0], self.password)
@@ -98,7 +99,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
         self.assertEqual(prev_views + 1, self.article.views)
 
     def test_articles_detail_view__calling_background_task_with_author__does_not_increase_views(
-        self,
+            self,
     ):
         self.client.login(self.usernames[1], self.password)
         self.article.refresh_from_db()
@@ -210,7 +211,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch("forum.jobs.start_job")
     def test_articles_detail_view_create_comment__with_mention_user_does_not_exists__should_not_notify(
-        self, start_job: mock.MagicMock
+            self, start_job: mock.MagicMock
     ):
         # arrange
         self.client.login(self.usernames[0], self.password)
@@ -246,7 +247,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch("forum.jobs.start_job")
     def test_articles_detail_view_create_comment__with_mention_user_bad_quotes__should_handle_bad_quotes(
-        self, start_job: mock.MagicMock
+            self, start_job: mock.MagicMock
     ):
         # arrange
         self.client.login(self.usernames[0], self.password)
@@ -334,7 +335,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
         # arrange
         self.client.login(self.usernames[0], self.password)
         answer_content = "answer------content"
-        for _ in range(settings.MAX_ANSWERS):
+        for _ in range(config.MAX_ANSWERS):
             utils.create_answer(answer_content, self.users[0], self.article)
         new_answer_content = "new---answer------content---"
         # act
@@ -367,14 +368,14 @@ class TestArticleDetailView(ArticlesApiTestCase):
         self.client.login(self.usernames[0], self.password)
         comment_content = "comment------content"
         another_comment_content = "comment------content$$%%@@##"
-        for _ in range(settings.MAX_COMMENTS):
+        for _ in range(config.MAX_COMMENTS):
             self.client.article_add_comment(self.article.pk, "question", self.article.pk, comment_content)
         # act
         res = self.client.article_add_comment(self.article.pk, "question", self.article.pk, another_comment_content)
         # assert
         self.assertEqual(200, res.status_code)
         self.assertEqual(
-            settings.MAX_COMMENTS,
+            config.MAX_COMMENTS,
             models.QuestionComment.objects.filter(question=self.article).count(),
         )
         comment_list = list(models.QuestionComment.objects.filter(question=self.article))
@@ -414,7 +415,7 @@ class TestForumArticleListView(ArticlesApiTestCase):
     def setUpClass(cls):
         super().setUpClass()
 
-        for i in range(settings.QUESTIONS_PER_PAGE + 2):
+        for i in range(config.QUESTIONS_PER_PAGE + 2):
             utils.create_article(
                 cls.users[0],
                 cls.title,

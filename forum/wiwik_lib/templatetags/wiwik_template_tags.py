@@ -3,6 +3,7 @@ from typing import List
 
 import bleach
 import pymdownx.arithmatex as arithmatex
+from constance import config
 from django import template
 from django.conf import settings
 from django.templatetags.static import static
@@ -39,7 +40,7 @@ MARKDOWN_EXTENSIONS_CONFIG = {
         ]
     },
 }
-if settings.LATEX_SUPPORT_ENABLED:
+if config.LATEX_SUPPORT_ENABLED:
     MARKDOWN_EXTENSIONS_CONFIG["pymdownx.arithmatex"] = {
         "generic": True,
     }
@@ -182,10 +183,10 @@ _3RD_PARTY_URLS = {
         "katex-autorender-js": f"https://cdn.jsdelivr.net/npm/katex@{_VER_KATEX}/dist/contrib/auto-render.min.js",
         "katex-mjs": f"https://cdn.jsdelivr.net/npm/katex@{_VER_KATEX}/dist/katex.mjs",
         "bootstrap-datepicker-js": f"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/"
-        f"{_VER_BOOTSTRAP_DATEPICKER}/js/bootstrap-datepicker.min.js",
+                                   f"{_VER_BOOTSTRAP_DATEPICKER}/js/bootstrap-datepicker.min.js",
         # noqa: E501
         "bootstrap-datepicker-css": f"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/"
-        f"{_VER_BOOTSTRAP_DATEPICKER}/css/bootstrap-datepicker.standalone.min.css",
+                                    f"{_VER_BOOTSTRAP_DATEPICKER}/css/bootstrap-datepicker.standalone.min.css",
         # noqa: E501
     },
     "STATIC": {
@@ -215,7 +216,7 @@ _3RD_PARTY_URLS = {
 def get_url(tool_name: str):
     if tool_name not in _3RD_PARTY_URLS["CDN"] or tool_name not in _3RD_PARTY_URLS["STATIC"]:
         raise template.TemplateSyntaxError(f"{tool_name} does not exist!")
-    if settings.USE_CDN:
+    if config.USE_CDN:
         return _3RD_PARTY_URLS["CDN"][tool_name]
     else:
         return static(_3RD_PARTY_URLS["STATIC"][tool_name])

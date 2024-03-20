@@ -21,7 +21,7 @@ def view_space_questions(request, space_id: int):
     page_number = request.GET.get("page", 1)
     main_query = Question.objects.filter(space=space)
     properties = space.properties.all()
-    page_qs = paginate_queryset(main_query, page_number, settings.QUESTIONS_PER_PAGE)
+    page_qs = paginate_queryset(main_query, page_number, config.QUESTIONS_PER_PAGE)
     context = {
         "questions_list": page_qs,
         "header": f"Questions for space {space.short_name}",

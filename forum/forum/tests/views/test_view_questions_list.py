@@ -1,6 +1,7 @@
 from unittest import mock
 
 from bs4 import BeautifulSoup
+from constance import config
 from django.conf import settings
 from django.test import override_settings
 from django.urls import reverse
@@ -21,7 +22,7 @@ class TestForumQuestionsListView(ForumApiTestCase):
     def setUpClass(cls):
         super().setUpClass()
         num_users = len(cls.users)
-        for i in range(settings.QUESTIONS_PER_PAGE + 2):
+        for i in range(config.QUESTIONS_PER_PAGE + 2):
             utils.create_question(
                 cls.users[i % num_users],
                 cls.title,

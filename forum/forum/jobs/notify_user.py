@@ -54,7 +54,7 @@ def should_notification_be_skipped(
         False: otherwise
 
     """
-    if not settings.ALLOW_USER_NOTIFICATION_SKIPPING:
+    if settings.DISABLE_USER_NOTIFICATION_SKIPPING:
         return False
     if not user.email_notifications:
         logger.debug(f"{user.email} does not have email notifications enabled")

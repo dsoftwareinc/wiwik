@@ -65,7 +65,7 @@
                                 {% compress js %}
                                     <script src="{% static 'js/user-select-list.js' %}"></script>
                                 {% endcompress %}
-                                {% if allow_anonymous_question %}
+                                {% if config.ALLOW_ANONYMOUS_QUESTION %}
                                     <hr class="invis"/>
                                     <div class="form-check form-switch d-flex flex-row-reverse ">
                                         <label for="anonymous">Post question anonymously</label>

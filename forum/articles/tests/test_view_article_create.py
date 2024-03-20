@@ -1,7 +1,7 @@
 from unittest import mock
 
 from bs4 import BeautifulSoup
-from django.conf import settings
+from constance import config
 
 from articles.models import Article
 from articles.tests.base import ArticlesApiTestCase
@@ -28,13 +28,14 @@ class TestAddArticle(ArticlesApiTestCase):
         self.assertEqual(1, len(soup.find_all("textarea", {"id": "articleeditor"})))
         self.assertEqual(1, len(soup.find_all("input", {"name": "title"})))
 
-    def test_post_question__green(self):
+    def test_post_article__green(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
 
         models.Tag.objects.create(tag_word="tag1question")
         title = "question title with minimum acceptable chars"
         content = "question content with more than minimum chars"
+        config.MIN_ARTICLE_CONTENT_LENGTH = len(content)
         tags = [
             "tag1",
         ]
@@ -54,7 +55,7 @@ class TestAddArticle(ArticlesApiTestCase):
 
     # TODO fix
     # @mock.patch('forum.jobs.start_job')
-    # def test_post_question__with_invites__green(self, start_job: mock.MagicMock):
+    # def test_post_article__with_invites__green(self, start_job: mock.MagicMock):
     #     # arrange
     #     self.client.login(self.usernames[0], self.password)
     #
@@ -80,7 +81,7 @@ class TestAddArticle(ArticlesApiTestCase):
     #     ]
     #     start_job.assert_has_calls(calls, any_order=True)
 
-    def test_post_question__short_title__should_fail(self):
+    def test_post_article__short_title__should_fail(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         title = "short"
@@ -94,7 +95,7 @@ class TestAddArticle(ArticlesApiTestCase):
         self.assertContains(res, title)
         self.assertContains(res, content)
 
-    def test_post_question__short_content__should_fail(self):
+    def test_post_article__short_content__should_fail(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         title = "title with sufficient length"
@@ -106,16 +107,16 @@ class TestAddArticle(ArticlesApiTestCase):
         self.assertEqual(0, models.Question.objects.count())
         assert_message_in_response(
             res,
-            "Error: Content length is 5 characters, should be between 10 and 200 characters",
+            "Error: Content length is 5 characters, should be between 50 and 100000 characters",
         )
         self.assertContains(res, title)
         self.assertContains(res, content)
 
-    def test_post_question__long_content__should_fail(self):
+    def test_post_article__long_content__should_fail(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         title = "title with sufficient length"
-        content = "long content: " + "x" * settings.MAX_ARTICLE_CONTENT_LENGTH
+        content = "long content: " + "x" * config.MAX_ARTICLE_CONTENT_LENGTH
         tags = ["tag1", "tag2"]
         # act
         res = self.client.add_article_post(title, content, ", ".join(tags))
@@ -123,12 +124,12 @@ class TestAddArticle(ArticlesApiTestCase):
         self.assertEqual(0, models.Question.objects.count())
         assert_message_in_response(
             res,
-            "Error: Content length is 214 characters, should be between 10 and 200 characters",
+            "Error: Content length is 100014 characters, should be between 50 and 100000 characters",
         )
         self.assertContains(res, title)
         self.assertContains(res, content)
 
-    def test_post_question__long_title__should_fail(self):
+    def test_post_article__long_title__should_fail(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         title = "x" * 300
@@ -145,12 +146,14 @@ class TestAddArticle(ArticlesApiTestCase):
         self.assertContains(res, title)
         self.assertContains(res, content)
 
-    def test_post_question__empty_tag__should_not_be_added(self):
+    def test_post_article__empty_tag__should_not_be_added(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         title = "article title with minimum acceptable chars"
         content = "question content with more than minimum chars"
         tags = ["tag1", "  ", "tag2"]
+        config.MIN_ARTICLE_CONTENT_LENGTH = len(content)
+
         # act
         res = self.client.add_article_post(title, content, ", ".join(tags))
         # assert
@@ -163,14 +166,13 @@ class TestAddArticle(ArticlesApiTestCase):
             assert tag in tags_list, f"expected {tag} in {tags_list} but is not there"
         assert_message_in_response(res, "Article draft posted successfully")
 
-    def test_post_question__with_answer_flag_off__should_create_answer(self):
+    def test_post_article__with_answer_flag_off__should_create_answer(self):
         # arrange
         self.client.login(self.usernames[0], self.password)
         title = "article title with minimum acceptable chars"
         content = "question content with more than minimum chars"
-        tags = [
-            "tag1",
-        ]
+        config.MIN_ARTICLE_CONTENT_LENGTH = len(content)
+        tags = ["tag1"]
         notifications.notify_tag_followers_new_question = mock.MagicMock()
         answer_content = "answer content for question with answer"
         # act

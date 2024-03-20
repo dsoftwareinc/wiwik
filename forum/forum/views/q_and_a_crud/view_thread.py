@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import cast, Optional
 
-from django.conf import settings
+from constance import config
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Exists, OuterRef, Value
@@ -51,7 +51,7 @@ def _get_question_answers(q: Question, order_by: str, user):
                 VoteActivity.objects.filter(
                     answer_id=OuterRef("id"),
                     source=user,
-                    reputation_change=settings.UPVOTE_CHANGE,
+                    type=VoteActivity.ActivityType.UPVOTE,
                 )
             )
         )
@@ -60,7 +60,7 @@ def _get_question_answers(q: Question, order_by: str, user):
                 VoteActivity.objects.filter(
                     question_id=OuterRef("id"),
                     source=user,
-                    reputation_change=settings.DOWNVOTE_CHANGE,
+                    type=VoteActivity.ActivityType.DOWNVOTE,
                 )
             )
         )
@@ -75,7 +75,7 @@ def _create_answer_and_message(request, question_pk: int, answer_content: str) -
     if question is None:
         logger.warning("Trying to create answer without question, ignoring")
         return
-    if question.answer_set.count() >= settings.MAX_ANSWERS:
+    if question.answer_set.count() >= config.MAX_ANSWERS:
         logger.warning(
             f"User {request.user} tries to create answer for question {question_pk} "
             f"when it already reached max number of answers"
@@ -87,7 +87,7 @@ def _create_answer_and_message(request, question_pk: int, answer_content: str) -
 
 
 def _create_comment(request, model_name: str, model_pk: int, content: str) -> Optional[Comment]:
-    if not (settings.MIN_COMMENT_LENGTH <= len(content) <= settings.MAX_COMMENT_LENGTH):
+    if not (config.MIN_COMMENT_LENGTH <= len(content) <= config.MAX_COMMENT_LENGTH):
         logger.warning(
             f"user {request.user} trying to create a comment "
             f"on {model_name}:{model_pk} with bad length ({len(content)})"
@@ -103,7 +103,7 @@ def _create_comment(request, model_name: str, model_pk: int, content: str) -> Op
     if comment_parent is None:
         logger.warning(f"Trying to comment on {model_name}:{model_pk} which could not be fetched")
         return None
-    if comment_parent.comments.count() >= settings.MAX_COMMENTS:
+    if comment_parent.comments.count() >= config.MAX_COMMENTS:
         logger.warning(
             f"User {request.user} tries to create comment for {model_name}:{model_pk} "
             f"when it already reached max number of comments"
@@ -162,14 +162,14 @@ def view_single_question(request, pk):
                 question_id=pk,
                 answer_id__isnull=True,
                 source=request.user,
-                reputation_change=settings.UPVOTE_CHANGE,
+                type=VoteActivity.ActivityType.UPVOTE,
             )
         )
         user_downvoted = Exists(
             VoteActivity.objects.filter(
                 question_id=pk,
                 source=request.user,
-                reputation_change=settings.DOWNVOTE_CHANGE,
+                type=VoteActivity.ActivityType.DOWNVOTE,
             )
         )
         q = (
@@ -210,7 +210,7 @@ def view_single_question(request, pk):
             "show_edit_button": show_edit_button,
             "show_delete_q_button": show_delete_question_button,
             "show_delete_a_button": show_delete_answer_button,
-            "max_answers": settings.MAX_ANSWERS,
+            "max_answers": config.MAX_ANSWERS,
             "show_follow": show_follow,
             "bookmarked": bookmarked,
             "order_by": order_answers_by,

@@ -38,6 +38,7 @@ class VotesActivityAdmin(admin.TabularInline):
     model = VoteActivity
     fk_name = "source"
     fields = (
+        "type",
         "reputation_change",
         "target",
         "created_at",

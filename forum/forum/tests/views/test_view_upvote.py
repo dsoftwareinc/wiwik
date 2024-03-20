@@ -1,4 +1,4 @@
-from django.conf import settings
+from constance import config
 from django.urls import reverse
 
 from common.test_utils import assert_url_in_chain
@@ -27,7 +27,7 @@ class TestUpvoteView(ForumApiTestCase):
         )
         self.question.refresh_from_db()
         self.assertEqual(1, self.question.votes)
-        self.assertEqual(settings.UPVOTE_CHANGE, self.question.author.reputation_score)
+        self.assertEqual(config.UPVOTE_CHANGE, self.question.author.reputation_score)
         vote_activity_list = list(models.VoteActivity.objects.all())
         item = vote_activity_list[0]
         self.assertEqual(1, len(vote_activity_list))
@@ -35,7 +35,7 @@ class TestUpvoteView(ForumApiTestCase):
         self.assertEqual(self.question.author, item.target)
         self.assertEqual(None, item.answer)
         self.assertEqual(self.question, item.question)
-        self.assertEqual(settings.UPVOTE_CHANGE, item.reputation_change)
+        self.assertEqual(config.UPVOTE_CHANGE, item.reputation_change)
         self.assertGreater(self.question.last_activity, self.prev_last_activity)
 
     def test_upvote_answer__green(self):
@@ -50,7 +50,7 @@ class TestUpvoteView(ForumApiTestCase):
         )
         a = models.Answer.objects.get(pk=self.answer_diff_user.pk)
         self.assertEqual(1, a.votes)
-        self.assertEqual(settings.UPVOTE_CHANGE, a.author.reputation_score)
+        self.assertEqual(config.UPVOTE_CHANGE, a.author.reputation_score)
         vote_activity_list = list(models.VoteActivity.objects.all())
         self.assertEqual(1, len(vote_activity_list))
         item = vote_activity_list[0]
@@ -58,7 +58,7 @@ class TestUpvoteView(ForumApiTestCase):
         self.assertEqual(a.author, item.target)
         self.assertEqual(a, item.answer)
         self.assertEqual(self.question, item.question)
-        self.assertEqual(settings.UPVOTE_CHANGE, item.reputation_change)
+        self.assertEqual(config.UPVOTE_CHANGE, item.reputation_change)
         self.question.refresh_from_db()
         self.assertGreater(self.question.last_activity, self.prev_last_activity)
 
@@ -95,7 +95,7 @@ class TestUpvoteView(ForumApiTestCase):
         )
         self.assertEqual(1, a.votes)
         self.assertEqual(
-            previous_reputation + settings.UPVOTE_CHANGE - settings.DOWNVOTE_CHANGE,
+            previous_reputation + config.UPVOTE_CHANGE - config.DOWNVOTE_CHANGE,
             a.author.reputation_score,
         )
         vote_activity_list = list(models.VoteActivity.objects.all())
@@ -105,7 +105,7 @@ class TestUpvoteView(ForumApiTestCase):
         self.assertEqual(a.author, item.target)
         self.assertEqual(a, item.answer)
         self.assertEqual(self.question, item.question)
-        self.assertEqual(settings.UPVOTE_CHANGE, item.reputation_change)
+        self.assertEqual(config.UPVOTE_CHANGE, item.reputation_change)
         self.question.refresh_from_db()
         self.assertGreater(self.question.last_activity, self.prev_last_activity)
 
@@ -125,7 +125,7 @@ class TestUpvoteView(ForumApiTestCase):
             .prefetch_related("author", "author__additional_data")
             .first()
         )
-        self.assertEqual(previous_reputation - settings.UPVOTE_CHANGE, a.author.reputation_score)
+        self.assertEqual(previous_reputation - config.UPVOTE_CHANGE, a.author.reputation_score)
         self.assertEqual(0, models.VoteActivity.objects.all().count())
         self.question.refresh_from_db()
         self.assertGreater(self.question.last_activity, self.prev_last_activity)

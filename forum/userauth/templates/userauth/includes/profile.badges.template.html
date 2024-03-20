@@ -9,7 +9,7 @@
                     <a class="badge-btn"
                        href="{% url 'badges:detail' item.pk %}"
                        title="{{ item.description }}">
-                        <i class="material-icons text-{{ item.type }} icon-small">verified</i>
+                        <i class="material-icons text-{{ item.badge_type }} icon-small">verified</i>
                         {{ item.name }}
                     </a>
                     {% if item.count > 1 %}

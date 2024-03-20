@@ -1,6 +1,6 @@
 <!-- Global site tag (gtag.js) - Google Analytics -->
-{% if GOOGLE_ANALYTICS_KEY %}
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_KEY }}"></script>
+{% if config.GOOGLE_ANALYTICS_KEY %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ config.GOOGLE_ANALYTICS_KEY }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -9,6 +9,6 @@
         }
 
         gtag('js', new Date());
-        gtag('config', '{{ GOOGLE_ANALYTICS_KEY }}');
+        gtag('config', '{{ config.GOOGLE_ANALYTICS_KEY }}');
     </script>
 {% endif %}

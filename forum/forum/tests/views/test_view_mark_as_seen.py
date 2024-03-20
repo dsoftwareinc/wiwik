@@ -13,6 +13,7 @@ class TestAcceptAnswerView(ForumApiTestCase):
             target=cls.users[0],
             reputation_change=10,
             question=cls.question,
+            type=VoteActivity.ActivityType.UPVOTE,
         )
 
     def test_view_all_mark_as_seen__green(self):

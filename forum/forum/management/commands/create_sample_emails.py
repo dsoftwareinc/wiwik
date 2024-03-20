@@ -72,7 +72,7 @@ class Command(ManagementCommand):
            directory (str): Directory where to save the files.
         """
         settings.SLACK_BOT_TOKEN = None
-        settings.ALLOW_USER_NOTIFICATION_SKIPPING = False
+        settings.DISABLE_USER_NOTIFICATION_SKIPPING = True
         settings.EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
         self.base_dir = directory
         settings.RUN_ASYNC_JOBS_SYNC = True

@@ -9,6 +9,7 @@ from forum.models import VoteActivity, SearchRecord
 class ActivityAdmin(NumericFilterModelAdmin):
     list_display = (
         "id",
+        "type",
         "target",
         "cause",
         "impact",
@@ -29,6 +30,7 @@ class ActivityAdmin(NumericFilterModelAdmin):
             "answer",
         ),
         (
+            "type",
             "reputation_change",
             "badge",
         ),
@@ -56,6 +58,7 @@ class ActivityAdmin(NumericFilterModelAdmin):
         ("reputation_change", SliderNumericFilter),
         ("seen", DateRangeFilter),
         "badge",
+        "type",
     )
 
     @admin.display(description="Impact", ordering="reputation_change")

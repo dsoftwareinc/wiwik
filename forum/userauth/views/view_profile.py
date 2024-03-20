@@ -49,7 +49,7 @@ def get_user_forum_data(seeuser: ForumUser, tab: str, page_number: int):
             .values(
                 pk=F("badge__id"),
                 name=F("badge__name"),
-                type=F("badge__type"),
+                badge_type=F("badge__type"),
                 description=F("badge__description"),
             )
             .annotate(count=Count("name"))

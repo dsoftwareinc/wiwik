@@ -1,6 +1,6 @@
 from typing import cast
 
-from django.conf import settings
+from constance import config
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, Value
@@ -35,7 +35,7 @@ def view_article_list(request):
         "tags",
     )
     page_number = request.GET.get("page", 1)
-    page_qs = paginate_queryset(all_questions_qs, page_number, settings.QUESTIONS_PER_PAGE)
+    page_qs = paginate_queryset(all_questions_qs, page_number, config.QUESTIONS_PER_PAGE)
     context = {
         "all_questions": page_qs,
         "tab": tab if q is None else None,
@@ -48,7 +48,7 @@ def view_article_list(request):
 
 def _create_comment(request, model_name: str, model_pk: int, content: str):
     parent = utils.get_model(model_name, model_pk)
-    if not (settings.MIN_COMMENT_LENGTH <= len(content) <= settings.MAX_COMMENT_LENGTH):
+    if not (config.MIN_COMMENT_LENGTH <= len(content) <= config.MAX_COMMENT_LENGTH):
         logger.warning(
             f"user {request.user} trying to create a comment "
             f"on {model_name}:{model_pk} with bad length ({len(content)})"
@@ -58,7 +58,7 @@ def _create_comment(request, model_name: str, model_pk: int, content: str):
     if parent is None:
         logger.warning(f"Trying to comment on {model_name}:{model_pk} which could not be fetched")
         return None
-    if parent.comments.count() >= settings.MAX_COMMENTS:
+    if parent.comments.count() >= config.MAX_COMMENTS:
         logger.warning(
             f"User {request.user} tries to create comment for {model_name}:{model_pk} "
             f"when it already reached max number of comments"
@@ -90,21 +90,21 @@ class ArticleValidationError(Exception):
 
 
 def _validate_article_data(title: str, content: str) -> None:
-    if title is None or len(title) < settings.MIN_ARTICLE_TITLE_LENGTH or len(title) > 255:
+    if title is None or len(title) < config.MIN_ARTICLE_TITLE_LENGTH or len(title) > config.MAX_ARTICLE_TITLE_LENGTH:
         length = len(title) if title is not None else 0
         raise ArticleValidationError(
-            f"Title has {length} characters, must be between {settings.MIN_ARTICLE_TITLE_LENGTH} and 255 characters."
+            f"Title has {length} characters, must be between {config.MIN_ARTICLE_TITLE_LENGTH} and {config.MAX_ARTICLE_TITLE_LENGTH} characters."
         )
     if (
-        content is None
-        or len(content) < settings.MIN_ARTICLE_CONTENT_LENGTH
-        or len(content) > settings.MAX_ARTICLE_CONTENT_LENGTH
+            content is None
+            or len(content) < config.MIN_ARTICLE_CONTENT_LENGTH
+            or len(content) > config.MAX_ARTICLE_CONTENT_LENGTH
     ):
         length = len(content) if content is not None else 0
         raise ArticleValidationError(
             f"Content length is {length} characters, should be between "
-            f"{settings.MIN_ARTICLE_CONTENT_LENGTH} "
-            f"and {settings.MAX_ARTICLE_CONTENT_LENGTH} characters"
+            f"{config.MIN_ARTICLE_CONTENT_LENGTH} "
+            f"and {config.MAX_ARTICLE_CONTENT_LENGTH} characters"
         )
 
 
@@ -121,14 +121,14 @@ def view_article_detail(request, pk: int):
             question_id=pk,
             answer_id__isnull=True,
             source=request.user,
-            reputation_change=settings.UPVOTE_CHANGE,
+            type=VoteActivity.ActivityType.UPVOTE,
         )
     )
     user_downvoted = Exists(
         VoteActivity.objects.filter(
             question_id=pk,
             source=request.user,
-            reputation_change=settings.DOWNVOTE_CHANGE,
+            type=VoteActivity.ActivityType.DOWNVOTE,
         )
     )
     article = (

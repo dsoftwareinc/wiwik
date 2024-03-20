@@ -41,6 +41,7 @@ def _check_badge_for_user(badge: Badge, user: ForumUser, method: Callable[[Forum
         VoteActivity.objects.create(
             target=user,
             badge=badge,
+            type=VoteActivity.ActivityType.BADGE
         )
         if badge.type == BadgeType.GOLD:
             user.gold_badges += 1

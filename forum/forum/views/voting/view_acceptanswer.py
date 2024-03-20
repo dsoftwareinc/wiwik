@@ -36,13 +36,13 @@ def view_acceptanswer(request, question_pk: int, answer_pk: int):
     utils.accept_answer(answer)
     answers = answer.question.answer_set.all()
     for answer in answers:
-        utils.delete_activity(answer.question.author, answer.author, answer, settings.ACCEPT_ANSWER_CHANGE)
+        utils.delete_activity(answer.question.author, answer.author, answer, None)
     if user != answer.author:
         if question.is_old and answer.is_recent:
-            change = settings.ACCEPT_ANSWER_OLD_QUESTION_CHANGE
+            activity_type = models.VoteActivity.ActivityType.ACCEPT_OLD
         else:
-            change = settings.ACCEPT_ANSWER_CHANGE
-        utils.create_activity(user, answer.author, answer, change)
+            activity_type = models.VoteActivity.ActivityType.ACCEPT
+        utils.create_activity(user, answer.author, answer, activity_type)
         jobs.start_job(review_bagdes_event, TRIGGER_EVENT_TYPES["Accept answer"])
     logger.info(f"user {user.username} approved answer {answer_pk} " f"on question {question_pk}")
     messages.success(request, "Answer accepted")
