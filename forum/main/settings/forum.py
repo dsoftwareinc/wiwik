@@ -7,7 +7,7 @@ from datetime import timedelta
 
 from .base import getenv_asbool, getenv_asint
 
-USE_CDN = True
+USE_CDN = getenv_asbool("USE_CDN", default="TRUE")
 ALLOW_USER_NOTIFICATION_SKIPPING = True  # Allow skipping notifications in certain scenarios
 RUN_ASYNC_JOBS_SYNC = getenv_asbool("RUN_ASYNC_JOBS_SYNC", default="FALSE")
 FAVICON_LINK_LIGHT = os.getenv("FAVICON_LINK_LIGHT", "/static/favicon-light.ico")

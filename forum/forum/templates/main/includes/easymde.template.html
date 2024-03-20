@@ -14,7 +14,7 @@
             {% else %}
                 const elemName = "queseditor";
             {% endif %}
-            const skipautosave = ("{{ skipautosave }}" == "true");
+            const skipautosave = ("{{ skipautosave }}" === "true");
             const elem = document.getElementById(elemName);
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             let editor = new EasyMDE({

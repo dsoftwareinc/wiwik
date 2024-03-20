@@ -549,7 +549,7 @@ button {
 }
 
 .EasyMDEContainer .CodeMirror-focused {
-    border-color: var(--bs-blue);
+    border-color: var(--bs-gray-500);
 }
 
 .CodeMirror, .CodeMirror-lines {
