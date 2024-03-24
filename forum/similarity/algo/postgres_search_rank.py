@@ -1,3 +1,4 @@
+from constance import config
 from django.conf import settings
 from django.contrib.postgres.search import SearchQuery, SearchRank, TrigramDistance
 from django.db.models import F
@@ -21,8 +22,8 @@ def postgres_trigram_rank(text: str, q: models.Question) -> float:
     Calculate postgres trigram rank between the text and question title+content.
     Rank is calculated as 1-distance, i.e., higher rank => better match.
     """
-    title_weight = settings.POSTGRES_SEARCH["weights"]["title"]
-    content_weight = settings.POSTGRES_SEARCH["weights"]["content"]
+    title_weight = config.trigram_weight_title
+    content_weight = config.trigram_weight_content
     distance = (
         models.Question.objects.filter(id=q.id)
         .annotate(title_distance=TrigramDistance("title", text))

@@ -1,3 +1,4 @@
+from constance import config
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
@@ -14,7 +15,7 @@ def view_image_upload(request):
         data = {"error": "noFileGiven"}
         return JsonResponse(data)
     upload = request.FILES["image"]
-    if upload.size > settings.MAX_SIZE_KB_IMAGE_UPLOAD_KB * 1024:
+    if upload.size > config.MAX_SIZE_KB_IMAGE_UPLOAD_KB * 1024:
         data = {"error": "fileTooLarge"}
         return JsonResponse(data)
     filename = "uploads/" + timezone.now().strftime("%Y-%m-%d.%H-%M-%S") + "." + upload.name.split(".")[-1]

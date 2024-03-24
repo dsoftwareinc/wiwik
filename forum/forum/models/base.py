@@ -314,7 +314,7 @@ class Answer(VotableUserInput, Flaggable):
 
     @property
     def is_recent(self):
-        recent_answer_date = timezone.now() - timedelta(days=settings.ANSWER_IS_RECENT_DAYS)
+        recent_answer_date = timezone.now() - timedelta(days=config.ANSWER_IS_RECENT_DAYS)
         return self.created_at >= recent_answer_date
 
     def get_question(self) -> Question:

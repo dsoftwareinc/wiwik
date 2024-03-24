@@ -1,5 +1,6 @@
 import shlex
 
+from constance import config
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.search import SearchQuery, SearchRank, TrigramDistance
@@ -77,13 +78,13 @@ def postgres_query_method(qs: QuerySet, initial_q: str) -> QuerySet:
         qs.annotate(relevance=search_rank).filter(relevance__isnull=False, relevance__gt=0.1).order_by("-relevance")
     )
     if res_qs.count() == 0:
-        title_weight = settings.POSTGRES_SEARCH["weights"]["title"]
-        content_weight = settings.POSTGRES_SEARCH["weights"]["content"]
+        title_weight = config.trigram_weight_title
+        content_weight = config.trigram_weight_content
         res_qs = (
             qs.annotate(title_distance=TrigramDistance("title", query))
             .annotate(content_distance=TrigramDistance("content", query))
             .annotate(relevance=1 - F("title_distance") * title_weight - F("content_distance") * content_weight)
-            .filter(relevance__gt=settings.POSTGRES_SEARCH["trigram_min_relevance"])
+            .filter(relevance__gt=config.trigram_min_relevance)
             .order_by("-relevance")
         )
     return res_qs
@@ -147,10 +148,9 @@ def configure_query_method():
         return meilisearchmethod()
     elif postgres_enabled:
         logger.info("Database engine is postgres, query method based on postgres full text search")
-        assert "trigram_min_relevance" in settings.POSTGRES_SEARCH
-        assert "weights" in settings.POSTGRES_SEARCH
-        assert "title" in settings.POSTGRES_SEARCH["weights"]
-        assert "content" in settings.POSTGRES_SEARCH["weights"]
+        assert config.trigram_min_relevance is not None
+        assert config.trigram_weight_title is not None
+        assert config.trigram_weight_content is not None
         res = postgres_query_method
     else:
         logger.warning("Database engine not postgres, defaulting to query method based on title only")
