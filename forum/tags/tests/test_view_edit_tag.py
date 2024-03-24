@@ -147,8 +147,8 @@ class TestEditTag(TagsApiTestCase):
         assert_message_in_response(res, "Error: Description too short")
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()
-        self.assertNotEquals(self.new_description, tag.description)
-        self.assertNotEquals(self.new_wiki, tag.wiki)
+        self.assertNotEqual(self.new_description, tag.description)
+        self.assertNotEqual(self.new_wiki, tag.wiki)
         self.assertEqual(0, tag.tagedit_set.count())
 
     def test_edit_tag_post__no_changes__should_fail(self):
@@ -191,8 +191,8 @@ class TestEditTag(TagsApiTestCase):
         )
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()
-        self.assertNotEquals(self.new_description, tag.description)
-        self.assertNotEquals(self.new_wiki, tag.wiki)
+        self.assertNotEqual(self.new_description, tag.description)
+        self.assertNotEqual(self.new_wiki, tag.wiki)
         self.assertEqual(0, tag.tagedit_set.count())
 
     def test_edit_tag_post__description_too_long__should_fail(self):
@@ -221,8 +221,8 @@ class TestEditTag(TagsApiTestCase):
         )
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()
-        self.assertNotEquals(self.new_description, tag.description)
-        self.assertNotEquals(self.new_wiki, tag.wiki)
+        self.assertNotEqual(self.new_description, tag.description)
+        self.assertNotEqual(self.new_wiki, tag.wiki)
         self.assertEqual(0, tag.tagedit_set.count())
 
     def test_edit_tag_post__wiki_too_long__should_fail(self):
@@ -249,8 +249,8 @@ class TestEditTag(TagsApiTestCase):
         assert_message_in_response(res, "Error: Wiki content too long")
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()
-        self.assertNotEquals(self.new_description, tag.description)
-        self.assertNotEquals(self.new_wiki, tag.wiki)
+        self.assertNotEqual(self.new_description, tag.description)
+        self.assertNotEqual(self.new_wiki, tag.wiki)
         self.assertEqual(0, tag.tagedit_set.count())
 
     def test_edit_tag_post__summary_too_short__should_fail(self):

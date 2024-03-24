@@ -21,7 +21,8 @@ def upsert_badges_in_db(app_configs, **kwargs) -> List[Any]:
     """
 
     messages = []
-    if "migrate" in sys.argv or "test" in sys.argv or "makemigrations" in sys.argv:
+    force = kwargs.get("force", False)
+    if not force and ("migrate" in sys.argv or "test" in sys.argv or "makemigrations" in sys.argv):
         return messages
     for section in badges:
         for badge_data in badges[section]:

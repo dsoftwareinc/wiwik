@@ -68,7 +68,7 @@ class BadgesApiTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        upsert_badges_in_db()
+        upsert_badges_in_db([],force=True)
         badge_qs = Badge.objects.all()
         cls.badge = badge_qs[0]
         cls.users = list()
