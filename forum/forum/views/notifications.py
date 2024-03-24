@@ -5,6 +5,7 @@ questions/tags they are following.
 import shlex
 from typing import Set, List
 
+from constance import config
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Q
@@ -64,7 +65,7 @@ def notify_tag_followers_new_question(originator: AbstractUser, tag_words: Set[s
     """
     slack_template = loader.get_template("slack/new_question.md")
     slack_msg = slack_template.render(context={"q": q, "basesite": CURRENT_SITE, "tags": ", ".join(q.tag_words())})
-    notify_slack_channel(slack_msg, settings.SLACK_NOTIFICATIONS_CHANNEL)
+    notify_slack_channel(slack_msg, config.SLACK_NOTIFICATIONS_CHANNEL)
     emails_dict = dict()
     for tag_word in tag_words:
         follows = list(

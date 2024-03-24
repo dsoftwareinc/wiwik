@@ -2,7 +2,7 @@ import os
 
 import urllib3
 from allauth.account.signals import user_signed_up, user_logged_in
-from django.conf import settings
+from constance import config
 from django.core.files.base import ContentFile
 from django.dispatch import receiver
 
@@ -39,7 +39,7 @@ def populate_profile(sociallogin, user: ForumUser, **kwargs):
         return
     _populate_user_data_from_social(user)
     msg = f"User {user.display_name()} signed up to wiwik"
-    notify_slack_channel(msg, settings.SLACK_ADMIN_NOTIFICATIONS_CHANNEL)
+    notify_slack_channel(msg, config.SLACK_ADMIN_NOTIFICATIONS_CHANNEL)
 
 
 @receiver(user_logged_in)

@@ -1,6 +1,6 @@
 from typing import Union, List, Optional
 
-from django.conf import settings
+from constance import config
 from django.core.checks import register, Warning
 from scheduler import job
 from slack_sdk import WebClient
@@ -32,17 +32,17 @@ slack_client = None
 def configure_slack_client(app_configs, **kwargs):
     global slack_client
     messages = []
-    if settings.SLACK_BOT_TOKEN is None:
+    if config.SLACK_BOT_TOKEN is None:
         messages.append(Warning("Slack integration disabled", hint="Set SLACK_BOT_TOKEN in settings"))
         return messages
 
     logger.info("Slack integration enabled")
-    slack_client = WebClient(settings.SLACK_BOT_TOKEN)
+    slack_client = WebClient(config.SLACK_BOT_TOKEN)
 
 
 @job
 def slack_post_channel_message(text: str, channel: str, thread_ts: str = None, notification_text: str = None):
-    if settings.SLACK_BOT_TOKEN is None:
+    if config.SLACK_BOT_TOKEN is None:
         return
     blocks = [
         SectionBlock(text=TextObject(text=text, type="mrkdwn")),
@@ -115,7 +115,7 @@ def _get_permalink(channel: str, message_ts: str) -> Union[str, None]:
 
 @job
 def slack_post_im_message_to_email(text: str, email: str, notification_text: str = None):
-    if settings.SLACK_BOT_TOKEN is None:
+    if config.SLACK_BOT_TOKEN is None:
         return
     try:
         logger.info(f"sending text msg to email {email}: {text}")
@@ -268,7 +268,7 @@ def verify_request(request) -> bool:
     body = request.body
     timestamp = request.headers.get("x-slack-request-timestamp", None)
     signature = request.headers.get("x-slack-signature", None)
-    verifier = SignatureVerifier(signing_secret=settings.SLACK_SIGNING_SECRET_KEY)
+    verifier = SignatureVerifier(signing_secret=config.SLACK_SIGNING_SECRET_KEY)
     return verifier.is_valid(body, timestamp, signature)
 
 

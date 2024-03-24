@@ -62,6 +62,13 @@ CONSTANCE_CONFIG = {
     "trigram_min_relevance": (0.05, "Minimum relevance for postgres trigram search", float),
     "trigram_weight_title": (0.7, "Weight for title in postgres trigram search", float),
     "trigram_weight_content": (0.3, "Weight for content in postgres trigram search", float),
+
+    # Slack integration settings
+    "SLACK_BOT_TOKEN": (None, "Slack bot token to post to channels", str),
+    "SLACK_NOTIFICATIONS_CHANNEL": (None, "Channel to post general notifications", str),
+    "SLACK_ADMIN_NOTIFICATIONS_CHANNEL": (None, "Channel to post admin notifications", str),
+    "SLACK_SIGNING_SECRET_KEY": (None, "Secret key for wiwik api used by slack", str),
+
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -97,7 +104,10 @@ CONSTANCE_CONFIG_FIELDSETS = {
     ),
     "Search configuration": {
         "trigram_min_relevance", "trigram_weight_title", "trigram_weight_content",
-    }
+    },
+    "Slack integration settings": {
+        "SLACK_BOT_TOKEN", "SLACK_NOTIFICATIONS_CHANNEL", "SLACK_ADMIN_NOTIFICATIONS_CHANNEL", "SLACK_SIGNING_SECRET_KEY",
+    },
 }
 
 MEILISEARCH_ENABLED = getenv_asbool("MEILISEARCH_ENABLED", default="FALSE")

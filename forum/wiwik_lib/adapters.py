@@ -1,5 +1,6 @@
 import django.core.mail
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+from constance import config
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
@@ -17,7 +18,7 @@ def inform_admins_bad_registration(email: str, request) -> None:
         subject,
         subject,
     )
-    notify_slack_channel(subject, settings.SLACK_ADMIN_NOTIFICATIONS_CHANNEL)
+    notify_slack_channel(subject, config.SLACK_ADMIN_NOTIFICATIONS_CHANNEL)
 
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):

@@ -32,6 +32,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
         super().setUpClass()
         cls.article = utils.create_article(cls.users[1], cls.title, cls.content, ",".join(cls.tags))
         config.MAX_COMMENTS = 3
+        config.SLACK_NOTIFICATIONS_CHANNEL = None
 
     def test_articles_detail_view__user_not_logged_in(self):
         self.client.login(self.usernames[0], self.password)

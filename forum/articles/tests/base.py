@@ -1,4 +1,4 @@
-from django.conf import settings
+from constance import config
 from django.test import TestCase
 from django.test.utils import override_settings
 
@@ -25,8 +25,6 @@ class ArticlesApiTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.prev_channel = settings.SLACK_NOTIFICATIONS_CHANNEL
-        settings.SLACK_NOTIFICATIONS_CHANNEL = None
         cls.users = [
             ForumUser.objects.create_user(
                 username,
@@ -41,5 +39,4 @@ class ArticlesApiTestCase(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        settings.SLACK_NOTIFICATIONS_CHANNEL = cls.prev_channel
         super().tearDownClass()

@@ -1,11 +1,12 @@
 from unittest import mock
 from unittest.mock import MagicMock
 
-from django.conf import settings
+from constance import config
 from django.test import TestCase
 from slack_sdk.errors import SlackApiError
 
 from forum.integrations import slack_api
+from forum.integrations.slack_api import configure_slack_client
 from userauth.models import ForumUser
 
 
@@ -21,7 +22,8 @@ class TestSlackApi(TestCase):
 
     def setUp(self):
         super().setUp()
-        settings.SLACK_BOT_TOKEN = "xxx"
+        config.SLACK_BOT_TOKEN = "xxx"
+        configure_slack_client([])
 
     def test_slack_post_channel_message__green(self):
         # arrange
@@ -40,7 +42,7 @@ class TestSlackApi(TestCase):
     def test_slack_post_channel_message__no_slack_token(self):
         # arrange
         slack_api.slack_client = MagicMock()
-        settings.SLACK_BOT_TOKEN = None
+        config.SLACK_BOT_TOKEN = None
         # act
         slack_api.slack_post_channel_message(self.text, self.channel)
         # assert
@@ -81,7 +83,7 @@ class TestSlackApi(TestCase):
 
     def test_slack_post_im_message__no_slack_token(self):
         # arrange
-        settings.SLACK_BOT_TOKEN = None
+        config.SLACK_BOT_TOKEN = None
         slack_api.slack_client = MagicMock()
         # act
         slack_api.slack_post_im_message_to_email(self.text, self.email)
