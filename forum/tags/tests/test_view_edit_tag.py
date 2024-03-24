@@ -1,4 +1,4 @@
-from django.conf import settings
+from constance import config
 from django.urls import reverse
 
 from common.test_utils import assert_message_in_response, assert_url_in_chain
@@ -187,7 +187,7 @@ class TestEditTag(TagsApiTestCase):
         )
         assert_message_in_response(
             res,
-            "Error: Wiki content should have " f"at least {settings.MIN_TAG_WIKI_LENGTH} characters",
+            "Error: Wiki content should have " f"at least {config.MIN_TAG_WIKI_LENGTH} characters",
         )
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()
@@ -200,7 +200,7 @@ class TestEditTag(TagsApiTestCase):
         # act
         res = self.client.edit_post(
             self.tags[0].tag_word,
-            self.new_description + "x" * settings.MAX_TAG_DESCRIPTION_LENGTH,
+            self.new_description + "x" * config.MAX_TAG_DESCRIPTION_LENGTH,
             self.new_wiki,
             self.summary,
         )
@@ -217,7 +217,7 @@ class TestEditTag(TagsApiTestCase):
         )
         assert_message_in_response(
             res,
-            f"Error: Description too long, max is {settings.MAX_TAG_DESCRIPTION_LENGTH} characters",
+            f"Error: Description too long, max is {config.MAX_TAG_DESCRIPTION_LENGTH} characters",
         )
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()
@@ -232,7 +232,7 @@ class TestEditTag(TagsApiTestCase):
         res = self.client.edit_post(
             tag_word,
             self.new_description,
-            "very long" + "x" * settings.MAX_TAG_WIKI_LENGTH,
+            "very long" + "x" * config.MAX_TAG_WIKI_LENGTH,
             self.summary,
         )
         # assert
@@ -270,7 +270,7 @@ class TestEditTag(TagsApiTestCase):
         )
         assert_message_in_response(
             res,
-            "Error: Edit summary should have " f"at least {settings.MIN_TAG_EDIT_SUMMARY_LENGTH} characters",
+            "Error: Edit summary should have " f"at least {config.MIN_TAG_EDIT_SUMMARY_LENGTH} characters",
         )
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()
@@ -285,7 +285,7 @@ class TestEditTag(TagsApiTestCase):
             self.tags[0].tag_word,
             self.new_description,
             self.new_wiki,
-            "long" + "X" * settings.MAX_TAG_EDIT_SUMMARY_LENGTH,
+            "long" + "X" * config.MAX_TAG_EDIT_SUMMARY_LENGTH,
         )
         # assert
         self.assertEqual(200, res.status_code)
@@ -300,7 +300,7 @@ class TestEditTag(TagsApiTestCase):
         )
         assert_message_in_response(
             res,
-            "Error: Edit summary too long, " f"max is {settings.MIN_TAG_EDIT_SUMMARY_LENGTH} characters",
+            "Error: Edit summary too long, " f"max is {config.MIN_TAG_EDIT_SUMMARY_LENGTH} characters",
         )
         tag = Tag.objects.get(tag_word=self.tags[0].tag_word)
         tag.refresh_from_db()

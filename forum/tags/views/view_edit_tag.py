@@ -1,4 +1,4 @@
-from django.conf import settings
+from constance import config
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
@@ -12,18 +12,18 @@ class TagError(Exception):
 
 
 def validate_tag_data(tag: models.Tag, description, wiki, summary) -> None:
-    if description is None or len(description) < settings.MIN_TAG_DESCRIPTION_LENGTH:
+    if description is None or len(description) < config.MIN_TAG_DESCRIPTION_LENGTH:
         raise TagError("Description too short")
-    if tag.wiki is not None and wiki != tag.wiki and (wiki is None or len(wiki) < settings.MIN_TAG_WIKI_LENGTH):
-        raise TagError(f"Wiki content should have at least {settings.MIN_TAG_WIKI_LENGTH} characters")
-    if len(description) > settings.MAX_TAG_DESCRIPTION_LENGTH:
-        raise TagError(f"Description too long, max is {settings.MAX_TAG_DESCRIPTION_LENGTH} characters")
-    if len(wiki) > settings.MAX_TAG_WIKI_LENGTH:
+    if tag.wiki is not None and wiki != tag.wiki and (wiki is None or len(wiki) < config.MIN_TAG_WIKI_LENGTH):
+        raise TagError(f"Wiki content should have at least {config.MIN_TAG_WIKI_LENGTH} characters")
+    if len(description) > config.MAX_TAG_DESCRIPTION_LENGTH:
+        raise TagError(f"Description too long, max is {config.MAX_TAG_DESCRIPTION_LENGTH} characters")
+    if len(wiki) > config.MAX_TAG_WIKI_LENGTH:
         raise TagError("Wiki content too long")
-    if summary is None or len(summary) < settings.MIN_TAG_EDIT_SUMMARY_LENGTH:
-        raise TagError(f"Edit summary should have at least {settings.MIN_TAG_EDIT_SUMMARY_LENGTH} characters")
-    if len(summary) > settings.MAX_TAG_EDIT_SUMMARY_LENGTH:
-        raise TagError(f"Edit summary too long, max is {settings.MIN_TAG_EDIT_SUMMARY_LENGTH} characters")
+    if summary is None or len(summary) < config.MIN_TAG_EDIT_SUMMARY_LENGTH:
+        raise TagError(f"Edit summary should have at least {config.MIN_TAG_EDIT_SUMMARY_LENGTH} characters")
+    if len(summary) > config.MAX_TAG_EDIT_SUMMARY_LENGTH:
+        raise TagError(f"Edit summary too long, max is {config.MIN_TAG_EDIT_SUMMARY_LENGTH} characters")
 
 
 @login_required
@@ -38,12 +38,12 @@ def view_edit_tag(request, tag_word: str):
             "tags/edit_tag.html",
             {
                 "tag": tag,
-                "len_description_min": settings.MIN_TAG_DESCRIPTION_LENGTH,
-                "len_description_max": settings.MAX_TAG_DESCRIPTION_LENGTH,
-                "len_wiki_min": settings.MIN_TAG_WIKI_LENGTH,
-                "len_wiki_max": settings.MAX_TAG_WIKI_LENGTH,
-                "len_summary_min": settings.MIN_TAG_EDIT_SUMMARY_LENGTH,
-                "len_summary_max": settings.MAX_TAG_EDIT_SUMMARY_LENGTH,
+                "len_description_min": config.MIN_TAG_DESCRIPTION_LENGTH,
+                "len_description_max": config.MAX_TAG_DESCRIPTION_LENGTH,
+                "len_wiki_min": config.MIN_TAG_WIKI_LENGTH,
+                "len_wiki_max": config.MAX_TAG_WIKI_LENGTH,
+                "len_summary_min": config.MIN_TAG_EDIT_SUMMARY_LENGTH,
+                "len_summary_max": config.MAX_TAG_EDIT_SUMMARY_LENGTH,
                 "title": f"wiwik - {tag.tag_word} tag",
             },
         )

@@ -32,6 +32,7 @@ CONSTANCE_CONFIG = {
     "MAX_ARTICLE_TITLE_LENGTH": (255, "Maximum characters in an article title", int),
     "MIN_ARTICLE_CONTENT_LENGTH": (50, "Minimum characters allowed in article body", int),
     "MAX_ARTICLE_CONTENT_LENGTH": (100_000, "Maximum characters allowed in article body", int),
+
     "MAX_ANSWERS": (3, "Maximum number of answers on a question", int),
     "MAX_COMMENTS": (5, "Maximum number of comments on a post", int),
     "QUESTIONS_PER_PAGE": (20, "Number of questions on a page", int),
@@ -42,6 +43,12 @@ CONSTANCE_CONFIG = {
     "NUMBER_OF_TAG_RISING_STARS":
         (2, "Number of rising stars on a tag (a rising star is a user who is not an expert "
             "but has the most reputation for a tag in the past month", int),
+    "MIN_TAG_DESCRIPTION_LENGTH": (50, "Minimum characters allowed in tag description", int),
+    "MAX_TAG_DESCRIPTION_LENGTH": (460, "Maximum characters allowed in tag description", int),
+    "MIN_TAG_WIKI_LENGTH": (20, "Minimum length of tag wiki page", int),
+    "MAX_TAG_WIKI_LENGTH": (30000, "Maximum length of tag wiki page", int),
+    "MIN_TAG_EDIT_SUMMARY_LENGTH": (20, "Maximum length of edit summary", int),
+    "MAX_TAG_EDIT_SUMMARY_LENGTH": (200, "Maximum length of edit summary", int),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -64,6 +71,9 @@ CONSTANCE_CONFIG_FIELDSETS = {
     ),
     "Tags": (
         "NUMBER_OF_TAG_EXPERTS", "NUMBER_OF_TAG_RISING_STARS",
+        "MIN_TAG_DESCRIPTION_LENGTH", "MAX_TAG_DESCRIPTION_LENGTH",
+        "MIN_TAG_WIKI_LENGTH", "MAX_TAG_WIKI_LENGTH",
+        "MIN_TAG_EDIT_SUMMARY_LENGTH", "MAX_TAG_EDIT_SUMMARY_LENGTH",
     ),
     "Moderator": (
         "DAYS_TO_REVOKE_MODERATOR", "DAYS_TO_GRANT_MODERATOR",
@@ -77,18 +87,10 @@ POSTGRES_SEARCH = {
         "content": 0.3,
     },
 }
-DAYS_TO_REVOKE_MODERATOR = 10
-DAYS_TO_GRANT_MODERATOR = 16
 DAYS_FOR_QUESTION_TO_BECOME_OLD = getenv_asint("DAYS_FOR_QUESTION_TO_BECOME_OLD", None)
 ANSWER_IS_RECENT_DAYS = 3
 
 # Tag edit settings
-MIN_TAG_DESCRIPTION_LENGTH = 20
-MAX_TAG_DESCRIPTION_LENGTH = 460
-MIN_TAG_WIKI_LENGTH = 20
-MAX_TAG_WIKI_LENGTH = 30000
-MIN_TAG_EDIT_SUMMARY_LENGTH = 10
-MAX_TAG_EDIT_SUMMARY_LENGTH = 200
 MAX_SIZE_KB_IMAGE_UPLOAD_KB = int(os.getenv("MAX_SIZE_KB_IMAGE_UPLOAD_KB", 1024))
 
 MEILISEARCH_ENABLED = getenv_asbool("MEILISEARCH_ENABLED", default="FALSE")
