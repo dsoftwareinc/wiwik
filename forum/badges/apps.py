@@ -29,8 +29,4 @@ class BadgesConfig(AppConfig):
     name = "badges"
 
     def ready(self):
-        if "migrate" in sys.argv or "test" in sys.argv or "makemigrations" in sys.argv:
-            return
-        from badges.populate_db import upsert_badges_in_db
-
-        upsert_badges_in_db()
+        pass

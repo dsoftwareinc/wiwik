@@ -2,6 +2,7 @@ from abc import ABC
 
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.core import checks
 from django.core.management import BaseCommand
 from django.core.paginator import Paginator
 from django.db.models import QuerySet
@@ -36,10 +37,19 @@ def paginate_queryset(qs: QuerySet, page: int, per_page: int):
     return paginator.get_page(page)
 
 
-try:
-    CURRENT_SITE = str(Site.objects.get_current())
-    if not CURRENT_SITE.startswith("http"):
-        CURRENT_SITE = "https://" + CURRENT_SITE
-except Exception as e:
-    logger.warning(f"Could not get current site: {e}")
-    CURRENT_SITE = "http://localhost:8000"
+CURRENT_SITE = ""
+
+
+@checks.register()
+def set_current_site(app_configs, **kwargs):
+    messages = []
+    global CURRENT_SITE
+    try:
+        CURRENT_SITE = str(Site.objects.get_current())
+        if not CURRENT_SITE.startswith("http"):
+            CURRENT_SITE = "https://" + CURRENT_SITE
+    except Exception as e:
+        logger.warning(f"Could not get current site: {e}")
+        CURRENT_SITE = "http://localhost:8000"
+        messages.append(checks.Warning(f"Could not get site from database, using: {CURRENT_SITE}"))
+    return messages

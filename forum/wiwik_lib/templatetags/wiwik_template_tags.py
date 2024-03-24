@@ -5,7 +5,7 @@ import bleach
 import pymdownx.arithmatex as arithmatex
 from constance import config
 from django import template
-from django.conf import settings
+from django.core import checks
 from django.templatetags.static import static
 from django.utils.safestring import mark_safe
 from markdown import Markdown
@@ -40,7 +40,13 @@ MARKDOWN_EXTENSIONS_CONFIG = {
         ]
     },
 }
-if config.LATEX_SUPPORT_ENABLED:
+
+
+@checks.register()
+def check_latex_support(app_configs, **kwargs):
+    messages = []
+    if not config.LATEX_SUPPORT_ENABLED:
+        return messages
     MARKDOWN_EXTENSIONS_CONFIG["pymdownx.arithmatex"] = {
         "generic": True,
     }
@@ -51,6 +57,10 @@ if config.LATEX_SUPPORT_ENABLED:
             "format": arithmatex.fence_generic_format,
         }
     )
+    messages.append(checks.Info(
+        "LaTeX support is enabled",
+    ))
+    return messages
 
 
 @register.filter("startswith")

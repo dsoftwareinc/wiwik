@@ -1,6 +1,7 @@
 from typing import Union, List, Optional
 
 from django.conf import settings
+from django.core.checks import register, Warning
 from scheduler import job
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
@@ -24,17 +25,19 @@ from forum.views.common import get_model_url_with_base
 from userauth.models import ForumUser
 from wiwik_lib.utils import CURRENT_SITE
 
+slack_client = None
 
-def configure_slack_client():
+
+@register()
+def configure_slack_client(app_configs, **kwargs):
+    global slack_client
+    messages = []
     if settings.SLACK_BOT_TOKEN is None:
-        logger.info("Slack integration disabled")
-        return None
-    else:
-        logger.info("Slack integration enabled")
-        return WebClient(settings.SLACK_BOT_TOKEN)
+        messages.append(Warning("Slack integration disabled", hint="Set SLACK_BOT_TOKEN in settings"))
+        return messages
 
-
-slack_client = configure_slack_client()
+    logger.info("Slack integration enabled")
+    slack_client = WebClient(settings.SLACK_BOT_TOKEN)
 
 
 @job
@@ -212,7 +215,7 @@ def post_from_slack(payload: dict) -> None:
             SectionBlock(
                 text=TextObject(
                     text=f"You are not signed up to wiwik. "
-                    f"Please register <{CURRENT_SITE}|here> before you can post questions",
+                         f"Please register <{CURRENT_SITE}|here> before you can post questions",
                     type="mrkdwn",
                 )
             ),
