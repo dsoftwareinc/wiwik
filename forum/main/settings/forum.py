@@ -35,6 +35,8 @@ CONSTANCE_CONFIG = {
     "MAX_ANSWERS": (3, "Maximum number of answers on a question", int),
     "MAX_COMMENTS": (5, "Maximum number of comments on a post", int),
     "QUESTIONS_PER_PAGE": (20, "Number of questions on a page", int),
+    "DAYS_TO_REVOKE_MODERATOR": (10, "Number of sequential days without activity to revoke moderator permissions", int),
+    "DAYS_TO_GRANT_MODERATOR": (15, "Number of sequential days with activity to grant moderator permissions", int),
     "NUMBER_OF_TAG_EXPERTS":
         (2, "Number of experts per tag (expert is a user with the most reputation on the tag)", int),
     "NUMBER_OF_TAG_RISING_STARS":
@@ -62,7 +64,10 @@ CONSTANCE_CONFIG_FIELDSETS = {
     ),
     "Tags": (
         "NUMBER_OF_TAG_EXPERTS", "NUMBER_OF_TAG_RISING_STARS",
-    )
+    ),
+    "Moderator": (
+        "DAYS_TO_REVOKE_MODERATOR", "DAYS_TO_GRANT_MODERATOR",
+    ),
 }
 
 POSTGRES_SEARCH = {

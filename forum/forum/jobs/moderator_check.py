@@ -1,6 +1,6 @@
 import datetime
 
-from django.conf import settings
+from constance import config
 from django.db.models import Count, Q
 from django.template import loader
 from scheduler import job
@@ -88,7 +88,7 @@ def send_warning_loosing_moderator_status_to_user(user: ForumUser, num_visits: i
     moderator_revoke_warning = template.render(
         context={
             "num_visits": num_visits,
-            "min_days_required": settings.DAYS_TO_REVOKE_MODERATOR,
+            "min_days_required": config.DAYS_TO_REVOKE_MODERATOR,
             "user": user,
         }
     )
@@ -123,10 +123,10 @@ def update_moderator_status_for_users():
     )
     for user in user_qs:
         # Revoke moderator status from users who didn't visit enough
-        if user.is_moderator and user.num_visits < settings.DAYS_TO_REVOKE_MODERATOR:
+        if user.is_moderator and user.num_visits < config.DAYS_TO_REVOKE_MODERATOR:
             revoke_moderator(user, user.num_visits, last_month)
         # grant moderator status if users visited often
-        elif not user.is_moderator and user.num_visits >= settings.DAYS_TO_GRANT_MODERATOR:
+        elif not user.is_moderator and user.num_visits >= config.DAYS_TO_GRANT_MODERATOR:
             grant_moderator(user, user.num_visits, last_month)
 
 
@@ -146,5 +146,5 @@ def warn_users_loosing_moderator_status():
         is_moderator=True, is_superuser=False, is_staff=False, is_active=True
     ).annotate(num_visits=Count("uservisit", filter=Q(uservisit__visit_date__gte=beginning_of_month)))
     for moderator in moderator_qs:
-        if moderator.num_visits < settings.DAYS_TO_REVOKE_MODERATOR:
+        if moderator.num_visits < config.DAYS_TO_REVOKE_MODERATOR:
             send_warning_loosing_moderator_status_to_user(moderator, moderator.num_visits, beginning_of_month)

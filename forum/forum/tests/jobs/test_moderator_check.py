@@ -6,6 +6,7 @@ Tests for:
 from datetime import date
 from unittest import mock
 
+from constance import config
 from django.conf import settings
 
 from common.test_utils import assert_not_called_with
@@ -56,8 +57,8 @@ class TestModeratorJobs(ForumApiTestCase):
             visit_date="2021-10-09",
             consecutive_days=1,
         )
-        settings.DAYS_TO_REVOKE_MODERATOR = 2
-        settings.DAYS_TO_GRANT_MODERATOR = 3
+        config.DAYS_TO_REVOKE_MODERATOR = 2
+        config.DAYS_TO_GRANT_MODERATOR = 3
 
     @mock.patch("datetime.date", FakeDate)
     @mock.patch("forum.jobs.notify_user.notify_user_email")
