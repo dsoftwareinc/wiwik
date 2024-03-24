@@ -47,11 +47,11 @@ CONSTANCE_CONFIG = {
     "NUMBER_OF_TAG_RISING_STARS":
         (2, "Number of rising stars on a tag (a rising star is a user who is not an expert "
             "but has the most reputation for a tag in the past month", int),
-    "MIN_TAG_DESCRIPTION_LENGTH": (50, "Minimum characters allowed in tag description", int),
+    "MIN_TAG_DESCRIPTION_LENGTH": (20, "Minimum characters allowed in tag description", int),
     "MAX_TAG_DESCRIPTION_LENGTH": (460, "Maximum characters allowed in tag description", int),
     "MIN_TAG_WIKI_LENGTH": (20, "Minimum length of tag wiki page", int),
     "MAX_TAG_WIKI_LENGTH": (30000, "Maximum length of tag wiki page", int),
-    "MIN_TAG_EDIT_SUMMARY_LENGTH": (20, "Maximum length of edit summary", int),
+    "MIN_TAG_EDIT_SUMMARY_LENGTH": (10, "Maximum length of edit summary", int),
     "MAX_TAG_EDIT_SUMMARY_LENGTH": (200, "Maximum length of edit summary", int),
 }
 

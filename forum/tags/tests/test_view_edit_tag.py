@@ -7,9 +7,9 @@ from tags.tests.base import TagsApiTestCase
 
 
 class TestEditTag(TagsApiTestCase):
-    new_description = "New description for tag"
+    new_description = "New description for tag with 20 chars" + "X" * max(config.MIN_TAG_DESCRIPTION_LENGTH - 37, 0)
     new_wiki = "New wiki for tag with more than 20 chars"
-    summary = "Edit summary"
+    summary = "Edit summary" + "X" * max(config.MIN_TAG_EDIT_SUMMARY_LENGTH - 12, 0)
 
     def test_edit_tag_get__not_logged_in__redirect(self):
         # act
