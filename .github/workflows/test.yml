@@ -18,20 +18,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  #  docs:
-  #    name: Deploy docs
-  #    runs-on: ubuntu-latest
-  #    steps:
-  #      - name: Checkout main
-  #        uses: actions/checkout@v4
-  #
-  #      - name: Deploy docs
-  #        uses: mhausenblas/mkdocs-deploy-gh-pages@master
-  #        # Or use mhausenblas/mkdocs-deploy-gh-pages@nomaterial to build without the mkdocs-material theme
-  #        env:
-  #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #          CONFIG_FILE: ./mkdocs.yml
-  #          REQUIREMENTS: ./docs/requirements.txt
   build:
     timeout-minutes: 10
     runs-on: ubuntu-latest
@@ -43,8 +29,8 @@ jobs:
       - name: "Setup Python, Poetry and Dependencies"
         uses: dsoftwareinc/setup-python-poetry-action@v1
         with:
-          python-version: '3.11'
-          poetry-version: '1.7.1'
+          python-version: '3.12'
+          poetry-version: '1.8.1'
       - name: Run Tests
         run: |
           cd forum
