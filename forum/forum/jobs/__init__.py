@@ -1,6 +1,7 @@
 from .base import start_job
-from .calculate_user_tag_stats import update_user_tag_stats
+from .calculate_user_tag_stats import update_user_tag_stats, recalculate_user_reputation_score
 from .check_urls import scan_media_links_usage, check_urls
+from .config_updated_signal import constance_updated
 from .moderator_check import (
     update_moderator_status_for_users,
     warn_users_loosing_moderator_status,
@@ -33,4 +34,6 @@ __all__ = [
     "send_weekly_digest_for_users",
     "calculate_user_impact",
     "calculate_all_users_impact",
+    "recalculate_user_reputation_score",
+    "constance_updated"
 ]

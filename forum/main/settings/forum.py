@@ -64,10 +64,10 @@ CONSTANCE_CONFIG = {
     "trigram_weight_content": (0.3, "Weight for content in postgres trigram search", float),
 
     # Slack integration settings
-    "SLACK_BOT_TOKEN": (None, "Slack bot token to post to channels", str),
-    "SLACK_NOTIFICATIONS_CHANNEL": (None, "Channel to post general notifications", str),
-    "SLACK_ADMIN_NOTIFICATIONS_CHANNEL": (None, "Channel to post admin notifications", str),
-    "SLACK_SIGNING_SECRET_KEY": (None, "Secret key for wiwik api used by slack", str),
+    "SLACK_BOT_TOKEN": ("", "Slack bot token to post to channels", str),
+    "SLACK_NOTIFICATIONS_CHANNEL": ("", "Channel to post general notifications", str),
+    "SLACK_ADMIN_NOTIFICATIONS_CHANNEL": ("", "Channel to post admin notifications", str),
+    "SLACK_SIGNING_SECRET_KEY": ("", "Secret key for wiwik api used by slack", str),
 
 }
 

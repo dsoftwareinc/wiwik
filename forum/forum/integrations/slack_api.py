@@ -32,7 +32,7 @@ slack_client = None
 def configure_slack_client(app_configs, **kwargs):
     global slack_client
     messages = []
-    if config.SLACK_BOT_TOKEN is None:
+    if not config.SLACK_BOT_TOKEN:
         messages.append(Warning("Slack integration disabled", hint="Set SLACK_BOT_TOKEN in settings"))
         return messages
 
@@ -42,7 +42,7 @@ def configure_slack_client(app_configs, **kwargs):
 
 @job
 def slack_post_channel_message(text: str, channel: str, thread_ts: str = None, notification_text: str = None):
-    if config.SLACK_BOT_TOKEN is None:
+    if not config.SLACK_BOT_TOKEN:
         return
     blocks = [
         SectionBlock(text=TextObject(text=text, type="mrkdwn")),
@@ -115,7 +115,7 @@ def _get_permalink(channel: str, message_ts: str) -> Union[str, None]:
 
 @job
 def slack_post_im_message_to_email(text: str, email: str, notification_text: str = None):
-    if config.SLACK_BOT_TOKEN is None:
+    if not config.SLACK_BOT_TOKEN:
         return
     try:
         logger.info(f"sending text msg to email {email}: {text}")

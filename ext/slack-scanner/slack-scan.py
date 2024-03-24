@@ -142,7 +142,7 @@ class SlackCrawler(object):
 
 if __name__ == '__main__':
     channel = 'everything'
-    if SLACK_BOT_TOKEN is None:
+    if not SLACK_BOT_TOKEN:
         logger.error("SLACK_BOT_TOKEN not set, exiting")
         raise EnvironmentError("slack-client not initialized, can't scan")
     crawler = SlackCrawler(SLACK_BOT_TOKEN)
