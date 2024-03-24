@@ -1,6 +1,7 @@
 from datetime import timedelta, datetime
 from typing import Optional
 
+from constance import config
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.aggregates import StringAgg
@@ -247,9 +248,9 @@ class Question(VotableUserInput, Flaggable, Followable):
 
     @property
     def is_old(self):
-        if settings.DAYS_FOR_QUESTION_TO_BECOME_OLD is None:
+        if config.DAYS_FOR_QUESTION_TO_BECOME_OLD is None:
             return False
-        old_question_date = timezone.now() - timedelta(days=settings.DAYS_FOR_QUESTION_TO_BECOME_OLD)
+        old_question_date = timezone.now() - timedelta(days=config.DAYS_FOR_QUESTION_TO_BECOME_OLD)
         return self.created_at < old_question_date
 
     def get_question(self):

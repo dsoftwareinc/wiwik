@@ -1,6 +1,7 @@
 from datetime import date
 from typing import List
 
+from constance import config
 from django.conf import settings
 from django.db.models import Count, Q
 from django.template import loader
@@ -24,9 +25,9 @@ def old_unanswered_questions_email_report(tags_list: List[str] = None, skip_if_e
     Returns:
         A report as string to be joined with other reports in generate_report_html
     """
-    if settings.DAYS_FOR_QUESTION_TO_BECOME_OLD is None:
+    if config.DAYS_FOR_QUESTION_TO_BECOME_OLD is None:
         return ""
-    from_date = timezone.now() - timezone.timedelta(days=settings.DAYS_FOR_QUESTION_TO_BECOME_OLD)
+    from_date = timezone.now() - timezone.timedelta(days=config.DAYS_FOR_QUESTION_TO_BECOME_OLD)
     query_filter = Q(created_at__lt=from_date)  # Old questions
     if tags_list:  # In tags
         query_filter = query_filter & Q(tags__tag_word__in=tags_list)

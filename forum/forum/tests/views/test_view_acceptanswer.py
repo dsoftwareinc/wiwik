@@ -1,5 +1,6 @@
 import datetime
 
+from constance import config
 from django.conf import settings
 from django.test import override_settings
 from django.urls import reverse
@@ -140,7 +141,7 @@ class TestAcceptAnswerView(ForumApiTestCase):
     def test_accept_answer__answer_for_old_question__different_user_rep_change(self):
         # arrange
         self.question.created_at = timezone.now() - datetime.timedelta(
-            days=settings.DAYS_FOR_QUESTION_TO_BECOME_OLD + 1
+            days=config.DAYS_FOR_QUESTION_TO_BECOME_OLD + 1
         )
         self.question.save()
         self.client.login(self.usernames[0], self.password)
