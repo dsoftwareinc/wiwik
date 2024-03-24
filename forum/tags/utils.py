@@ -1,7 +1,7 @@
 from collections import Counter
 from typing import List
 
-from django.conf import settings
+from constance import config
 from django.db.models import Sum
 from django.utils import timezone
 
@@ -57,14 +57,14 @@ def update_tag_stats_for_tag(tag: Tag):
 
     tag.number_followers = tag.follows.count()
 
-    experts_usernames = users_with_most_reputation_since(tag, count=settings.NUMBER_OF_TAG_EXPERTS)
+    experts_usernames = users_with_most_reputation_since(tag, count=config.NUMBER_OF_TAG_EXPERTS)
     tag.experts = ",".join(experts_usernames) if len(experts_usernames) > 0 else None
 
     stars_usernames = users_with_most_reputation_since(
         tag,
         since=timezone.now() - timezone.timedelta(days=30),
         exclude_usernames=experts_usernames,
-        count=settings.NUMBER_OF_TAG_RISING_STARS,
+        count=config.NUMBER_OF_TAG_RISING_STARS,
     )
     tag.stars = ",".join(stars_usernames) if len(stars_usernames) > 0 else None
     tag.updated_at = timezone.now()

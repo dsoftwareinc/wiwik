@@ -35,6 +35,11 @@ CONSTANCE_CONFIG = {
     "MAX_ANSWERS": (3, "Maximum number of answers on a question", int),
     "MAX_COMMENTS": (5, "Maximum number of comments on a post", int),
     "QUESTIONS_PER_PAGE": (20, "Number of questions on a page", int),
+    "NUMBER_OF_TAG_EXPERTS":
+        (2, "Number of experts per tag (expert is a user with the most reputation on the tag)", int),
+    "NUMBER_OF_TAG_RISING_STARS":
+        (2, "Number of rising stars on a tag (a rising star is a user who is not an expert "
+            "but has the most reputation for a tag in the past month", int),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -55,6 +60,9 @@ CONSTANCE_CONFIG_FIELDSETS = {
         "MIN_ARTICLE_CONTENT_LENGTH", "MAX_ARTICLE_CONTENT_LENGTH",
         "MAX_ANSWERS", "MAX_COMMENTS",
     ),
+    "Tags": (
+        "NUMBER_OF_TAG_EXPERTS", "NUMBER_OF_TAG_RISING_STARS",
+    )
 }
 
 POSTGRES_SEARCH = {
@@ -64,8 +72,6 @@ POSTGRES_SEARCH = {
         "content": 0.3,
     },
 }
-NUMBER_OF_TAG_EXPERTS = int(os.getenv("NUMBER_OF_TAG_EXPERTS", 2))
-NUMBER_OF_TAG_RISING_STARS = int(os.getenv("NUMBER_OF_TAG_RISING_STARS", 2))
 DAYS_TO_REVOKE_MODERATOR = 10
 DAYS_TO_GRANT_MODERATOR = 16
 DAYS_FOR_QUESTION_TO_BECOME_OLD = getenv_asint("DAYS_FOR_QUESTION_TO_BECOME_OLD", None)
