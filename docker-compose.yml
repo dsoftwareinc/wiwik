@@ -70,7 +70,7 @@ x-depends-on-defaults: &depends-on-defaults
 
 services:
   searchdb:
-    image: getmeili/meilisearch:v1.6.0
+    image: getmeili/meilisearch:v1.7
     ports:
       - "7700:7700"
     environment:
@@ -84,7 +84,7 @@ services:
       - wiwik-network
 
   db:
-    image: postgres:15.5-alpine
+    image: postgres:16-alpine
     volumes:
       - "./postgres_data/:/var/lib/postgresql/data/"
     ports:
@@ -100,7 +100,7 @@ services:
       - wiwik-network
 
   redis:
-    image: redis/redis-stack-server:7.2.0-v6
+    image: redis/redis-stack-server:7.2.0-v9
     ports:
       - "6379:6379"
     healthcheck:
