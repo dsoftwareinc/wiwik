@@ -13,7 +13,7 @@ x-common-variables: &common-variables
   REDIS_CACHE_URL: redis://redis:6389/0
 
   MEDIA_ROOT: /media
-  MEILISEARCH_ENABLED: TRUE
+  MEILISEARCH_ENABLED: 1
   MEILISEARCH_SERVER_ADDRESS: http://searchdb:7700
   MEILISEARCH_MASTERKEY: masterKey
 
@@ -21,8 +21,8 @@ x-common-variables: &common-variables
   SECRET_KEY:
   DJANGO_ALLOWED_HOSTS: "localhost 127.0.0.1 [::1] *" # Django settings ALLOWED_HOSTS
   CSRF_TRUSTED_ORIGINS: "http://localhost"
-  DEBUG: TRUE
-  RUN_ASYNC_JOBS_SYNC: FALSE
+  DEBUG: 1
+  RUN_ASYNC_JOBS_SYNC: 0
   DJANGO_LOG_LEVEL: DEBUG
 
   # OAuth settings
@@ -35,7 +35,7 @@ x-common-variables: &common-variables
   FACEBOOK_SECRET_KEY:
 
   # EMAIL SETTINGS
-  SEND_EMAILS: FALSE
+  SEND_EMAILS: 0
   #EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
   EMAIL_HOST: smtp.gmail.com
   EMAIL_PORT: 587
