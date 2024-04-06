@@ -11,7 +11,7 @@ fi
 
 cd "$BASE_DIR" || exit
 echo "[update_server.sh] Activating virtualenv"
-source env/bin/activate || (echo "Couldn't activate virtualenv" && exit)
+source .venv/bin/activate || (echo "Couldn't activate virtualenv" && exit)
 echo "[update_server.sh] Checking if there is a need to update requirements"
 poetry export --without-hashes --with dev -o requirements.txt
 pip install -r requirements.txt

@@ -1,3 +1,4 @@
+from constance import config
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
@@ -21,7 +22,7 @@ def view_partial_post_comments(request, post_type: str, post_pk: int):
         {
             "item": item,
             "num_comments": num_comments,
-            "max_comments": settings.MAX_COMMENTS,
+            "max_comments": config.MAX_COMMENTS,
             "model": post_type,
             "comments": item.comments.all(),
         },

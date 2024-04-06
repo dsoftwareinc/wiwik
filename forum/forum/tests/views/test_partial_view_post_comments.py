@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from constance import config
 from django.conf import settings
 
 from forum.tests.base import ForumApiTestCase
@@ -16,8 +17,8 @@ class TestPostCommentsPartialView(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[0], self.password)
         comment_content = "comment------content"
-        settings.MAX_COMMENTS = 3
-        for _ in range(settings.MAX_COMMENTS):
+        config.MAX_COMMENTS = 3
+        for _ in range(config.MAX_COMMENTS):
             self.client.thread_add_comment(self.question.pk, "question", self.question.pk, comment_content)
         # act
         res = self.client.view_partial_post_comments("question", self.question.pk)
@@ -28,8 +29,8 @@ class TestPostCommentsPartialView(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[0], self.password)
         comment_content = "comment------content"
-        settings.MAX_COMMENTS = 3
-        for _ in range(settings.MAX_COMMENTS - 1):
+        config.MAX_COMMENTS = 3
+        for _ in range(config.MAX_COMMENTS - 1):
             self.client.thread_add_comment(self.question.pk, "question", self.question.pk, comment_content)
         # act
         res = self.client.view_partial_post_comments("question", self.question.pk)
@@ -68,8 +69,8 @@ class TestPostCommentsPartialView(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[0], self.password)
         comment_content = "comment------content"
-        settings.MAX_COMMENTS = 3
-        for _ in range(settings.MAX_COMMENTS):
+        config.MAX_COMMENTS = 3
+        for _ in range(config.MAX_COMMENTS):
             self.client.thread_add_comment(self.question.pk, "answer", self.answer.pk, comment_content)
         # act
         res = self.client.view_partial_post_comments("answer", self.answer.pk)
@@ -80,8 +81,8 @@ class TestPostCommentsPartialView(ForumApiTestCase):
         # arrange
         self.client.login(self.usernames[0], self.password)
         comment_content = "comment------content"
-        settings.MAX_COMMENTS = 3
-        for _ in range(settings.MAX_COMMENTS - 1):
+        config.MAX_COMMENTS = 3
+        for _ in range(config.MAX_COMMENTS - 1):
             self.client.thread_add_comment(self.question.pk, "answer", self.answer.pk, comment_content)
         # act
         res = self.client.view_partial_post_comments("answer", self.answer.pk)

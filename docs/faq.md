@@ -24,7 +24,7 @@ python manage.py reset_users_password
 ## Restore postgres from dump
 
 ```
-psql --file=scripts/backup_2021-11-06__00-00-01.sql --username=devbb --host=localhost --port=5432 devbb
+psql --file=~/backup_2024-02-15__20-47-43.sql --username=devbb --host=localhost --port=5432 devbb
 ```
 
 ## Is it ok to copy stackoverflow features?
