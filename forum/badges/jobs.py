@@ -148,9 +148,9 @@ def recalculate_user_badges_stats():
         stats = user.additional_data
         badges_total_list = list(
             VoteActivity.objects.filter(target=user, badge__isnull=False)
-            .values(type=F("badge__type"))
-            .annotate(count=Count("type"))
-            .values_list("type", "count")
+            .values(badge_type=F("badge__type"))
+            .annotate(count=Count("badge_type"))
+            .values_list("badge_type", "count")
         )
         badges_total_dict = {i[0]: i[1] for i in badges_total_list}
         stats.bronze_badges = badges_total_dict.get(BadgeType.BRONZE, 0)
