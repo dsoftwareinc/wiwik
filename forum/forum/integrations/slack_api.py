@@ -38,6 +38,7 @@ def configure_slack_client(app_configs, **kwargs):
 
     logger.info("Slack integration enabled")
     slack_client = WebClient(config.SLACK_BOT_TOKEN)
+    return messages
 
 
 @job
