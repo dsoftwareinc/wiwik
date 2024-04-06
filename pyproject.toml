@@ -35,7 +35,7 @@ python-dotenv = "^1.0"
 # Frontend related
 django-compressor = "^4.3"
 django-crispy-forms = "^2.1"
-crispy-bootstrap5 = "^2023.10"
+crispy-bootstrap5 = "^2024.2"
 markdown = "^3.4"
 bleach = "^6.0"
 pymdown-extensions = "^10.4"
