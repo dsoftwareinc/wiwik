@@ -6,69 +6,12 @@
 
 email to send logs to when an error happens.
 
-### `FAVICON_LINK_LIGHT` & `FAVICON_LINK_DARK`
-
 ### `ALLOWED_REGISTRATION_EMAIL_DOMAINS`
 
-Domains where users should be allowed to sign up from separated by space.
-Users that are not from these domains won't be allowed to sign up.
-
-### Question settings
-
-#### `MIN_QUESTION_CONTENT_LENGTH` & `MAX_QUESTION_CONTENT_LENGTH`
-
-Defaults: 20 and 30000.
-
-#### `MIN_QUESTION_TITLE_LENGTH` & `MAX_QUESTION_TITLE_LENGTH`
-
-Defaults: 15 and 150.
-
-#### `MAX_ANSWERS_ON_QUESTION`
-
-Maximum number of answers allowed on questions.
-Meant to avoid creating a long thread discussion.
-
-#### `MAX_COMMENTS`
-
-Maximum number of comments on question/answer.
-
-#### `MIN_COMMENT_LENGTH` & `MAX_COMMENT_LENGTH`
-
-Minimum/Maximum length of comments.
-
-Defaults: 15 & 200.
-
-### `QUESTIONS_PER_PAGE`
-
-### `DAYS_FOR_QUESTION_TO_BECOME_OLD`
-
-Number of days for a question to become "old".
-Old unanswered questions are promoted to be answered.
-To disable the feature, set this to None.
-Default: `None`.
-
-### `ALLOW_ANONYMOUS_QUESTION`
-
-Should anonymous questions be allowed.
-Default: `False`.
-
-### `NUMBER_OF_TAG_EXPERTS`
-
-Number of experts (users with most reputation on tag) allowed on a tag.
-Default: 2.
-
-### `NUMBER_OF_TAG_RISING_STARS`
-
-Number of rising stars (users with most reputation on tag in the last month)
-allowed on a tag. Default: 2.
-
-### `TRIGRAM_SEARCH_MIN_RELEVANCE`
+Domains where users should be allowed to sign up from separated by space. Users that are not from these domains won't be
+allowed to sign up.
 
 ### `SPACES_ENABLED`
-
-### `MAX_SIZE_KB_IMAGE_UPLOAD_KB`
-
-Max size allowed for uploading images
 
 ### Django settings
 
@@ -84,23 +27,18 @@ Log level, `DEBUG` by default.
 
 #### `DJANGO_ALLOWED_HOSTS`
 
-Django setting `ALLOWED_HOSTS` - see more
-info [here](https://docs.djangoproject.com/en/4.1/ref/settings/#allowed-hosts)
-
-### `GOOGLE_ANALYTICS_KEY`
+Django setting `ALLOWED_HOSTS` - see more info [here](https://docs.djangoproject.com/en/4.1/ref/settings/#allowed-hosts)
 
 ## Development related settings
 
 ### `DEBUG`
 
-When set to `TRUE`, django debug mode is enabled, showing error views
-with stacktrace, etc.
+When set to `TRUE`, django debug mode is enabled, showing error views with stacktrace, etc.
 
 ### `SEND_EMAILS`
 
-Another guard for sending emails, when set to `TRUE`, emails will be sent
-to the real address. When set to `FALSE` (default), emails will be
-sent to `DEBUG_EMAIL_TO`.
+Another guard for sending emails, when set to `TRUE`, emails will be sent to the real address. When set to `FALSE` (
+default), emails will be sent to `DEBUG_EMAIL_TO`.
 
 ### `DEBUG_EMAIL_TO`
 
@@ -132,10 +70,9 @@ Notice running in the background requires redis and a worker on.
 
 #### `SQL_ENGINE`, `SQL_DATABASE`, `SQL_USER`, `SQL_PASSWORD`, `SQL_HOST`, `SQL_PORT`
 
-by default, sqlite3 will be used if these variables are not set.
-When `SQL_ENGINE` is set to `django.db.backends.postgresql`, postgres backend
-will be used
-connecting to the host/port/db using the user/password.
+by default, sqlite3 will be used if these variables are not set. When `SQL_ENGINE` is set
+to `django.db.backends.postgresql`, postgres backend will be used connecting to the host/port/db using the
+user/password.
 
 ### Redis cache settings
 
@@ -174,34 +111,11 @@ When `EMAIL_BACKEND` is set to SMTP, this is the host & port of the SMTP server.
 
 #### `EMAIL_HOST_USER` & `EMAIL_HOST_PASSWORD`
 
-When `EMAIL_BACKEND` is set to SMTP, this is the user & password to connect to
-the SMTP server.
+When `EMAIL_BACKEND` is set to SMTP, this is the user & password to connect to the SMTP server.
 
 ### Slack integration
 
 #### `SLACK_APP_ID`, `SLACK_CLIENT_ID`, `SLACK_CLIENT_SECRET_KEY`, `SLACK_SIGNING_SECRET_KEY`
-
-#### `SLACK_VERIFICATION_TOKEN`
-
-Used to verify requests from Slack to wiwik, requests from Slack are not going through the regular authentication
-process.
-
-#### `SLACK_BOT_TOKEN`
-
-Used to create a Slack client to send commands from wiwik to Slack.
-
-#### `SLACK_NOTIFICATIONS_CHANNEL`
-
-Channel to send general notifications to:
-
-- Notify tag followers about new questions
-
-#### `SLACK_ADMIN_NOTIFICATIONS_CHANNEL`
-
-Channel to send admin notifications:
-
-- Social signup.
-- email signup.
 
 ### Meilisearch integration
 

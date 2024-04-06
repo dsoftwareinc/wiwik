@@ -26,7 +26,7 @@ def recalculate_user_reputation(user: AbstractUser) -> None:
     if user is None or not isinstance(user, ForumUser):
         logger.warning(f"User {user} is not a ForumUser, skipping reputation recalculation")
         return
-    reputation_qs = models.VoteActivity.objects.filter(target=user)
+    reputation_qs = models.VoteActivity.objects.filter(target=user, reputation_change__isnull=False)
     reputation = sum([a.reputation_change for a in reputation_qs])
     user.reputation_score = reputation
     user.save()

@@ -22,6 +22,7 @@ cd "$BASE_DIR/forum" || exit
 python manage.py migrate
 python manage.py collectstatic --noinput
 python manage.py calculate_tag_stats
+python manage.py run_job populate_meilisearch
 
 echo "[update_server.sh] Clean redis cache"
 redis-cli KEYS "cache:*" | xargs redis-cli DEL
