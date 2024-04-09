@@ -1,14 +1,16 @@
 {% load static %}
 {% load userauth_tags compress humanize %}
-<a class="nav-item nav-link"
-   href="{% url 'userauth:profile' user.username 'questions' %}">
-    <img style="height: 25px;border-radius: 50%;" src="{{ user.profile_pic.url }}"
-         alt="" onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"/>
-    <span>
-    <b><span class="material-icons">emoji_events</span>{{ user.reputation_score | intcomma }}</b>
-    {% include 'includes/user-badges.html' with user=user %}
-    </span>
-</a>
+<div class="nav-item nav-link dropdown">
+    <a class="menu-icon-link"
+       href="{% url 'userauth:profile' user.username 'questions' %}">
+        <img style="height: 25px;border-radius: 50%;" src="{{ user.profile_pic.url }}"
+             alt="" onerror="this.onerror=null; this.src='/media/default_pics/no_pic.jpg'"/>
+        <span>
+        <b><span class="material-icons">emoji_events</span>{{ user.reputation_score | intcomma }}</b>
+        {% include 'includes/user-badges.html' with user=user %}
+        </span>
+    </a>
+</div>
 <div class="nav-item nav-link dropdown">
     <a class="menu-icon-link" href="#"
        hx-get="{% url 'forum:mark_all_seen' %}"
