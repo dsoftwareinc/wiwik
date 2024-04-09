@@ -15,11 +15,11 @@
                     <div class="col-md-8">
                         <a href="{% url 'forum:thread' item.question_id %}">
                             {% if item.votes > 0 %}
-                                <span class="badge bg-success"> {{ item.votes }} </span>
+                                <span class="reputation-badge badge bg-success"> {{ item.votes }} </span>
                             {% elif item.votes < 0 %}
-                                <span class="badge bg-danger"> {{ item.votes }} </span>
+                                <span class="reputation-badge badge bg-danger"> {{ item.votes }} </span>
                             {% else %}
-                                <span class="badge bg-secondary"> {{ item.votes }} </span>
+                                <span class="reputation-badge badge bg-secondary"> {{ item.votes }} </span>
                             {% endif %}
                             {{ item.question.title }}
                         </a>

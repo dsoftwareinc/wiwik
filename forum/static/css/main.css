@@ -776,7 +776,7 @@ p {
 }
 
 .row.summary:hover {
-    background-color: var(--bs-gray-100);
+    background-color: var(--bs-gray-200);
 }
 
 /* Material icons */
@@ -826,4 +826,8 @@ p {
 #similar-questions {
     max-height: 200px;
     overflow-y: auto;
+}
+
+.reputation-badge {
+    width: 35px;
 }

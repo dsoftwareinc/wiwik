@@ -57,7 +57,8 @@
                             {% endif %}
                             {% if seeuser.keybase_user %}
                                 <a href="https://keybase.io/{{ seeuser.keybase_user }}">
-                                    <img src="{% static 'logos/Keybase_logo_official.png' %}" style="height: 32px;" alt=""/>
+                                    <img src="{% static 'logos/Keybase_logo_official.png' %}" style="height: 32px;"
+                                         alt=""/>
                                 </a>
                             {% endif %}
                         </h3>
@@ -95,34 +96,39 @@
         </div>
         {% include 'userauth/includes/profile.cards.template.html' %}
         <div class="container pt-2">
-            <ul class="nav nav-tabs">
-                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='questions' title='Questions' %}
-                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='answers' title='Answers' %}
-                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='following' title='Following' %}
-                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='votes' title='Votes' %}
-                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='reputation' title='Reputation' %}
-                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='badges' title='Badges' %}
-                {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='bookmarks' title='Bookmarks' %}
-            </ul>
-
-            <div>
-                {% if tab == 'questions' %}
-                    {% include 'userauth/includes/profile.questions.template.html' with user_questions=items %}
-                {% elif tab == 'answers' %}
-                    {% include 'userauth/includes/profile.answers.template.html' with user_answers=items %}
-                {% elif tab == 'following' %}
-                    {% include 'userauth/includes/profile.following.template.html' with stats=user_tag_stats questions=items %}
-                {% elif tab == 'votes' %}
-                    {% include 'userauth/includes/profile.votes.template.html' with user_votes=items %}
-                {% elif tab == 'reputation' %}
-                    {% include 'userauth/includes/profile.reputation.template.html' with items=items %}
-                {% elif tab == 'badges' %}
-                    {% include 'userauth/includes/profile.badges.template.html' with items=items %}
-                {% elif tab == 'bookmarks' %}
-                    {% include 'userauth/includes/profile.bookmarks.template.html' with bookmarks=items %}
-                {% endif %}
-                <div class="pull-right">
-                    {% include 'userauth/includes/pagination.template.html' with items_list=items %}
+            <div class="row">
+                <div class="d-none d-md-block col left-sidebar">
+                    <ul class="nav flex-column">
+                        {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='questions' title='Questions' %}
+                        {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='answers' title='Answers' %}
+                        {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='following' title='Following' %}
+                        {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='votes' title='Votes' %}
+                        {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='reputation' title='Reputation' %}
+                        {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='badges' title='Badges' %}
+                        {% include 'userauth/includes/profile.tab-button.template.html' with selected=tab tab='bookmarks' title='Bookmarks' %}
+                    </ul>
+                </div>
+                <div id="content" class="col">
+                    <div>
+                        {% if tab == 'questions' %}
+                            {% include 'userauth/includes/profile.questions.template.html' with user_questions=items %}
+                        {% elif tab == 'answers' %}
+                            {% include 'userauth/includes/profile.answers.template.html' with user_answers=items %}
+                        {% elif tab == 'following' %}
+                            {% include 'userauth/includes/profile.following.template.html' with stats=user_tag_stats questions=items %}
+                        {% elif tab == 'votes' %}
+                            {% include 'userauth/includes/profile.votes.template.html' with user_votes=items %}
+                        {% elif tab == 'reputation' %}
+                            {% include 'userauth/includes/profile.reputation.template.html' with items=items %}
+                        {% elif tab == 'badges' %}
+                            {% include 'userauth/includes/profile.badges.template.html' with items=items %}
+                        {% elif tab == 'bookmarks' %}
+                            {% include 'userauth/includes/profile.bookmarks.template.html' with bookmarks=items %}
+                        {% endif %}
+                        <div class="pull-right">
+                            {% include 'userauth/includes/pagination.template.html' with items_list=items %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

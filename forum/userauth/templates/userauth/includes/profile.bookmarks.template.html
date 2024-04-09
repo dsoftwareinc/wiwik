@@ -13,9 +13,9 @@
                     </div>
                     <div class="col-md-6">
                         <a href="{% url 'forum:thread' item.question_id %}">
-                                <span class="badge {% class_for_votes item.question.votes %}">
-                                    {{ item.question.votes }}
-                                </span>
+                            <span class="reputation-badge badge {% class_for_votes item.question.votes %}">
+                                {{ item.question.votes }}
+                            </span>
                             {{ item.question.title }}
                         </a>
                     </div>
