@@ -57,7 +57,7 @@
     --bs-body-color: #fff;
     --bs-body-bg: hsl(210, 2%, 15%);
     --accepted-color: #6ac697;
-    --link-color: #86B7FE;
+    --bs-link-color: #86B7FE;
     --link-color-hover: #abccff;
     --bs-link-hover-color: #abccff;
     --space-property-background: #d1e7dc;
@@ -134,7 +134,7 @@
     --silver-bg-color: #e8e8e8;
     --gold-bg-color: #fff6d1;
     --updates-bg-color: #d0caca;
-    --link-color: #0d6efd;
+    --bs-link-color: #0d6efd;
     --link-color-hover: #07377F;
     --tag-background-color-hsl: 205, 46%, 92%;
     --tag-border-color: transparent;
