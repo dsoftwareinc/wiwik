@@ -1,4 +1,4 @@
-from django.conf import settings
+from constance import config
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import Http404
