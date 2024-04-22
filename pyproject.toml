@@ -29,7 +29,7 @@ pillow = "^10.2" # For image field
 scikit-learn = "^1.4" # For similarity TF-IDF
 numpy = ">=1.26"
 # Running configuration
-gunicorn = "^21.2"
+gunicorn = "^22.0"
 python-dotenv = "^1.0"
 
 # Frontend related
