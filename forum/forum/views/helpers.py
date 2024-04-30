@@ -13,19 +13,21 @@ from forum import jobs
 from forum.jobs.others import log_search
 from forum.models import Question
 from forum.views import search
+from spaces.models import Space
+from userauth.models import ForumUser
 from wiwik_lib.models import user_model_defer_fields
 from wiwik_lib.utils import paginate_queryset
 
 
 def get_questions_queryset(
-    base_queryset: QuerySet,
-    tab: Optional[str],
-    query: Optional[str],
-    user: Optional[AbstractUser],
+        base_queryset: QuerySet,
+        tab: Optional[str],
+        query: Optional[str],
+        user: Optional[AbstractUser],
 ) -> QuerySet:
     base_queryset = base_queryset.select_related(
         "author",
-    ).defer(*user_model_defer_fields("author"))
+    ).defer(*user_model_defer_fields("author"), "source", "source_id", "link")
     start_time = time.time()
     if query is not None:
         qs = search.query_method(base_queryset, query)
@@ -48,10 +50,15 @@ def get_questions_queryset(
     return qs
 
 
+def get_restricted_space_ids(user: ForumUser) -> list[int]:
+    return list(Space.objects.filter(restricted=True).values_list("id", flat=True))
+
+
 def render_questions(request, base_qs: QuerySet, header: str, extra: dict = None):
     tab = utils.get_request_tab(request)
     q = utils.get_request_param(request, "q", None)
-    all_questions_qs = get_questions_queryset(base_qs.exclude(space__restricted=True), tab, q, request.user)
+    restricted_spaces = get_restricted_space_ids(request.user)
+    all_questions_qs = get_questions_queryset(base_qs.exclude(space_id__in=restricted_spaces), tab, q, request.user)
     all_questions_qs = all_questions_qs.prefetch_related(
         "tags",
     )

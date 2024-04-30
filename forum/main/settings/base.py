@@ -149,7 +149,6 @@ DISABLE_USER_NOTIFICATION_SKIPPING = False
 # Run async tasks sync to avoid the need for worker
 RUN_ASYNC_JOBS_SYNC = getenv_asbool("RUN_ASYNC_JOBS_SYNC", default="FALSE")
 
-
 REDIS_CACHE_URL = os.getenv("REDIS_CACHE_URL", None)
 if REDIS_CACHE_URL:
     CACHES = {
@@ -161,3 +160,9 @@ if REDIS_CACHE_URL:
         }
     }
     SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        }
+    }
