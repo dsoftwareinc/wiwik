@@ -41,6 +41,7 @@ urlpatterns += [
     ),
     path("users/navbar", views.view_partial_user_navbar, name="user_navbar"),
     path("similar-questions/", views.view_similar_questions, name="similar"),
+    path("tags/<int:pk>/popover", views.view_partial_tag_popover, name="tag_popover"),
 ]
 # Actions
 urlpatterns += [

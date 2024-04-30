@@ -22,7 +22,9 @@
         </div>
         <div style="max-height: 40px;overflow: hidden;" class="mb-2">
             {% for t in q.tags.all %}
-                {% include 'main/includes/tag-popover.template.html' with q_id=q.id t=t %}
+{#                {% include 'main/includes/tag-popover.template.html' with q_id=q.id t=t %}#}
+                <div hx-get="{% url 'forum:tag_popover' t.id %}" hx-trigger="load" hx-swap="outerHTML">
+                </div>
             {% endfor %}
         </div>
     </div>
