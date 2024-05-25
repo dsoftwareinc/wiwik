@@ -3,7 +3,6 @@ import logging
 from django.apps import AppConfig
 from django.core.checks import Warning, register
 
-from wiwik_lib.templatetags.wiwik_template_tags import check_latex_config
 
 logger = logging.getLogger(__package__)
 
@@ -40,4 +39,6 @@ class ForumConfig(AppConfig):
     name = "forum"
 
     def ready(self):
+        from wiwik_lib.templatetags.wiwik_template_tags import check_latex_config
+
         check_latex_config()
