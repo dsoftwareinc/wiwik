@@ -1,4 +1,3 @@
-import markdown
 from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
@@ -6,37 +5,11 @@ from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import FormView
-from pymdownx import superfences
 
 from forum.jobs.moderator_check import grant_moderator
 from userauth.models import ForumUser, UserVisit
 from wiwik_lib.models import Follow
-
-MARKDOWN_EXTENSIONS = [
-    "pymdownx.magiclink",
-    "pymdownx.extra",
-    "pymdownx.superfences",
-]
-MARKDOWN_EXTENSIONS_CONFIG = {
-    "pymdownx.superfences": {
-        "custom_fences": [
-            {
-                "name": "mermaid",
-                "class": "mermaid",
-                "format": superfences.fence_div_format,
-            }
-        ]
-    },
-}
-
-
-def markdownify(text: str):
-    html = markdown.markdown(
-        text,
-        extensions=MARKDOWN_EXTENSIONS,
-        extension_configs=MARKDOWN_EXTENSIONS_CONFIG,
-    )
-    return html
+from wiwik_lib.templatetags.wiwik_template_tags import markdownify
 
 
 class SendEmailForm(forms.Form):

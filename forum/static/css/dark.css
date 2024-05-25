@@ -55,7 +55,7 @@
     --bs-black-rgb: 255, 255, 255;
     --bs-body-font-size: 1rem/1.5;
     --bs-body-color: #fff;
-    --bs-body-bg: hsl(210, 2%, 15%);
+    --bs-body-bg: #252627FF; /*hsl(210, 2%, 15%);*/
     --accepted-color: #6ac697;
     --bs-link-color: #86B7FE;
     --link-color-hover: #abccff;
@@ -63,7 +63,7 @@
     --space-property-background: #d1e7dc;
     --space-property-border: transparent;
     --space-property-color: #198754;
-    --code-bg-color: #373831;
+    --code-bg-color: #252627FF;
     --code-fg-color: #f8f8f0;
     height: 100%;
     --bs-emphasis-color: var(--bs-body-color);

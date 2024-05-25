@@ -2,10 +2,9 @@ from datetime import datetime, date
 from typing import List
 
 import bleach
-import pymdownx.arithmatex as arithmatex
+
 from constance import config
 from django import template
-from django.core import checks
 from django.templatetags.static import static
 from django.utils.safestring import mark_safe
 from markdown import Markdown
@@ -41,26 +40,6 @@ MARKDOWN_EXTENSIONS_CONFIG = {
     },
 }
 
-
-@checks.register()
-def check_latex_support(app_configs, **kwargs):
-    messages = []
-    if not config.LATEX_SUPPORT_ENABLED:
-        return messages
-    MARKDOWN_EXTENSIONS_CONFIG["pymdownx.arithmatex"] = {
-        "generic": True,
-    }
-    MARKDOWN_EXTENSIONS_CONFIG["pymdownx.superfences"]["custom_fences"].append(
-        {
-            "name": "math",
-            "class": "arithmatex",
-            "format": arithmatex.fence_generic_format,
-        }
-    )
-    messages.append(checks.Info(
-        "LaTeX support is enabled",
-    ))
-    return messages
 
 
 @register.filter("startswith")
