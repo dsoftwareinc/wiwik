@@ -2087,6 +2087,16 @@ pool = ["psycopg-pool"]
 test = ["anyio (>=3.6.2,<4.0)", "mypy (>=1.4.1)", "pproxy (>=2.7)", "pytest (>=6.2.5)", "pytest-cov (>=3.0)", "pytest-randomly (>=3.5)"]
 
 [[package]]
+name = "psycopg-c"
+version = "3.1.19"
+description = "PostgreSQL database adapter for Python -- C optimisation distribution"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "psycopg_c-3.1.19.tar.gz", hash = "sha256:8e90f53c430e7d661cb3a9298e2761847212ead1b24c5fb058fc9d0fd9616017"},
+]
+
+[[package]]
 name = "ptyprocess"
 version = "0.7.0"
 description = "Run a subprocess in a pseudo terminal"
@@ -3429,4 +3439,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "82241d0e24a93a42d438df825441fcfa19846e7cb978188c653a7e76c29fbcff"
+content-hash = "6ae7752dee31a1849cda9480dc4a0812d7b7b8fe0df2abe69e976aee97a837dc"
