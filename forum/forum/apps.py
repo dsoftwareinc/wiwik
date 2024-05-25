@@ -1,7 +1,8 @@
 import logging
 
 from django.apps import AppConfig
-from django.core.checks import Warning, register
+from django.core.checks import Warning, register, Info
+from pymdownx import arithmatex
 
 logger = logging.getLogger(__package__)
 
@@ -35,3 +36,26 @@ def wiwik_check_config(app_configs, **kwargs):
             id="forum.E002",
         ))
     return errors
+
+
+@register()
+def check_latex_support(app_configs, **kwargs):
+    messages = []
+    from constance import config
+    if not config.LATEX_SUPPORT_ENABLED:
+        return messages
+    from wiwik_lib.templatetags.wiwik_template_tags import MARKDOWN_EXTENSIONS_CONFIG
+    MARKDOWN_EXTENSIONS_CONFIG["pymdownx.arithmatex"] = {
+        "generic": True,
+    }
+    MARKDOWN_EXTENSIONS_CONFIG["pymdownx.superfences"]["custom_fences"].append(
+        {
+            "name": "math",
+            "class": "arithmatex",
+            "format": arithmatex.fence_generic_format,
+        }
+    )
+    messages.append(Info(
+        "LaTeX support is enabled",
+    ))
+    return messages

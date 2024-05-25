@@ -105,9 +105,9 @@ class ArrayPosition(Func):
 
 def meilisearchmethod():
     if (
-        not settings.MEILISEARCH_ENABLED
-        or not settings.MEILISEARCH_SERVER_ADDRESS
-        or not settings.MEILISEARCH_MASTERKEY
+            not settings.MEILISEARCH_ENABLED
+            or not settings.MEILISEARCH_SERVER_ADDRESS
+            or not settings.MEILISEARCH_MASTERKEY
     ):
         return ValueError("Can not use meilisearch when its configuration is off")
     import meilisearch
