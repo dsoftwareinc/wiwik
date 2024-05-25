@@ -1,18 +1,11 @@
 import logging
 
 from django.apps import AppConfig
-from django.core.checks import Warning, register, Info
-from pymdownx import arithmatex
+from django.core.checks import Warning, register
+
+from wiwik_lib.templatetags.wiwik_template_tags import check_latex_config
 
 logger = logging.getLogger(__package__)
-
-
-class ForumConfig(AppConfig):
-    default_auto_field = "django.db.models.BigAutoField"
-    name = "forum"
-
-    def ready(self):
-        pass
 
 
 @register()
@@ -20,8 +13,10 @@ def wiwik_check_config(app_configs, **kwargs):
     from constance import config
     from django.conf import settings
 
+    logger.info("Checking Google Analytics key and admin email is configured")
     errors = []
     if config.GOOGLE_ANALYTICS_KEY is None:
+        logger.warning("Google Analytics key is not configured! set it in the admin console")
         errors.append(Warning(
             "Google Analytics key is not configured! set environment variable GOOGLE_ANALYTICS_KEY",
             hint="Set environment variable GOOGLE_ANALYTICS_KEY",
@@ -29,33 +24,20 @@ def wiwik_check_config(app_configs, **kwargs):
             id="forum.E001",
         ))
     if not settings.ADMINS:
+        logger.warning("email for admin is not configured! set it as environment variable ADMIN_EMAIL")
         errors.append(Warning(
             "email for admin is not configured! set environment variable ADMIN_EMAIL",
             hint="Set environment variable ADMIN_EMAIL",
             obj=settings,
             id="forum.E002",
         ))
+
     return errors
 
 
-@register()
-def check_latex_support(app_configs, **kwargs):
-    messages = []
-    from constance import config
-    if not config.LATEX_SUPPORT_ENABLED:
-        return messages
-    from wiwik_lib.templatetags.wiwik_template_tags import MARKDOWN_EXTENSIONS_CONFIG
-    MARKDOWN_EXTENSIONS_CONFIG["pymdownx.arithmatex"] = {
-        "generic": True,
-    }
-    MARKDOWN_EXTENSIONS_CONFIG["pymdownx.superfences"]["custom_fences"].append(
-        {
-            "name": "math",
-            "class": "arithmatex",
-            "format": arithmatex.fence_generic_format,
-        }
-    )
-    messages.append(Info(
-        "LaTeX support is enabled",
-    ))
-    return messages
+class ForumConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "forum"
+
+    def ready(self):
+        check_latex_config()

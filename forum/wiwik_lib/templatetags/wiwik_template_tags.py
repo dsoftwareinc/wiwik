@@ -2,18 +2,18 @@ from datetime import datetime, date
 from typing import List
 
 import bleach
-
 from constance import config
 from django import template
 from django.templatetags.static import static
 from django.utils.safestring import mark_safe
 from markdown import Markdown
-from pymdownx import superfences
+from pymdownx import superfences, arithmatex
 
 from forum.models import UserTagStats
 from tags.models import Tag
 from userauth.models import ForumUser
 from userauth.utils import user_most_active_tags
+from wiwik_lib.apps import logger
 
 register = template.Library()
 
@@ -39,7 +39,6 @@ MARKDOWN_EXTENSIONS_CONFIG = {
         ]
     },
 }
-
 
 
 @register.filter("startswith")
@@ -88,6 +87,26 @@ ALLOWED_TAGS = frozenset(
         "summary",
     }
 )
+
+
+def check_latex_config():
+    logger.info("Checking LaTeX support is enabled")
+    if config.LATEX_SUPPORT_ENABLED:
+        logger.info("LaTeX support is enabled")
+        MARKDOWN_EXTENSIONS_CONFIG["pymdownx.arithmatex"] = {
+            "generic": True,
+        }
+        MARKDOWN_EXTENSIONS_CONFIG["pymdownx.superfences"]["custom_fences"].append(
+            {
+                "name": "math",
+                "class": "arithmatex",
+                "format": arithmatex.fence_generic_format,
+            }
+        )
+        return True
+    else:
+        logger.warning("LaTeX support is disabled")
+        return False
 
 
 @register.filter(is_safe=True)
