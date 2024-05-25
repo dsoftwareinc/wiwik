@@ -6,7 +6,7 @@ from .logging import *
 from .rq_queues import *
 from .static_files import *
 
-DEBUG_TOOLS = True
+DEBUG_TOOLS = False
 
 if DEBUG_TOOLS:
     MIDDLEWARE = [
