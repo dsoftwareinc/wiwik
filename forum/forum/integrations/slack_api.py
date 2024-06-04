@@ -1,7 +1,6 @@
 from typing import Union, List, Optional
 
 from constance import config
-from django.core.checks import register, Warning
 from scheduler import job
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
@@ -28,17 +27,15 @@ from wiwik_lib.utils import CURRENT_SITE
 slack_client = None
 
 
-@register()
-def configure_slack_client(app_configs, **kwargs):
+def configure_slack_client():
     global slack_client
-    messages = []
-    if not config.SLACK_BOT_TOKEN:
-        messages.append(Warning("Slack integration disabled", hint="Set SLACK_BOT_TOKEN in settings"))
-        return messages
 
-    logger.info("Slack integration enabled")
+    if not config.SLACK_BOT_TOKEN:
+        logger.warning("Slack integration disabled, Set SLACK_BOT_TOKEN in settings")
+        return
+
     slack_client = WebClient(config.SLACK_BOT_TOKEN)
-    return messages
+    logger.info("Slack integration enabled")
 
 
 @job

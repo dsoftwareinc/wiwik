@@ -40,5 +40,7 @@ class ForumConfig(AppConfig):
 
     def ready(self):
         from wiwik_lib.templatetags.wiwik_template_tags import check_latex_config
+        from forum.integrations.slack_api import configure_slack_client
 
         check_latex_config()
+        configure_slack_client()
