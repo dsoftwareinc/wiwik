@@ -12,7 +12,7 @@ from slack_sdk.models.blocks import (
     TextObject,
     LinkButtonElement,
     DividerBlock,
-    HeaderBlock,
+    HeaderBlock, MarkdownTextObject,
 )
 from slack_sdk.models.views import View
 from slack_sdk.signature import SignatureVerifier
@@ -24,7 +24,7 @@ from forum.views.common import get_model_url_with_base
 from userauth.models import ForumUser
 from wiwik_lib.utils import CURRENT_SITE
 
-slack_client = None
+slack_client: Optional[WebClient] = None
 
 
 def configure_slack_client():
@@ -43,7 +43,7 @@ def slack_post_channel_message(text: str, channel: str, thread_ts: str = None, n
     if not config.SLACK_BOT_TOKEN:
         return
     blocks = [
-        SectionBlock(text=TextObject(text=text, type="mrkdwn")),
+        SectionBlock(text=MarkdownTextObject(text=text)),
     ]
     try:
         logger.info(f"sending text msg to channel {channel}: {text}")
@@ -281,15 +281,15 @@ def questions_message(questions: List[Question]) -> List:
                 text=question.title,
             ).to_dict()
         )
-        content = question.content[:2000]
+        content = question.content[:1000]
         content = content.split("\r\n")
         num_lines = len(content)
         content = "\r\n".join(content[:4])
-        if len(question.content) > 3000 or num_lines > 4:
+        if len(question.content) > 1000 or num_lines > 4:
             content += "..."
         blocks.append(
             SectionBlock(
-                text=TextObject(text=content, type="mrkdwn"),
+                text=MarkdownTextObject(text=content),
                 accessory=LinkButtonElement(text="Go to question", url=question_url),
             ).to_dict()
         )
