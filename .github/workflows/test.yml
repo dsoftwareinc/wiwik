@@ -25,7 +25,7 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: "Setup Python, Poetry and Dependencies"
         uses: dsoftwareinc/setup-python-poetry-action@v1
         with:
@@ -53,10 +53,12 @@ jobs:
             ```
           message-id: 'coverage'
           allow-repeats: false
+
       - name: json report
         run: |
           poetry run coverage json
           echo "COVERAGE=$(jq '.totals.percent_covered_display|tonumber' coverage.json)" >> $GITHUB_ENV
+
       - if: ${{ github.event_name == 'push' }}
         name: Create Awesome Badge
         uses: schneegans/dynamic-badges-action@v1.7.0
