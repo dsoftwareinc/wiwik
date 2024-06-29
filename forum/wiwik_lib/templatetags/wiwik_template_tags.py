@@ -163,7 +163,7 @@ def user_active_tags(u: ForumUser):
     return user_most_active_tags(u)
 
 
-_VER_BOOTSTRAP = "5.3.1"
+_VER_BOOTSTRAP = "5.3.3"
 _VER_EASYMDE = "2.18.0"
 _VER_CROPPIE = "2.6.5"
 _VER_FONTAWESOME = "4.7.0"
