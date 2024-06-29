@@ -33,7 +33,7 @@ def calc_tfidf_pair(text1: str, text2: str) -> float:
     if not __vectorizer:
         __vectorizer = initialize_tfidf()
     tfidf = __vectorizer.fit_transform([text1, text2])
-    return (tfidf * tfidf.T).A[0, 1]
+    return (tfidf * tfidf.T)[0,1]
 
 
 def calc_tfidf_multiple_documents(docs: list[str]) -> list[list[float]]:
@@ -41,4 +41,4 @@ def calc_tfidf_multiple_documents(docs: list[str]) -> list[list[float]]:
     if not __vectorizer:
         __vectorizer = initialize_tfidf()
     tfidf = __vectorizer.fit_transform(docs)
-    return (tfidf * tfidf.T).A
+    return (tfidf * tfidf.T).toarray()
