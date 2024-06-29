@@ -53,6 +53,6 @@ def search_from_slack(request):
     results = list(
         search.query_method(Question.objects, query).order_by("-has_accepted_answer", "-votes", "-created_at")[:3]
     )
-    res = {"blocks": slack_api.questions_message(results)}
+    res = slack_api.questions_slack_message(results)
     logger.debug(res)
-    return JsonResponse(data=res, status=200)
+    return JsonResponse(data=res, status=200, content_type="application/json")

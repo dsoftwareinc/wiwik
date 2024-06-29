@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from wiwik_lib.utils import CURRENT_SITE
+from wiwik_lib import utils
 
 
 def get_model_url(model_name: str, model) -> str:
@@ -23,4 +23,4 @@ def get_model_url(model_name: str, model) -> str:
 
 
 def get_model_url_with_base(model_name: str, model) -> str:
-    return CURRENT_SITE + get_model_url(model_name, model)
+    return utils.CURRENT_SITE + get_model_url(model_name, model)

@@ -69,7 +69,7 @@ x-depends-on-defaults: &depends-on-defaults
 
 services:
   searchdb:
-    image: getmeili/meilisearch:v1.7
+    image: getmeili/meilisearch:v1.8.3
     ports:
       - "7700:7700"
     environment:
@@ -99,7 +99,7 @@ services:
       - wiwik-network
 
   redis:
-    image: redis/redis-stack-server:7.2.0-v9
+    image: redis/redis-stack-server:7.2.0-v11
     ports:
       - "6379:6379"
     healthcheck:

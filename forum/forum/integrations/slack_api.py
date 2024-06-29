@@ -1,4 +1,4 @@
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Dict, Any
 
 from constance import config
 from scheduler import job
@@ -12,7 +12,7 @@ from slack_sdk.models.blocks import (
     TextObject,
     LinkButtonElement,
     DividerBlock,
-    HeaderBlock, MarkdownTextObject,
+    HeaderBlock, MarkdownTextObject, Block,
 )
 from slack_sdk.models.views import View
 from slack_sdk.signature import SignatureVerifier
@@ -112,6 +112,17 @@ def _get_permalink(channel: str, message_ts: str) -> Union[str, None]:
 
 
 @job
+def send_message_to_user(user_id: str, message: Dict[str, Any]):
+    if not config.SLACK_BOT_TOKEN:
+        return
+    try:
+        logger.info(f"sending message to user {user_id}: {message}")
+        slack_client.chat_postMessage(channel=user_id, **message)
+    except SlackApiError as e:
+        logger.warning(f"Got an error: {e.response['error']}")
+
+
+@job
 def slack_post_im_message_to_email(text: str, email: str, notification_text: str = None):
     if not config.SLACK_BOT_TOKEN:
         return
@@ -122,7 +133,7 @@ def slack_post_im_message_to_email(text: str, email: str, notification_text: str
             logger.warning(f"slack user for {email} not found, returning")
             return
         blocks = [
-            SectionBlock(text=TextObject(text=text, type="mrkdwn")),
+            SectionBlock(text=MarkdownTextObject(text=text)),
         ]
         slack_client.chat_postMessage(channel=user_id, text=notification_text or text, blocks=blocks, mrkdwn=True)
     except SlackApiError as e:
@@ -270,17 +281,13 @@ def verify_request(request) -> bool:
     return verifier.is_valid(body, timestamp, signature)
 
 
-def questions_message(questions: List[Question]) -> List:
+def questions_slack_message(questions: List[Question]) -> Dict[str, Any]:
     question_ids = [str(q.id) for q in questions]
     logger.debug(f"Sending to slack question IDs ({','.join(question_ids)})")
-    blocks = list()
+    blocks: List[Block] = list()
     for question in questions:
         question_url = get_model_url_with_base("question", question)
-        blocks.append(
-            HeaderBlock(
-                text=question.title,
-            ).to_dict()
-        )
+        blocks.append(HeaderBlock(text=question.title, ))
         content = question.content[:1000]
         content = content.split("\r\n")
         num_lines = len(content)
@@ -291,7 +298,8 @@ def questions_message(questions: List[Question]) -> List:
             SectionBlock(
                 text=MarkdownTextObject(text=content),
                 accessory=LinkButtonElement(text="Go to question", url=question_url),
-            ).to_dict()
+            )
         )
-        blocks.append(DividerBlock().to_dict())
-    return blocks
+        blocks.append(DividerBlock())
+    res = dict(blocks=[b.to_dict() for b in blocks])
+    return res

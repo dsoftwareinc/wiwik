@@ -39,9 +39,7 @@ def paginate_queryset(qs: QuerySet, page: int, per_page: int):
 
 CURRENT_SITE = ""
 
-
-@checks.register()
-def set_current_site(app_configs, **kwargs):
+def set_current_site():
     messages = []
     global CURRENT_SITE
     try:
