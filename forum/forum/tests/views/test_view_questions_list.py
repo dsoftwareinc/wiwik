@@ -2,7 +2,6 @@ from unittest import mock
 
 from bs4 import BeautifulSoup
 from constance import config
-from django.conf import settings
 from django.test import override_settings
 from django.urls import reverse
 
@@ -273,7 +272,7 @@ class TestHomeView(ForumApiTestCase):
         self.assertContains(res, "Ask Question")
         self.assertContains(res, self.title)
         self.assertContains(res, tag_word)
-        self.assertContains(res, tag_description)
+        # self.assertContains(res, tag_description) # tag popover is partial view
         self.assertContains(res, "Home")
         self.assertNotContains(res, self.question_content)
 
@@ -309,26 +308,3 @@ class TestHomeView(ForumApiTestCase):
         watched_tags_div = soup.find("div", {"id": "watched-tags"})
         self.assertIsNotNone(watched_tags_div)
         self.assertEqual(3, len(watched_tags_div.find_all("a")))
-
-    def test_questions_list__tags_with_experts_and_stars__should_show_in_popover(self):
-        # arrange
-        tag_description = "my tag description with many things"
-        self.client.login(self.usernames[1], self.password)
-        user = self.users[1]
-        tags_list = list()
-        for i in range(3):
-            tag = models.Tag.objects.create(tag_word=f"tag{i}", description=tag_description if i > 0 else None)
-            follow_models.create_follow_tag(tag, user)
-            tags_list.append(tag)
-        tag_str = ",".join([f"tag{i}" for i in range(3)])
-        utils.create_question(user, self.title, self.question_content, tag_str)
-        for tag in tags_list:
-            tag.experts = self.usernames[2]
-            tag.stars = self.usernames[2]
-            tag.save()
-        # act
-        res = self.client.questions_list()
-        # assert
-        self.assertContains(res, "Leaders:")
-        self.assertContains(res, "Rising stars:")
-        self.assertContains(res, self.usernames[2])

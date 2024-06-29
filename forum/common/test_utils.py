@@ -124,13 +124,13 @@ class ForumClient(Client):
 
     def view_thread_get(self, question_pk: int, order_by: str = None):
         url = (
-            reverse(
-                "forum:thread",
-                args=[
-                    question_pk,
-                ],
-            )
-            + "?"
+                reverse(
+                    "forum:thread",
+                    args=[
+                        question_pk,
+                    ],
+                )
+                + "?"
         )
         if order_by is not None:
             url += f"order_by={order_by}&"
@@ -347,18 +347,22 @@ class ForumClient(Client):
         url = reverse("forum:post_comments", args=[post_type, post_pk])
         return self.get(url, follow=True)
 
+    def view_partial_tag_popover(self, tag_word: str):
+        url = reverse("forum:tag_popover", args=[tag_word])
+        return self.get(url, follow=True)
+
     def view_partial_question_invites_get(
-        self,
-        question_pk: int,
+            self,
+            question_pk: int,
     ):
         url = (
-            reverse(
-                "forum:questions_invites",
-                args=[
-                    question_pk,
-                ],
-            )
-            + "?"
+                reverse(
+                    "forum:questions_invites",
+                    args=[
+                        question_pk,
+                    ],
+                )
+                + "?"
         )
         return self.get(url, follow=True)
 
@@ -374,13 +378,13 @@ class ForumClient(Client):
 
     def view_article_detail_get(self, article_pk: int):
         url = (
-            reverse(
-                "articles:detail",
-                args=[
-                    article_pk,
-                ],
-            )
-            + "?"
+                reverse(
+                    "articles:detail",
+                    args=[
+                        article_pk,
+                    ],
+                )
+                + "?"
         )
         return self.get(url, follow=True)
 

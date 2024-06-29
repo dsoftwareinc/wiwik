@@ -23,7 +23,7 @@ class TestSlackApi(TestCase):
     def setUp(self):
         super().setUp()
         config.SLACK_BOT_TOKEN = "xxx"
-        configure_slack_client([])
+        configure_slack_client()
 
     def test_slack_post_channel_message__green(self):
         # arrange
