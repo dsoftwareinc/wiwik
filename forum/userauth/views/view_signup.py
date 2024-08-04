@@ -12,8 +12,8 @@ from django.utils.http import urlsafe_base64_encode
 from userauth.apps import logger
 from userauth.models import ForumUser
 from userauth.views.tokens import account_activation_token
+from wiwik_lib import utils
 from wiwik_lib.adapters import inform_admins_bad_registration
-from wiwik_lib.utils import is_email_allowed, CURRENT_SITE
 
 
 class SignUpForm(UserCreationForm):
@@ -27,7 +27,7 @@ class SignUpForm(UserCreationForm):
                 "email already registered, you can reset your password",
                 code="email_exists",
             )
-        allowed = is_email_allowed(email)
+        allowed = utils.is_email_allowed(email)
         if not allowed:
             inform_admins_bad_registration(email, request=None)
             raise ValidationError(
@@ -79,7 +79,7 @@ def view_signup(request):
         "emails/user_active_email.html",
         {
             "username": user.display_name(),
-            "domain": CURRENT_SITE,
+            "domain": utils.CURRENT_SITE,
             "uid": urlsafe_base64_encode(force_bytes(user.pk)),
             "token": account_activation_token.make_token(user),
         },
@@ -94,7 +94,7 @@ def view_signup(request):
     )
 
     mail_admins(
-        f"{to_email} registered to {CURRENT_SITE}",
-        f"{to_email} registered to {CURRENT_SITE}",
+        f"{to_email} registered to {utils.CURRENT_SITE}",
+        f"{to_email} registered to {utils.CURRENT_SITE}",
     )
     return redirect("forum:home")
