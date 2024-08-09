@@ -46,7 +46,7 @@ meilisearch = "^0.31" # meilisearch driver
 redis = "^5.0" # Redis driver, for redis-cache
 psycopg = "^3.1.18"
 django-constance = "^3.1.0"
-psycopg-c = "^3.1.19"
+psycopg-c = "^3.2.1"
 
 
 [tool.poetry.dev-dependencies]
