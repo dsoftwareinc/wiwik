@@ -18,7 +18,7 @@ django-allauth = { extras = ["socialaccount"], version = "^0.63.2" }
 pyparsing = "^3.0"
 python-dateutil = "^2.8"
 sqlparse = "^0.5"
-nltk = "^3.8"
+nltk = "^3.9"
 django-tasks-scheduler = "^2.0" # Async jobs scheduler using redis
 django-admin-numeric-filter = "^0.1" # Django-admin filters
 django-admin-rangefilter = "^0.13" # Django-admin filters
