@@ -14,7 +14,7 @@ def initialize_tfidf():
     try:
         nltk.data.find("tokenizers/punkt")
     except LookupError:
-        nltk.download("punkt")
+        nltk.download("punkt_tab")
 
     stemmer = nltk.stem.porter.PorterStemmer()
     remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
