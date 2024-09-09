@@ -13,7 +13,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
 Django = "^5.0"
-django-allauth = { extras = ["socialaccount"], version = "^0.63.2" }
+django-allauth = { extras = ["socialaccount"], version = "^64.2.1" }
 
 pyparsing = "^3.0"
 python-dateutil = "^2.8"
