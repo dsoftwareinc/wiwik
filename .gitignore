@@ -22,3 +22,5 @@ data.ms
 config/moransoftware.ca/*
 .mypy_cache
 .venv
+tags
+
