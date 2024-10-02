@@ -2,7 +2,7 @@ import textwrap
 from io import StringIO
 from unittest import mock
 
-import fakeredis as fakeredis
+import fakeredis
 from django.core.management import call_command
 from django.test import TestCase
 from redis import ResponseError
@@ -22,7 +22,7 @@ class CreateCronJobsTest(TestCase):
         )
         return out.getvalue()
 
-    @mock.patch("redis.Redis", return_value=fakeredis.FakeStrictRedis())
+    @mock.patch("scheduler.queues.get_connection", return_value=fakeredis.FakeStrictRedis())
     def test__green(self, conn):
         prev_count = CronTask.objects.count()
         conn.info.side_effect = ResponseError()
