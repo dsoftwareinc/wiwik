@@ -27,7 +27,7 @@ django-ipware = "^7.0" # For identifying IP location
 geoip2 = "^4.8" # For identifying IP location
 pillow = "^10.4" # For image field
 scikit-learn = "^1.4" # For similarity TF-IDF
-numpy = "^2.0" # For similarity TF-IDF
+numpy = "^2.1" # For similarity TF-IDF
 
 gunicorn = "^23.0" # Running configuration
 python-dotenv = "^1.0" # Running configuration
