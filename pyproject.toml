@@ -51,7 +51,7 @@ django-constance = "^3.1.0"
 [tool.poetry.dev-dependencies]
 poetry = "^1.8.1"
 fakeredis = "^2.20"
-coverage = "^7.5"
+coverage = "^7.6"
 django-coverage-plugin = "^3.0"
 beautifulsoup4 = "^4.12"
 django-debug-toolbar = "^4.4"
