@@ -43,7 +43,7 @@ pymdown-extensions = "^10.4"
 # 3rd party integrations
 slack-sdk = "^3.21"
 meilisearch = "^0.31" # meilisearch driver
-redis = "^5.0" # Redis driver, for redis-cache
+redis = "^5.2" # Redis driver, for redis-cache
 psycopg = "^3.1.18"
 django-constance = "^3.1.0"
 
