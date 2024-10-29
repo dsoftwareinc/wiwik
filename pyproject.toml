@@ -22,10 +22,10 @@ nltk = "^3.9"
 django-tasks-scheduler = "^2.0" # Async jobs scheduler using redis
 django-admin-numeric-filter = "^0.1" # Django-admin filters
 django-admin-rangefilter = "^0.13" # Django-admin filters
-django-model-utils = "^4.4" # Django-admin filters
+django-model-utils = "^5.0" # Django-admin filters
 django-ipware = "^7.0" # For identifying IP location
 geoip2 = "^4.8" # For identifying IP location
-pillow = "^10.4" # For image field
+pillow = "^11" # For image field
 scikit-learn = "^1.4" # For similarity TF-IDF
 numpy = "^2.0" # For similarity TF-IDF
 
