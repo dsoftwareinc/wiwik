@@ -3,7 +3,6 @@ description: Something is not working? Report a bug
 labels:
   - 'bug'
 body:
-
   - type: textarea
     id: context
     attributes:

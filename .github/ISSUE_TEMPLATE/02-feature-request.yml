@@ -19,27 +19,9 @@ body:
       label: |
         Description
       description: |
-        Describe the feature
+        Describe the feature, the use case, and the problem it solves.
     validations:
       required: true
-  - type: 'textarea'
-    id: 'use-case'
-    attributes:
-      label: |
-        Use Case
-      description: |
-        Provide a use case
-    validations:
-      required: true
-  - type: 'textarea'
-    id: 'details'
-    attributes:
-      label: |
-        Details
-      description: |
-        Describe the feature in detail
-    validations:
-      required: false
   - type: 'textarea'
     id: 'documentation'
     attributes:
