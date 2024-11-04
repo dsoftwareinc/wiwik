@@ -45,7 +45,7 @@ slack-sdk = "^3.21"
 meilisearch = "^0.31" # meilisearch driver
 redis = "^5.0" # Redis driver, for redis-cache
 psycopg = "^3.1.18"
-django-constance = "^3.1.0"
+django-constance = "^4.1.2"
 
 
 [tool.poetry.dev-dependencies]
