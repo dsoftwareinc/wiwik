@@ -99,7 +99,7 @@ services:
       - wiwik-network
 
   redis:
-    image: redis/redis-stack-server:7.2.0-v11
+    image: redis/redis-stack-server:7.4.0-v1
     ports:
       - "6379:6379"
     healthcheck:

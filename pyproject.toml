@@ -19,7 +19,7 @@ pyparsing = "^3.0"
 python-dateutil = "^2.8"
 sqlparse = "^0.5"
 nltk = "^3.9"
-django-tasks-scheduler = "^2.0" # Async jobs scheduler using redis
+django-tasks-scheduler = "^3.0.0b1" # Async jobs scheduler using redis
 django-admin-numeric-filter = "^0.1" # Django-admin filters
 django-admin-rangefilter = "^0.13" # Django-admin filters
 django-model-utils = "^5.0" # Django-admin filters
@@ -41,18 +41,18 @@ bleach = "^6.0"
 pymdown-extensions = "^10.4"
 
 # 3rd party integrations
-slack-sdk = "^3.21"
-meilisearch = "^0.31" # meilisearch driver
+slack-sdk = "^3.33"
+meilisearch = "^0.32" # meilisearch driver
 redis = "^5.0" # Redis driver, for redis-cache
-psycopg = "^3.1.18"
-django-constance = "^3.1.0"
+psycopg = "^3.1"
+django-constance = "^3.1"
 
 
 [tool.poetry.dev-dependencies]
-poetry = "^1.8.1"
-fakeredis = "^2.20"
-coverage = "^7.5"
-django-coverage-plugin = "^3.0"
+poetry = "^1.8"
+fakeredis = "^2.26"
+coverage = "^7.6"
+django-coverage-plugin = "^3"
 beautifulsoup4 = "^4.12"
 django-debug-toolbar = "^4.4"
 db-to-sqlite = "^1.4"
