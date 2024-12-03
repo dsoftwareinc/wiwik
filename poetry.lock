@@ -1022,13 +1022,13 @@ tests = ["tox"]
 
 [[package]]
 name = "django-tasks-scheduler"
-version = "3.0.0b1"
+version = "3.0.0b2"
 description = "An async job scheduler for django using redis/valkey brokers"
 optional = false
 python-versions = "<4.0,>=3.10"
 files = [
-    {file = "django_tasks_scheduler-3.0.0b1-py3-none-any.whl", hash = "sha256:a8c2011c03a02002b1c4779b19a00f981b7fff67f81128b96ea0ab4bb2fe2ea4"},
-    {file = "django_tasks_scheduler-3.0.0b1.tar.gz", hash = "sha256:d04e7542a1961488996728f609af09e4c25f6da40049000ea5b3abde4f91aa92"},
+    {file = "django_tasks_scheduler-3.0.0b2-py3-none-any.whl", hash = "sha256:08b03b3525cefe555554d49969e83f0010c9c59fb4495c9ca7a508c78ef93409"},
+    {file = "django_tasks_scheduler-3.0.0b2.tar.gz", hash = "sha256:c3de8d92a79a96ea7ed458e8f5c75c3317078e5ec256316464ddbefd5a6110c0"},
 ]
 
 [package.dependencies]
@@ -3796,4 +3796,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "0d9140cdf5c67d589f6fe45126a0319e457a875def2533b9594a028098021dae"
+content-hash = "ec62f4e83220b457f6b560a384dfc1f858edc52444b16bc60eb3db3fe6766b94"
