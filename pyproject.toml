@@ -38,7 +38,7 @@ django-crispy-forms = "^2.1"
 crispy-bootstrap5 = "^2024.2"
 markdown = "^3.4"
 bleach = "^6.0"
-pymdown-extensions = "^10.4"
+pymdown-extensions = "^10.13"
 
 # 3rd party integrations
 slack-sdk = "^3.33"
