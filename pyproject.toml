@@ -11,8 +11,8 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
-Django = "^5.0"
+python = "^3.12"
+Django = "^5.1"
 django-allauth = { extras = ["socialaccount"], version = "^65.0.1" }
 
 pyparsing = "^3.0"
@@ -47,27 +47,32 @@ redis = "^5.0" # Redis driver, for redis-cache
 psycopg = "^3.1"
 django-constance = "^3.1"
 
-
-[tool.poetry.dev-dependencies]
-poetry = "^1.8"
+[tool.poetry.group.dev.dependencies]
+poetry = "^2.1"
+ruff = "^0.11"
 fakeredis = "^2.26"
 coverage = "^7.6"
 django-coverage-plugin = "^3"
 beautifulsoup4 = "^4.12"
 django-debug-toolbar = "^4.4"
 db-to-sqlite = "^1.4"
-flake8-pyproject = "^1.2.3"
 behave-django = "^1.4.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.flake8]
-max-line-length = 120
+[tool.ruff]
+line-length = 120
 exclude = [
     '**/migrations/**',
     '__init__.py',
     '.venv/**',
     'private/**'
 ]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
