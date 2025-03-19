@@ -33,7 +33,8 @@ jobs:
           poetry-version: '2.1.1'
       - name: Run Tests
         run: |
-          poetry run coverage run forum/manage.py test forum --no-logs
+          cd forum
+          poetry run coverage run manage.py test --no-logs
       - name: Coverage report
         id: coverage_report
         shell: bash
