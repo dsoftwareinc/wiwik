@@ -1,5 +1,5 @@
 from datetime import date
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from constance import config
 from django import template
@@ -57,20 +57,22 @@ def dayssince(d: date, add_suffix: bool = True):
 
 
 @register.filter()
-def latest_bookmarks(u: ForumUser, count=config.MAX_BOOKMARK_ITEMS):
+def latest_bookmarks(u: ForumUser, count: Optional[int] = None):
+    count = count or config.MAX_BOOKMARK_ITEMS
     return u.bookmarks.all().select_related("question").order_by("-created_at")[:count]
 
 
 @register.filter()
-def latest_reputation(u: ForumUser, count=config.MAX_REPUTATION_ITEMS):
+def latest_reputation(u: ForumUser, count: Optional[int] = None):
+    count = count or config.MAX_REPUTATION_ITEMS
     return u.reputation_votes.all().select_related("question").order_by("-created_at")[:count]
 
 
 @register.filter
 def unseen_reputation_sum(u: ForumUser):
     return (
-        u.reputation_votes.filter(seen__isnull=True, reputation_change__isnull=False)
-        .aggregate(Sum("reputation_change"))
-        .get("reputation_change__sum", 0)
-        or 0
+            u.reputation_votes.filter(seen__isnull=True, reputation_change__isnull=False)
+            .aggregate(Sum("reputation_change"))
+            .get("reputation_change__sum", 0)
+            or 0
     )

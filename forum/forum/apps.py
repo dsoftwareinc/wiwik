@@ -12,7 +12,8 @@ logger = logging.getLogger(__package__)
 def wiwik_check_config(app_configs, **kwargs):
     from constance import config
     from django.conf import settings
-
+    if 'runserver' not in sys.argv:
+        return []
     logger.info("Checking Google Analytics key and admin email is configured")
     errors = []
     if config.GOOGLE_ANALYTICS_KEY is None:
