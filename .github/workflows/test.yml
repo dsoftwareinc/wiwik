@@ -38,8 +38,6 @@ jobs:
         id: coverage_report
         shell: bash
         run: |
-          mv forum/.coverage .
-          cp forum/.coveragerc .
           echo 'REPORT<<EOF' >> $GITHUB_ENV         
           poetry run coverage report >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
