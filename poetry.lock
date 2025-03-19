@@ -959,18 +959,15 @@ rjsmin = "1.2.2"
 
 [[package]]
 name = "django-constance"
-version = "3.1.0"
+version = "4.3.2"
 description = "Django live settings with pluggable backends, including Redis."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "django-constance-3.1.0.tar.gz", hash = "sha256:2b96e51de63751ef63f8f92f74e0f6aea30fb6453f3a736c21e1f8b3f6cf0b4f"},
-    {file = "django_constance-3.1.0-py3-none-any.whl", hash = "sha256:6242486a346e396d765a9333d17f3101c8613cabc92e0b98dcb70c2a391bc53b"},
+    {file = "django_constance-4.3.2-py3-none-any.whl", hash = "sha256:cd3e08f4cac457016db550a9244177da39cef8e39f4a56859692306cc8f11dc1"},
+    {file = "django_constance-4.3.2.tar.gz", hash = "sha256:d86e6b6a797157a4b49d0c679f1b7b9c70b1b540f36dfcda5346736997ae51bd"},
 ]
-
-[package.dependencies]
-django-picklefield = "*"
 
 [package.extras]
 redis = ["redis"]
@@ -1050,24 +1047,6 @@ files = [
 
 [package.dependencies]
 Django = ">=3.2"
-
-[[package]]
-name = "django-picklefield"
-version = "3.3"
-description = "Pickled object field for Django"
-optional = false
-python-versions = ">=3.9"
-groups = ["main"]
-files = [
-    {file = "django-picklefield-3.3.tar.gz", hash = "sha256:4e76dd20f2e95ffdaf18d641226ccecc169ff0473b0d6bec746f3ab97c26b8cb"},
-    {file = "django_picklefield-3.3-py3-none-any.whl", hash = "sha256:d6f6fd94a17177fe0d16b0b452a9860b8a1da97b6e70633ab53ade4975f1ce9a"},
-]
-
-[package.dependencies]
-Django = ">=4.2"
-
-[package.extras]
-tests = ["tox"]
 
 [[package]]
 name = "django-tasks-scheduler"
@@ -4063,4 +4042,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "98e451d4d1dcc52191afe8aa2080d20121c6376731f73012a9d327a7d1602a96"
+content-hash = "c45a01df75ba2ffde81bbbe69b1d7b64518f1f2a31bcd844bdeb2f048372226e"
