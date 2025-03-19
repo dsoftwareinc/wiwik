@@ -30,7 +30,7 @@ jobs:
         uses: dsoftwareinc/setup-python-poetry-action@v1
         with:
           python-version: '3.12'
-          poetry-version: '1.8.4'
+          poetry-version: '2.1.1'
       - name: Run Tests
         run: |          
           poetry run coverage run forum/manage.py test --no-logs
