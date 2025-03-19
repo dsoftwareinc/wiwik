@@ -1,5 +1,4 @@
 from constance import config
-from django.conf import settings
 from django.contrib.postgres.search import SearchQuery, SearchRank, TrigramDistance
 from django.db.models import F
 

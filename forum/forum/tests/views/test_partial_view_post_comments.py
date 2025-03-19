@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 from constance import config
-from django.conf import settings
 
 from forum.tests.base import ForumApiTestCase
 from forum.views import utils

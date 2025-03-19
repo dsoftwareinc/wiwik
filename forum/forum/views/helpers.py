@@ -2,7 +2,6 @@ import time
 from typing import Optional
 
 from constance import config
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db.models import QuerySet
 from django.shortcuts import render

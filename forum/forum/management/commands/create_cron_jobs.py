@@ -1,4 +1,5 @@
-from scheduler.models import CronTask
+from scheduler.models.task import Task
+from scheduler.tools import TaskType
 
 from wiwik_lib.utils import ManagementCommand
 
@@ -8,12 +9,13 @@ class Command(ManagementCommand):
 
     def create_job(self, name: str, callable_method: str, cron_str: str):
         self.print(f"Creating CronJob: {name}")
-        exists = CronTask.objects.filter(callable=callable_method).first()
+        exists = Task.objects.filter(callable=callable_method).first()
         if exists is not None:
             self.error_print(f"Job with callable {callable_method} exists, skipping")
             return
-        CronTask.objects.create(
+        Task.objects.create(
             name=name,
+            task_type=TaskType.CRON,
             callable=callable_method,
             queue="cron",
             cron_string=cron_str,

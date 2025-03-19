@@ -2,7 +2,6 @@ from datetime import date
 from typing import List
 
 from constance import config
-from django.conf import settings
 from django.db.models import Count, Q
 from django.template import loader
 from django.utils import timezone

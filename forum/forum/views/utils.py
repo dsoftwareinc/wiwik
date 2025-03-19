@@ -3,7 +3,7 @@ from typing import Union, List, Optional
 from constance import config
 from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Sum, Model
+from django.db.models import Model
 from django.utils import timezone
 
 from badges.jobs import review_bagdes_event

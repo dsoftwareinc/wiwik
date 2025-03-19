@@ -7,7 +7,6 @@ from datetime import date
 from unittest import mock
 
 from constance import config
-from django.conf import settings
 
 from common.test_utils import assert_not_called_with
 from forum.jobs import (

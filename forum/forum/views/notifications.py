@@ -6,7 +6,6 @@ import shlex
 from typing import Set, List
 
 from constance import config
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Q
 from django.template import loader
