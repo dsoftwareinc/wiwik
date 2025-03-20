@@ -130,3 +130,10 @@ urlpatterns += [
     path("rss/feed/", LatestEntriesFeed()),
     path("editing-help/", views.view_markdown_help),
 ]
+
+# One time code
+from wiwik_lib.templatetags.wiwik_template_tags import check_latex_config
+from forum.integrations.slack_api import configure_slack_client
+
+check_latex_config()
+configure_slack_client()

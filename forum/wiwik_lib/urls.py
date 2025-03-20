@@ -10,3 +10,7 @@ urlpatterns = [
         name="update_edit_ping",
     ),
 ]
+
+from wiwik_lib.utils import set_current_site
+
+set_current_site()

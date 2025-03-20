@@ -41,10 +41,4 @@ class ForumConfig(AppConfig):
     name = "forum"
 
     def ready(self):
-        if 'runserver' not in sys.argv:
-            return
-        from wiwik_lib.templatetags.wiwik_template_tags import check_latex_config
-        from forum.integrations.slack_api import configure_slack_client
-
-        check_latex_config()
-        configure_slack_client()
+        pass

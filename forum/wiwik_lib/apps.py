@@ -12,7 +12,4 @@ class LibConfig(AppConfig):
     name = "wiwik_lib"
 
     def ready(self):
-        if 'runserver' not in sys.argv:
-            return
-        from wiwik_lib.utils import set_current_site
-        set_current_site()
+        pass
