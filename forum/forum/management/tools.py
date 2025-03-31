@@ -3,6 +3,7 @@ A custom type for argparse, to facilitate validation of email addresses.
 Inspired by this SO question: https://stackoverflow.com/questions/14665234/argparse-choices-structure-of-allowed-values
 and this gist: https://gist.github.com/gurunars/449edbccd0de1449b71524c89d61e1c5
 """
+
 import argparse
 import re
 
@@ -20,7 +21,7 @@ class EmailType(object):
     def __init__(self, pattern="RFC5322"):
         if pattern not in self.patterns:
             raise KeyError(
-                "{} is not a supported email pattern, choose from:" " {}".format(pattern, ",".join(self.patterns))
+                "{} is not a supported email pattern, choose from: {}".format(pattern, ",".join(self.patterns))
             )
         self._rules = pattern
         self._pattern = self.patterns[pattern]

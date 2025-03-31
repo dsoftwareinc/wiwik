@@ -68,13 +68,13 @@ class BadgesApiTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        upsert_badges_in_db([],force=True)
+        upsert_badges_in_db([], force=True)
         badge_qs = Badge.objects.all()
         cls.badge = badge_qs[0]
         cls.users = list()
         for badge in badge_qs:
             u = ForumUser.objects.create_user(f"user_{badge.name}", f"user_{badge.name}@a.com", cls.password)
-            VoteActivity.objects.create(badge=badge, target=u,type=VoteActivity.ActivityType.BADGE)
+            VoteActivity.objects.create(badge=badge, target=u, type=VoteActivity.ActivityType.BADGE)
             cls.users.append(u)
 
     def setUp(self):

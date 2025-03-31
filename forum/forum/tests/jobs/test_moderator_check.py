@@ -3,6 +3,7 @@ Tests for:
 - warn_users_loosing_moderator_status
 - update_moderator_status_for_users
 """
+
 from datetime import date
 from unittest import mock
 

@@ -1,6 +1,7 @@
 """
 Django settings for wiwik project.
 """
+
 import os
 
 from dotenv import load_dotenv, find_dotenv

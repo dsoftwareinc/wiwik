@@ -32,17 +32,13 @@ def _check_badge_for_user(badge: Badge, user: ForumUser, method: Callable[[Forum
     expected_count = method(user)[0]
     while expected_count < badge_count:  # User has more badges than expected
         logger.info(
-            f'User has {badge_count} "{badge.name}" badges where they should have {expected_count} ' f"- removing last"
+            f'User has {badge_count} "{badge.name}" badges where they should have {expected_count} - removing last'
         )
         last = VoteActivity.objects.filter(badge=badge, target=user).order_by("-created_at").first()
         last.delete()
         badge_count = VoteActivity.objects.filter(badge=badge, target=user).count()
     if expected_count > badge_count:
-        VoteActivity.objects.create(
-            target=user,
-            badge=badge,
-            type=VoteActivity.ActivityType.BADGE
-        )
+        VoteActivity.objects.create(target=user, badge=badge, type=VoteActivity.ActivityType.BADGE)
         if badge.type == BadgeType.GOLD:
             user.gold_badges += 1
         elif badge.type == BadgeType.SILVER:

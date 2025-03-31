@@ -2,6 +2,7 @@
 This file handles notifying followers about changes in
 questions/tags they are following.
 """
+
 import shlex
 from typing import Set, List
 
@@ -116,7 +117,7 @@ def notify_question_changes(
     }
     user_display_name = _get_user_display_name(originator)
     activity_str = (
-        f'Question "{q.title}" by {q.author.username} ' f"was updated by {user_display_name}\n" f"link: {model_url}\n"
+        f'Question "{q.title}" by {q.author.username} was updated by {user_display_name}\nlink: {model_url}\n'
     )
     if old_title != q.title:
         activity_str += f'Title changed from "{old_title}" to "{q.title}"\n'
@@ -234,7 +235,7 @@ def notify_invite_users_to_question(
         return None
     subject = f"{inviter.username} invited you to answer a question"
     model_url = get_model_url_with_base(question.get_model(), question)
-    text = f"{inviter.username} invited you to answer the question: {question.title}\n" f"link: {model_url}"
+    text = f"{inviter.username} invited you to answer the question: {question.title}\nlink: {model_url}"
     # Build html to send
     context = {
         "inviter": inviter,

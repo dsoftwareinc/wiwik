@@ -71,8 +71,8 @@ def latest_reputation(u: ForumUser, count: Optional[int] = None):
 @register.filter
 def unseen_reputation_sum(u: ForumUser):
     return (
-            u.reputation_votes.filter(seen__isnull=True, reputation_change__isnull=False)
-            .aggregate(Sum("reputation_change"))
-            .get("reputation_change__sum", 0)
-            or 0
+        u.reputation_votes.filter(seen__isnull=True, reputation_change__isnull=False)
+        .aggregate(Sum("reputation_change"))
+        .get("reputation_change__sum", 0)
+        or 0
     )

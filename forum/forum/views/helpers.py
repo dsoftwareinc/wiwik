@@ -19,10 +19,10 @@ from wiwik_lib.utils import paginate_queryset
 
 
 def get_questions_queryset(
-        base_queryset: QuerySet,
-        tab: Optional[str],
-        query: Optional[str],
-        user: Optional[AbstractUser],
+    base_queryset: QuerySet,
+    tab: Optional[str],
+    query: Optional[str],
+    user: Optional[AbstractUser],
 ) -> QuerySet:
     base_queryset = base_queryset.select_related(
         "author",

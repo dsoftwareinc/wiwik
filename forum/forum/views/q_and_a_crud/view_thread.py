@@ -96,7 +96,7 @@ def _create_comment(request, model_name: str, model_pk: int, content: str) -> Op
         return None
     if model_name not in ("question", "answer"):
         logger.warning(
-            f"user {request.user} trying to create a comment " f"on {model_name}:{model_pk} which is not supported"
+            f"user {request.user} trying to create a comment on {model_name}:{model_pk} which is not supported"
         )
         return None
     comment_parent: UserInput = utils.get_model(model_name, model_pk)  # type: ignore

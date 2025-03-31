@@ -42,8 +42,7 @@ def view_unbookmark_question(request, question_pk: int):
     existing = models.QuestionBookmark.objects.filter(user=user, question=question).first()
     if existing is None:
         logger.debug(
-            f"User {user.username} tries to delete bookmark for question "
-            f"id {question.id} but bookmark does not exist"
+            f"User {user.username} tries to delete bookmark for question id {question.id} but bookmark does not exist"
         )
         messages.info(request, "Bookmark for question does not exist")
         return redirect("forum:thread", pk=question_pk)

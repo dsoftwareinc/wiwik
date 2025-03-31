@@ -2,24 +2,23 @@
 All settings related to wiwik behavior.
 Most of them can be set from environment variables.
 """
+
 import os
 from datetime import timedelta
 
 from .base import getenv_asbool
 
 CONSTANCE_CONFIG = {
-    'USE_CDN': (True, 'Should 3rd party libraries be downloaded using CDN', bool),
-    'FAVICON_LINK_LIGHT': ("/static/favicon-light.ico", 'site favicon for light-mode', str),
-    'FAVICON_LINK_DARK': ("/static/favicon-dark.ico", 'site favicon for dark-mode', str),
+    "USE_CDN": (True, "Should 3rd party libraries be downloaded using CDN", bool),
+    "FAVICON_LINK_LIGHT": ("/static/favicon-light.ico", "site favicon for light-mode", str),
+    "FAVICON_LINK_DARK": ("/static/favicon-dark.ico", "site favicon for dark-mode", str),
     "QUESTIONS_PER_PAGE": (20, "Number of questions on a page", int),
     "MAX_SIZE_KB_IMAGE_UPLOAD_KB": (1024, "Max size of image allowed to upload (kb)", int),
-    'GOOGLE_ANALYTICS_KEY': (os.getenv("GOOGLE_ANALYTICS_KEY", ""), 'Google Analytics key', str),
-    'SHOWCASE_DEPLOYMENT': (True, 'Show link to wiwik source code', bool),
-
-    'MAX_BOOKMARK_ITEMS': (20, 'Bookmarks to show on nav-bar', int),
-    'MAX_REPUTATION_ITEMS': (10, 'Reputation activity to show on nav-bar', int),
-    'LATEX_SUPPORT_ENABLED': (True, 'Enable LaTex support', bool),
-
+    "GOOGLE_ANALYTICS_KEY": (os.getenv("GOOGLE_ANALYTICS_KEY", ""), "Google Analytics key", str),
+    "SHOWCASE_DEPLOYMENT": (True, "Show link to wiwik source code", bool),
+    "MAX_BOOKMARK_ITEMS": (20, "Bookmarks to show on nav-bar", int),
+    "MAX_REPUTATION_ITEMS": (10, "Reputation activity to show on nav-bar", int),
+    "LATEX_SUPPORT_ENABLED": (True, "Enable LaTex support", bool),
     "UPVOTE_CHANGE": (10, "Points change for upvote", int),
     "DOWNVOTE_CHANGE": (-10, "Points change for downvote", int),
     "EDITED_CHANGE": (2, "Points change for editing post", int),
@@ -41,76 +40,103 @@ CONSTANCE_CONFIG = {
     "MAX_ARTICLE_TITLE_LENGTH": (255, "Maximum characters in an article title", int),
     "MIN_ARTICLE_CONTENT_LENGTH": (50, "Minimum characters allowed in article body", int),
     "MAX_ARTICLE_CONTENT_LENGTH": (100_000, "Maximum characters allowed in article body", int),
-
     "DAYS_TO_REVOKE_MODERATOR": (10, "Number of sequential days without activity to revoke moderator permissions", int),
     "DAYS_TO_GRANT_MODERATOR": (15, "Number of sequential days with activity to grant moderator permissions", int),
-
     # Tag settings
-    "NUMBER_OF_TAG_EXPERTS":
-        (2, "Number of experts per tag (expert is a user with the most reputation on the tag)", int),
-    "NUMBER_OF_TAG_RISING_STARS":
-        (2, "Number of rising stars on a tag (a rising star is a user who is not an expert "
-            "but has the most reputation for a tag in the past month", int),
+    "NUMBER_OF_TAG_EXPERTS": (
+        2,
+        "Number of experts per tag (expert is a user with the most reputation on the tag)",
+        int,
+    ),
+    "NUMBER_OF_TAG_RISING_STARS": (
+        2,
+        "Number of rising stars on a tag (a rising star is a user who is not an expert "
+        "but has the most reputation for a tag in the past month",
+        int,
+    ),
     "MIN_TAG_DESCRIPTION_LENGTH": (20, "Minimum characters allowed in tag description", int),
     "MAX_TAG_DESCRIPTION_LENGTH": (460, "Maximum characters allowed in tag description", int),
     "MIN_TAG_WIKI_LENGTH": (20, "Minimum length of tag wiki page", int),
     "MAX_TAG_WIKI_LENGTH": (30000, "Maximum length of tag wiki page", int),
     "MIN_TAG_EDIT_SUMMARY_LENGTH": (10, "Maximum length of edit summary", int),
     "MAX_TAG_EDIT_SUMMARY_LENGTH": (200, "Maximum length of edit summary", int),
-
     # Search configuration
     "trigram_min_relevance": (0.05, "Minimum relevance for postgres trigram search", float),
     "trigram_weight_title": (0.7, "Weight for title in postgres trigram search", float),
     "trigram_weight_content": (0.3, "Weight for content in postgres trigram search", float),
-
     # Slack integration settings
     "SLACK_BOT_TOKEN": ("", "Slack bot token to post to channels", str),
     "SLACK_NOTIFICATIONS_CHANNEL": ("", "Channel to post general notifications", str),
     "SLACK_ADMIN_NOTIFICATIONS_CHANNEL": ("", "Channel to post admin notifications", str),
     "SLACK_SIGNING_SECRET_KEY": ("", "Secret key for wiwik api used by slack", str),
-
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
     "General Web settings": (
-        "USE_CDN", "FAVICON_LINK_LIGHT", "FAVICON_LINK_DARK", "GOOGLE_ANALYTICS_KEY",
+        "USE_CDN",
+        "FAVICON_LINK_LIGHT",
+        "FAVICON_LINK_DARK",
+        "GOOGLE_ANALYTICS_KEY",
     ),
     "Forum Web settings": (
-        "LATEX_SUPPORT_ENABLED", "MAX_BOOKMARK_ITEMS", "MAX_REPUTATION_ITEMS", "SHOWCASE_DEPLOYMENT",
-        "ALLOW_ANONYMOUS_QUESTION", "QUESTIONS_PER_PAGE", "MAX_SIZE_KB_IMAGE_UPLOAD_KB",
+        "LATEX_SUPPORT_ENABLED",
+        "MAX_BOOKMARK_ITEMS",
+        "MAX_REPUTATION_ITEMS",
+        "SHOWCASE_DEPLOYMENT",
+        "ALLOW_ANONYMOUS_QUESTION",
+        "QUESTIONS_PER_PAGE",
+        "MAX_SIZE_KB_IMAGE_UPLOAD_KB",
     ),
     "Reputation change for activity": (
-        "UPVOTE_CHANGE", "DOWNVOTE_CHANGE", "ACCEPT_ANSWER_CHANGE", "ACCEPT_ANSWER_OLD_QUESTION_CHANGE",
+        "UPVOTE_CHANGE",
+        "DOWNVOTE_CHANGE",
+        "ACCEPT_ANSWER_CHANGE",
+        "ACCEPT_ANSWER_OLD_QUESTION_CHANGE",
         "EDITED_CHANGE",
     ),
     "Post limits": (
-        "MIN_QUESTION_TITLE_LENGTH", "MAX_QUESTION_TITLE_LENGTH",
-        "MIN_QUESTION_CONTENT_LENGTH", "MAX_QUESTION_CONTENT_LENGTH",
-        "MIN_COMMENT_LENGTH", "MAX_COMMENT_LENGTH",
-        "MIN_ARTICLE_TITLE_LENGTH", "MAX_ARTICLE_TITLE_LENGTH",
-        "MIN_ARTICLE_CONTENT_LENGTH", "MAX_ARTICLE_CONTENT_LENGTH",
-        "MAX_ANSWERS", "MAX_COMMENTS",
+        "MIN_QUESTION_TITLE_LENGTH",
+        "MAX_QUESTION_TITLE_LENGTH",
+        "MIN_QUESTION_CONTENT_LENGTH",
+        "MAX_QUESTION_CONTENT_LENGTH",
+        "MIN_COMMENT_LENGTH",
+        "MAX_COMMENT_LENGTH",
+        "MIN_ARTICLE_TITLE_LENGTH",
+        "MAX_ARTICLE_TITLE_LENGTH",
+        "MIN_ARTICLE_CONTENT_LENGTH",
+        "MAX_ARTICLE_CONTENT_LENGTH",
+        "MAX_ANSWERS",
+        "MAX_COMMENTS",
         "DAYS_FOR_QUESTION_TO_BECOME_OLD",
         "ANSWER_IS_RECENT_DAYS",
     ),
     "Tags configuration": (
-        "NUMBER_OF_TAG_EXPERTS", "NUMBER_OF_TAG_RISING_STARS",
-        "MIN_TAG_DESCRIPTION_LENGTH", "MAX_TAG_DESCRIPTION_LENGTH",
-        "MIN_TAG_WIKI_LENGTH", "MAX_TAG_WIKI_LENGTH",
-        "MIN_TAG_EDIT_SUMMARY_LENGTH", "MAX_TAG_EDIT_SUMMARY_LENGTH",
+        "NUMBER_OF_TAG_EXPERTS",
+        "NUMBER_OF_TAG_RISING_STARS",
+        "MIN_TAG_DESCRIPTION_LENGTH",
+        "MAX_TAG_DESCRIPTION_LENGTH",
+        "MIN_TAG_WIKI_LENGTH",
+        "MAX_TAG_WIKI_LENGTH",
+        "MIN_TAG_EDIT_SUMMARY_LENGTH",
+        "MAX_TAG_EDIT_SUMMARY_LENGTH",
     ),
     "User permissions based on activity": (
-        "DAYS_TO_REVOKE_MODERATOR", "DAYS_TO_GRANT_MODERATOR",
+        "DAYS_TO_REVOKE_MODERATOR",
+        "DAYS_TO_GRANT_MODERATOR",
     ),
     "Search configuration": {
-        "trigram_min_relevance", "trigram_weight_title", "trigram_weight_content",
+        "trigram_min_relevance",
+        "trigram_weight_title",
+        "trigram_weight_content",
     },
     "Slack integration settings": {
-        "SLACK_BOT_TOKEN", "SLACK_NOTIFICATIONS_CHANNEL", "SLACK_ADMIN_NOTIFICATIONS_CHANNEL",
+        "SLACK_BOT_TOKEN",
+        "SLACK_NOTIFICATIONS_CHANNEL",
+        "SLACK_ADMIN_NOTIFICATIONS_CHANNEL",
         "SLACK_SIGNING_SECRET_KEY",
     },
 }
-CONSTANCE_DATABASE_CACHE_BACKEND = 'default'
+CONSTANCE_DATABASE_CACHE_BACKEND = "default"
 
 MEILISEARCH_ENABLED = getenv_asbool("MEILISEARCH_ENABLED", default="FALSE")
 MEILISEARCH_SERVER_ADDRESS = os.getenv("MEILISEARCH_SERVER_ADDRESS", None)

@@ -41,6 +41,6 @@ class SendReportTest(TestCase):
         out = self.call_command(params.split(" "))
         # assert
         self.assertEqual(
-            'Can not generate report of type "bad_report"\n' "Options are tags_activity, users_activity, questions\n",
+            'Can not generate report of type "bad_report"\nOptions are tags_activity, users_activity, questions\n',
             out,
         )

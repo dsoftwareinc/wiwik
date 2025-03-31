@@ -5,6 +5,7 @@ Tests for:
 These tests test sending the report to the users,
 not the accuracy of the report.
 """
+
 import datetime
 from unittest import mock
 

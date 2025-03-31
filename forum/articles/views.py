@@ -96,9 +96,9 @@ def _validate_article_data(title: str, content: str) -> None:
             f"Title has {length} characters, must be between {config.MIN_ARTICLE_TITLE_LENGTH} and {config.MAX_ARTICLE_TITLE_LENGTH} characters."
         )
     if (
-            content is None
-            or len(content) < config.MIN_ARTICLE_CONTENT_LENGTH
-            or len(content) > config.MAX_ARTICLE_CONTENT_LENGTH
+        content is None
+        or len(content) < config.MIN_ARTICLE_CONTENT_LENGTH
+        or len(content) > config.MAX_ARTICLE_CONTENT_LENGTH
     ):
         length = len(content) if content is not None else 0
         raise ArticleValidationError(
@@ -180,7 +180,7 @@ def view_article_delete(request, pk: int):
     user = request.user
     if not article.user_can_delete(user):
         logger.warning(
-            f"user {user.username} tried to delete article {pk} " f"which does they do not have permission to delete"
+            f"user {user.username} tried to delete article {pk} which does they do not have permission to delete"
         )
         return redirect("articles:detail", pk=pk)
     if request.method == "POST":

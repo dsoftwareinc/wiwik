@@ -128,7 +128,7 @@ class TestThreadView(ForumApiTestCase):
         self.assertContains(res2, self.usernames[1])
 
     def test_thread_view_with_invites__has_accepted_answer__dont_show_question_invitees(
-            self,
+        self,
     ):
         # arrange
         self.question.has_accepted_answer = True
@@ -242,7 +242,7 @@ class TestThreadView(ForumApiTestCase):
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch("forum.jobs.start_job")
     def test_thread_view_create_question_comment__with_mention_user_does_not_exists__should_not_notify(
-            self, start_job: mock.MagicMock
+        self, start_job: mock.MagicMock
     ):
         # arrange
         self.client.login(self.usernames[0], self.password)
@@ -278,7 +278,7 @@ class TestThreadView(ForumApiTestCase):
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch("forum.jobs.start_job")
     def test_thread_view_create_question_comment__with_mention_user_bad_quotes__should_handle_bad_quotes(
-            self, start_job: mock.MagicMock
+        self, start_job: mock.MagicMock
     ):
         # arrange
         self.client.login(self.usernames[0], self.password)
@@ -352,7 +352,7 @@ class TestThreadView(ForumApiTestCase):
         self.assertEqual(comment.created_at, self.question.last_activity)
 
     def test_thread_view_create_question_comment__empty_comment__should_not_create(
-            self,
+        self,
     ):
         # arrange
         self.client.login(self.usernames[0], self.password)

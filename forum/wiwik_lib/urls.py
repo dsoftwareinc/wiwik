@@ -11,6 +11,6 @@ urlpatterns = [
     ),
 ]
 
-from wiwik_lib.utils import set_current_site # noqa: E402
+from wiwik_lib.utils import set_current_site  # noqa: E402
 
 set_current_site()

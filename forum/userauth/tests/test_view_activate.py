@@ -31,7 +31,7 @@ class UserAuthActivateTest(UserAuthTestCase):
         self.assertTrue(self.user1.is_active)
         assert_message_in_response(
             res,
-            "Account activated successfully. Thank you " "for your email confirmation. Now you can login your account.",
+            "Account activated successfully. Thank you for your email confirmation. Now you can login your account.",
         )
 
     def test_activate__non_existing_user__should_fail(self):

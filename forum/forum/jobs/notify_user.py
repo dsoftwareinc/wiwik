@@ -1,6 +1,7 @@
 """
 This file handles notifying a user in email.
 """
+
 from datetime import timedelta
 
 from bs4 import BeautifulSoup
@@ -119,9 +120,7 @@ def notify_user_email(user: ForumUser, subject: str, text: str, html: str, impor
         return
     subject = fix_subject(subject)
     logger.debug(
-        f"Notifying {user.email}, subject: {subject}, "
-        f"text-length: {len(text)}, "
-        f"html-length: {len(html) if html else 0}"
+        f"Notifying {user.email}, subject: {subject}, text-length: {len(text)}, html-length: {len(html) if html else 0}"
     )
     email = EmailMultiAlternatives(subject, text, to=[user.email])
     if html is not None:

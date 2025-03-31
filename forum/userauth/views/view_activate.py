@@ -22,9 +22,7 @@ def view_activate(request, uidb64, token):
         login(request, user)
         messages.success(
             request,
-            "Account activated successfully. "
-            "Thank you for your email confirmation. "
-            "Now you can login your account.",
+            "Account activated successfully. Thank you for your email confirmation. Now you can login your account.",
         )
         return redirect("userauth:login")
     else:

@@ -100,7 +100,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
         self.assertEqual(prev_views + 1, self.article.views)
 
     def test_articles_detail_view__calling_background_task_with_author__does_not_increase_views(
-            self,
+        self,
     ):
         self.client.login(self.usernames[1], self.password)
         self.article.refresh_from_db()
@@ -212,7 +212,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch("forum.jobs.start_job")
     def test_articles_detail_view_create_comment__with_mention_user_does_not_exists__should_not_notify(
-            self, start_job: mock.MagicMock
+        self, start_job: mock.MagicMock
     ):
         # arrange
         self.client.login(self.usernames[0], self.password)
@@ -248,7 +248,7 @@ class TestArticleDetailView(ArticlesApiTestCase):
     @override_settings(MEILISEARCH_ENABLED=False)
     @mock.patch("forum.jobs.start_job")
     def test_articles_detail_view_create_comment__with_mention_user_bad_quotes__should_handle_bad_quotes(
-            self, start_job: mock.MagicMock
+        self, start_job: mock.MagicMock
     ):
         # arrange
         self.client.login(self.usernames[0], self.password)

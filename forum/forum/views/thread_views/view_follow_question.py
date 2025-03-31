@@ -27,7 +27,7 @@ def view_unfollow_question(request, pk: int):
     follow = q.follows.filter(user=user).first()
     if follow is None:
         logger.warning(
-            f"user {user.username} asked to unfollow question {pk} even " f"though they are not currently following it"
+            f"user {user.username} asked to unfollow question {pk} even though they are not currently following it"
         )
     delete_follow(q, user)
     return redirect("forum:thread", pk=pk)

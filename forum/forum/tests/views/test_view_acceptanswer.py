@@ -139,9 +139,7 @@ class TestAcceptAnswerView(ForumApiTestCase):
     @override_settings(DAYS_FOR_QUESTION_TO_BECOME_OLD=2)
     def test_accept_answer__answer_for_old_question__different_user_rep_change(self):
         # arrange
-        self.question.created_at = timezone.now() - datetime.timedelta(
-            days=config.DAYS_FOR_QUESTION_TO_BECOME_OLD + 1
-        )
+        self.question.created_at = timezone.now() - datetime.timedelta(days=config.DAYS_FOR_QUESTION_TO_BECOME_OLD + 1)
         self.question.save()
         self.client.login(self.usernames[0], self.password)
         # act

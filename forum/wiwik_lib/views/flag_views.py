@@ -34,7 +34,7 @@ def notify_moderators_new_flag(
         None
 
     """
-    subject = f'New content flagged by {originator.email} on a {model_name.split("_")[0]}'
+    subject = f"New content flagged by {originator.email} on a {model_name.split('_')[0]}"
     model_url = get_model_url_with_base(model_name, model)
     context = {
         "link": model_url,
@@ -45,7 +45,7 @@ def notify_moderators_new_flag(
     }
     template = loader.get_template("emails/new_flag.html")
     html = template.render(context=context)
-    activity_str = f'New content flagged by by {context["username"]}\n' + f"link: {context['link']}"
+    activity_str = f"New content flagged by by {context['username']}\n" + f"link: {context['link']}"
     moderators = ForumUser.objects.filter(is_moderator=True, is_active=True)
     for moderator in moderators:
         jobs.start_job(jobs.notify_user_email, moderator, subject, activity_str, html, True)

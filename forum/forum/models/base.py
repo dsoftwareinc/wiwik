@@ -102,13 +102,13 @@ class QuestionManager(models.Manager):
     def with_documents(self):
         if self.support_postgres_fts:
             vector = (
-                    SearchVector("title", weight="A")
-                    + SearchVector("content", weight="B")
-                    + SearchVector(StringAgg("tags__tag_word", delimiter=","), weight="B")
-                    + SearchVector(
-                StringAgg("answer__content", delimiter="\n", output_field=TextField()),
-                weight="D",
-            )
+                SearchVector("title", weight="A")
+                + SearchVector("content", weight="B")
+                + SearchVector(StringAgg("tags__tag_word", delimiter=","), weight="B")
+                + SearchVector(
+                    StringAgg("answer__content", delimiter="\n", output_field=TextField()),
+                    weight="D",
+                )
             )
         else:
             vector = F("title")
@@ -224,7 +224,7 @@ class Question(VotableUserInput, Flaggable, Followable):
     @property
     def is_accepting_answers(self):
         return (
-                self.type in Question.POST_TYPE_ACCEPTING_ANSWERS and self.status in Question.POST_STATUS_ACCEPTING_ANSWERS
+            self.type in Question.POST_TYPE_ACCEPTING_ANSWERS and self.status in Question.POST_STATUS_ACCEPTING_ANSWERS
         )
 
     @property

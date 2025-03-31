@@ -191,10 +191,10 @@ _3RD_PARTY_URLS = {
         "katex-autorender-js": f"https://cdn.jsdelivr.net/npm/katex@{_VER_KATEX}/dist/contrib/auto-render.min.js",
         "katex-mjs": f"https://cdn.jsdelivr.net/npm/katex@{_VER_KATEX}/dist/katex.mjs",
         "bootstrap-datepicker-js": f"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/"
-                                   f"{_VER_BOOTSTRAP_DATEPICKER}/js/bootstrap-datepicker.min.js",
+        f"{_VER_BOOTSTRAP_DATEPICKER}/js/bootstrap-datepicker.min.js",
         # noqa: E501
         "bootstrap-datepicker-css": f"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/"
-                                    f"{_VER_BOOTSTRAP_DATEPICKER}/css/bootstrap-datepicker.standalone.min.css",
+        f"{_VER_BOOTSTRAP_DATEPICKER}/css/bootstrap-datepicker.standalone.min.css",
         # noqa: E501
     },
     "STATIC": {

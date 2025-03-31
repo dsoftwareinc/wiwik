@@ -20,7 +20,7 @@ def view_delete_question(request, pk: int):
 
     if question.author != user and not user.can_delete_question:
         logger.warning(
-            f"user {user.username} tried to delete question {pk} " f"which does they do not have permission to delete"
+            f"user {user.username} tried to delete question {pk} which does they do not have permission to delete"
         )
         return redirect("forum:thread", pk=pk)
     if request.method == "POST":

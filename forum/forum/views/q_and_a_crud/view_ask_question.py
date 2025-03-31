@@ -34,7 +34,7 @@ def create_invites(inviter: AbstractUser, question: models.Question, invites: st
         user = ForumUser.objects.filter(username=username).first()
         if user is None:
             logger.warning(
-                f"Failed to invite user {username} to answer question id {question.id} " f"because user does not exist"
+                f"Failed to invite user {username} to answer question id {question.id} because user does not exist"
             )
         else:
             users.append(user)

@@ -33,10 +33,10 @@ def recalculate_user_reputation(user: AbstractUser) -> None:
 
 
 def create_activity(
-        source: Union[AbstractUser, None],
-        target: AbstractUser,
-        userinput: models.UserInput,
-        activity_type: models.VoteActivity.ActivityType,
+    source: Union[AbstractUser, None],
+    target: AbstractUser,
+    userinput: models.UserInput,
+    activity_type: models.VoteActivity.ActivityType,
 ) -> models.VoteActivity:
     """Create VoteActivity if it does not exist.
     :param source: Originator of VoteActivity (upvoter, downvoter, ...) - can be None
@@ -54,7 +54,7 @@ def create_activity(
     }
     source_username = source.username if source else None
     if activity_type not in rep_change_map:
-        logger.warning(f'Activity type {activity_type} unknown')
+        logger.warning(f"Activity type {activity_type} unknown")
         rep_change = 0
     else:
         rep_change = rep_change_map[activity_type]
@@ -86,10 +86,10 @@ def create_activity(
 
 
 def delete_activity(
-        source: AbstractUser,
-        target: AbstractUser,
-        userinput: models.UserInput,
-        activity_type: Optional[models.VoteActivity.ActivityType],
+    source: AbstractUser,
+    target: AbstractUser,
+    userinput: models.UserInput,
+    activity_type: Optional[models.VoteActivity.ActivityType],
 ) -> None:
     """Find an activity with parameters and delete it
     :param source: Originator of VoteActivity (upvoter, downvoter, ...)
@@ -147,12 +147,12 @@ def create_article(user: AbstractUser, title: str, content: str, tags: str, **kw
 
 
 def create_question(
-        user: AbstractUser,
-        title: str,
-        content: str,
-        tags: str,
-        send_notifications: bool = True,
-        **kwargs,
+    user: AbstractUser,
+    title: str,
+    content: str,
+    tags: str,
+    send_notifications: bool = True,
+    **kwargs,
 ) -> models.Question:
     """Create a question in the DB, add tags to the question and notify tag followers about new question.
     :param user: Question author
@@ -244,10 +244,10 @@ def delete_question(question: models.Question) -> None:
 
 
 def create_answer(
-        content: str,
-        user: AbstractUser,
-        question: models.Question,
-        send_notifications: bool = True,
+    content: str,
+    user: AbstractUser,
+    question: models.Question,
+    send_notifications: bool = True,
 ) -> Optional[models.Answer]:
     if content is None or content.strip() == "":
         logger.warning("Trying to create answer without content, ignoring")
@@ -391,7 +391,7 @@ def get_user_followed_tags(user: AbstractUser) -> list[Tag]:
 
 
 def create_invites_and_notify_invite_users_to_question(
-        inviter: AbstractUser, invitees: List[AbstractUser], post: models.Question
+    inviter: AbstractUser, invitees: List[AbstractUser], post: models.Question
 ) -> int:
     """Generate invitations for user to participate in a post.
 

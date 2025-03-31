@@ -1,6 +1,7 @@
 """
 behave environment module for testing behave-django
 """
+
 from behave.fixture import use_fixture_by_tag
 
 from features.steps.fixtures import create_users, create_question_with_answer

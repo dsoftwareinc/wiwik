@@ -1,4 +1,5 @@
 """The wordlists"""
+
 import random
 
 ADJECTIVES = [

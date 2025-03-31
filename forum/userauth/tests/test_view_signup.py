@@ -18,6 +18,7 @@ class UserAuthSignupTest(UserAuthTestCase):
     def test_signup__green(self):
         set_current_site()
         from wiwik_lib.utils import CURRENT_SITE
+
         user_email = "u1@a.com"
         res = self.client.signup_post("u1", "u1_display_name", user_email, "Cunld2332")
 

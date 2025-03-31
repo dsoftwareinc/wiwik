@@ -16,5 +16,5 @@ SCHEDULER_QUEUES: dict[str, QueueConfiguration] = {
         PORT=int(os.getenv("REDIS_PORT", 6379)),
         DB=int(os.getenv("REDIS_DB", 0)),
         PASSWORD=os.getenv("REDIS_PASSWORD", ""),
-    )
+    ),
 }

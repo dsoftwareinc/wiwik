@@ -36,7 +36,7 @@ class UserAuthLoginTest(UserAuthTestCase):
             "given_name": "Daniel",
             "family_name": "Moran",
             "link": "https://plus.google.com/100466292043055079210",
-            "picture": "https://lh3.googleusercontent.com/a-/AOh14GhJ_MtvscWtf-" "1mWCYS43nIM5CdykiTiIbxl25y=s96-c",
+            "picture": "https://lh3.googleusercontent.com/a-/AOh14GhJ_MtvscWtf-1mWCYS43nIM5CdykiTiIbxl25y=s96-c",
             "locale": "en",
             "hd": "backbase.com",
         }

@@ -12,7 +12,9 @@ from slack_sdk.models.blocks import (
     TextObject,
     LinkButtonElement,
     DividerBlock,
-    HeaderBlock, MarkdownTextObject, Block,
+    HeaderBlock,
+    MarkdownTextObject,
+    Block,
 )
 from slack_sdk.models.views import View
 from slack_sdk.signature import SignatureVerifier
@@ -224,7 +226,7 @@ def post_from_slack(payload: dict) -> None:
             SectionBlock(
                 text=TextObject(
                     text=f"You are not signed up to wiwik. "
-                         f"Please register <{CURRENT_SITE}|here> before you can post questions",
+                    f"Please register <{CURRENT_SITE}|here> before you can post questions",
                     type="mrkdwn",
                 )
             ),
@@ -254,7 +256,7 @@ def post_from_slack(payload: dict) -> None:
         # author_slack_id = values['author']['user_id']['selected_user']
         # author = _get_forumuser_by_slack_userid(author_slack_id)
         logger.debug(
-            f"{originator} posted from slack question[title={title}, " f"text={text}, author={originator}, tags={tags}]"
+            f"{originator} posted from slack question[title={title}, text={text}, author={originator}, tags={tags}]"
         )
         # actually creating the question.
         channel_id, message_ts = view["private_metadata"].split("~~")
@@ -287,7 +289,11 @@ def questions_slack_message(questions: List[Question]) -> Dict[str, Any]:
     blocks: List[Block] = list()
     for question in questions:
         question_url = get_model_url_with_base("question", question)
-        blocks.append(HeaderBlock(text=question.title, ))
+        blocks.append(
+            HeaderBlock(
+                text=question.title,
+            )
+        )
         content = question.content[:1000]
         content = content.split("\r\n")
         num_lines = len(content)

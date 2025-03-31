@@ -27,12 +27,7 @@ class PostInvitation(models.Model):
         verbose_name_plural = "Post Invitations"
 
     def __str__(self):
-        return (
-            f"PostInvitation["
-            f"inviter={self.inviter.username},"
-            f"invitee={self.invitee.username}"
-            f"post={self.question.id}]"
-        )
+        return f"PostInvitation[inviter={self.inviter.username},invitee={self.invitee.username}post={self.question.id}]"
 
 
 class QuestionBookmark(models.Model):
