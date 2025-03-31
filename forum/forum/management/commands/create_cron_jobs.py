@@ -1,5 +1,4 @@
-from scheduler.models.task import Task
-from scheduler.tools import TaskType
+from scheduler.models.task import Task, TaskType
 
 from wiwik_lib.utils import ManagementCommand
 
