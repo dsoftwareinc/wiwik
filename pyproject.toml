@@ -19,7 +19,7 @@ pyparsing = "^3.0"
 python-dateutil = "^2.8"
 sqlparse = "^0.5"
 nltk = "^3.9"
-django-tasks-scheduler = "^3.0.0b2" # Async jobs scheduler using redis
+#django-tasks-scheduler = "^3.0.0b2" # Async jobs scheduler using redis
 django-admin-numeric-filter = "^0.1" # Django-admin filters
 django-admin-rangefilter = "^0.13" # Django-admin filters
 django-model-utils = "^5.0" # Django-admin filters
@@ -46,6 +46,7 @@ meilisearch = "^0.32" # meilisearch driver
 redis = "^5.0" # Redis driver, for redis-cache
 psycopg = "^3.1"
 django-constance = "^4.3"
+django-tasks-scheduler ="^4.0.0b2"
 
 [tool.poetry.group.dev.dependencies]
 poetry = "^2.1"
