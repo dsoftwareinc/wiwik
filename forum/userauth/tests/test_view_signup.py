@@ -6,7 +6,7 @@ from django.urls import reverse
 from common.test_utils import assert_url_in_chain, assert_message_in_response
 from userauth import models
 from userauth.tests.utils import UserAuthTestCase
-from wiwik_lib.utils import CURRENT_SITE, set_current_site
+from wiwik_lib.utils import set_current_site
 
 
 class UserAuthSignupTest(UserAuthTestCase):

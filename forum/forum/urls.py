@@ -132,8 +132,8 @@ urlpatterns += [
 ]
 
 # One time code
-from wiwik_lib.templatetags.wiwik_template_tags import check_latex_config
-from forum.integrations.slack_api import configure_slack_client
+from wiwik_lib.templatetags.wiwik_template_tags import check_latex_config  # noqa: E402
+from forum.integrations.slack_api import configure_slack_client  # noqa: E402
 
 check_latex_config()
 configure_slack_client()
