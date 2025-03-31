@@ -14,7 +14,7 @@ from userauth.models import ForumUser
 DOCUMENTATION_DIRECTORY = os.path.join(BASE_DIR, "..", "docs")
 
 
-@job
+@job()
 def log_search(user: ForumUser, query: str, results: List[int], timems: int):
     logger.info(f'Searching for: "{query}" in {timems}ms. got first 5 results: {results}')
     SearchRecord.objects.create(author=user, query=query, results=",".join(map(str, results)), time=timems)

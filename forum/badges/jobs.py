@@ -133,7 +133,7 @@ def review_all_badges() -> None:
     recalculate_user_badges_stats()
 
 
-@job
+@job()
 def review_bagdes_event(event: int) -> None:
     badge_qs = Badge.objects.filter(trigger=event)
     for badge in badge_qs:
@@ -141,7 +141,7 @@ def review_bagdes_event(event: int) -> None:
         check_users(badge)
 
 
-@job
+@job()
 def recalculate_user_badges_stats():
     user_qs = ForumUser.objects.all()
     for user in user_qs:

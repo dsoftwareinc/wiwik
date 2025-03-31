@@ -130,7 +130,7 @@ def _do_single_question_post_action(request, question_pk: int) -> HttpResponseRe
     return redirect("forum:thread", pk=question_pk)
 
 
-@job
+@job()
 def view_thread_background_tasks(user: ForumUser, q: Question):
     if q.author == user:
         return

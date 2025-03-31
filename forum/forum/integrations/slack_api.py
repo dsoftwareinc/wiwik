@@ -38,7 +38,7 @@ def configure_slack_client():
     logger.info("Slack integration enabled")
 
 
-@job
+@job()
 def slack_post_channel_message(text: str, channel: str, thread_ts: str = None, notification_text: str = None):
     if not config.SLACK_BOT_TOKEN:
         return
@@ -111,7 +111,7 @@ def _get_permalink(channel: str, message_ts: str) -> Union[str, None]:
         return None
 
 
-@job
+@job()
 def send_message_to_user(user_id: str, message: Dict[str, Any]):
     if not config.SLACK_BOT_TOKEN:
         return
@@ -122,7 +122,7 @@ def send_message_to_user(user_id: str, message: Dict[str, Any]):
         logger.warning(f"Got an error: {e.response['error']}")
 
 
-@job
+@job()
 def slack_post_im_message_to_email(text: str, email: str, notification_text: str = None):
     if not config.SLACK_BOT_TOKEN:
         return

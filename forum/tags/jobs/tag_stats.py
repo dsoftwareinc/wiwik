@@ -5,7 +5,7 @@ from tags.apps import logger
 from tags.models import Tag
 
 
-@job
+@job()
 def update_tag_stats():
     logger.info("Updating all tag stats")
     for tag in Tag.objects.all():

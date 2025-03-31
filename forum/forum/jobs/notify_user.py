@@ -109,7 +109,7 @@ def fix_html(html: str, user: ForumUser) -> str:
     return html
 
 
-@job
+@job()
 def notify_user_email(user: ForumUser, subject: str, text: str, html: str, important: bool = False):
     if not user.is_active:
         logger.debug(f"skipping notification to {user.email}: user inactive")

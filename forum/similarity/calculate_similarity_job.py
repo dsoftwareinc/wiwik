@@ -71,7 +71,7 @@ def calculate_tfidf():
             _upsert_similarity(q1, q2, tfidf_rank=res[i][j])
 
 
-@job
+@job()
 def calculate_similarity_for_question(q: Question) -> None:
     if settings.DATABASES["default"]["ENGINE"] != "django.db.backends.postgresql":
         return
@@ -80,7 +80,7 @@ def calculate_similarity_for_question(q: Question) -> None:
         calculate_similarity_for_pair(q, q2)
 
 
-@job
+@job()
 def calculate_similarity_for_pair(q1: Question, q2: Question) -> None:
     if q1 == q2:
         logger.debug("Not calculating similarity for same question")

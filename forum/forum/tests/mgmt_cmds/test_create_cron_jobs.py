@@ -6,8 +6,7 @@ import fakeredis
 from django.core.management import call_command
 from django.test import TestCase
 from redis import ResponseError
-from scheduler.models.task import Task
-from scheduler.tools import TaskType
+from scheduler.models.task import Task, TaskType
 
 
 class CreateCronJobsTest(TestCase):
@@ -23,7 +22,7 @@ class CreateCronJobsTest(TestCase):
         )
         return out.getvalue()
 
-    @mock.patch("scheduler.queues.get_connection", return_value=fakeredis.FakeStrictRedis())
+    @mock.patch("scheduler.helpers.queues.getters._get_connection", return_value=fakeredis.FakeStrictRedis())
     def test__green(self, conn):
         prev_count = Task.objects.filter(task_type=TaskType.CRON).count()
         conn.info.side_effect = ResponseError()

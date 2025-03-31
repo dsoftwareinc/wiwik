@@ -6,7 +6,7 @@ from django.urls import reverse
 from common.test_utils import assert_url_in_chain, assert_message_in_response
 from userauth import models
 from userauth.tests.utils import UserAuthTestCase
-from wiwik_lib.utils import CURRENT_SITE
+from wiwik_lib.utils import CURRENT_SITE, set_current_site
 
 
 class UserAuthSignupTest(UserAuthTestCase):
@@ -16,6 +16,7 @@ class UserAuthSignupTest(UserAuthTestCase):
         ]
     )
     def test_signup__green(self):
+        set_current_site()
         user_email = "u1@a.com"
         res = self.client.signup_post("u1", "u1_display_name", user_email, "Cunld2332")
 

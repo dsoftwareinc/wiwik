@@ -6,7 +6,7 @@ from scheduler import job
 from forum.models import QuestionView
 
 
-@job
+@job()
 def purge_question_views(delta: timedelta):
     starting_datetime = timezone.now() - delta
     QuestionView.objects.filter(created_at__lt=starting_datetime).delete()

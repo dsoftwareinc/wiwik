@@ -60,7 +60,7 @@ def _test_link(url: str) -> bool:
         return False
 
 
-@job
+@job()
 def check_urls():
     res = dict()
     q_links = _content_links()
@@ -72,7 +72,7 @@ def check_urls():
     return res
 
 
-@job
+@job()
 def scan_media_links_usage():
     uploads = _media_uploads()
     all_links = set()

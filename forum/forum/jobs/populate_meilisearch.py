@@ -1357,7 +1357,7 @@ def _get_meilisearch_index():
     return index
 
 
-@job
+@job()
 def populate_meilisearch():
     index = _get_meilisearch_index()
     if index is None:
@@ -1372,7 +1372,7 @@ def populate_meilisearch():
         )
 
 
-@job
+@job()
 def add_meilisearch_document(question_id: int):
     index = _get_meilisearch_index()
     if index is None:
@@ -1386,7 +1386,7 @@ def add_meilisearch_document(question_id: int):
     )
 
 
-@job
+@job()
 def delete_meilisearch_document(question_id: int):
     index = _get_meilisearch_index()
     if index is None:
