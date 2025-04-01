@@ -1,6 +1,6 @@
 import os
 
-from scheduler.settings_types import QueueConfiguration, SchedulerConfiguration
+from scheduler.types import QueueConfiguration, SchedulerConfiguration
 
 SCHEDULER_CONFIG: SchedulerConfiguration = SchedulerConfiguration()
 

@@ -6,7 +6,7 @@ import fakeredis
 from django.core.management import call_command
 from django.test import TestCase
 from redis import ResponseError
-from scheduler.models.task import Task, TaskType
+from scheduler.models import Task, TaskType
 
 
 class CreateCronJobsTest(TestCase):
