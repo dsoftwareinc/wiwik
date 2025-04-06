@@ -55,6 +55,7 @@ jobs:
           allow-repeats: false
 
       - name: json report
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           poetry run coverage json
           echo "COVERAGE=$(jq '.totals.percent_covered_display|tonumber' coverage.json)" >> $GITHUB_ENV
