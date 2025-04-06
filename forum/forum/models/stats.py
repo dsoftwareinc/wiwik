@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.db import models
 
-from wiwik_lib.models import AdvancedModelManager, user_model_defer_fields
+from wiwik_lib.advanced_model_manager import AdvancedModelManager
+from wiwik_lib.models import user_model_defer_fields
 
 
 class UserTagStats(models.Model):

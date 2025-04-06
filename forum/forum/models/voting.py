@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-from wiwik_lib.models import AdvancedModelManager
+from wiwik_lib.advanced_model_manager import AdvancedModelManager
 
 
 class VoteActivity(models.Model):

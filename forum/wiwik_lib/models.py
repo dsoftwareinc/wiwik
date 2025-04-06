@@ -1,29 +1,8 @@
+
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-
-
-class AdvancedModelManager(models.Manager):
-    def __init__(self, *args, **kwargs):
-        self._select_related = kwargs.pop("select_related", None)
-        self._prefetch_related = kwargs.pop("prefetch_related", None)
-        self._deferred_fields = kwargs.pop("deferred_fields", None)
-
-        super(AdvancedModelManager, self).__init__(*args, **kwargs)
-
-    def get_queryset(self, *args, **kwargs):
-        qs = super(AdvancedModelManager, self).get_queryset(*args, **kwargs)
-
-        if self._select_related:
-            qs = qs.select_related(*self._select_related)
-        if self._prefetch_related:
-            qs = qs.prefetch_related(*self._prefetch_related)
-        if self._deferred_fields:
-            qs = qs.defer(*self._deferred_fields)
-
-        return qs
-
 
 _BASE_USER_DEFER_LIST = [
     "about_me",
@@ -63,15 +42,10 @@ FLAG_CHOICES = [
 
 
 class Flag(models.Model):
-    """
-    A class to represent a flag to a model object (Question, Answer, or Comment).
-    """
+    """A class to represent a flag to a model object (Question, Answer, or Comment)."""
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        blank=False,
-        related_name="flags_by_user",
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, related_name="flags_by_user"
     )
     flag_type = models.CharField(
         max_length=10,
@@ -95,29 +69,22 @@ class Flag(models.Model):
 
 
 class Flaggable(models.Model):
-    """
-    An abstract class to represent a flagable object.
-    """
-
-    class Meta:
-        abstract = True
+    """An abstract class to represent a flagable object."""
 
     flags = GenericRelation(Flag)
 
     def get_author(self) -> settings.AUTH_USER_MODEL:
         raise NotImplementedError
 
+    class Meta:
+        abstract = True
+
 
 class EditedResource(models.Model):
-    """
-    A class to represent an object that is currently being edited.
-    """
+    """A class to represent an object that is currently being edited."""
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        blank=False,
-        related_name="user_editing",
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, related_name="user_editing"
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -134,9 +101,7 @@ class EditedResource(models.Model):
 
 
 class Editable(models.Model):
-    """
-    An abstract class to represent an editable object.
-    """
+    """An abstract class to represent an editable object."""
 
     class Meta:
         abstract = True
@@ -150,13 +115,7 @@ class Editable(models.Model):
 class Follow(models.Model):
     """A class to represent a follow to a model object (Post/Tag)."""
 
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        blank=False,
-        related_name="followers",
-    )
-
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=False, related_name="followers")
     created_at = models.DateTimeField(auto_now_add=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -169,7 +128,7 @@ class Follow(models.Model):
 class Followable(models.Model):
     """An abstract class to represent a followable object."""
 
+    follows = GenericRelation(Follow)
+
     class Meta:
         abstract = True
-
-    follows = GenericRelation(Follow)
