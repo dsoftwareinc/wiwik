@@ -29,7 +29,7 @@ jobs:
       - name: "Setup Python, Poetry and Dependencies"
         uses: dsoftwareinc/setup-python-poetry-action@v1
         with:
-          python-version: '3.12'
+          python-version: '3.13'
           poetry-version: '2.1.1'
       - name: Run Tests
         run: |

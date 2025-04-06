@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.12.2-slim
+FROM python:3.13-slim
 
 # RUN apt update && apt install -y python3-dev gcc
 # set work directory
