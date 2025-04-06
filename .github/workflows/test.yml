@@ -36,6 +36,7 @@ jobs:
           cd forum
           poetry run coverage run manage.py test --no-logs
       - name: Coverage report
+        if: ${{ github.event_name == 'pull_request' }}
         id: coverage_report
         shell: bash
         run: |
@@ -43,13 +44,14 @@ jobs:
           poetry run coverage report >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
       - uses: mshick/add-pr-comment@v2
+        if: ${{ github.event_name == 'pull_request' }}
         with:
           message: |
             Coverage report:
             ```
             ${{ env.REPORT }}
             ```
-          message-id: 'coverage'
+          message-id: coverage
           allow-repeats: false
 
       - name: json report
