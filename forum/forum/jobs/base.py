@@ -4,7 +4,7 @@ from django.conf import settings
 from forum.apps import logger
 
 
-def start_job(method, *args, **kwargs):
+def start_job(method, *args, **kwargs) -> None:
     """This method starts a job in the background.
     If RUN_ASYNC_JOBS_SYNC flag is on, then it runs it.
     """

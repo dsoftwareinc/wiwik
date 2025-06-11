@@ -3,3 +3,9 @@ from .slack_views import (
     view_tags_autocomplete_for_slack,
     search_from_slack,
 )
+
+__all__ = [
+    "view_slack_post",
+    "view_tags_autocomplete_for_slack",
+    "search_from_slack",
+]

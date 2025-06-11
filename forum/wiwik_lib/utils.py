@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Any
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -11,10 +12,10 @@ from forum.apps import logger
 
 
 class ManagementCommand(BaseCommand, ABC):
-    def print(self, *args):
+    def print(self, *args: Any) -> None:
         self.stdout.write(self.style.SUCCESS(*args))
 
-    def error_print(self, *args):
+    def error_print(self, *args: Any) -> None:
         self.stdout.write(self.style.ERROR(*args))
 
 

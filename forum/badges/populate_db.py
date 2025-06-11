@@ -1,14 +1,16 @@
 import sys
-from typing import List, Any
+from typing import List, Any, Callable
 
 from django.core.checks import Info
 from django.core.checks import register
 
 from badges.logic import badges
 from badges.models import Badge
+from userauth.models import ForumUser
 from .apps import logger
+from .logic.utils import BadgeCalculation
 
-BADGE_LOGIC = dict()
+BADGE_LOGIC: dict[str, Callable[[ForumUser], BadgeCalculation]] = dict()
 
 
 @register()

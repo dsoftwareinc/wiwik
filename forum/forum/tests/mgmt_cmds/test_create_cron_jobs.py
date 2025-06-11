@@ -1,5 +1,6 @@
 import textwrap
 from io import StringIO
+from typing import Any
 from unittest import mock
 
 import fakeredis

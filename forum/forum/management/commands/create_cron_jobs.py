@@ -1,3 +1,5 @@
+from typing import Any
+
 from scheduler.models import Task, TaskType
 
 from wiwik_lib.utils import ManagementCommand
@@ -6,7 +8,7 @@ from wiwik_lib.utils import ManagementCommand
 class Command(ManagementCommand):
     help = "Create basic cron jobs on environment"
 
-    def create_job(self, name: str, callable_method: str, cron_str: str):
+    def create_job(self, name: str, callable_method: str, cron_str: str) -> None:
         self.print(f"Creating CronJob: {name}")
         exists = Task.objects.filter(callable=callable_method).first()
         if exists is not None:
@@ -20,7 +22,7 @@ class Command(ManagementCommand):
             cron_string=cron_str,
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args: Any, **options: Any) -> None:
         self.create_job(
             "Daily activity report for admins",
             "forum.jobs.send_daily_activity_report_for_admins",

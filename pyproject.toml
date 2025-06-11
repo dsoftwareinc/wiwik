@@ -35,7 +35,7 @@ dependencies = [
     "redis~=5.0",
     "psycopg~=3.1",
     "django-constance~=4.3",
-    "django-tasks-scheduler>=4.0.0b3,<5",
+    "django-tasks-scheduler>=4.0.0,<5",
 ]
 
 [dependency-groups]
@@ -49,6 +49,7 @@ dev = [
     "django-debug-toolbar~=4.4",
     "db-to-sqlite~=1.4",
     "behave-django>=1.4.0,<2",
+    "mypy>=1.16.0",
 ]
 
 [tool.hatch.build.targets.sdist]
@@ -75,3 +76,13 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
+
+
+[tool.mypy]
+packages = ['forum', ]
+exclude = ".*/test_.*\\.py"
+strict = true
+follow_imports = "silent"
+ignore_missing_imports = true
+scripts_are_modules = true
+check_untyped_defs = true

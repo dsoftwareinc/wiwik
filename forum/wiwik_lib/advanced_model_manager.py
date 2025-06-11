@@ -6,10 +6,10 @@ _T = TypeVar("_T", bound=models.Model, covariant=True)
 
 class AdvancedModelManager(models.Manager):
     def __init__(
-            self,
-            select_related: Optional[Sequence[str]] = None,
-            prefetch_related: Optional[Sequence[str]] = None,
-            deferred_fields: Optional[Sequence[str]] = None,
+        self,
+        select_related: Optional[Sequence[str]] = None,
+        prefetch_related: Optional[Sequence[str]] = None,
+        deferred_fields: Optional[Sequence[str]] = None,
     ):
         super(AdvancedModelManager, self).__init__()
         self._select_related = select_related

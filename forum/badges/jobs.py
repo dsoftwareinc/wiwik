@@ -78,7 +78,7 @@ def check_users(badge: Badge) -> int:
     return res
 
 
-def check_badge_for_all_users(badge_name: str):
+def check_badge_for_all_users(badge_name: str) -> None:
     try:
         badge = Badge.objects.get(name=badge_name)
         check_users(badge)
@@ -119,7 +119,7 @@ def review_all_badges() -> None:
     Returns:
         None
     """
-    badge_type_count = {}
+    badge_type_count: dict[str, int] = dict()
     badge_qs = Badge.objects.all()
     for badge in badge_qs:
         logger.info(f"Checking users entitled to badge {badge.name}")
@@ -138,7 +138,7 @@ def review_bagdes_event(event: int) -> None:
 
 
 @job()
-def recalculate_user_badges_stats():
+def recalculate_user_badges_stats() -> None:
     user_qs = ForumUser.objects.all()
     for user in user_qs:
         stats = user.additional_data

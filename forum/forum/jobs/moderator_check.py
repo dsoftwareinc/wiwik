@@ -20,7 +20,7 @@ def _beginning_of_day() -> datetime.datetime:
     )
 
 
-def revoke_moderator(user: ForumUser, num_visits: int, last_month: datetime):
+def revoke_moderator(user: ForumUser, num_visits: int, last_month: datetime.datetime) -> None:
     logger.debug(f"Revoking {user.username} moderator rights")
     subject = "Sorry, wiwik is revoking your moderator rights since you are not there enough"
     template = loader.get_template("emails/moderator_revoke.html")
@@ -37,7 +37,7 @@ def revoke_moderator(user: ForumUser, num_visits: int, last_month: datetime):
     user.save()
 
 
-def grant_moderator(user: ForumUser, num_visits: int, last_month: datetime):
+def grant_moderator(user: ForumUser, num_visits: int, last_month: datetime.datetime) -> None:
     logger.debug(f"Granting {user.username} moderator rights")
     subject = "Congratulations, you have been active on wiwik so it is granting you moderator rights"
     template = loader.get_template("emails/moderator_grant.html")
@@ -54,7 +54,7 @@ def grant_moderator(user: ForumUser, num_visits: int, last_month: datetime):
     user.save()
 
 
-def _generate_questions_report_for_user(user: ForumUser, bom: datetime):
+def _generate_questions_report_for_user(user: ForumUser, bom: datetime.datetime) -> str:
     # Generate questions report for user since the beginning of the month
     tags = viewutils.get_user_followed_tags(user)
     if len(tags) == 0:
@@ -69,12 +69,12 @@ def _generate_questions_report_for_user(user: ForumUser, bom: datetime):
     return report_html
 
 
-def send_warning_loosing_moderator_status_to_user(user: ForumUser, num_visits: int, bom: datetime) -> None:
+def send_warning_loosing_moderator_status_to_user(user: ForumUser, num_visits: int, bom: datetime.datetime) -> None:
     """
     Send user a warning about loosing moderator status and a list of questions created
     since the beginning of the month.
 
-    Args:
+    Args:   
         user: user to send to
         num_visits: Number of days user visited since the beginning of the month
         bom: beginning of the month
@@ -106,7 +106,7 @@ def send_warning_loosing_moderator_status_to_user(user: ForumUser, num_visits: i
 
 
 @job("cron")
-def update_moderator_status_for_users():
+def update_moderator_status_for_users() -> None:
     """
     This method goes through all users and check how many days they visited wiwik in the past month.
     If they visited less than settings.DAYS_TO_REVOKE_MODERATOR => it sends them a notification and
@@ -131,7 +131,7 @@ def update_moderator_status_for_users():
 
 
 @job("cron")
-def warn_users_loosing_moderator_status():
+def warn_users_loosing_moderator_status() -> None:
     """
     For every user - check number of days the user visited since the beginning of the month.
     If less than settings.DAYS_TO_REVOKE_MODERATOR, sends a warning about possibility to
