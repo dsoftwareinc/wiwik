@@ -1,67 +1,65 @@
-[tool.poetry]
+[project]
 name = "wiwik"
 version = "0.1.0"
 description = "What I wish I knew knowledge management system"
-maintainers = ["Daniel Moran <daniel@moransoftware.ca>"]
-authors = ["Daniel Moran <daniel@moransoftware.ca>"]
-license = "Fair Source 50"
+authors = [{ name = "Daniel Moran", email = "daniel@moransoftware.ca" }]
+requires-python = "~=3.13"
 readme = "README.md"
-packages = [
-    { include = "forum" },
+license = "LicenseRef-Special-License"
+maintainers = [{ name = "Daniel Moran", email = "daniel@moransoftware.ca" }]
+dependencies = [
+    "Django~=5.2",
+    "django-allauth[socialaccount]>=65.0.1,<66",
+    "pyparsing~=3.0",
+    "python-dateutil~=2.8",
+    "sqlparse>=0.5,<0.6",
+    "nltk~=3.9",
+    "django-admin-numeric-filter>=0.1,<0.2",
+    "django-admin-rangefilter>=0.13,<0.14",
+    "django-model-utils~=5.0",
+    "django-ipware~=7.0",
+    "geoip2~=4.8",
+    "pillow>=11,<12",
+    "scikit-learn~=1.4",
+    "numpy~=2.0",
+    "gunicorn~=23.0",
+    "python-dotenv~=1.0",
+    "django-compressor~=4.3",
+    "django-crispy-forms~=2.1",
+    "crispy-bootstrap5~=2024.2",
+    "markdown~=3.4",
+    "bleach~=6.0",
+    "pymdown-extensions~=10.14",
+    "slack-sdk~=3.33",
+    "meilisearch>=0.32,<0.33",
+    "redis~=5.0",
+    "psycopg~=3.1",
+    "django-constance~=4.3",
+    "django-tasks-scheduler>=4.0.0b3,<5",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.13"
-Django = "^5.2"
-django-allauth = { extras = ["socialaccount"], version = "^65.0.1" }
+[dependency-groups]
+dev = [
+    "poetry~=2.1",
+    "ruff>=0.11,<0.12",
+    "fakeredis~=2.26",
+    "coverage~=7.6",
+    "django-coverage-plugin>=3,<4",
+    "beautifulsoup4~=4.12",
+    "django-debug-toolbar~=4.4",
+    "db-to-sqlite~=1.4",
+    "behave-django>=1.4.0,<2",
+]
 
-pyparsing = "^3.0"
-python-dateutil = "^2.8"
-sqlparse = "^0.5"
-nltk = "^3.9"
-#django-tasks-scheduler = "^3.0.0b2" # Async jobs scheduler using redis
-django-admin-numeric-filter = "^0.1" # Django-admin filters
-django-admin-rangefilter = "^0.13" # Django-admin filters
-django-model-utils = "^5.0" # Django-admin filters
-django-ipware = "^7.0" # For identifying IP location
-geoip2 = "^4.8" # For identifying IP location
-pillow = "^11" # For image field
-scikit-learn = "^1.4" # For similarity TF-IDF
-numpy = "^2.0" # For similarity TF-IDF
+[tool.hatch.build.targets.sdist]
+include = ["forum"]
 
-gunicorn = "^23.0" # Running configuration
-python-dotenv = "^1.0" # Running configuration
-
-# Frontend related
-django-compressor = "^4.3"
-django-crispy-forms = "^2.1"
-crispy-bootstrap5 = "^2024.2"
-markdown = "^3.4"
-bleach = "^6.0"
-pymdown-extensions = "^10.14"
-
-# 3rd party integrations
-slack-sdk = "^3.33"
-meilisearch = "^0.32" # meilisearch driver
-redis = "^5.0" # Redis driver, for redis-cache
-psycopg = "^3.1"
-django-constance = "^4.3"
-django-tasks-scheduler ="^4.0.0b3"
-
-[tool.poetry.group.dev.dependencies]
-poetry = "^2.1"
-ruff = "^0.11"
-fakeredis = "^2.26"
-coverage = "^7.6"
-django-coverage-plugin = "^3"
-beautifulsoup4 = "^4.12"
-django-debug-toolbar = "^4.4"
-db-to-sqlite = "^1.4"
-behave-django = "^1.4.0"
+[tool.hatch.build.targets.wheel]
+include = ["forum"]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff]
 line-length = 120

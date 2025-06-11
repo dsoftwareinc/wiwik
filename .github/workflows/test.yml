@@ -26,22 +26,23 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
-      - name: "Setup Python, Poetry and Dependencies"
-        uses: dsoftwareinc/setup-python-poetry-action@v1
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
-          poetry-version: '2.1.1'
+          cache-dependency-path: uv.lock
+          python-version: "3.13"
       - name: Run Tests
         run: |
           cd forum
-          poetry run coverage run manage.py test --no-logs
+          uv run coverage run manage.py test --no-logs
       - name: Coverage report
         if: ${{ github.event_name == 'pull_request' }}
         id: coverage_report
         shell: bash
         run: |
           echo 'REPORT<<EOF' >> $GITHUB_ENV
-          poetry run coverage report >> $GITHUB_ENV
+          uv run coverage report >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
       - uses: mshick/add-pr-comment@v2
         if: ${{ github.event_name == 'pull_request' }}
@@ -57,7 +58,7 @@ jobs:
       - name: json report
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          poetry run coverage json
+          uv run coverage json
           echo "COVERAGE=$(jq '.totals.percent_covered_display|tonumber' coverage.json)" >> $GITHUB_ENV
 
       - if: ${{ github.event_name == 'push' }}
