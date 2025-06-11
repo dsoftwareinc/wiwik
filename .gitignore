@@ -1,7 +1,6 @@
 .env
 db.sqlite3
 env/
-.env
 .idea/
 .last-pip-install
 __pycache__/
