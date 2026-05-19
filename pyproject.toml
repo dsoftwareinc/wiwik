@@ -3,7 +3,7 @@ name = "wiwik"
 version = "0.1.0"
 description = "What I wish I knew knowledge management system"
 authors = [{ name = "Daniel Moran", email = "daniel@moransoftware.ca" }]
-requires-python = "~=3.13"
+requires-python = "~=3.14.5"
 readme = "README.md"
 license = "LicenseRef-Special-License"
 maintainers = [{ name = "Daniel Moran", email = "daniel@moransoftware.ca" }]
@@ -18,21 +18,21 @@ dependencies = [
     "django-admin-rangefilter>=0.13,<0.14",
     "django-model-utils~=5.0",
     "django-ipware~=7.0",
-    "geoip2~=4.8",
-    "pillow>=11,<12",
+    "geoip2~=5.2",
+    "pillow>=12",
     "scikit-learn~=1.4",
     "numpy~=2.0",
-    "gunicorn~=23.0",
+    "gunicorn>=26.0",
     "python-dotenv~=1.0",
     "django-compressor~=4.3",
     "django-crispy-forms~=2.1",
-    "crispy-bootstrap5~=2024.2",
+    "crispy-bootstrap5~=2026.3",
     "markdown~=3.4",
     "bleach~=6.0",
     "pymdown-extensions~=10.14",
     "slack-sdk~=3.33",
-    "meilisearch>=0.32,<0.33",
-    "redis~=5.0",
+    "meilisearch>=0.41",
+    "redis>=7.4",
     "psycopg~=3.1",
     "django-constance~=4.3",
     "django-tasks-scheduler>=4.0.0,<5",
@@ -40,16 +40,15 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "poetry~=2.1",
-    "ruff>=0.11,<0.12",
-    "fakeredis~=2.26",
-    "coverage~=7.6",
+    "ruff>=0.15",
+    "fakeredis>=2.35",
+    "coverage>=7.14",
     "django-coverage-plugin>=3,<4",
-    "beautifulsoup4~=4.12",
-    "django-debug-toolbar~=4.4",
-    "db-to-sqlite~=1.4",
+    "beautifulsoup4>=4.12",
+    "django-debug-toolbar>=6.3",
+    "db-to-sqlite>=1.5",
     "behave-django>=1.4.0,<2",
-    "mypy>=1.16.0",
+    "mypy>=2.1",
 ]
 
 [tool.hatch.build.targets.sdist]
