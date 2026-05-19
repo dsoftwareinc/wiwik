@@ -8,7 +8,7 @@ readme = "README.md"
 license = "LicenseRef-Special-License"
 maintainers = [{ name = "Daniel Moran", email = "daniel@moransoftware.ca" }]
 dependencies = [
-    "Django~=5.2",
+    "Django~=6.0.5",
     "django-allauth[socialaccount]>=65.0.1,<66",
     "pyparsing~=3.0",
     "python-dateutil~=2.8",

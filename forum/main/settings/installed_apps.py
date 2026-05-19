@@ -10,6 +10,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "django.contrib.humanize",
+    "django.contrib.postgres",
     "admin_numeric_filter",  # django admin numeric filter
     "rangefilter",  # django admin related
     "userauth",  # user related data
